@@ -23,3 +23,16 @@ calc_lik_matrix = function(Bhat, Shat, Ulist, log=FALSE){
   t(sapply(seq(1:J),function(j){calc_lik_vector(Bhat[j,],diag(Shat[j,]^2),Ulist,log)}))
 }
 
+#' @title Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)
+#' @details computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
+#' @param Bhat J x R matrix of betahat values
+#' @param Shat J x R matrix of standard errors
+#' @param Ulist list of prior covariance matrices
+#' @return J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1
+#' @export
+calc_relative_lik_matrix = function(Bhat, Shat, Ulist){
+  matrix_llik = calc_lik_matrix(Bhat,Shat,Ulist,log=TRUE)
+  matrix_llik - apply(matrix_llik,1, max) #avoid numerical issues by subtracting max of each row
+  return(exp(matrix_llik))
+}
+
