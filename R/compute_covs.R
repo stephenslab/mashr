@@ -45,3 +45,17 @@ compute_covs_allones = function(Bhat){
   onematrix = matrix(1,nrow=R,ncol=R)
   return(list(onematrix))
 }
+
+#' Scale each matrix in list Ulist by a scalar in vector grid
+#' @param Ulist a list of matrices
+#' @param grid a vector of scaling factors
+#' @return a list with length length(Ulist) \times length(grid), with values grid[i]\times Ulist[[j]]
+#' export
+scale_Ulist = function(Ulist, grid){
+  unlist( lapply(grid, function(x){mult_list(Ulist,x)}), recursive=FALSE)
+}
+
+#' multiply each element of a list by scalar
+#' (In our application each element of the list is a matrix)
+mult_list = function(Ulist, x){return(lapply(Ulist, function(U){x*U}))}
+
