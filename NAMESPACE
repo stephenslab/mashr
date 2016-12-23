@@ -3,5 +3,6 @@
 export(calc_lik_matrix)
 export(calc_lik_vector)
 export(compute_posterior_arrays)
+export(compute_weighted_quantity)
 export(posterior_cov)
 export(posterior_mean)

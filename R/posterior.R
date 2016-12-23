@@ -30,7 +30,6 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @return post_neg JxPxR array of posterior (marginal) probability of being negative
 #' @return post_zero JxPxR array of posterior (marginal) probability of being zero
 #' @export
-
 compute_posterior_arrays=function(Bhat,Shat,Ulist){
   R=ncol(Bhat)
   J=nrow(Bhat)
@@ -58,4 +57,28 @@ compute_posterior_arrays=function(Bhat,Shat,Ulist){
   return(list(post_mean=post_mean,post_zero=post_zero,
               post_var=post_var,post_pos=post_pos,post_neg=post_neg))
 }
+
+
+#' @title Compute weighted means of posterior arrays
+#' @description Generates a K x R matrix of posterior quantities (eg posterior mean) for each effect
+#' @param post_array J x K x R array of posterior quantity for each effect for each component in each condition
+#' @param weights J x K matrix of weights for each effect in each component (usually the posterior weights)
+#' @return J by R matrix of quantities (eg posterior mean) for each effect in each condition. The (j,r) element is sum_k pi[j,k] a[j,k,r]
+#' @export
+compute_weighted_quantity = function(post_array,post_weights){
+  weighted_array = post_array * post_weights
+  return(apply(weighted_array,c(1,3),sum))
+}
+
+#' @title compute posterior probabilities
+#' @details computes posterior probabilities that each effect came from each component
+#' @param prior a K vector of prior weights
+#' @param lik_mat a JxK matrix of likelihoods
+#' @return a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect
+compute_post_prob_matrix=function(prior,lik_mat){
+  d= t(prior * t(lik_mat))
+  norm = rowSums(d) # normalize probabilities to sum to 1
+  return(d/norm)
+}
+
 
