@@ -4,11 +4,11 @@
 \alias{compute_Ulist}
 \title{Compute a list of covariance matrices using supplied functions, and put them all together}
 \usage{
-compute_Ulist(Bhat, fns = c(compute_covs_identity, compute_covs_singletons,
+compute_Ulist(data, fns = c(compute_covs_identity, compute_covs_singletons,
   compute_covs_allones), Ulist = NULL)
 }
 \arguments{
-\item{Bhat}{an N by R matrix of data to be passed to functions fns}
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
 
 \item{fns}{a vector of functions to be applied to Bhat to compute covariance matrices}
 
@@ -16,7 +16,6 @@ compute_Ulist(Bhat, fns = c(compute_covs_identity, compute_covs_singletons,
 }
 \value{
 a list of covariance matrices
-export
 }
 \description{
 Compute a list of covariance matrices using supplied functions, and put them all together

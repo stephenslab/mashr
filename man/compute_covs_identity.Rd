@@ -4,14 +4,13 @@
 \alias{compute_covs_identity}
 \title{Compute an identity matrix}
 \usage{
-compute_covs_identity(Bhat)
+compute_covs_identity(data)
 }
 \arguments{
-\item{Bhat}{an N by R matrix of data}
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
 }
 \value{
 a list with one entry, an R by R identity matrix
-export
 }
 \description{
 Compute an identity matrix

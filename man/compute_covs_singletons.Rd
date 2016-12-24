@@ -4,14 +4,13 @@
 \alias{compute_covs_singletons}
 \title{Compute all R singleton matrices corresponding to condition-specific effects}
 \usage{
-compute_covs_singletons(Bhat)
+compute_covs_singletons(data)
 }
 \arguments{
-\item{Bhat}{an N by R matrix of data}
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
 }
 \value{
 a list with R entries, the rth entry being an R by R matrix with all 0s except the (r,r) element is 1
-export
 }
 \description{
 Compute all R singleton matrices corresponding to condition-specific effects

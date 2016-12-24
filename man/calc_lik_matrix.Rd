@@ -4,12 +4,10 @@
 \alias{calc_lik_matrix}
 \title{calc_lik_matrix}
 \usage{
-calc_lik_matrix(Bhat, Shat, Ulist, log = FALSE)
+calc_lik_matrix(data, Ulist, log = FALSE)
 }
 \arguments{
-\item{Bhat}{J x R matrix of betahat values}
-
-\item{Shat}{J x R matrix of standard errors}
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
 
 \item{Ulist}{list of prior covariance matrices}
 

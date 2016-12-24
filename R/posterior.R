@@ -30,9 +30,10 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @return post_neg JxPxR array of posterior (marginal) probability of being negative
 #' @return post_zero JxPxR array of posterior (marginal) probability of being zero
 #' @export
-compute_posterior_arrays=function(Bhat,Shat,Ulist){
-  R=ncol(Bhat)
-  J=nrow(Bhat)
+compute_posterior_arrays=function(data,Ulist){
+  R=n_conditions(data)
+  J=n_effects(data)
+
   P=length(Ulist)
   post_mean=array(NA,dim=c(J,P,R))
   post_var=array(NA,dim=c(J,P,R))
@@ -41,8 +42,8 @@ compute_posterior_arrays=function(Bhat,Shat,Ulist){
   post_neg=array(NA,dim=c(J,P,R))
 
   for(j in 1:J){
-    bhat=as.vector(t(Bhat[j,]))##turn i into a R x 1 vector
-    V=diag(Shat[j,])^2
+    bhat=as.vector(t(data$Bhat[j,]))##turn i into a R x 1 vector
+    V=diag(data$Shat[j,])^2
     Vinv <- solve(V)
     for(p in 1:P){
       U1 <- posterior_cov(Vinv, Ulist[[p]])

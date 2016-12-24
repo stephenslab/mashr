@@ -4,14 +4,14 @@
 \alias{compute_posterior_arrays}
 \title{compute_posterior_arrays}
 \usage{
-compute_posterior_arrays(Bhat, Shat, Ulist)
+compute_posterior_arrays(data, Ulist)
 }
 \arguments{
+\item{Ulist}{list of P prior covariance matrices}
+
 \item{Bhat}{J by R matrix of estimates}
 
 \item{Shat}{J x R matrix of standard errors}
-
-\item{Ulist}{list of P prior covariance matrices}
 }
 \value{
 post_means JxPxR array of posterior means

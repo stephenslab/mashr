@@ -4,12 +4,10 @@
 \alias{calc_relative_lik_matrix}
 \title{Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)}
 \usage{
-calc_relative_lik_matrix(Bhat, Shat, Ulist)
+calc_relative_lik_matrix(data, Ulist)
 }
 \arguments{
-\item{Bhat}{J x R matrix of betahat values}
-
-\item{Shat}{J x R matrix of standard errors}
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
 
 \item{Ulist}{list of prior covariance matrices}
 }

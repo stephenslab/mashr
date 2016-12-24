@@ -13,7 +13,6 @@ scale_Ulist(Ulist, grid)
 }
 \value{
 a list with length length(Ulist) \times length(grid), with values grid[i]\times Ulist[[j]]
-export
 }
 \description{
 Scale each matrix in list Ulist by a scalar in vector grid

@@ -4,14 +4,13 @@
 \alias{compute_covs_allones}
 \title{Compute an R by R matrix of all 1s}
 \usage{
-compute_covs_allones(Bhat)
+compute_covs_allones(data)
 }
 \arguments{
-\item{Bhat}{an N by R matrix of data}
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
 }
 \value{
 a list with 1 entry, the R by R matrix of all 1s
-export
 }
 \description{
 Compute an R by R matrix of all 1s
