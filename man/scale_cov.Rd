@@ -12,7 +12,7 @@ scale_cov(Ulist, grid)
 \item{grid}{a vector of scaling factors}
 }
 \value{
-a list with length length(Ulist) \times length(grid), with values grid[i]\times Ulist[[j]]
+a list with length length(Ulist)*length(grid), with values grid[i]*Ulist[[j]]
 }
 \description{
 Scale each covariance matrix in list Ulist by a scalar in vector grid
