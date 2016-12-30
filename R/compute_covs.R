@@ -8,7 +8,7 @@ compute_Ulist = function(data,
                         fns=c(cov_identity,cov_singletons,cov_allones,cov_allzeros),
                         Ulist = NULL){
   if(length(fns)==1){fns = c(fns)}
-  names(fns)="" #avoid any names that happen to be passed in being passed on to the output
+  names(fns)=NULL #avoid any names that happen to be passed in being passed on to the output
   c(Ulist,unlist(lapply(fns,function(f){f(data)}),recursive=FALSE))
 }
 
