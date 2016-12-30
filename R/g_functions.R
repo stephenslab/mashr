@@ -24,12 +24,12 @@ autoselect_grid = function(data){
 }
 
 #' Return the covariances in g
-#' @param g a mixture of multivariate normals, as created for example by \ode{initialize_g}
+#' @param g a mixture of multivariate normals, as created for example by \code{initialize_g}
 #' @export
 get_cov = function(g){return(g$Ulist)}
 
 #' Return the mixture proportions in g
-#' @param g a mixture of multivariate normals, as created for example by \ode{initialize_g}
+#' @param g a mixture of multivariate normals, as created for example by \code{initialize_g}
 #' @export
 get_mixprob = function(g){return(g$pi)}
 
@@ -37,6 +37,17 @@ n_comp = function(g){return(length(g$pi))}
 
 null.comp = function(g){
   which(grepl("all_zeros",names(g$Ulist)))
+}
+
+#' Print out the components of g with largest weight (those exceeding thresh)
+#' @param g a mixture of multivariate normals, e.g. as created by \code{initialize_g}
+#' @param thresh the threshold on mixture weight; only components exceeding weight are output
+#' @export
+print_biggest_comp = function(g,thresh=0.01){
+  subset = which(g$pi>thresh)
+  o = order(g$pi[subset],decreasing=TRUE)
+  print(g$pi[subset][o],digits=2)
+  print(names(g$Ulist)[subset][o])
 }
 
 #' Fit the hierarchical model by estimating the mixture weights

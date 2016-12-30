@@ -3,7 +3,7 @@ test_that("basic g computations look right", {
   Shat = rbind(c(1,1),c(1,1))
   data = set_mash_data(Bhat,Shat)
 
-  g = initialize_g(data,c("all_zeros","id","sing"),c(0.5,1,2))
+  g = initialize_g(data,c("null","id","sing"),c(0.5,1,2))
   expect_equal(n_comp(g),12)
 
   g2=optimize_g(data,g,prior="nullbiased")

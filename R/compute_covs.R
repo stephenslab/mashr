@@ -40,7 +40,7 @@ compute_cov = function(data,
 
 #returns a named list of defaults for covariance function calculation
 cov_methods = function(){
-  list("all_zeros"= list(fn = cov_all_zeros, args = NULL),
+  list("null"= list(fn = cov_all_zeros, args = NULL),
         "id" = list(fn = cov_identity, args= NULL),
         "singletons" = list(fn = cov_singletons, args=NULL),
         "all_ones" = list(fn = cov_all_ones, args = NULL),
@@ -125,7 +125,12 @@ multiply_list = function(Ulist, x){lapply(Ulist, function(U){x*U})}
 
 
 # normalize a covariance matrix so its maximum diagonal element is 1
-normalize_cov = function(U){return(U/max(diag(U)))}
+normalize_cov = function(U){
+  if(max(diag(U))!=0){
+    U = U/max(diag(U))
+  }
+  return(U)
+}
 
 # apply each matrix in Ulist
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}

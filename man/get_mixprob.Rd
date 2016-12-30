@@ -7,7 +7,7 @@
 get_mixprob(g)
 }
 \arguments{
-\item{g}{a mixture of multivariate normals, as created for example by \ode{initialize_g}}
+\item{g}{a mixture of multivariate normals, as created for example by \code{initialize_g}}
 }
 \description{
 Return the mixture proportions in g
