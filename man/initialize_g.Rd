@@ -4,8 +4,8 @@
 \alias{initialize_g}
 \title{Create a}
 \usage{
-initialize_g(data, Umethods = c("all_zero", "id", "singletons", "bmalite",
-  "all_one"), grid)
+initialize_g(data, Umethods = c("all_zero", "id", "singletons", "all_one"),
+  grid)
 }
 \arguments{
 \item{data}{a mash data object, e.g. as created by \code{set_mash_data}}

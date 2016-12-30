@@ -4,8 +4,8 @@
 \alias{compute_Ulist}
 \title{Compute a list of covariance matrices using supplied functions, and put them all together}
 \usage{
-compute_Ulist(data, fns = c(compute_covs_identity, compute_covs_singletons,
-  compute_covs_allones), Ulist = NULL)
+compute_Ulist(data, fns = c(cov_identity, cov_singletons, cov_allones,
+  cov_allzeros), Ulist = NULL)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}

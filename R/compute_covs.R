@@ -5,18 +5,40 @@
 #' @return a list of covariance matrices
 #' @export
 compute_Ulist = function(data,
-                        fns=c(compute_covs_identity,compute_covs_singletons,compute_covs_allones),
+                        fns=c(cov_identity,cov_singletons,cov_allones,cov_allzeros),
                         Ulist = NULL){
   if(length(fns)==1){fns = c(fns)}
+  names(fns)="" #avoid any names that happen to be passed in being passed on to the output
   c(Ulist,unlist(lapply(fns,function(f){f(data)}),recursive=FALSE))
 }
 
+#maps string names to functions used to compute different types of covariance matrix
+Umap = function(){
+  list("allzeros"= cov_allzeros,
+       "id" = cov_identity,
+       "singletons" = cov_singletons,
+       "allones" = cov_allones)
+}
+
+#' Compute a list of covariance matrices (with methods indicated by names)
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param Utypes a vector of strings that indicate which covariance matrices to compute. See \code{Umap}.
+#' @param Ulist optionally, an existing list of matrices to which the newly computed matrices will be added
+#' @return a list of covariance matrices
+#' @export
+compute_Ulist_byname = function(data,
+           Utypes=c("id","singletons","allones","allzeros"),
+           Ulist = NULL){
+  Utypes = match.arg(Utypes,several.ok=TRUE)
+  Ufns = Umap()[Utypes] # map the names in Utypes to functions
+  compute_Ulist(data, Ufns, Ulist)
+}
 
 #' Compute an identity matrix
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @return a list with one entry, an R by R identity matrix
 #' @export
-compute_covs_identity = function(data){
+cov_identity = function(data){
   R = n_conditions(data)
   return(list(id=diag(R)))
 }
@@ -25,7 +47,7 @@ compute_covs_identity = function(data){
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @return a list with R entries, the rth entry being an R by R matrix with all 0s except the (r,r) element is 1
 #' @export
-compute_covs_singletons = function(data){
+cov_singletons = function(data){
   R = n_conditions(data)
   nullmatrix = matrix(0,nrow=R,ncol=R)
   Ulist = list()
@@ -42,28 +64,28 @@ compute_covs_singletons = function(data){
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @return a list with 1 entry, the R by R matrix of all 1s
 #' @export
-compute_covs_allones = function(data){
+cov_allones = function(data){
   R = n_conditions(data)
   onematrix = matrix(1,nrow=R,ncol=R)
-  return(list(onematrix = onematrix))
+  return(list(allones = onematrix))
 }
 
 #' Compute an R by R matrix of all 0s
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @return a list with 1 entry, the R by R matrix of all 0s
 #' @export
-compute_covs_allzeros = function(data){
+cov_allzeros = function(data){
   R = ncol(data$Bhat)
   zeromatrix = matrix(0,nrow=R,ncol=R)
-  return(list(zeromatrix = zeromatrix))
+  return(list(allzeros = zeromatrix))
 }
 
-#' Scale each matrix in list Ulist by a scalar in vector grid
+#' Scale each covariance matrix in list Ulist by a scalar in vector grid
 #' @param Ulist a list of matrices
 #' @param grid a vector of scaling factors
 #' @return a list with length length(Ulist) \times length(grid), with values grid[i]\times Ulist[[j]]
 #' @export
-scale_Ulist = function(Ulist, grid){
+scale_cov = function(Ulist, grid){
   orig_names = names(Ulist)
   Ulist = unlist( lapply(grid, function(x){multiply_list(Ulist,x)}), recursive=FALSE)
   names(Ulist) = unlist( lapply(1:length(grid), function(x){paste0(orig_names,".",x)}), recursive=FALSE)

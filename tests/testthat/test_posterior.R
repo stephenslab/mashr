@@ -2,7 +2,7 @@ test_that("array of posteriors looks right", {
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = set_mash_data(Bhat,Shat)
-  Ulist = compute_covs_singletons(data)
+  Ulist = cov_singletons(data)
   U1 = posterior_cov(diag(3),Ulist[[1]])
   mu1 = posterior_mean(Bhat[1,],diag(3),U1)
   post_array_list = compute_posterior_arrays(data, Ulist)

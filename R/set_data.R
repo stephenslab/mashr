@@ -8,8 +8,6 @@ set_mash_data = function(Bhat,Shat){
 }
 
 
-n_conditions = function(data){
-  ncol(data$Bhat)
-}
+n_conditions = function(data){ncol(data$Bhat)}
 
 n_effects = function(data){nrow(data$Bhat)}
