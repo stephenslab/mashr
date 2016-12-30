@@ -22,12 +22,12 @@ test_that("prior covariance computations look right", {
 
   Ulist = scale_cov(Ulist, c(1,2))
   expect_equal(Ulist, list(id.1 = cbind(c(1,0),c(0,1)), all_ones.1 = cbind(c(1,1),c(1,1)),
-               id.2 = cbind(c(2,0),c(0,2)), all_ones.2 = cbind(c(2,2),c(2,2))))
+               id.2 = cbind(c(4,0),c(0,4)), all_ones.2 = cbind(c(4,4),c(4,4))))
 
   # test naming of scaled Ulist
   Ulist = compute_cov(data,"sing")
   Ulist = compute_cov(data, "all_zeros", Ulist)
-  Ulist = scale_cov(Ulist, c(3,4))
+  Ulist = scale_cov(Ulist, c(sqrt(3),sqrt(4)))
   expect_equal(Ulist, list(singletons_1.1 = cbind(c(3,0),c(0,0)),
                            singletons_2.1 = cbind(c(0,0),c(0,3)),
                            all_zeros.1 = cbind(c(0,0),c(0,0)),
@@ -39,7 +39,13 @@ test_that("prior covariance computations look right", {
   Ulist = compute_cov(data, c("all_z","all_o"))
   expect_equal(Ulist, list(all_zeros = cbind(c(0,0),c(0,0)), all_ones = cbind(c(1,1),c(1,1))))
 
-
-
 }
 )
+
+test_that("normalizations look right", {
+  testlist = list(cbind(c(1,2),c(3,4)), cbind(c(5,6),c(7,8)))
+  expect_equal(normalize_cov(testlist[[1]]), testlist[[1]]/4)
+  expect_equal(normalize_Ulist(testlist), list(testlist[[1]]/4,testlist[[2]]/8))
+}
+)
+

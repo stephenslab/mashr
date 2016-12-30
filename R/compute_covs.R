@@ -109,12 +109,12 @@ cov_simple_het = function(data, corr){
 
 #' Scale each covariance matrix in list Ulist by a scalar in vector grid
 #' @param Ulist a list of matrices
-#' @param grid a vector of scaling factors
-#' @return a list with length length(Ulist)*length(grid), with values grid[i]*Ulist[[j]]
+#' @param grid a vector of scaling factors (standard deviaions)
+#' @return a list with length length(Ulist)*length(grid), with values grid[i]^2*Ulist[[j]]
 #' @export
 scale_cov = function(Ulist, grid){
   orig_names = names(Ulist)
-  Ulist = unlist( lapply(grid, function(x){multiply_list(Ulist,x)}), recursive=FALSE)
+  Ulist = unlist( lapply(grid^2, function(x){multiply_list(Ulist,x)}), recursive=FALSE)
   names(Ulist) = unlist( lapply(1:length(grid), function(x){paste0(orig_names,".",x)}), recursive=FALSE)
   return(Ulist)
 }
@@ -123,3 +123,9 @@ scale_cov = function(Ulist, grid){
 #' (In our application each element of the list is a matrix)
 multiply_list = function(Ulist, x){lapply(Ulist, function(U){x*U})}
 
+
+# normalize a covariance matrix so its maximum diagonal element is 1
+normalize_cov = function(U){return(U/max(diag(U)))}
+
+# apply each matrix in Ulist
+normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}

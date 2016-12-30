@@ -6,7 +6,9 @@
 #' @export
 initialize_g=function(data, cov_methods, grid, g=NULL){
   Ulist = compute_cov(data,cov_methods,g$Ulist)
+  Ulist = normalize_Ulist(Ulist)
   Ulist = scale_cov(Ulist, grid)
+
   pi = initialize_pi(length(Ulist))
   list(Ulist=Ulist, pi=pi)
 }

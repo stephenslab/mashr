@@ -9,10 +9,10 @@ scale_cov(Ulist, grid)
 \arguments{
 \item{Ulist}{a list of matrices}
 
-\item{grid}{a vector of scaling factors}
+\item{grid}{a vector of scaling factors (standard deviaions)}
 }
 \value{
-a list with length length(Ulist)*length(grid), with values grid[i]*Ulist[[j]]
+a list with length length(Ulist)*length(grid), with values grid[i]^2*Ulist[[j]]
 }
 \description{
 Scale each covariance matrix in list Ulist by a scalar in vector grid
