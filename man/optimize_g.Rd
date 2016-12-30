@@ -4,7 +4,8 @@
 \alias{optimize_g}
 \title{Fit the hierarchical model by estimating the mixture weights}
 \usage{
-optimize_g(data, g_init, prior = c("nullbiased"))
+optimize_g(data, g_init, prior = c("nullbiased"), optmethod = c("mixEM",
+  "mixIP"), control = list())
 }
 \arguments{
 \item{data}{a mash data object, e.g. as created by \code{set_mash_data}}

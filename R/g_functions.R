@@ -1,0 +1,58 @@
+#' Initialize a mixture of multivariate normals
+#' @param data a mash data object, e.g. as created by \code{set_mash_data}
+#' @param cov_methods methods to use to create covariance matrices; passed to \code{cov_methods}
+#' @param grid a vector of scalars that are to be used to scale the covariance matrices
+#' @param g optionally a previously-inititalized g; in this case the new g adds new covariances to this g
+#' @export
+initialize_g=function(data, cov_methods, grid, g=NULL){
+  Ulist = compute_cov(data,cov_methods,g$Ulist)
+  Ulist = scale_cov(Ulist, grid)
+  pi = initialize_pi(length(Ulist))
+  list(Ulist=Ulist, pi=pi)
+}
+
+#' Initialize mixture proportions
+initialize_pi = function(K){
+  return(rep(1/K,K))
+}
+
+#' Automatically select grid
+autoselect_grid = function(data){
+  return(c(0.5,1,2))
+}
+
+#' Return the covariances in g
+#' @param g a mixture of multivariate normals, as created for example by \ode{initialize_g}
+#' @export
+get_cov = function(g){return(g$Ulist)}
+
+#' Return the mixture proportions in g
+#' @param g a mixture of multivariate normals, as created for example by \ode{initialize_g}
+#' @export
+get_mixprob = function(g){return(g$pi)}
+
+n_comp = function(g){return(length(g$pi))}
+
+null.comp = function(g){
+  which(grepl("all_zeros",names(g$Ulist)))
+}
+
+#' Fit the hierarchical model by estimating the mixture weights
+#' @param data a mash data object, e.g. as created by \code{set_mash_data}
+#' @param g_init a mixture of multivariate normals, e.g. as created by \code{initialize_g}
+#' @param prior a string saying what kind of prior to use in the penalized likelihood
+#' @export
+optimize_g = function(data,
+                      g_init,
+                      prior=c("nullbiased"),
+                      optmethod=c("mixEM","mixIP"),
+                      control=list() ){
+  optmethod = match.arg(optmethod)
+  library("ashr") # I didn't manage to get do.call to work without this
+  prior= ashr:::setprior(prior, n_comp(g_init), 10, null.comp(g_init))
+  matrix_lik = calc_relative_lik_matrix(data, get_cov(g_init))
+  pi_init = get_mixprob(g_init)
+  res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
+  g_init$pi = res$pihat
+  return(g_init)
+}

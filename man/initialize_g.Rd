@@ -2,19 +2,20 @@
 % Please edit documentation in R/g_functions.R
 \name{initialize_g}
 \alias{initialize_g}
-\title{Create a}
+\title{Initialize a mixture of multivariate normals}
 \usage{
-initialize_g(data, Umethods = c("all_zero", "id", "singletons", "all_one"),
-  grid)
+initialize_g(data, cov_methods, grid, g = NULL)
 }
 \arguments{
 \item{data}{a mash data object, e.g. as created by \code{set_mash_data}}
 
-\item{Umethods}{a vector of strings that indicates which methods to use to create covariance matrices}
+\item{cov_methods}{methods to use to create covariance matrices; passed to \code{cov_methods}}
 
 \item{grid}{a vector of scalars that are to be used to scale the covariance matrices}
+
+\item{g}{optionally a previously-inititalized g; in this case the new g adds new covariances to this g}
 }
 \description{
-Create a
+Initialize a mixture of multivariate normals
 }
 

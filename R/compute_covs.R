@@ -8,7 +8,7 @@
 #'  compute_cov(data,"id")
 #'  compute_cov(data,"singletons")
 #'  compute_cov(data,c("id","sing")) # can use partial matching of names
-#' compute_cov(data,list("sing","id",eg = list(fn = cov_simplehet, args= list(corr=c(0.1,0.2)))))
+#'  compute_cov(data,list("sing","id",eg = list(fn = cov_simple_het, args= list(corr=c(0.1,0.2)))))
 #' @export
 compute_cov = function(data,
                         cov_methods,
