@@ -13,6 +13,13 @@ optimize_g(data, g_init, prior = c("nullbiased"), optmethod = c("mixEM",
 \item{g_init}{a mixture of multivariate normals, e.g. as created by \code{initialize_g}}
 
 \item{prior}{a string saying what kind of prior to use in the penalized likelihood}
+
+\item{optmethod}{a string, giving name of optimization function to use}
+
+\item{control}{a list of parameters to be passed to optmethod}
+}
+\value{
+a list with elements g_opt (the optimal g) and posterior_prob (a matrix of posterior probabilities)
 }
 \description{
 Fit the hierarchical model by estimating the mixture weights

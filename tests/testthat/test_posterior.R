@@ -15,7 +15,7 @@ test_that("array of posteriors looks right", {
 }
 )
 
-test_that("matrix of posterior probabilities looks right", {
+test_that("matrix of posterior probabilities looks right; and posterior means look right", {
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = set_mash_data(Bhat,Shat)
@@ -23,8 +23,13 @@ test_that("matrix of posterior probabilities looks right", {
   mm = calc_lik_matrix(data, Ulist)
   K = length(Ulist)
   prior = rep(1/K,K)
-  post = compute_post_prob_matrix(prior, mm)
+  post = compute_posterior_weights(prior, mm)
   expect_equal( cor(post[1,],mm[1,]), 1)
   expect_equal( cor(post[2,],mm[2,]), 1)
+
+  post_array_list = compute_posterior_arrays(data, Ulist)
+  post_matrix = compute_weighted_quantity(post_array_list$post_mean,post)
+  expect_equal(rowSums(post*post_array_list$post_mean[,,1]),post_matrix[,1])
+  expect_equal(rowSums(post*post_array_list$post_mean[,,2]),post_matrix[,2])
 }
 )

@@ -61,6 +61,9 @@ print_biggest_comp = function(g,thresh=0.01){
 #' @param data a mash data object, e.g. as created by \code{set_mash_data}
 #' @param g_init a mixture of multivariate normals, e.g. as created by \code{initialize_g}
 #' @param prior a string saying what kind of prior to use in the penalized likelihood
+#' @param optmethod a string, giving name of optimization function to use
+#' @param control a list of parameters to be passed to optmethod
+#' @return a list with elements g_opt (the optimal g) and posterior_prob (a matrix of posterior probabilities)
 #' @export
 optimize_g = function(data,
                       g_init,
@@ -74,5 +77,6 @@ optimize_g = function(data,
   pi_init = get_mixprob(g_init)
   res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
   g_init$pi = res$pihat
-  return(g_init)
+  return(list(g_opt = g_init,
+              posterior_weights = compute_posterior_weights(prior, matrix_lik)))
 }

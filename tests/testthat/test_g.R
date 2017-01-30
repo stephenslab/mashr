@@ -6,7 +6,7 @@ test_that("basic g computations look right", {
   g = initialize_g(data,c("null","id","sing"),c(0.5,1,2))
   expect_equal(n_comp(g),12)
 
-  g2=optimize_g(data,g,prior="nullbiased")
+  g2=optimize_g(data,g,prior="nullbiased")$g_opt
   expect_equal(n_comp(g2),12)
 
 }

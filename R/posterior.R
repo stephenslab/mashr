@@ -20,9 +20,34 @@ posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% Vinv %*% bhat)
 }
 
+#' @title Compute posterior matrices
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param g a mixture of multivariate normals
+#' @param posterior_weights the posterior probabilities of each mixture component in g for the data
+#' @return post_means JxR matrix of posterior means
+#' @return post_vars JxR matrix of posterior (marginal) variances
+#' @return post_pos JxR matrix of posterior (marginal) probability of being positive
+#' @return post_neg JxR matrix of posterior (marginal) probability of being negative
+#' @return post_zero JxR matrix of posterior (marginal) probability of being zero
+#' @export
+compute_posterior_matrices=function(data,g,posterior_weights){
+
+  post_arrays = compute_posterior_arrays(data,get_cov(g))
+  post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
+  #post_var=compute_weighted_quantity(post_arrays$post_var)
+  # need to do variance via mean squared formula...
+  message("posterior variance not yet implemented")
+  post_pos=compute_weighted_quantity(post_arrays$post_pos,posterior_weights)
+  post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
+  post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
+  return(list(post_mean = post_mean,
+              post_pos = post_pos,
+              post_zero = post_zero,
+              post_neg = post_neg))
+}
+
 #' @title compute_posterior_arrays
-#' @param Bhat J by R matrix of estimates
-#' @param Shat J x R matrix of standard errors
+#' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist list of P prior covariance matrices
 #' @return post_means JxPxR array of posterior means
 #' @return post_vars JxPxR array of posterior (marginal) variances
@@ -66,8 +91,9 @@ compute_posterior_arrays=function(data,Ulist){
 #' @param weights J x K matrix of weights for each effect in each component (usually the posterior weights)
 #' @return J by R matrix of quantities (eg posterior mean) for each effect in each condition. The (j,r) element is sum_k pi[j,k] a[j,k,r]
 #' @export
-compute_weighted_quantity = function(post_array,post_weights){
-  weighted_array = post_array * post_weights
+compute_weighted_quantity = function(post_array,posterior_weights){
+  R = dim(post_array)[3]
+  weighted_array = post_array * rep(posterior_weights,R)
   return(apply(weighted_array,c(1,3),sum))
 }
 
@@ -76,7 +102,7 @@ compute_weighted_quantity = function(post_array,post_weights){
 #' @param prior a K vector of prior weights
 #' @param lik_mat a JxK matrix of likelihoods
 #' @return a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect
-compute_post_prob_matrix=function(prior,lik_mat){
+compute_posterior_weights=function(prior,lik_mat){
   d= t(prior * t(lik_mat))
   norm = rowSums(d) # normalize probabilities to sum to 1
   return(d/norm)

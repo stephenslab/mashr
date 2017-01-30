@@ -7,11 +7,9 @@
 compute_posterior_arrays(data, Ulist)
 }
 \arguments{
+\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+
 \item{Ulist}{list of P prior covariance matrices}
-
-\item{Bhat}{J by R matrix of estimates}
-
-\item{Shat}{J x R matrix of standard errors}
 }
 \value{
 post_means JxPxR array of posterior means

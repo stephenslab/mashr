@@ -4,7 +4,7 @@
 \alias{compute_weighted_quantity}
 \title{Compute weighted means of posterior arrays}
 \usage{
-compute_weighted_quantity(post_array, post_weights)
+compute_weighted_quantity(post_array, posterior_weights)
 }
 \arguments{
 \item{post_array}{J x K x R array of posterior quantity for each effect for each component in each condition}
