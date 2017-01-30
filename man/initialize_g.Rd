@@ -15,6 +15,10 @@ initialize_g(data, cov_methods, grid, g = NULL)
 
 \item{g}{optionally a previously-inititalized g; in this case the new g adds new covariances to this g}
 }
+\value{
+a list with two elements, the covariance matrices and their mixture proportions
+The covariance matrices are
+}
 \description{
 Initialize a mixture of multivariate normals
 }

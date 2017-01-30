@@ -1,6 +1,6 @@
 #' Compute a list of covariance matrices using supplied functions, and put them all together
 #' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param methods a named list defining the methods (functions and arguments) to be used
+#' @param cov_methods a named list defining the methods (functions and arguments) to be used
 #' @param Ulist optionally, an existing list of matrices to which the newly computed matrices will be added
 #' @return a list of covariance matrices
 #' @details Each element of methods may be either a character string which names a pre-defined method (see \code{cov_methods}) or a list with elements fn and args, specifying the function to call, and any additional arguments
@@ -38,10 +38,11 @@ compute_cov = function(data,
 
 
 
-#returns a named list of defaults for covariance function calculation
+#' A function that maps names of covariance matrices to covariance computation functions
+#' @return a named list of defaults for covariance function calculation
 cov_methods = function(){
   list("null"= list(fn = cov_all_zeros, args = NULL),
-        "id" = list(fn = cov_identity, args= NULL),
+        "identity" = list(fn = cov_identity, args= NULL),
         "singletons" = list(fn = cov_singletons, args=NULL),
         "all_ones" = list(fn = cov_all_ones, args = NULL),
         "simple_het" = list(fn = cov_simple_het, args = list(corr=c(0.25,0.5,0.75)))
@@ -124,7 +125,8 @@ scale_cov = function(Ulist, grid){
 multiply_list = function(Ulist, x){lapply(Ulist, function(U){x*U})}
 
 
-# normalize a covariance matrix so its maximum diagonal element is 1
+#' normalize a covariance matrix soits maximum diagonal element is 1
+#' Divides each element of the matrix by its maximum diagonal element (provided that it is non-zero)
 normalize_cov = function(U){
   if(max(diag(U))!=0){
     U = U/max(diag(U))
@@ -132,5 +134,6 @@ normalize_cov = function(U){
   return(U)
 }
 
-# apply each matrix in Ulist
+#' normalize a list of covariance matrices by
+#' applying \link{\code{normalize_cov}} to each element
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}

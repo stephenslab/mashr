@@ -9,9 +9,9 @@ compute_cov(data, cov_methods, Ulist = NULL)
 \arguments{
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}
 
-\item{Ulist}{optionally, an existing list of matrices to which the newly computed matrices will be added}
+\item{cov_methods}{a named list defining the methods (functions and arguments) to be used}
 
-\item{methods}{a named list defining the methods (functions and arguments) to be used}
+\item{Ulist}{optionally, an existing list of matrices to which the newly computed matrices will be added}
 }
 \value{
 a list of covariance matrices

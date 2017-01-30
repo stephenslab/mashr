@@ -1,5 +1,7 @@
 # a draft of what the interface might look like
-mash = function(Bhat,Shat, cov_methods = c("id","singletons"), gridmult= sqrt(2), grid = NULL, prior="nullbiased"){
+
+
+mash = function(Bhat,Shat, cov_methods = c("identity","singletons"), gridmult= sqrt(2), grid = NULL, prior="nullbiased"){
   data = set_mash_data(Bhat,Shat)
   if(is.missing(grid)){grid = autoselect_grid(data,gridmult)}
 

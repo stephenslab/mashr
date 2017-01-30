@@ -3,6 +3,9 @@
 #' @param cov_methods methods to use to create covariance matrices; passed to \code{cov_methods}
 #' @param grid a vector of scalars that are to be used to scale the covariance matrices
 #' @param g optionally a previously-inititalized g; in this case the new g adds new covariances to this g
+#' @return a list with two elements, the covariance matrices and their mixture proportions
+#' The covariance matrices are
+
 #' @export
 initialize_g=function(data, cov_methods, grid, g=NULL){
   Ulist = compute_cov(data,cov_methods,g$Ulist)
@@ -13,13 +16,17 @@ initialize_g=function(data, cov_methods, grid, g=NULL){
   list(Ulist=Ulist, pi=pi)
 }
 
-#' Initialize mixture proportions
+#' Initialize mixture proportions - currently by making them all equal
+#' @param K the number of components
+#' @return a vector of length K whose elements are positive and sums to 1
 initialize_pi = function(K){
   return(rep(1/K,K))
 }
 
-#' Automatically select grid
+#' Automatically select
+#' TODO: this is just a place-holder
 autoselect_grid = function(data){
+  message("autoselect_grid is a place-holder\n")
   return(c(0.5,1,2))
 }
 
@@ -35,7 +42,7 @@ get_mixprob = function(g){return(g$pi)}
 
 n_comp = function(g){return(length(g$pi))}
 
-null.comp = function(g){
+null_comp = function(g){
   which(grepl("all_zeros",names(g$Ulist)))
 }
 
@@ -62,7 +69,7 @@ optimize_g = function(data,
                       control=list() ){
   optmethod = match.arg(optmethod)
   library("ashr") # I didn't manage to get do.call to work without this
-  prior= ashr:::setprior(prior, n_comp(g_init), 10, null.comp(g_init))
+  prior= ashr:::setprior(prior, n_comp(g_init), 10, null_comp(g_init))
   matrix_lik = calc_relative_lik_matrix(data, get_cov(g_init))
   pi_init = get_mixprob(g_init)
   res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))

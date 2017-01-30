@@ -2,11 +2,17 @@
 % Please edit documentation in R/g_functions.R
 \name{initialize_pi}
 \alias{initialize_pi}
-\title{Initialize mixture proportions}
+\title{Initialize mixture proportions - currently by making them all equal}
 \usage{
 initialize_pi(K)
 }
+\arguments{
+\item{K}{the number of components}
+}
+\value{
+a vector of length K whose elements are positive and sums to 1
+}
 \description{
-Initialize mixture proportions
+Initialize mixture proportions - currently by making them all equal
 }
 

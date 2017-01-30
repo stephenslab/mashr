@@ -2,11 +2,13 @@
 % Please edit documentation in R/g_functions.R
 \name{autoselect_grid}
 \alias{autoselect_grid}
-\title{Automatically select grid}
+\title{Automatically select
+TODO: this is just a place-holder}
 \usage{
 autoselect_grid(data)
 }
 \description{
-Automatically select grid
+Automatically select
+TODO: this is just a place-holder
 }
 
