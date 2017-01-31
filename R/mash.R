@@ -1,6 +1,5 @@
-# a draft of what the interface might look like
 #todo
-# test posterior calculations; compare posterior means with ash estimates, especially in independent case
+# add posterior sd, add to ash test
 #  implement possible filter of data before data-driven covs?
 # implement data-driven covs (pca)
 
@@ -25,20 +24,22 @@ mash = function(Bhat,Shat,
   if(missing(grid)){grid = autoselect_grid(data,gridmult)}
   #filtered_data = filter_mash_data(data) extract top Z scores
 
-  g = add_to_g(data,
-               cov_methods,
-               grid)
+  # Set up covariances in mixture g
+  g = add_to_g(data,cov_methods,grid)
   if(usepointmass){
     g = add_to_g(data, "null", 1, g) # add null to g
   }
 
+  # compute likelihood matrix and optimize mixture proportions
   lik_matrix = calc_relative_lik_matrix(data, g$Ulist)
-  g_opt=optimize_g(g, lik_matrix, prior=prior, optmethod=optmethod)
+  fitted_g=optimize_g(g, lik_matrix, prior=prior, optmethod=optmethod)
 
-  posterior_weights = compute_posterior_weights(get_mixprob(g_opt), lik_matrix)
-  posterior_matrices = compute_posterior_matrices(data, g_opt, posterior_weights)
+  # compute posterior quantities
+  posterior_weights = compute_posterior_weights(get_mixprob(fitted_g), lik_matrix)
+  posterior_matrices = compute_posterior_matrices(data, fitted_g, posterior_weights)
 
-  return(list(data=data, fitted_g= g_opt, result=posterior_matrices))
+
+  return(list(data=data, fitted_g= fitted_g, result=posterior_matrices))
 }
 
 #' Return the fitted g from a mash object
