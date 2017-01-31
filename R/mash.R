@@ -1,5 +1,4 @@
 #todo
-# add posterior sd, add to ash test
 #  implement possible filter of data before data-driven covs?
 # implement data-driven covs (pca)
 

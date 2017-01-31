@@ -12,9 +12,11 @@ compute_posterior_arrays(data, Ulist)
 \item{Ulist}{list of P prior covariance matrices}
 }
 \value{
-post_means JxPxR array of posterior means
+post_mean JxPxR array of posterior means
 
-post_vars JxPxR array of posterior (marginal) variances
+post_mean2 JxPxR array of posterior second moments
+
+post_var JxPxR array of posterior variances
 
 post_pos JxPxR array of posterior (marginal) probability of being positive
 

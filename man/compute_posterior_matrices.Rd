@@ -14,9 +14,9 @@ compute_posterior_matrices(data, g, posterior_weights)
 \item{posterior_weights}{the posterior probabilities of each mixture component in g for the data}
 }
 \value{
-post_means JxR matrix of posterior means
+post_mean JxR matrix of posterior means
 
-post_vars JxR matrix of posterior (marginal) variances
+post_sd JxR matrix of posterior (marginal) standard deviations
 
 post_pos JxR matrix of posterior (marginal) probability of being positive
 
