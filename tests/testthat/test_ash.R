@@ -6,13 +6,14 @@ test_that("get same result as ash", {
   ashres = ashr::ash(test$Bhat[,1],test$Shat[,1],mixcompdist="normal",outputlevel=4) # get ash results for first condition
 
   data = set_mash_data(test$Bhat,test$Shat)
-  g = initialize_g(data,
+  g = add_to_g(data,
                    cov_methods = list(sing1 = list(fn = "cov_first_singleton",args=NULL)),
                    grid = ashr::get_fitted_g(ashres)$sd
                    )
+  g = add_to_g(data, "null", 1, g) # add null to g
   #issues: naming, especially of nulls..
   # and addition of g to intialize_g (does it scale everything or just new things?)
-  names(g$Ulist)[1]= "null"
+
   lik = calc_relative_lik_matrix(data, g$Ulist)
 
   res=optimize_g(data,g,prior="nullbiased",optmethod="mixIP")

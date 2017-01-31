@@ -1,3 +1,4 @@
 .Rhistory
 .Rbuildignore
 .Rproj.user
+tests/testthat/Rplots.pdf

@@ -4,16 +4,19 @@
 #' @param grid a vector of scalars that are to be used to scale the covariance matrices
 #' @param g optionally a previously-inititalized g; in this case the new g adds new covariances to this g
 #' @return a list with two elements, the covariance matrices and their mixture proportions
-#' The covariance matrices are
+#' As well as adding new covariance matrices to g, the mixture proportions are re-initialized with \code{initialize_pi}.
 #' @export
-initialize_g=function(data, cov_methods, grid, g=NULL){
-  Ulist = compute_cov(data,cov_methods,g$Ulist)
+add_to_g=function(data, cov_methods, grid, g=NULL){
+  Ulist = compute_cov(data,cov_methods)
   Ulist = normalize_Ulist(Ulist)
   Ulist = scale_cov(Ulist, grid)
 
-  pi = initialize_pi(length(Ulist))
-  list(Ulist=Ulist, pi=pi)
+  g$Ulist = c(g$Ulist,Ulist)
+  g$pi = initialize_pi(length(g$Ulist))
+
+  return(g)
 }
+
 
 #' Initialize mixture proportions - currently by making them all equal
 #' @param K the number of components
