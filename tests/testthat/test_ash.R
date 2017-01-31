@@ -19,7 +19,10 @@ test_that("get same result as ash", {
 
   post = compute_posterior_matrices(data, res$g_opt, res$posterior_weights)
 
-  plot(post$post_mean[,1],get_pm(ashres))
+  #plot(post$post_mean[,1],get_pm(ashres))
   expect_equal(post$post_mean[,1],get_pm(ashres))
+  expect_equal(post$post_pos[,1],get_pp(ashres))
+  expect_equal(post$post_neg[,1],get_np(ashres))
+  expect_equal(post$post_zero[,1],get_lfdr(ashres))
 }
 )
