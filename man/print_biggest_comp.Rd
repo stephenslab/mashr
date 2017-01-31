@@ -7,7 +7,7 @@
 print_biggest_comp(g, thresh = 0.01)
 }
 \arguments{
-\item{g}{a mixture of multivariate normals, e.g. as created by \code{initialize_g}}
+\item{g}{a mixture of multivariate normals, e.g. as created by \code{add_to_g}}
 
 \item{thresh}{the threshold on mixture weight; only components exceeding weight are output}
 }

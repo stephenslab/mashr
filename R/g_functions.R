@@ -33,12 +33,12 @@ autoselect_grid = function(data){
 }
 
 #' Return the covariances in g
-#' @param g a mixture of multivariate normals, as created for example by \code{initialize_g}
+#' @param g a mixture of multivariate normals, as created for example by \code{add_to_g}
 #' @export
 get_cov = function(g){return(g$Ulist)}
 
 #' Return the mixture proportions in g
-#' @param g a mixture of multivariate normals, as created for example by \code{initialize_g}
+#' @param g a mixture of multivariate normals, as created for example by \code{add_to_g}
 #' @export
 get_mixprob = function(g){return(g$pi)}
 
@@ -49,7 +49,7 @@ null_comp = function(g){
 }
 
 #' Print out the components of g with largest weight (those exceeding thresh)
-#' @param g a mixture of multivariate normals, e.g. as created by \code{initialize_g}
+#' @param g a mixture of multivariate normals, e.g. as created by \code{add_to_g}
 #' @param thresh the threshold on mixture weight; only components exceeding weight are output
 #' @export
 print_biggest_comp = function(g,thresh=0.01){
@@ -59,26 +59,26 @@ print_biggest_comp = function(g,thresh=0.01){
   print(names(g$Ulist)[subset][o])
 }
 
-#' Fit the hierarchical model by estimating the mixture weights
-#' @param data a mash data object, e.g. as created by \code{set_mash_data}
-#' @param g_init a mixture of multivariate normals, e.g. as created by \code{initialize_g}
+#' Estimate the mixture weights for $g$ from a corresponding likelihood matrix
+#' @param g_init a mixture of multivariate normals, e.g. as created by \code{add_to_g}
+#' @param matrix_lik a matrix of likelihoods, where the (i,k)th entry is the probability of observation i given it came from component k of g
 #' @param prior a string saying what kind of prior to use in the penalized likelihood
 #' @param optmethod a string, giving name of optimization function to use
 #' @param control a list of parameters to be passed to optmethod
-#' @return a list with elements g_opt (the optimal g) and posterior_prob (a matrix of posterior probabilities)
+#' @return the optimal g, obtained by replacing the mixture proporions in g_init with the optimal mixture proportions
 #' @export
-optimize_g = function(data,
-                      g_init,
+optimize_g = function(g_init, matrix_lik,
                       prior=c("nullbiased"),
                       optmethod=c("mixEM","mixIP"),
                       control=list() ){
   optmethod = match.arg(optmethod)
+  assertthat::are_equal(n_comp(g_init),ncol(matrix_lik))
+
   library("ashr") # I didn't manage to get do.call to work without this
   prior= ashr:::setprior(prior, n_comp(g_init), 10, null_comp(g_init))
-  matrix_lik = calc_relative_lik_matrix(data, get_cov(g_init))
+
   pi_init = get_mixprob(g_init)
   res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
   g_init$pi = res$pihat
-  return(list(g_opt = g_init,
-              posterior_weights = compute_posterior_weights(get_mixprob(g_init), matrix_lik)))
+  return(g_init)
 }

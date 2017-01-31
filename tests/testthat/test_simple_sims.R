@@ -4,13 +4,12 @@ test_that("simple simulations look right", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  data = set_mash_data(test$Bhat,test$Shat)
+  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","all_ones"),
+             grid= c(0.5,1,2), prior="nullbiased")
 
-  g = add_to_g(data,c("null","id","sing","all_ones"),c(0.5,1,2))
-  res=optimize_g(data,g,prior="nullbiased",optmethod="mixIP")
-  print_biggest_comp(res$g_opt)
+  print_biggest_comp(get_fitted_g(res))
+  post = get_posterior_matrices(res)
 
-  post = compute_posterior_matrices(data, res$g_opt, res$posterior_weights)
   expect_lt(mean(abs(test$B-post$post_mean)),mean(abs(test$B-test$Bhat)))
 }
 )
@@ -21,13 +20,11 @@ test_that("simple simulations look right; larger error", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  data = set_mash_data(test$Bhat,test$Shat)
+  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","all_ones"),
+             grid= c(0.5,1,2), prior="nullbiased")
 
-  g = add_to_g(data,c("null","id","sing","all_ones"),c(0.5,1,2))
-  res=optimize_g(data,g,prior="nullbiased",optmethod="mixIP")
-  #print_biggest_comp(res$g_opt)
 
-  post = compute_posterior_matrices(data, res$g_opt, res$posterior_weights)
+  post = get_posterior_matrices(res)
 
   #plot(test$Bhat[,1], post$post_mean[,1], col = rep(1:4,100))
 

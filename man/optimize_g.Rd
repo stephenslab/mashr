@@ -2,15 +2,15 @@
 % Please edit documentation in R/g_functions.R
 \name{optimize_g}
 \alias{optimize_g}
-\title{Fit the hierarchical model by estimating the mixture weights}
+\title{Estimate the mixture weights for $g$ from a corresponding likelihood matrix}
 \usage{
-optimize_g(data, g_init, prior = c("nullbiased"), optmethod = c("mixEM",
-  "mixIP"), control = list())
+optimize_g(g_init, matrix_lik, prior = c("nullbiased"),
+  optmethod = c("mixEM", "mixIP"), control = list())
 }
 \arguments{
-\item{data}{a mash data object, e.g. as created by \code{set_mash_data}}
+\item{g_init}{a mixture of multivariate normals, e.g. as created by \code{add_to_g}}
 
-\item{g_init}{a mixture of multivariate normals, e.g. as created by \code{initialize_g}}
+\item{matrix_lik}{a matrix of likelihoods, where the (i,k)th entry is the probability of observation i given it came from component k of g}
 
 \item{prior}{a string saying what kind of prior to use in the penalized likelihood}
 
@@ -19,9 +19,9 @@ optimize_g(data, g_init, prior = c("nullbiased"), optmethod = c("mixEM",
 \item{control}{a list of parameters to be passed to optmethod}
 }
 \value{
-a list with elements g_opt (the optimal g) and posterior_prob (a matrix of posterior probabilities)
+the optimal g, obtained by replacing the mixture proporions in g_init with the optimal mixture proportions
 }
 \description{
-Fit the hierarchical model by estimating the mixture weights
+Estimate the mixture weights for $g$ from a corresponding likelihood matrix
 }
 

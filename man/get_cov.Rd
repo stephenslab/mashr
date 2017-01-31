@@ -7,7 +7,7 @@
 get_cov(g)
 }
 \arguments{
-\item{g}{a mixture of multivariate normals, as created for example by \code{initialize_g}}
+\item{g}{a mixture of multivariate normals, as created for example by \code{add_to_g}}
 }
 \description{
 Return the covariances in g
