@@ -1,5 +1,5 @@
 #' Create some simple simulated data for testing purposes
-#' @param nsamp number of samples
+#' @param nsamp number of samples of each type
 #' @param ncond number of conditions
 #' @param err_sd the standard deviation of the errors
 #' @details The simulation consists of equal numbers of four different types of effects: null, equal among conditions, present only in first condition, independent across conditions

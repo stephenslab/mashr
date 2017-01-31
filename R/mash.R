@@ -9,7 +9,7 @@ mash = function(Bhat,Shat, cov_methods = c("identity","singletons"), gridmult= s
   if(is.missing(grid)){grid = autoselect_grid(data,gridmult)}
   #filtered_data = filter_mash_data(data) extract top Z scores
   g_init = initialize_g(data, cov_methods, grid)
-  fitted_g = optimize_g(data, g_init, prior)
-  result = compute_posterior_quantities(data, fitted_g)
-  return(list(data=data, fitted_g= fitted_g, result=result))
+  res = optimize_g(data, g_init, prior)
+  posterior_matrices = compute_posterior_matrices(data, res$g_opt, res$posterior_weights)
+  return(list(data=data, fitted_g= g_opt, result=posterior_matrices))
 }

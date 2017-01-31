@@ -32,7 +32,7 @@ calc_lik_matrix = function(data, Ulist, log=FALSE){
 #' @export
 calc_relative_lik_matrix = function(data, Ulist){
   matrix_llik = calc_lik_matrix(data,Ulist,log=TRUE)
-  matrix_llik - apply(matrix_llik,1, max) #avoid numerical issues by subtracting max of each row
+  matrix_llik = matrix_llik - apply(matrix_llik,1, max) #avoid numerical issues by subtracting max of each row
   return(exp(matrix_llik))
 }
 

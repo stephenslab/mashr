@@ -52,7 +52,7 @@ cov_methods = function(){
 
 #' Compute an identity matrix
 #' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @return a list with one entry, an R by R identity matrix
+#' @return the R by R identity matrix
 #' @export
 cov_identity = function(data){
   R = n_conditions(data)
@@ -73,6 +73,17 @@ cov_singletons = function(data){
     Ulist[[r]][r,r] = 1
   }
   return(Ulist)
+}
+
+#' Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @return an R by R matrix with all 0s except the (1,1) element is 1
+#' @export
+cov_first_singleton = function(data){
+  R = n_conditions(data)
+  res = matrix(0,nrow=R,ncol=R)
+  res[1,1]=1
+  return(res)
 }
 
 #' Compute an R by R matrix of all 1s

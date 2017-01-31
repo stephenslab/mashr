@@ -5,7 +5,6 @@
 #' @param g optionally a previously-inititalized g; in this case the new g adds new covariances to this g
 #' @return a list with two elements, the covariance matrices and their mixture proportions
 #' The covariance matrices are
-
 #' @export
 initialize_g=function(data, cov_methods, grid, g=NULL){
   Ulist = compute_cov(data,cov_methods,g$Ulist)
@@ -43,7 +42,7 @@ get_mixprob = function(g){return(g$pi)}
 n_comp = function(g){return(length(g$pi))}
 
 null_comp = function(g){
-  which(grepl("all_zeros",names(g$Ulist)))
+  which(grepl("null",names(g$Ulist)))
 }
 
 #' Print out the components of g with largest weight (those exceeding thresh)
@@ -78,5 +77,5 @@ optimize_g = function(data,
   res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
   g_init$pi = res$pihat
   return(list(g_opt = g_init,
-              posterior_weights = compute_posterior_weights(prior, matrix_lik)))
+              posterior_weights = compute_posterior_weights(get_mixprob(g_init), matrix_lik)))
 }

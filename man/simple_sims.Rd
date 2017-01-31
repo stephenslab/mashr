@@ -7,7 +7,7 @@
 simple_sims(nsamp = 100, ncond = 5, err_sd = 0.01)
 }
 \arguments{
-\item{nsamp}{number of samples}
+\item{nsamp}{number of samples of each type}
 
 \item{ncond}{number of conditions}
 

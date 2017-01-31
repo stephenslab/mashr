@@ -4,10 +4,10 @@
 \alias{compute_posterior_weights}
 \title{compute posterior probabilities}
 \usage{
-compute_posterior_weights(prior, lik_mat)
+compute_posterior_weights(pi, lik_mat)
 }
 \arguments{
-\item{prior}{a K vector of prior weights}
+\item{pi}{a K vector of mixture proportions}
 
 \item{lik_mat}{a JxK matrix of likelihoods}
 }

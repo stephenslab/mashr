@@ -99,11 +99,11 @@ compute_weighted_quantity = function(post_array,posterior_weights){
 
 #' @title compute posterior probabilities
 #' @details computes posterior probabilities that each effect came from each component
-#' @param prior a K vector of prior weights
+#' @param pi a K vector of mixture proportions
 #' @param lik_mat a JxK matrix of likelihoods
 #' @return a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect
-compute_posterior_weights=function(prior,lik_mat){
-  d= t(prior * t(lik_mat))
+compute_posterior_weights=function(pi,lik_mat){
+  d= t(pi * t(lik_mat))
   norm = rowSums(d) # normalize probabilities to sum to 1
   return(d/norm)
 }

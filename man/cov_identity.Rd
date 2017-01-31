@@ -10,7 +10,7 @@ cov_identity(data)
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}
 }
 \value{
-a list with one entry, an R by R identity matrix
+the R by R identity matrix
 }
 \description{
 Compute an identity matrix
