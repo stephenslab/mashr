@@ -4,7 +4,7 @@ test_that("simple simulations look right", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","all_ones"),
+  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","equal_effects"),
              grid= c(0.5,1,2), prior="nullbiased")
 
   print_biggest_comp(get_fitted_g(res))
@@ -20,7 +20,7 @@ test_that("simple simulations look right; larger error", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","all_ones"),
+  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","equal_effects"),
              grid= c(0.5,1,2), prior="nullbiased")
 
 

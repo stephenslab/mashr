@@ -6,7 +6,7 @@ test_that("prior covariance computations look right", {
   Ulist = cov_singletons(data)
   expect_equal(Ulist, list(cbind(c(1,0),c(0,0)), cbind(c(0,0),c(0,1))))
 
-  Ulist = cov_all_ones(data)
+  Ulist = cov_equal_effects(data)
   expect_equal(Ulist, cbind(c(1,1),c(1,1)))
 
   Ulist = cov_identity(data)
@@ -17,12 +17,12 @@ test_that("prior covariance computations look right", {
 
   Ulist = compute_cov(data, "id")
   expect_equal(Ulist, list(identity=cbind(c(1,0),c(0,1))))
-  Ulist = compute_cov(data, "all_ones", Ulist)
-  expect_equal(Ulist, list(identity = cbind(c(1,0),c(0,1)), all_ones=cbind(c(1,1),c(1,1))))
+  Ulist = compute_cov(data, "equal_effects", Ulist)
+  expect_equal(Ulist, list(identity = cbind(c(1,0),c(0,1)), equal_effects=cbind(c(1,1),c(1,1))))
 
   Ulist = scale_cov(Ulist, c(1,2))
-  expect_equal(Ulist, list(identity.1 = cbind(c(1,0),c(0,1)), all_ones.1 = cbind(c(1,1),c(1,1)),
-               identity.2 = cbind(c(4,0),c(0,4)), all_ones.2 = cbind(c(4,4),c(4,4))))
+  expect_equal(Ulist, list(identity.1 = cbind(c(1,0),c(0,1)), equal_effects.1 = cbind(c(1,1),c(1,1)),
+               identity.2 = cbind(c(4,0),c(0,4)), equal_effects.2 = cbind(c(4,4),c(4,4))))
 
   # test naming of scaled Ulist
   Ulist = compute_cov(data,"sing")
@@ -36,8 +36,8 @@ test_that("prior covariance computations look right", {
                            null.2 = cbind(c(0,0),c(0,0))) )
 
   # test matching of arguments
-  Ulist = compute_cov(data, c("nul","all_o"))
-  expect_equal(Ulist, list(null = cbind(c(0,0),c(0,0)), all_ones = cbind(c(1,1),c(1,1))))
+  Ulist = compute_cov(data, c("nul","equal"))
+  expect_equal(Ulist, list(null = cbind(c(0,0),c(0,0)), equal_effects = cbind(c(1,1),c(1,1))))
 
 }
 )

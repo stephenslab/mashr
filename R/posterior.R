@@ -22,17 +22,17 @@ posterior_mean <- function(bhat, Vinv, U1){
 
 #' @title Compute posterior matrices
 #' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param g a mixture of multivariate normals
-#' @param posterior_weights the posterior probabilities of each mixture component in g for the data
+#' @param Ulist a list of covariance matrices for each mixture component
+#' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
 #' @return post_mean JxR matrix of posterior means
 #' @return post_sd JxR matrix of posterior (marginal) standard deviations
 #' @return post_pos JxR matrix of posterior (marginal) probability of being positive
 #' @return post_neg JxR matrix of posterior (marginal) probability of being negative
 #' @return post_zero JxR matrix of posterior (marginal) probability of being zero
 #' @export
-compute_posterior_matrices=function(data,g,posterior_weights){
+compute_posterior_matrices=function(data,Ulist,posterior_weights){
 
-  post_arrays = compute_posterior_arrays(data,get_cov(g))
+  post_arrays = compute_posterior_arrays(data,Ulist)
   post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
   post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
   post_sd = sqrt(post_mean2 - post_mean^2)

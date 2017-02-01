@@ -4,14 +4,14 @@
 \alias{compute_posterior_matrices}
 \title{Compute posterior matrices}
 \usage{
-compute_posterior_matrices(data, g, posterior_weights)
+compute_posterior_matrices(data, Ulist, posterior_weights)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}
 
-\item{g}{a mixture of multivariate normals}
+\item{Ulist}{a list of covariance matrices for each mixture component}
 
-\item{posterior_weights}{the posterior probabilities of each mixture component in g for the data}
+\item{posterior_weights}{the posterior probabilities of each mixture component in Ulist for the data}
 }
 \value{
 post_mean JxR matrix of posterior means

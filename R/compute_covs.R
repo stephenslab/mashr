@@ -24,7 +24,7 @@ compute_cov = function(data,
     }
     res[[i]] =  do.call(cov_method$fn, args = modifyList(list(data=data), as.list(cov_method$args) ))
 
-    if(is.list(res[[i]])){ #append _i to names if function retuns multiple matrices
+    if(is.list(res[[i]])){ #append _i to names if function returns multiple matrices
       names(res[[i]]) = paste0(name, "_", 1:length(res[[i]]) )
     } else {
       res[[i]] = list(res[[i]])
@@ -44,7 +44,7 @@ cov_methods = function(){
   list("null"= list(fn = cov_all_zeros, args = NULL),
         "identity" = list(fn = cov_identity, args= NULL),
         "singletons" = list(fn = cov_singletons, args=NULL),
-        "all_ones" = list(fn = cov_all_ones, args = NULL),
+        "equal_effects" = list(fn = cov_equal_effects, args = NULL),
         "simple_het" = list(fn = cov_simple_het, args = list(corr=c(0.25,0.5,0.75)))
   )
 }
@@ -90,7 +90,7 @@ cov_first_singleton = function(data){
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @return a list with 1 entry, the R by R matrix of all 1s
 #' @export
-cov_all_ones = function(data){
+cov_equal_effects = function(data){
   R = n_conditions(data)
   matrix(1,nrow=R,ncol=R)
 }
