@@ -4,10 +4,12 @@
 \alias{get_posterior_matrices}
 \title{Return the posterior matrices from a mash object}
 \usage{
-get_posterior_matrices(m)
+get_posterior_matrices(m, analysis = "mash")
 }
 \arguments{
 \item{m}{a mash object, as returned by \code{mash}}
+
+\item{analysis}{which analysis to return results from; can be "mash" or "ash"}
 }
 \description{
 Return the posterior matrices from a mash object

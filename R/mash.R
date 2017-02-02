@@ -1,3 +1,7 @@
+#todo
+#  implement possible filter of data before data-driven covs?
+# implement data-driven covs (pca)
+
 #' Apply mash method to data
 #' @param Bhat an n by R matrix of observations (n units in R conditions)
 #' @param Shat an n by R matrix of standard errors (n units in R conditions)
@@ -7,7 +11,7 @@
 #' @param prior indicates what penalty to use on the likelihood
 #' @param optmethod name of optimization method to use
 #' @export
-mash2 = function(Bhat,Shat,
+mash = function(Bhat,Shat,
                  cov_methods = c("identity","singletons","all_ones","simple_het"),
                  gridmult= sqrt(2),
                  grid = NULL,
@@ -52,7 +56,7 @@ mash_fit_g = function(m, prior= "nullbiased", optmethod = c("mixIP")){
 mash_compute_posterior = function(m){
   if(is.null(m$pi)){stop("need to fit using mash_fit_g first")}
   m$posterior_weights = compute_posterior_weights(m$pi, m$lik_matrix)
-  m$posterior_matrices = compute_posterior_matrices(m$data, get_expanded_cov(m), m$posterior_weights)
+  m$posterior_matrices[["mash"]] = compute_posterior_matrices(m$data, get_expanded_cov(m), m$posterior_weights)
 }
 
 #' Initialize a mash object (actually an environment)
@@ -66,6 +70,7 @@ mash_init = function(Bhat,Shat){
   m$grid = NULL
   m$pi = NULL #this is currently used to check if optimized... may want to update this
   m$usepointmass = TRUE # default is to use pointmass
+  m$posterior_matrices = list()
   class(m) = "mash"
   return(m)
 }
@@ -126,59 +131,25 @@ list_cov = function(m){names(get_cov(m))}
 #' @export
 n_conditions.mash = function(m){return(n_conditions(m$data))}
 
-#todo
-#  implement possible filter of data before data-driven covs?
-# implement data-driven covs (pca)
-
-
-
-#' Apply mash method to data
-#' @param Bhat an n by R matrix of observations (n units in R conditions)
-#' @param Shat an n by R matrix of standard errors (n units in R conditions)
-#' @param cov_methods a string indicating what covariance matrix methods to use
-#' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
-#' @param grid vector of grid values to use (scaling factors omega in paper)
-#' @param prior indicates what penalty to use on the likelihood
-#' @param optmethod name of optimization method to use
-#' @export
-mash = function(Bhat,Shat,
-                cov_methods = c("identity","singletons","all_ones","simple_het"),
-                usepointmass=TRUE,
-                gridmult= sqrt(2),
-                grid = NULL,
-                prior="nullbiased",
-                optmethod = c("mixIP")){
-  data = set_mash_data(Bhat,Shat)
-  optmethod = match.arg(optmethod)
-  if(missing(grid)){grid = autoselect_grid(data,gridmult)}
-  #filtered_data = filter_mash_data(data) extract top Z scores
-
-  # Set up covariances in mixture g
-  g = add_to_g(data,cov_methods,grid)
-  if(usepointmass){
-    g = add_to_g(data, "null", 1, g) # add null to g
-  }
-
-  # compute likelihood matrix and optimize mixture proportions
-  lik_matrix = calc_relative_lik_matrix(data, g$Ulist)
-
-  fitted_g=optimize_g(g, lik_matrix, prior=prior, optmethod=optmethod)
-
-  # compute posterior quantities
-  posterior_weights = compute_posterior_weights(get_mixprob(fitted_g), lik_matrix)
-  posterior_matrices = compute_posterior_matrices(data, fitted_g$Ulist, posterior_weights)
-
-
-  return(list(data=data, fitted_g= fitted_g, posterior_matrices=posterior_matrices))
-}
+# #' Print out the components with largest weight (those exceeding thresh)
+# #' @param m a mash object
+# #' @param thresh the threshold on mixture weight; only components exceeding weight are output
+# #' @export
+# print_biggest_comp = function(m,thresh=0.01){
+#   subset = which(m$pi>thresh)
+#   o = order(m$pi[subset],decreasing=TRUE)
+#   print(m$pi[subset][o],digits=2)
+#   print(names(m$Ulist)[subset][o])
+# }
 
 
 #' Return the fitted g from a mash object
 #' @param m a mash object, as returned by \code{mash}
 #' @export
-get_fitted_g = function(m){return(m$fitted_g)}
+get_fitted_g = function(m){return(list(pi=m$pi, Ulist = get_expanded_cov(m)))}
 
 #' Return the posterior matrices from a mash object
 #' @param m a mash object, as returned by \code{mash}
+#' @param analysis which analysis to return results from; can be "mash" or "ash"
 #' @export
-get_posterior_matrices = function(m){return(m$posterior_matrices)}
+get_posterior_matrices = function(m,analysis = "mash"){return(m$posterior_matrices[[analysis]])}

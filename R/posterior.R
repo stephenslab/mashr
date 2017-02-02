@@ -36,8 +36,6 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
   post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
   post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
   post_sd = sqrt(post_mean2 - post_mean^2)
-
-  #message("posterior variance not yet implemented")
   post_pos=compute_weighted_quantity(post_arrays$post_pos,posterior_weights)
   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
