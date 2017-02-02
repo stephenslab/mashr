@@ -95,33 +95,6 @@ mash_calc_lik_matrix = function(m){
 }
 
 
-#' Extract grid from m
-#' @param m a mash object
-#' @return the grid in m
-#' @export
-get_grid = function(m){return(m$grid)}
-
-#' Extract covariance matrices in m
-#' @param m a mash object
-#' @return a list of covariance matrices in m
-#' @export
-get_cov = function(m){return(m$Ulist)}
-
-#' Get expanded list of covariance matrices in m, expanded by grid
-#' @param m a mash object
-#' @return a list of covariance matrices
-#' This normalizes each covariance matrix in m and multiplies it by the grid in m
-#' If a pointmass is included in m then it adds a null component
-#' @export
-get_expanded_cov = function(m){
-  if(is.null(m$grid)){stop("need to specify grid using mash_add_grid()")}
-  if(is.null(m$Ulist)){stop("need to specify some covariance matrices using add_cov()")}
-  normalized_Ulist = normalize_Ulist(m$Ulist)
-  scaled_Ulist = scale_cov(normalized_Ulist, m$grid)
-  if(m$usepointmass){scaled_Ulist = c(list(null=cov_all_zeros(m$data)),scaled_Ulist)}
-  return(scaled_Ulist)
-}
-
 #' List names of covariance matrices in m
 #' @param m a mash object
 #' @return names of covariance matrices in m
@@ -130,6 +103,9 @@ list_cov = function(m){names(get_cov(m))}
 
 #' @export
 n_conditions.mash = function(m){return(n_conditions(m$data))}
+#' @export
+n_effects.mash = function(m){return(n_effects(m$data))}
+
 
 # #' Print out the components with largest weight (those exceeding thresh)
 # #' @param m a mash object
@@ -143,13 +119,3 @@ n_conditions.mash = function(m){return(n_conditions(m$data))}
 # }
 
 
-#' Return the fitted g from a mash object
-#' @param m a mash object, as returned by \code{mash}
-#' @export
-get_fitted_g = function(m){return(list(pi=m$pi, Ulist = get_expanded_cov(m)))}
-
-#' Return the posterior matrices from a mash object
-#' @param m a mash object, as returned by \code{mash}
-#' @param analysis which analysis to return results from; can be "mash" or "ash"
-#' @export
-get_posterior_matrices = function(m,analysis = "mash"){return(m$posterior_matrices[[analysis]])}

@@ -83,19 +83,3 @@ check_dim = function(mat,R){
   if(!identical(dim(mat),c(R,R))){stop("Dimension of matrix must be R by R")}
 }
 
-
-#' Return some Bhat values from m
-#' @param m a mash object
-#' @export
-get_Bhat = function(m, subset=NULL){
-  if(is.null(subset)){subset = m$tophits}
-  return(m$Bhat[subset,])
-}
-
-#' Return matrix of Z scores from from m
-#' @param m a mash object
-#' @export
-get_Z = function(m, subset=NULL){
-  if(is.null(subset)){subset = m$tophits}
-  return(m$Bhat[subset,])
-}
