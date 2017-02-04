@@ -1,8 +1,8 @@
 # notes on ED
 # 1. clone the ED repo
-# 2a. make rpackage (after brew install gsl ?) [not sure if necessary]
-# 2b remove -fopenmp flags from r/src/Makefile
-# 3. install.packages("~/Dropbox/Documents/git/extreme-deconvolution/r",repos=NULL,type="src")
+# 2 remove -fopenmp flags from r/src/Makefile
+# 3. make rpackage (after brew install gsl ?) [not sure if necessary]
+# 3alt. or possibly install.packages("~/Dropbox/Documents/git/extreme-deconvolution/r",repos=NULL,type="src")
 
 #' Fit extreme deconvolution to mash data
 #' @param data mash data object
