@@ -109,7 +109,7 @@ cov_all_zeros = function(data){
 #' @return a list of matrices
 #' @export
 cov_simple_het = function(data, corr){
-  R = n_effects(data)
+  R = n_conditions(data)
   simplehet=list()
   for(i in 1:length(corr)){
     if(corr[i]>1 | corr[i]<(-1)){stop("corr must be between -1 and 1")}

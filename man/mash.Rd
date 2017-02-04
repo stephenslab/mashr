@@ -5,8 +5,8 @@
 \title{Apply mash method to data}
 \usage{
 mash(Bhat, Shat, cov_methods = c("identity", "singletons", "all_ones",
-  "simple_het"), gridmult = sqrt(2), grid = NULL, prior = "nullbiased",
-  optmethod = c("mixIP"))
+  "simple_het"), gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
+  prior = "nullbiased", optmethod = c("mixIP"))
 }
 \arguments{
 \item{Bhat}{an n by R matrix of observations (n units in R conditions)}

@@ -83,3 +83,4 @@ check_dim = function(mat,R){
   if(!identical(dim(mat),c(R,R))){stop("Dimension of matrix must be R by R")}
 }
 
+

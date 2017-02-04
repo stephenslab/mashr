@@ -15,6 +15,7 @@ mash = function(Bhat,Shat,
                  cov_methods = c("identity","singletons","all_ones","simple_het"),
                  gridmult= sqrt(2),
                  grid = NULL,
+                 normalizeU = TRUE,
                  prior="nullbiased",
                  optmethod = c("mixIP")){
 
@@ -28,8 +29,9 @@ mash = function(Bhat,Shat,
   mash_add_grid(m,grid)
 
   # compute likelihood matrix and optimize mixture proportions
+  if(normalizeU){mash_normalize_Ulist(m)}
 
-  mash_fit_g(m)
+  mash_fit_g(m,prior=prior)
   mash_compute_posterior(m)
 
   return(m)
@@ -42,10 +44,17 @@ mash = function(Bhat,Shat,
 #' The mash object contains the data, and the covariance matrices and grid to use
 #' See \code{mash_add_cov} and \code{mash_add_grid}
 #' @export
-mash_fit_g = function(m, prior= "nullbiased", optmethod = c("mixIP")){
+mash_fit_g = function(m, prior = NULL, optmethod = c("mixIP")){
   mash_calc_lik_matrix(m)
+  K = ncol(m$lik_matrix)
+  if(missing(prior)){prior="nullbiased"} #default
+  if(is.character(prior)){
+    if(prior=="uniform"){prior=rep(1,K)}
+    else if(prior=="nullbiased"){prior=rep(1,K); prior[1]=10}
+  }
+
   m$optdetails = list(prior = prior, optmethod = optmethod)
-  m$pi=optimize_pi(m$lik_matrix, optmethod=optmethod)
+  m$pi=optimize_pi(m$lik_matrix, prior=prior, optmethod=optmethod)
 }
 
 #' Compute posterior quantities for mash object
@@ -63,13 +72,13 @@ mash_compute_posterior = function(m){
 #' @param R the number of conditions to be used
 #' @return a mash object
 #' @export
-mash_init = function(Bhat,Shat){
+mash_init = function(Bhat,Shat,usepointmass=TRUE){
   m = new.env()
   m$data = set_mash_data(Bhat, Shat)
   m$Ulist = NULL
   m$grid = NULL
   m$pi = NULL #this is currently used to check if optimized... may want to update this
-  m$usepointmass = TRUE # default is to use pointmass
+  m$usepointmass = usepointmass # default is to use pointmass
   m$posterior_matrices = list()
   class(m) = "mash"
   return(m)
@@ -93,6 +102,16 @@ mash_add_grid = function(m,grid){
 mash_calc_lik_matrix = function(m){
   m$lik_matrix = calc_relative_lik_matrix(m$data, get_expanded_cov(m))
 }
+
+
+#' Normalize the covariances in mash object
+#' @param m the mash object
+#' @details Normalizes the covariance matrices to have max diagonal element 1
+#' @export
+mash_normalize_Ulist = function(m){
+  m$Ulist = normalize_Ulist(m$Ulist)
+}
+
 
 
 #' List names of covariance matrices in m

@@ -60,14 +60,13 @@ get_cov = function(m){return(m$Ulist)}
 #' Get expanded list of covariance matrices in m, expanded by grid
 #' @param m a mash object
 #' @return a list of covariance matrices
-#' This normalizes each covariance matrix in m and multiplies it by the grid in m
+#' This takes the covariance matrix in m and multiplies them by the grid in m
 #' If a pointmass is included in m then it adds a null component
 #' @export
 get_expanded_cov = function(m){
   if(is.null(m$grid)){stop("need to specify grid using mash_add_grid()")}
   if(is.null(m$Ulist)){stop("need to specify some covariance matrices using add_cov()")}
-  normalized_Ulist = normalize_Ulist(m$Ulist)
-  scaled_Ulist = scale_cov(normalized_Ulist, m$grid)
+  scaled_Ulist = scale_cov(m$Ulist, m$grid)
   if(m$usepointmass){scaled_Ulist = c(list(null=cov_all_zeros(m$data)),scaled_Ulist)}
   return(scaled_Ulist)
 }

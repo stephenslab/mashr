@@ -96,8 +96,7 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
                       control=list() ){
   optmethod = match.arg(optmethod)
   K = ncol(matrix_lik)
-
-  if(missing(prior)){prior=rep(1,K); prior[1]=10;} # temporarily use null biased as default
+  if(missing(prior)){prior = rep(1,K)}
   if(missing(pi_init)){pi_init = initialize_pi(K)}
   assertthat::are_equal(length(pi_init),K)
   assertthat::are_equal(length(prior),K)

@@ -11,7 +11,7 @@ get_expanded_cov(m)
 }
 \value{
 a list of covariance matrices
-This normalizes each covariance matrix in m and multiplies it by the grid in m
+This takes the covariance matrix in m and multiplies them by the grid in m
 If a pointmass is included in m then it adds a null component
 }
 \description{

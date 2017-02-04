@@ -4,7 +4,7 @@
 \alias{mash_fit_g}
 \title{Fit the Empirical Bayes model for a mash object}
 \usage{
-mash_fit_g(m, prior = "nullbiased", optmethod = c("mixIP"))
+mash_fit_g(m, prior = NULL, optmethod = c("mixIP"))
 }
 \arguments{
 \item{m}{a mash object}

@@ -4,7 +4,7 @@
 \alias{mash_init}
 \title{Initialize a mash object (actually an environment)}
 \usage{
-mash_init(Bhat, Shat)
+mash_init(Bhat, Shat, usepointmass = TRUE)
 }
 \arguments{
 \item{R}{the number of conditions to be used}
