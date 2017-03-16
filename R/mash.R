@@ -28,10 +28,7 @@ mash = function(Bhat,Shat,
 
   mash_add_grid(m,grid)
 
-  # compute likelihood matrix and optimize mixture proportions
-  if(normalizeU){mash_normalize_Ulist(m)}
-
-  mash_fit_g(m,prior=prior)
+  mash_fit_g(m,prior=prior, normalizeU)
   mash_compute_posterior(m)
 
   return(m)
@@ -43,27 +40,43 @@ mash = function(Bhat,Shat,
 #' suggestions for next step
 #' @export
 mash_status = function(m=NULL){
-  if(class(m)!="mash"){message("m is not a mash object; initialize mash using mash_init"); return()}
-  if(is.null(m$Ulist)){message("m has data but no covariance matrices; use mash_add_cov"); return()}
+  if(class(m)!="mash"){message("m is not a mash object; SUGGEST initialize mash using mash_init"); return()}
+  if(is.null(m$Ulist)){message("m has data but no covariance matrices; SUGGEST mash_add_cov"); return()}
   message("m has covariance matrices with names: ",paste(names(m$Ulist),collapse=","))
-  if(is.null(m$grid)){message("m has no grid; add grid with mash_add_grid"); return()}
+  if(is.null(m$grid)){message("m has no grid; SUGGEST add grid with mash_add_grid"); return()}
   message("m has grid: ",paste(m$grid,collapse=","))
-  if(!fitted(m)){message("m has not yet had the hierarchical model fit; use mash_fit_g"); return()}
-  if(is.null(m$posterior_matrices)){message("m has hierarchical model fit, but no posteriors computed; use mash_compute_posterior"); return()}
-  message("m has had hierarchical model fit and posteriors are computed")
+  if(!fitted(m)){message("m has not yet had the hierarchical model fit; SUGGEST fit using mash_fit_g"); return()}
+
+  if(is.null(m$posterior_matrices["mash"])){message("m has hierarchical model fit, but no posteriors computed;
+                                                     SUGGEST use mash_compute_posterior")}
+  else {message("m has had hierarchical model fit and posteriors are computed")}
+
+  if(is.null(m$posterior_matrices[["ash"]])){message("m has no 1-by-1 (condition-by-condition) analyses run;
+            SUGGEST: mash_run_1by1()"); return();}
+  else {message("m has had 1-by-1 analyses run")}
+
+  if(is.null(m$strong_signals)){message("SUGGEST: adding strong signals to allow data driven covariances")}
+  if(!is.null(m$strong_signals)){message("mash has ", paste(length(m$strong_signals)), " strong signals available for estimating data-driven covariances")}
+
+
 }
 
 
 
 #' Fit the Empirical Bayes model for a mash object
 #' @param m a mash object
+#' @param prior The weights used in the penalized likelihood
+#' @param normalize_Ulist Whether to normalized covariance matrices before fitting
+#' @param optmethod Which routine to use for optimizing
 #' @details Computes the likelihood matrix and fits the
 #' mixture proportions for a mixture of multivariate normals.
 #' The mash object contains the data, and the covariance matrices and grid to use
 #' The result is stored in m$pi
 #' See \code{mash_add_cov} and \code{mash_add_grid}
 #' @export
-mash_fit_g = function(m, prior = NULL, optmethod = c("mixIP")){
+mash_fit_g = function(m, prior = NULL, normalize_cov=TRUE, optmethod = c("mixIP")){
+  if(normalize_cov){mash_normalize_Ulist(m)}
+
   mash_calc_lik_matrix(m)
   K = ncol(m$lik_matrix)
   if(missing(prior)){prior="nullbiased"} #default
@@ -140,12 +153,14 @@ mash_add_grid = function(m,grid){
 
 #' Add a list of strong signals (to be used in data-drive covariance matrices)
 #' @param m the mash object
+#' @param thresh indicates the threshold below which to set signals
 #' @details Adds the top univariate signals (lfsr<0.05)
 #' @export
-mash_add_strong_signals = function(m){
+mash_add_strong_signals = function(m, thresh=0.05){
   if(is.null(m$posterior_matrices[["ash"]])){message("you need to mash_run_1by1 before adding strong signals")}
   top_lfsr = apply(m$posterior_matrices[["ash"]]$lfsr,1,min)
-  m$strong_signals =which(top_lfsr<0.05)
+  m$strong_signals =which(top_lfsr< thresh)
+  message(paste(length(m$strong_signals)), " signals set")
 }
 
 

@@ -4,12 +4,14 @@
 \alias{ed_wrapper}
 \title{Fit extreme deconvolution to mash data}
 \usage{
-ed_wrapper(data, Ulist_init)
+ed_wrapper(data, Ulist_init, subset = NULL)
 }
 \arguments{
 \item{data}{mash data object}
 
 \item{Ulist_init}{a list of covariance matrices to initialize to}
+
+\item{subset}{the indices of the observations to be used (defaults to all of them)}
 }
 \value{
 the fitted mixture: a list of mixture proportions and covariance matrices

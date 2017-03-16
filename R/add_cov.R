@@ -95,7 +95,7 @@ mash_add_cov_list = function(m, Ulist){
 mash_add_cov_ed = function(m, Ulist_init=NULL, subset=NULL){
   subset = check_subset(m,subset)
   if(is.null(Ulist_init)){Ulist_init = data2cov_pca(m$data,5,subset)}
-  Ulist_ed = ed_wrapper(get_data(m,subset), Ulist_init)$Ulist
+  Ulist_ed = ed_wrapper(m$data, Ulist_init, subset)$Ulist
   names(Ulist_ed) = make_names("ED", 1:length(Ulist_ed))
   mash_add_cov_list(m, Ulist_ed)
 }
