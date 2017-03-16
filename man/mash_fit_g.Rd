@@ -4,10 +4,16 @@
 \alias{mash_fit_g}
 \title{Fit the Empirical Bayes model for a mash object}
 \usage{
-mash_fit_g(m, prior = NULL, optmethod = c("mixIP"))
+mash_fit_g(m, prior = NULL, normalize_cov = TRUE, optmethod = c("mixIP"))
 }
 \arguments{
 \item{m}{a mash object}
+
+\item{prior}{The weights used in the penalized likelihood}
+
+\item{optmethod}{Which routine to use for optimizing}
+
+\item{normalize_Ulist}{Whether to normalized covariance matrices before fitting}
 }
 \description{
 Fit the Empirical Bayes model for a mash object
