@@ -15,4 +15,3 @@ a vector of length K whose elements are positive and sums to 1
 \description{
 Initialize mixture proportions - currently by making them all equal
 }
-

@@ -12,4 +12,3 @@ mash_add_cov_singletons(m)
 \description{
 Add singleton covariance matrices to m
 }
-

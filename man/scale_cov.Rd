@@ -17,4 +17,3 @@ a list with length length(Ulist)*length(grid), with values grid[i]^2*Ulist[[j]]
 \description{
 Scale each covariance matrix in list Ulist by a scalar in vector grid
 }
-

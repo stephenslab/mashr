@@ -15,4 +15,3 @@ Add covariance matrices allowing for heterogenous (positively correlated) effect
 \details{
 These covariance matrices assume all pairs of conditions are equally correlated.
 }
-

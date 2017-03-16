@@ -22,4 +22,3 @@ As well as adding new covariance matrices to g, the mixture proportions are re-i
 \description{
 Initialize a mixture of multivariate normals
 }
-

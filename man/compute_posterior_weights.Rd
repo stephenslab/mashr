@@ -17,4 +17,3 @@ a JxK matrix of posterior probabilities, the jth row contains posteriors for jth
 \details{
 computes posterior probabilities that each effect came from each component
 }
-

@@ -13,6 +13,5 @@ mash_calc_lik_matrix(m)
 Calculate the likelihood matrix for a mash object
 }
 \details{
-Adds an n by R likelihood matrix to m, computed using the current data, grid and covariance matrices in m
+Adds a J by P likelihood matrix to m, computed using the current data, grid and covariance matrices in m
 }
-

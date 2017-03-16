@@ -12,4 +12,3 @@ get_cov.g(g)
 \description{
 Return the covariances in g
 }
-

@@ -19,4 +19,3 @@ These scaling factors are used to scale all
 covariance matrices in m when fitting the model.
 They correspond to the omega values in Urbut et al.
 }
-

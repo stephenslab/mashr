@@ -17,4 +17,3 @@ a data object for passing into mash functions
 \description{
 Create a data object for mash analysis
 }
-

@@ -15,4 +15,3 @@ a list with 1 entry, the R by R matrix of all 0s
 \description{
 Compute an R by R matrix of all 0s
 }
-

@@ -35,7 +35,7 @@ get_Z = function(m, subset.eff=NULL, subset.cond=NULL){
 #' Return the fitted g from a mash object
 #' @param m a mash object, as returned by \code{mash}
 #' @export
-get_fitted_g = function(m){return(list(pi=m$pi, Ulist = get_expanded_cov(m)))}
+get_mash_fitted_g = function(m){return(list(pi=m$pi, Ulist = get_expanded_cov(m)))}
 
 #' Return the posterior matrices from a mash object
 #' @param m a mash object, as returned by \code{mash}

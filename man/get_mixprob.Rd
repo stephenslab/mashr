@@ -12,4 +12,3 @@ get_mixprob(g)
 \description{
 Return the mixture proportions in g
 }
-

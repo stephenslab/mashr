@@ -9,4 +9,3 @@ factors2cov(f, name)
 \description{
 produce list of rank 1 covariance matrices corresponding to rows of f
 }
-

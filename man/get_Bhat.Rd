@@ -16,4 +16,3 @@ get_Bhat(m, subset.eff = NULL, subset.cond = NULL)
 \description{
 Return matrix of Bhat values from mash object
 }
-

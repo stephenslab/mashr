@@ -15,4 +15,3 @@ Normalize the covariances in mash object
 \details{
 Normalizes the covariance matrices to have max diagonal element 1
 }
-

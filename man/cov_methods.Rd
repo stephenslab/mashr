@@ -12,4 +12,3 @@ a named list of defaults for covariance function calculation
 \description{
 A function that maps names of covariance matrices to covariance computation functions
 }
-

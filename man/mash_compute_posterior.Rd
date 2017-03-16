@@ -16,4 +16,3 @@ Compute posterior quantities for mash object
 Computes posterior weights and posterior matrices (eg posterior mean etc)
 Uses data (Bhat and Shat) added to m and the fitted g obtained by \code{mash_fit_g}
 }
-

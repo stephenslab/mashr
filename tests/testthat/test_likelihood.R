@@ -11,3 +11,12 @@ test_that("likelihood calculations look right",{
   expect_equal(cor(mm[1,],mm2[1,]),1)
 }
 )
+
+
+test_that("likelihood calculations on test set match original",{
+  Bhat = rbind(c(1,2,3),c(2,4,6))
+  Shat = rbind(c(1,1,1),c(2,2,2))
+  m = mash(Bhat, Shat, cov_methods = c("null","singletons","equal_effects"))
+  expect_equal(mash_compute_loglik(m,Bhat,Shat),mash_compute_loglik(m))
+}
+)

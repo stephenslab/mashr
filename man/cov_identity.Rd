@@ -15,4 +15,3 @@ the R by R identity matrix
 \description{
 Compute an identity matrix
 }
-

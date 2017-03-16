@@ -10,10 +10,9 @@ data2cov_pca(data, npc)
 \item{data}{a mash data object}
 
 \item{npc}{the number of PCs to use
-Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs, and the
-rank k covariance matrix}
+Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs,
+and the rank k covariance matrix}
 }
 \description{
 Perform PCA on data and return list of candidate covariance matrices
 }
-

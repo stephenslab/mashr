@@ -15,4 +15,3 @@ names of covariance matrices in m
 \description{
 List names of covariance matrices in m
 }
-

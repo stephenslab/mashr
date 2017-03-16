@@ -11,7 +11,7 @@
 #' @details This is a wrapper to ExtremeDeconvolution::extreme_deconvolution
 #' It fixes the projection to be the identity, and the means to be 0
 #' @export
-mash_ed = function(data, Ulist_init){
+ed_wrapper = function(data, Ulist_init){
   K = length(Ulist_init)
   R = n_conditions(data)
   pi_init = rep(1/K, K) # initial mix proportions

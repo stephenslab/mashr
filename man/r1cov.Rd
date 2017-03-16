@@ -9,4 +9,3 @@ r1cov(x)
 \description{
 For a vector x, return the rank one matrix xx'
 }
-

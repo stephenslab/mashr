@@ -11,4 +11,3 @@ normalize_cov(U)
 normalize a covariance matrix soits maximum diagonal element is 1
 Divides each element of the matrix by its maximum diagonal element (provided that it is non-zero)
 }
-

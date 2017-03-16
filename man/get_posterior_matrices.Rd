@@ -14,4 +14,3 @@ get_posterior_matrices(m, analysis = "mash")
 \description{
 Return the posterior matrices from a mash object
 }
-

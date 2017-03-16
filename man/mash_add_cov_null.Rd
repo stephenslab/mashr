@@ -12,4 +12,3 @@ mash_add_cov_null(m)
 \description{
 Add null covariance matrix to m
 }
-

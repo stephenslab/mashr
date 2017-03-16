@@ -21,4 +21,3 @@ P vector of multivariate normal likelihoods, with pth element p(bhat | Ulist[p],
 \details{
 computes vector of likelihoods for bhat for each of P prior covariances
 }
-

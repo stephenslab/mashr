@@ -18,4 +18,3 @@ Add a list of covariance matrices to m
 This allows the user to provide their own list of covariance matrices if they desire,
 in addition to built-in covariance options
 }
-

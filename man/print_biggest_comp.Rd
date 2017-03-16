@@ -14,4 +14,3 @@ print_biggest_comp(g, thresh = 0.01)
 \description{
 Print out the components of g with largest weight (those exceeding thresh)
 }
-

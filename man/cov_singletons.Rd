@@ -15,4 +15,3 @@ a list with R entries, the rth entry being an R by R matrix with all 0s except t
 \description{
 Compute all R singleton matrices corresponding to condition-specific effects
 }
-

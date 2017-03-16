@@ -11,4 +11,3 @@ multiply_list(Ulist, x)
 multiply each element of a list by scalar
 (In our application each element of the list is a matrix)
 }
-

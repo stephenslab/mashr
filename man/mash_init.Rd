@@ -15,4 +15,3 @@ a mash object
 \description{
 Initialize a mash object (actually an environment)
 }
-

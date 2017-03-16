@@ -24,4 +24,3 @@ post_neg JxR matrix of posterior (marginal) probability of being negative
 
 post_zero JxR matrix of posterior (marginal) probability of being zero
 }
-

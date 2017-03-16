@@ -17,4 +17,3 @@ J by R matrix of quantities (eg posterior mean) for each effect in each conditio
 \description{
 Generates a K x R matrix of posterior quantities (eg posterior mean) for each effect
 }
-

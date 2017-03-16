@@ -17,4 +17,3 @@ Add rank 1 covariance matrices to m
 \details{
 For each row x of matrix f, this adds the rank one matrix xx' as a covariance matrix to m
 }
-

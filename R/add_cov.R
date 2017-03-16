@@ -2,7 +2,7 @@
 #' @param m a mash object
 #' @param Ulist a list of covariance matrices to add to m
 #' @export
-mash_add_cov = function(m, cov_methods){
+mash_add_cov = function(m, cov_methods = c("identity","singletons","equal_effects","simple_het")){
   m$Ulist = compute_cov(m$data,cov_methods,m$Ulist)
 }
 
@@ -59,10 +59,17 @@ mash_add_cov_r1=function(m,f){
 #' @param subset subset of data points to use in PCA (default of NULL causes top hits in m to be used)
 #' @export
 mash_add_cov_pca=function(m, k=5, subset=NULL){
-  m.svd = svd(get_Z(m,subset))
-  f = m.svd$v[,1:k]
-  mash_add_cov_r1(m,f)
+  subset = check_subset(m,subset)
+  Ulist_PCA = data2cov_pca(get_data(m,subset),k)
+  mash_add_cov_list(Ulist_PCA)
+}
 
+check_subset = function(m, subset){
+  if(is.null(subset)){
+    if(is.null(m$tophits)){stop("you need to add_tophits to m")}
+    else {subset = m$tophits}
+  }
+  return(subset)
 }
 
 
@@ -78,9 +85,27 @@ mash_add_cov_list = function(m, Ulist){
   m$Ulist = c(m$Ulist, as.list(Ulist))
 }
 
+#' Add covariance matrices to m from "extreme deconvolution" (Bovy et al)
+#' @param m a mash object
+#' @param Ulist_init a named list of covariance matrices to use to initialize ED
+#' @param subset a subset of data to be used when ED is run
+#' @details
+#'
+#' @export
+mash_add_cov_ed = function(m, Ulist_init, subset){
+  Ulist_ed = ed_wrapper(get_data(m,subset), Ulist_init)$Ulist
+  names(Ulist_ed) = make_names("ED", 1:length(Ulist_ed))
+  mash_add_cov_list(Ulist_ed)
+}
 
 check_dim = function(mat,R){
   if(!identical(dim(mat),c(R,R))){stop("Dimension of matrix must be R by R")}
 }
+
+#' Create names for covariance matrices
+#' @param names a string
+#' @param suffixes
+#' Adds _suffixes to names for each element of suffixes
+make_names = function(names,suffixes){paste0(names,"_",suffixes)}
 
 

@@ -16,4 +16,3 @@ mash_add_cov_pca(m, k = 5, subset = NULL)
 \description{
 Add covariance matrices by doing PCA on data in mash object
 }
-

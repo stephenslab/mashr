@@ -4,7 +4,8 @@
 \alias{mash_add_cov}
 \title{Add a list of covariance matrices to m}
 \usage{
-mash_add_cov(m, cov_methods)
+mash_add_cov(m, cov_methods = c("identity", "singletons", "equal_effects",
+  "simple_het"))
 }
 \arguments{
 \item{m}{a mash object}
@@ -14,4 +15,3 @@ mash_add_cov(m, cov_methods)
 \description{
 Add a list of covariance matrices to m
 }
-

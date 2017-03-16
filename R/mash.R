@@ -12,7 +12,7 @@
 #' @param optmethod name of optimization method to use
 #' @export
 mash = function(Bhat,Shat,
-                 cov_methods = c("identity","singletons","all_ones","simple_het"),
+                 cov_methods = c("null","identity","singletons","equal_effects","simple_het"),
                  gridmult= sqrt(2),
                  grid = NULL,
                  normalizeU = TRUE,
@@ -37,11 +37,30 @@ mash = function(Bhat,Shat,
   return(m)
 }
 
+#' Summarize status of a mash analysis
+#' @param m a mash object
+#' @details Provides a summary of what has been done so far in a mash object; may provide
+#' suggestions for next step
+#' @export
+mash_status = function(m=NULL){
+  if(class(m)!="mash"){message("m is not a mash object; initialize mash using mash_init"); return()}
+  if(is.null(m$Ulist)){message("m has data but no covariance matrices; use mash_add_cov"); return()}
+  message("m has covariance matrices with names: ",paste(names(m$Ulist),collapse=","))
+  if(is.null(m$grid)){message("m has no grid; add grid with mash_add_grid"); return()}
+  message(paste("m has grid: ",m$grid))
+  if(!fitted(m)){message("m has not yet had the hierarchical model fit; use mash_fit_g"); return()}
+  if(is.null(m$posterior_matrices)){message("m has hierarchical model fit, but no posteriors computed; use mash_compute_posterior"); return()}
+  message("m has had hierarchical model fit and posteriors are computed")
+}
+
+
+
 #' Fit the Empirical Bayes model for a mash object
 #' @param m a mash object
 #' @details Computes the likelihood matrix and fits the
 #' mixture proportions for a mixture of multivariate normals.
 #' The mash object contains the data, and the covariance matrices and grid to use
+#' The result is stored in m$pi
 #' See \code{mash_add_cov} and \code{mash_add_grid}
 #' @export
 mash_fit_g = function(m, prior = NULL, optmethod = c("mixIP")){
@@ -63,10 +82,31 @@ mash_fit_g = function(m, prior = NULL, optmethod = c("mixIP")){
 #' Uses data (Bhat and Shat) added to m and the fitted g obtained by \code{mash_fit_g}
 #' @export
 mash_compute_posterior = function(m){
-  if(is.null(m$pi)){stop("need to fit using mash_fit_g first")}
+  if(!fitted(m)){stop("need to fit using mash_fit_g first")}
   m$posterior_weights = compute_posterior_weights(m$pi, m$lik_matrix)
   m$posterior_matrices[["mash"]] = compute_posterior_matrices(m$data, get_expanded_cov(m), m$posterior_weights)
 }
+
+#' Compute loglikelihood for fitted mash object
+#' @param m a mash object
+#' @param Bhat a matrix of Bhat values
+#' @param Shat a matrix of corresponding Shat values
+#' @details If no data are supplied, then computes log-likelihood on data in m (ie training data).
+#' If data (Bhat and Shat) are supplied then computes log-likelihood under the model fit in m.
+#' The latter might be useful for computing log-likelihood on a "test" set for example.
+#' @export
+mash_compute_loglik = function(m,Bhat=NULL, Shat=NULL){
+  if(!fitted(m)){message("You need to fit mash using mash_fit_g first"); return();}
+  if(is.null(Bhat)){return(sum(log(m$lik_matrix %*% m$pi)))} else {
+    if(is.null(Shat)){message("Please supply Shat"); return();}
+    data = set_mash_data(Bhat,Shat)
+    lik_matrix = calc_relative_lik_matrix(data,get_expanded_cov(m))
+    return(sum(log(lik_matrix %*% m$pi)))
+  }
+}
+
+#' Tests whether m is fitted
+fitted = function(m){return(!is.null(m$pi))}
 
 #' Initialize a mash object (actually an environment)
 #' @param R the number of conditions to be used
@@ -80,6 +120,8 @@ mash_init = function(Bhat,Shat,usepointmass=TRUE){
   m$pi = NULL #this is currently used to check if optimized... may want to update this
   m$usepointmass = usepointmass # default is to use pointmass
   m$posterior_matrices = list()
+  m$train = 1:n_conditions.mash(m)
+  m$test = NULL
   class(m) = "mash"
   return(m)
 }
@@ -95,9 +137,16 @@ mash_add_grid = function(m,grid){
   m$grid = grid
 }
 
+#' Automatically select
+#' TODO: this is just a place-holder
+autoselect_grid = function(data,gridmult){
+  message("autoselect_grid is a place-holder\n")
+  return(c(0.5,1,2))
+}
+
 #' Calculate the likelihood matrix for a mash object
 #' @param m the mash object
-#' @details Adds an n by R likelihood matrix to m, computed using the current data, grid and covariance matrices in m
+#' @details Adds a J by P likelihood matrix to m, computed using the current data, grid and covariance matrices in m
 #' @export
 mash_calc_lik_matrix = function(m){
   m$lik_matrix = calc_relative_lik_matrix(m$data, get_expanded_cov(m))
@@ -112,6 +161,28 @@ mash_normalize_Ulist = function(m){
   m$Ulist = normalize_Ulist(m$Ulist)
 }
 
+#' Estimate the mixture weights by maximum (penalized) likelihood
+#' @param matrix_lik a matrix of likelihoods, where the (i,k)th entry is the probability of observation i given it came from component k of g
+#' @param pi_init numeric vector specifying value from which to initialize optimization
+#' @param prior numeric vector specifying prior to use in the penalized likelihood
+#' @param optmethod a string, giving name of optimization function to use
+#' @param control a list of parameters to be passed to optmethod
+#' @return numeric vector specifying the optimal mixture weights
+optimize_pi = function(matrix_lik, pi_init = NULL,
+                       prior=NULL,
+                       optmethod=c("mixEM","mixIP"),
+                       control=list() ){
+  optmethod = match.arg(optmethod)
+  K = ncol(matrix_lik)
+  if(missing(prior)){prior = rep(1,K)}
+  if(missing(pi_init)){pi_init = initialize_pi(K)}
+  assertthat::are_equal(length(pi_init),K)
+  assertthat::are_equal(length(prior),K)
+
+  library("ashr") # I didn't manage to get do.call to work without this
+  res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
+  return(res$pihat)
+}
 
 
 #' List names of covariance matrices in m
@@ -119,6 +190,7 @@ mash_normalize_Ulist = function(m){
 #' @return names of covariance matrices in m
 #' @export
 list_cov = function(m){names(get_cov(m))}
+
 
 #' @export
 n_conditions.mash = function(m){return(n_conditions(m$data))}

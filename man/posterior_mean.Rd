@@ -19,4 +19,3 @@ R vector of posterior mean
 \details{
 If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
 }
-

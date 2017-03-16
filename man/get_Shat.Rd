@@ -16,4 +16,3 @@ get_Shat(m, subset.eff = NULL, subset.cond = NULL)
 \description{
 Return matrix of Shat values from mash object
 }
-

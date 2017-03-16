@@ -15,4 +15,3 @@ a list of covariance matrices in m
 \description{
 Extract covariance matrices in m
 }
-

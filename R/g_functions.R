@@ -1,3 +1,7 @@
+# these functions may be obsolete... originally written when I had idea that
+# g might be treated as a single object, but decided to treat Ulist and pi
+# separately
+
 #' Initialize a mixture of multivariate normals
 #' @param data a mash data object, e.g. as created by \code{set_mash_data}
 #' @param cov_methods methods to use to create covariance matrices; passed to \code{cov_methods}
@@ -5,7 +9,6 @@
 #' @param g optionally a previously-inititalized g; in this case the new g adds new covariances to this g
 #' @return a list with two elements, the covariance matrices and their mixture proportions
 #' As well as adding new covariance matrices to g, the mixture proportions are re-initialized with \code{initialize_pi}.
-#' @export
 add_to_g=function(data, cov_methods, grid, g=NULL){
   Ulist = compute_cov(data,cov_methods)
   Ulist = normalize_Ulist(Ulist)
@@ -25,12 +28,6 @@ initialize_pi = function(K){
   return(rep(1/K,K))
 }
 
-#' Automatically select
-#' TODO: this is just a place-holder
-autoselect_grid = function(data){
-  message("autoselect_grid is a place-holder\n")
-  return(c(0.5,1,2))
-}
 
 #' Return the covariances in g
 #' @param g a mixture of multivariate normals, as created for example by \code{add_to_g}
@@ -83,25 +80,3 @@ optimize_g = function(g_init, matrix_lik,
   return(g_init)
 }
 
-#' Estimate the mixture weights by maximum (penalized) likelihood
-#' @param matrix_lik a matrix of likelihoods, where the (i,k)th entry is the probability of observation i given it came from component k of g
-#' @param pi_init numeric vector specifying value from which to initialize optimization
-#' @param prior numeric vector specifying prior to use in the penalized likelihood
-#' @param optmethod a string, giving name of optimization function to use
-#' @param control a list of parameters to be passed to optmethod
-#' @return numeric vector specifying the optimal mixture weights
-optimize_pi = function(matrix_lik, pi_init = NULL,
-                      prior=NULL,
-                      optmethod=c("mixEM","mixIP"),
-                      control=list() ){
-  optmethod = match.arg(optmethod)
-  K = ncol(matrix_lik)
-  if(missing(prior)){prior = rep(1,K)}
-  if(missing(pi_init)){pi_init = initialize_pi(K)}
-  assertthat::are_equal(length(pi_init),K)
-  assertthat::are_equal(length(prior),K)
-
-  library("ashr") # I didn't manage to get do.call to work without this
-  res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
-  return(res$pihat)
-}

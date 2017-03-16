@@ -11,4 +11,3 @@ normalize_Ulist(Ulist)
 normalize a list of covariance matrices by
 applying \link{\code{normalize_cov}} to each element
 }
-

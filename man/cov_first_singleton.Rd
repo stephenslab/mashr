@@ -15,4 +15,3 @@ an R by R matrix with all 0s except the (1,1) element is 1
 \description{
 Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes
 }
-

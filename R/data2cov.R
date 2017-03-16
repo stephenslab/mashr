@@ -1,12 +1,13 @@
 #' Perform PCA on data and return list of candidate covariance matrices
 #' @param data a mash data object
 #' @param npc the number of PCs to use
-#' Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs, and the
-#' rank k covariance matrix
+#' Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs,
+#' and the rank k covariance matrix
 data2cov_pca = function(data,npc){
   assertthat::assert_that(npc>1)
   assertthat::assert_that(npc<=n_conditions(data))
-  res.svd = svd(data$Bhat,nv=npc,nu=npc) #or maybe should be on Bhat/Shat?
+  res.svd = svd(data$Bhat,nv=npc,nu=npc)
+  message("svd currently performed on Bhat; maybe should be Bhat/Shat?")
   f = res.svd$v
   Ulist = factors2cov(t(f), "PCA")
   d = diag(res.svd$d[1:npc])

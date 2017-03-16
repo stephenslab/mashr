@@ -19,4 +19,3 @@ Create some simple simulated data for testing purposes
 \details{
 The simulation consists of equal numbers of four different types of effects: null, equal among conditions, present only in first condition, independent across conditions
 }
-

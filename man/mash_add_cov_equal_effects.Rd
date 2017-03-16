@@ -12,4 +12,3 @@ mash_add_cov_equal_effects(m)
 \description{
 Add a covariance matrix of equal effects to m
 }
-

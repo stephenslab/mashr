@@ -24,4 +24,3 @@ the optimal g, obtained by replacing the mixture proporions in g_init with the o
 \description{
 Estimate the mixture weights for $g$ from a corresponding likelihood matrix
 }
-

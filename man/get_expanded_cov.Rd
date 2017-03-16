@@ -17,4 +17,3 @@ If a pointmass is included in m then it adds a null component
 \description{
 Get expanded list of covariance matrices in m, expanded by grid
 }
-

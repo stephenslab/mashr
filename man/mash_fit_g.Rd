@@ -16,6 +16,6 @@ Fit the Empirical Bayes model for a mash object
 Computes the likelihood matrix and fits the
 mixture proportions for a mixture of multivariate normals.
 The mash object contains the data, and the covariance matrices and grid to use
+The result is stored in m$pi
 See \code{mash_add_cov} and \code{mash_add_grid}
 }
-

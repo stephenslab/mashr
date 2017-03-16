@@ -12,4 +12,3 @@ mash_add_cov_identity(m)
 \description{
 Add identify covariance matrix to m
 }
-

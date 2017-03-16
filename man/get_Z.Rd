@@ -16,4 +16,3 @@ get_Z(m, subset.eff = NULL, subset.cond = NULL)
 \description{
 Return matrix of Z scores from mash object
 }
-

@@ -15,4 +15,3 @@ a list of matrices
 \description{
 For each element of corr compute a matrix with diagonal element 1 and off-diagonal element corr
 }
-
