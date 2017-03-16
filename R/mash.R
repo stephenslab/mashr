@@ -47,7 +47,7 @@ mash_status = function(m=NULL){
   if(is.null(m$Ulist)){message("m has data but no covariance matrices; use mash_add_cov"); return()}
   message("m has covariance matrices with names: ",paste(names(m$Ulist),collapse=","))
   if(is.null(m$grid)){message("m has no grid; add grid with mash_add_grid"); return()}
-  message(paste("m has grid: ",m$grid))
+  message("m has grid: ",paste(m$grid,collapse=","))
   if(!fitted(m)){message("m has not yet had the hierarchical model fit; use mash_fit_g"); return()}
   if(is.null(m$posterior_matrices)){message("m has hierarchical model fit, but no posteriors computed; use mash_compute_posterior"); return()}
   message("m has had hierarchical model fit and posteriors are computed")
@@ -136,6 +136,17 @@ mash_init = function(Bhat,Shat,usepointmass=TRUE){
 mash_add_grid = function(m,grid){
   m$grid = grid
 }
+
+#' Add a list of strong signals (to be used in data-drive covariance matrices)
+#' @param m the mash object
+#' @details Adds the top univariate signals (lfsr<0.05)
+#' @export
+mash_add_strong_signals = function(m){
+  if(is.null(m$posterior_matrices[["ash"]])){message("you need to mash_run_1by1 before adding strong signals")}
+  top_lfsr = apply(m$posterior_matrices[["ash"]]$lfsr,1,min)
+  m$strong_signals =which(top_lfsr<0.05)
+}
+
 
 #' Automatically select
 #' TODO: this is just a place-holder
