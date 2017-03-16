@@ -11,7 +11,7 @@ mash_add_cov_pca(m, k = 5, subset = NULL)
 
 \item{k}{number of PCs to use}
 
-\item{subset}{subset of data points to use in PCA (default of NULL causes top hits in m to be used)}
+\item{subset}{subset of data points to use in PCA (default of NULL causes strong signals in m to be used)}
 }
 \description{
 Add covariance matrices by doing PCA on data in mash object

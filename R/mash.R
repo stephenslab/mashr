@@ -97,11 +97,11 @@ mash_compute_posterior = function(m){
 #' @export
 mash_compute_loglik = function(m,Bhat=NULL, Shat=NULL){
   if(!fitted(m)){message("You need to fit mash using mash_fit_g first"); return();}
-  if(is.null(Bhat)){return(sum(log(m$lik_matrix %*% m$pi)))} else {
+  if(is.null(Bhat)){return(sum(log(m$lik_matrix %*% m$pi)+m$lfactors))} else {
     if(is.null(Shat)){message("Please supply Shat"); return();}
     data = set_mash_data(Bhat,Shat)
-    lik_matrix = calc_relative_lik_matrix(data,get_expanded_cov(m))
-    return(sum(log(lik_matrix %*% m$pi)))
+    lm_res = calc_relative_lik_matrix(data,get_expanded_cov(m))
+    return(sum(log(lm_res$lik_matrix %*% m$pi) + lm_res$lfactors))
   }
 }
 
@@ -120,8 +120,9 @@ mash_init = function(Bhat,Shat,usepointmass=TRUE){
   m$pi = NULL #this is currently used to check if optimized... may want to update this
   m$usepointmass = usepointmass # default is to use pointmass
   m$posterior_matrices = list()
-  m$train = 1:n_conditions.mash(m)
-  m$test = NULL
+  m$lik_matrix = NULL
+  m$lfactors = NULL # the log factors that were removed from the lik_matrix before exponentiating
+
   class(m) = "mash"
   return(m)
 }
@@ -160,7 +161,9 @@ autoselect_grid = function(data,gridmult){
 #' @details Adds a J by P likelihood matrix to m, computed using the current data, grid and covariance matrices in m
 #' @export
 mash_calc_lik_matrix = function(m){
-  m$lik_matrix = calc_relative_lik_matrix(m$data, get_expanded_cov(m))
+  lm_res = calc_relative_lik_matrix(m$data, get_expanded_cov(m))
+  m$lik_matrix = lm_res$lik_matrix
+  m$lfactors = lm_res$lfactors
 }
 
 

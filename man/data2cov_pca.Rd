@@ -4,12 +4,14 @@
 \alias{data2cov_pca}
 \title{Perform PCA on data and return list of candidate covariance matrices}
 \usage{
-data2cov_pca(data, npc)
+data2cov_pca(data, npc, subset = NULL)
 }
 \arguments{
 \item{data}{a mash data object}
 
-\item{npc}{the number of PCs to use
+\item{npc}{the number of PCs to use}
+
+\item{subset}{indices of the subset of data to use (defaults to all data)
 Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs,
 and the rank k covariance matrix}
 }

@@ -56,18 +56,18 @@ mash_add_cov_r1=function(m,f){
 #' Add covariance matrices by doing PCA on data in mash object
 #' @param m a mash object
 #' @param k number of PCs to use
-#' @param subset subset of data points to use in PCA (default of NULL causes top hits in m to be used)
+#' @param subset subset of data points to use in PCA (default of NULL causes strong signals in m to be used)
 #' @export
 mash_add_cov_pca=function(m, k=5, subset=NULL){
   subset = check_subset(m,subset)
-  Ulist_PCA = data2cov_pca(get_data(m,subset),k)
-  mash_add_cov_list(Ulist_PCA)
+  Ulist_PCA = data2cov_pca(m$data,k,subset)
+  mash_add_cov_list(m,Ulist_PCA)
 }
 
 check_subset = function(m, subset){
   if(is.null(subset)){
-    if(is.null(m$tophits)){stop("you need to add_tophits to m")}
-    else {subset = m$tophits}
+    if(is.null(m$strong_signals)){stop("you need to mash_add_strong_signals to m")}
+    else {subset = m$strong_signals}
   }
   return(subset)
 }
@@ -87,15 +87,17 @@ mash_add_cov_list = function(m, Ulist){
 
 #' Add covariance matrices to m from "extreme deconvolution" (Bovy et al)
 #' @param m a mash object
-#' @param Ulist_init a named list of covariance matrices to use to initialize ED
-#' @param subset a subset of data to be used when ED is run
-#' @details
+#' @param Ulist_init a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs
+#' @param subset a subset of data to be used when ED is run (default of NULL causes strong signals in m to be used)
+#' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
 #'
 #' @export
-mash_add_cov_ed = function(m, Ulist_init, subset){
+mash_add_cov_ed = function(m, Ulist_init=NULL, subset=NULL){
+  subset = check_subset(m,subset)
+  if(is.null(Ulist_init)){Ulist_init = data2cov_pca(m$data,5,subset)}
   Ulist_ed = ed_wrapper(get_data(m,subset), Ulist_init)$Ulist
   names(Ulist_ed) = make_names("ED", 1:length(Ulist_ed))
-  mash_add_cov_list(Ulist_ed)
+  mash_add_cov_list(m, Ulist_ed)
 }
 
 check_dim = function(mat,R){

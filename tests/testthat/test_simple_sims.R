@@ -7,7 +7,7 @@ test_that("simple simulations look right", {
   res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","equal_effects"),
              grid= c(0.5,1,2), prior="nullbiased")
 
-  print_biggest_comp(get_fitted_g(res))
+  print_biggest_comp(get_mash_fitted_g(res))
   post = get_posterior_matrices(res)
 
   expect_lt(mean(abs(test$B-post$post_mean)),mean(abs(test$B-test$Bhat)))
