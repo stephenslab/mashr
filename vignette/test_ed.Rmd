@@ -1,0 +1,35 @@
+---
+title: "test_ed"
+author: "Matthew Stephens"
+date: "March 16, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Just set up data and run basic mash
+```{r}
+  library("mashr2")
+  set.seed(1)
+  data = simple_sims(1000,5,1)
+  m = mash_init(data$Bhat,data$Shat)
+  mash_run_1by1(m)
+  mash_add_strong_signals(m,1)
+  mash_add_cov_ed(m)
+  mash_add_grid(m,1)
+  mash_fit_g(m, normalize_cov=FALSE)
+  mash_compute_loglik(m)  
+```
+
+```{r}
+  m = mash_init(data$Bhat,data$Shat)
+  mash_run_1by1(m)
+  mash_add_strong_signals(m,1)
+  mash_add_cov_pca(m)
+  mash_add_grid(m,1)
+  mash_fit_g(m, normalize_cov=FALSE)
+  mash_compute_loglik(m)  
+```
+
