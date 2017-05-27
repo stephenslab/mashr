@@ -5,6 +5,7 @@
 #'
 #' @return Returns a list of covariance matrices: the npc rank-one covariance matrices based on the first npc PCs,
 #' and the rank npc covariance matrix
+#' @export
 data2cov_pca = function(data,npc,subset = NULL){
   assertthat::assert_that(npc>1)
   assertthat::assert_that(npc<=n_conditions(data))

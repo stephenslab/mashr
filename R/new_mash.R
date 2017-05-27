@@ -158,3 +158,10 @@ initialize_pi = function(K){
 }
 
 
+#' Automatically select
+#' TODO: this is just a place-holder
+autoselect_grid = function(data,gridmult){
+  message("autoselect_grid is a place-holder\n")
+  return(c(0.5,1,2))
+}
+
