@@ -62,7 +62,7 @@ To set up the data driven covariances we first have to select a set of "strong" 
   strong = get_significant_results(m.1by1,0.05)
 ```
 
-Now use these to compute data-driven covariances (U.dd) and fit mash using both canonical and data-driven covariances. In this case they don't help the log-likelihood as the data were simulated with only canonical covariances.
+Now use these to compute data-driven covariances (U.dd) and fit mash using both canonical and data-driven covariances. In this case they don't help the log-likelihood much as the data were simulated with only canonical covariances.
 ```{r}
   U.dd = cov_data_driven(data,subset=strong)
   m.dd = mash_new(data, c(U.c,U.dd))

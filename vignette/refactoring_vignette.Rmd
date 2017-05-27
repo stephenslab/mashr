@@ -39,4 +39,4 @@ Check the 1by1 results are the same
 
 TODO:
 - make covariance matrices so canoncical ones take R instead of data
-- separate compute_canonical_covs and compute_data_driven_covs?
+- make posterior matrices include lfsr
