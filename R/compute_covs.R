@@ -36,8 +36,14 @@ cov_canonical = function(data,
   return(res)
 }
 
-
-
+#' Compute a list of data-driven covariance matrices;
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @return a list of covariance matrices
+#' @details currently just applies Extreme Deconvolution to a subset of signals; future expansion expected
+#' @export
+cov_data_driven = function(data,subset=NULL){
+  data2cov_ed(data,subset=subset)
+}
 
 
 #' Compute a list of covariance matrices using supplied functions, and put them all together

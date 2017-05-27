@@ -22,13 +22,23 @@ mash_new = function(Bhat,Shat,
   if(normalizeU){Ulist = normalize_Ulist(Ulist)}
   Ulist = expand_cov(Ulist,grid,usepointmass)
 
-  lik_matrix = calc_relative_lik_matrix(data,Ulist)$lik_matrix
-  prior = set_prior(ncol(lik_matrix),prior)
+  # calculate likelihood matrix
+  lm = calc_relative_lik_matrix(data,Ulist)
 
-  pi = optimize_pi(lik_matrix,prior=prior, optmethod=optmethod)
-  posterior_weights = compute_posterior_weights(pi, lik_matrix)
+  # set up prior
+  prior = set_prior(ncol(lm$lik_matrix),prior)
+
+  # main fitting procedure
+  pi = optimize_pi(lm$lik_matrix,prior=prior, optmethod=optmethod)
+
+  # compute posterior matrices
+  posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)
   posterior_matrices = compute_posterior_matrices(data, get_expanded_cov(m), m$posterior_weights)
-  return(list(posterior_matrices = posterior_matrices))
+
+  # compute log-likehood achieved
+  loglik = compute_loglik_from_matrix_and_pi(pi,lm)
+
+  return(list(posterior_matrices = posterior_matrices, loglik = loglik))
 
 }
 
@@ -79,4 +89,22 @@ mash_run_1by1_new = function(Bhat,Shat){
   }
   posterior_matrices = list(post_mean = post_mean, post_sd = post_sd, lfsr = lfsr)
   return(list(posterior_matrices=posterior_matrices))
+}
+
+#' Find effects that have lfsr < thresh in at least one condition
+#' @param m the mash result (from joint or 1by1 analysis)
+#' @param thresh indicates the threshold below which to set signals
+#' @return a vector containing the indices of the significant effects
+#' @export
+get_significant_results = function(m, thresh = 0.05){
+  top_lfsr = apply(m$posterior_matrices$lfsr,1,min)
+  which(top_lfsr< thresh)
+}
+
+#' Compute loglikelihood from a matrix of log-likelihoods and fitted pi
+#' @param pi the vector of mixture proportions
+#' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
+#' @export
+compute_loglik_from_matrix_and_pi = function(pi,lm){
+  return(sum(log(lm$lik_matrix %*% pi)+lm$lfactors))
 }
