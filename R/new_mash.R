@@ -33,7 +33,7 @@ mash_new = function(Bhat,Shat,
 
   # compute posterior matrices
   posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)
-  posterior_matrices = compute_posterior_matrices(data, get_expanded_cov(m), m$posterior_weights)
+  posterior_matrices = compute_posterior_matrices(data, Ulist, posterior_weights)
 
   # compute log-likehood achieved
   loglik = compute_loglik_from_matrix_and_pi(pi,lm)
@@ -67,7 +67,10 @@ set_prior = function(K,prior){
 #' @export
 expand_cov = function(Ulist,grid,usepointmass=TRUE){
   scaled_Ulist = scale_cov(Ulist, grid)
-  if(usepointmass){scaled_Ulist = c(list(null=cov_all_zeros(m$data)),scaled_Ulist)}
+  R = nrow(Ulist[[1]])
+  if(usepointmass){
+    scaled_Ulist = c(list(null=matrix(0,nrow=R,ncol=R)),scaled_Ulist)
+  }
   return(scaled_Ulist)
 }
 

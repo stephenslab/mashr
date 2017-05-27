@@ -17,12 +17,14 @@ This vignette is being used to test refactoring as it is done.
   library("mashr2")
   set.seed(1)
   data = simple_sims(1000,5,1)
-  m = mash(data$Bhat,data$Shat)
+  
 ```
 
 ```{r}
   Ulist = cov_canonical(data)
   m2 = mash_new(data$Bhat, data$Shat, Ulist)
+  m = mash(data$Bhat,data$Shat)
+  
   identical(m$posterior_matrices[["mash"]], m2$posterior_matrices)
   identical(mash_compute_loglik(m),m2$loglik)
 ```

@@ -65,11 +65,4 @@ Thoughts:
 - how to copy a whole mash environment?
 
 
-```{r}
-U1 = canonical_cov(R)
-U2 = data_driven_cov(Bhat,Shat)
-U = c(U1,U2)
-pi = est_pi(Bhat,Shat,U,grid)
-
-```
 

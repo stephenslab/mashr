@@ -23,20 +23,21 @@ There are a few steps to a mash analysis
 - Set up the "data-driven" covariance matrices.
     + locate the top signals (usually by a "condition-by-condition" or "1-by-1" analysis)
     + use these top signals to compute data-driven covariance matrices
-- Set up a grid (the omega values)
-- Fit the hierarchical model (= estimate the mixture proportions pi)
-- Compute the posterior summaries
+- Fit the model and compute posterior summaries
+
+Here we do each of these step-by-step.
 
 # Simple simulation
 
-Just set up data and run basic mash
+First we simulate some data for illustration
 ```{r}
   library("mashr2")
   set.seed(1)
   data = simple_sims(1000,5,1)
-  m=mash_init(data$Bhat,data$Shat)
-  mash_add_grid(m)
-  
- # m = mash(data$Bhat,data$Shat) # this runs mash with just canonical covariance matrices
-  mash_status(m)
 ```
+
+# Step 1: run with canonical covariance matrices
+```{r}
+
+```
+

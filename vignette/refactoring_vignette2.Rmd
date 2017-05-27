@@ -14,6 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This vignette is a second one to test refactoring as it is done.
 
+Here we run mash 3 times: with the canonical matrices only, with the data-driven only, and with both.
+
+We see that the canonical matrices do best, and the data-driven add nothing.
+This is expected as the data were simulated under the canonical matrices.
 ```{r}
   library("mashr2")
   set.seed(1)
@@ -25,5 +29,8 @@ This vignette is a second one to test refactoring as it is done.
   m1 = mash_new(data$Bhat, data$Shat, U1)
   m2 = mash_new(data$Bhat, data$Shat, U2)
   m3 = mash_new(data$Bhat, data$Shat, c(U1,U2))
+  
+  m1$loglik
+  m2$loglik
+  m3$loglik
 ```
-
