@@ -21,10 +21,20 @@ This vignette is being used to test refactoring as it is done.
 ```
 
 ```{r}
-  m2 = mash_new(data$Bhat, data$Shat, m$Ulist)
+  Ulist = cov_canonical(data)
+  m2 = mash_new(data$Bhat, data$Shat, Ulist)
   identical(m$posterior_matrices[["mash"]], m2$posterior_matrices)
+  
 ```
 
   
-  
-  
+Check the 1by1 results are the same
+```{r}
+  m.1by1 = mash_run_1by1_new(data$Bhat, data$Shat)
+  mash_run_1by1(m)
+  identical(m$posterior_matrices[["ash"]], m.1by1$posterior_matrices)
+```
+
+TODO:
+- make covariance matrices so canoncical ones take R instead of data
+- separate compute_canonical_covs and compute_data_driven_covs?

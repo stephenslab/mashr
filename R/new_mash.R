@@ -22,7 +22,6 @@ mash_new = function(Bhat,Shat,
   if(normalizeU){Ulist = normalize_Ulist(Ulist)}
   Ulist = expand_cov(Ulist,grid,usepointmass)
 
-
   lik_matrix = calc_relative_lik_matrix(data,Ulist)$lik_matrix
   prior = set_prior(ncol(lik_matrix),prior)
 
@@ -60,4 +59,24 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
   scaled_Ulist = scale_cov(Ulist, grid)
   if(usepointmass){scaled_Ulist = c(list(null=cov_all_zeros(m$data)),scaled_Ulist)}
   return(scaled_Ulist)
+}
+
+#' @title Perform condition-by-condition analyses
+#' @param Bhat an n by R matrix of observations (n units in R conditions)
+#' @param Shat an n by R matrix of standard errors (n units in R conditions)
+#' @details Performs simple "condition-by-condition" analysis
+#' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
+#' May be a useful first step to identify top hits in each condition before a mash analysis.
+#' @return posterior_matrices from the ash runs
+#' @export
+mash_run_1by1_new = function(Bhat,Shat){
+  post_mean= post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
+  for(i in 1:ncol(Bhat)){
+    ashres = ashr::ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
+    post_mean[,i] = ashr::get_pm(ashres)
+    post_sd[,i] = ashr::get_psd(ashres)
+    lfsr[,i] = ashr::get_lfsr(ashres)
+  }
+  posterior_matrices = list(post_mean = post_mean, post_sd = post_sd, lfsr = lfsr)
+  return(list(posterior_matrices=posterior_matrices))
 }

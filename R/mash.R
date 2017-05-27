@@ -12,7 +12,7 @@
 #' @param optmethod name of optimization method to use
 #' @export
 mash = function(Bhat,Shat,
-                 cov_methods = c("null","identity","singletons","equal_effects","simple_het"),
+                 cov_methods = c("identity","singletons","equal_effects","simple_het"),
                  gridmult= sqrt(2),
                  grid = NULL,
                  normalizeU = TRUE,

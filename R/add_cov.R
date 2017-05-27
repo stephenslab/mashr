@@ -1,3 +1,5 @@
+
+
 #' Add a list of covariance matrices to m
 #' @param m a mash object
 #' @param cov_methods specifies which types of covariances to add to m

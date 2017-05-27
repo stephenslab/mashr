@@ -5,13 +5,55 @@
 #' @return a list of covariance matrices
 #' @details Each element of methods may be either a character string which names a pre-defined method (see \code{cov_methods}) or a list with elements fn and args, specifying the function to call, and any additional arguments
 #' @examples data = set_mash_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+#'  cov_canonical(data,"id")
+#'  cov_canonical(data,"singletons")
+#'  cov_canonical(data,c("id","sing")) # can use partial matching of names
+#'  cov_canonical(data,list("sing","id",eg = list(fn = cov_simple_het, args= list(corr=c(0.1,0.2)))))
+#' @export
+cov_canonical = function(data,
+                       cov_methods= c("identity","singletons","equal_effects","simple_het"),
+                       Ulist = NULL){
+  res = list()
+  for(i in 1:length(cov_methods)){
+    if(is.character(cov_methods[[i]])){
+      name = match.arg(cov_methods[[i]], names(cov_methods()))
+      cov_method = cov_methods()[[ name ]]
+    } else {
+      cov_method = cov_methods[[i]]
+      name = names(cov_methods)[i]
+    }
+    res[[i]] =  do.call(cov_method$fn, args = modifyList(list(data=data), as.list(cov_method$args) ))
+
+    if(is.list(res[[i]])){ #append _i to names if function returns multiple matrices
+      names(res[[i]]) = paste0(name, "_", 1:length(res[[i]]) )
+    } else {
+      res[[i]] = list(res[[i]])
+      names(res[[i]]) = name
+    }
+  }
+  res = unlist(res,recursive=FALSE)
+  if(!is.null(Ulist)){res = c(Ulist,res)}
+  return(res)
+}
+
+
+
+
+
+#' Compute a list of covariance matrices using supplied functions, and put them all together
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param cov_methods a named list defining the methods (functions and arguments) to be used
+#' @param Ulist optionally, an existing list of matrices to which the newly computed matrices will be added
+#' @return a list of covariance matrices
+#' @details Each element of methods may be either a character string which names a pre-defined method (see \code{cov_methods}) or a list with elements fn and args, specifying the function to call, and any additional arguments
+#' @examples data = set_mash_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #'  compute_cov(data,"id")
 #'  compute_cov(data,"singletons")
 #'  compute_cov(data,c("id","sing")) # can use partial matching of names
 #'  compute_cov(data,list("sing","id",eg = list(fn = cov_simple_het, args= list(corr=c(0.1,0.2)))))
 #' @export
 compute_cov = function(data,
-                        cov_methods,
+                        cov_methods= c("identity","singletons","equal_effects","simple_het"),
                         Ulist = NULL){
   res = list()
   for(i in 1:length(cov_methods)){

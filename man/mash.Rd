@@ -4,9 +4,9 @@
 \alias{mash}
 \title{Apply mash method to data}
 \usage{
-mash(Bhat, Shat, cov_methods = c("null", "identity", "singletons",
-  "equal_effects", "simple_het"), gridmult = sqrt(2), grid = NULL,
-  normalizeU = TRUE, prior = "nullbiased", optmethod = c("mixIP"))
+mash(Bhat, Shat, cov_methods = c("identity", "singletons", "equal_effects",
+  "simple_het"), gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
+  prior = "nullbiased", optmethod = c("mixIP"))
 }
 \arguments{
 \item{Bhat}{an n by R matrix of observations (n units in R conditions)}
