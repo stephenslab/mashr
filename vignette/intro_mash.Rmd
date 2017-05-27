@@ -33,11 +33,39 @@ First we simulate some data for illustration
 ```{r}
   library("mashr2")
   set.seed(1)
-  data = simple_sims(1000,5,1)
+  simdata = simple_sims(1000,5,1)
 ```
 
-# Step 1: run with canonical covariance matrices
-```{r}
+# Step 1: Set up a mash data object
 
+Mash needs a matrix of effects and a matrix of standard errors. 
+The following just sets up an object called data with those two pieces of information in it:
+```{r}
+   data = set_mash_data(simdata$Bhat, simdata$Shat)
+```
+
+# Step 2: run with canonical covariance matrices
+
+The following sets up canonical covariances (Uc) and runs mash.
+The returned object has a set of posterior matrices (lfsr etc)
+and a loglik which indicates how well it fits.
+```{r}
+  U.c = cov_canonical(data)  
+  m.c = mash_new(data, U.c)
+  m.c$loglik
+```
+# Step 3: set up data driven covariance 
+
+To set up the data driven covariances we first have to select a set of "strong" signals to learn them from. The simplest way to do this is to run a condition-by-condition analysis first. Here we select the strong signals as those with lfsr<0.05 in any condition.
+```{r}
+  m.1by1 = mash_new(data, Uc)
+  strong = get_significant_results(m.1by1,0.05)
+```
+
+Now use these to compute data-driven covariances (U.dd) and fit mash using both canonical and data-driven covariances. In this case they don't help the log-likelihood as the data were simulated with only canonical covariances.
+```{r}
+  U.dd = cov_data_driven(data,subset=strong)
+  m.dd = mash_new(data, c(U.c,U.dd))
+  m.dd$loglik
 ```
 

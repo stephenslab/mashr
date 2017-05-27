@@ -16,14 +16,14 @@ This vignette is being used to test refactoring as it is done.
 ```{r}
   library("mashr2")
   set.seed(1)
-  data = simple_sims(1000,5,1)
-  
+  simdata = simple_sims(1000,5,1)
+  data = set_mash_data(simdata$Bhat, simdata$Shat)
 ```
 
 ```{r}
   Ulist = cov_canonical(data)
-  m2 = mash_new(data$Bhat, data$Shat, Ulist)
-  m = mash(data$Bhat,data$Shat)
+  m2 = mash_new(data, Ulist)
+  m = mash(data$Bhat,data$Shat,prior="uniform")
   
   identical(m$posterior_matrices[["mash"]], m2$posterior_matrices)
   identical(mash_compute_loglik(m),m2$loglik)
@@ -32,7 +32,7 @@ This vignette is being used to test refactoring as it is done.
   
 Check the 1by1 results are the same
 ```{r}
-  m.1by1 = mash_run_1by1_new(data$Bhat, data$Shat)
+  m.1by1 = mash_run_1by1_new(data)
   mash_run_1by1(m)
   identical(m$posterior_matrices[["ash"]], m.1by1$posterior_matrices)
 ```

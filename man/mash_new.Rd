@@ -4,14 +4,12 @@
 \alias{mash_new}
 \title{Apply mash method to data}
 \usage{
-mash_new(Bhat, Shat, Ulist, gridmult = sqrt(2), grid = NULL,
-  normalizeU = TRUE, usepointmass = TRUE, prior = "nullbiased",
+mash_new(data, Ulist, gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
+  usepointmass = TRUE, prior = c("uniform", "nullbiased"),
   optmethod = c("mixIP"))
 }
 \arguments{
-\item{Bhat}{an n by R matrix of observations (n units in R conditions)}
-
-\item{Shat}{an n by R matrix of standard errors (n units in R conditions)}
+\item{data}{a mash data object containing the Bhat matrix and standard errors}
 
 \item{Ulist}{a list of covariance matrices to use}
 

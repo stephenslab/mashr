@@ -4,7 +4,7 @@
 \alias{mash_run_1by1_new}
 \title{Perform condition-by-condition analyses}
 \usage{
-mash_run_1by1_new(Bhat, Shat)
+mash_run_1by1_new(data)
 }
 \arguments{
 \item{Bhat}{an n by R matrix of observations (n units in R conditions)}

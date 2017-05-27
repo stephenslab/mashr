@@ -21,14 +21,15 @@ This is expected as the data were simulated under the canonical matrices.
 ```{r}
   library("mashr2")
   set.seed(1)
-  data = simple_sims(1000,5,1)
-  m.1by1 = mash_run_1by1_new(data$Bhat,data$Shat)
+  simdata = simple_sims(1000,5,1)
+  data = set_mash_data(simdata$Bhat,simdata$Shat)
+  m.1by1 = mash_run_1by1_new(data)
   top_1by1_hits = get_significant_results(m.1by1)
   U1 = cov_canonical(data)
   U2 = cov_data_driven(data,top_1by1_hits)
-  m1 = mash_new(data$Bhat, data$Shat, U1)
-  m2 = mash_new(data$Bhat, data$Shat, U2)
-  m3 = mash_new(data$Bhat, data$Shat, c(U1,U2))
+  m1 = mash_new(data, U1)
+  m2 = mash_new(data, U2)
+  m3 = mash_new(data, c(U1,U2))
   
   m1$loglik
   m2$loglik

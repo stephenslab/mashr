@@ -1,23 +1,23 @@
 #' Apply mash method to data
-#' @param Bhat an n by R matrix of observations (n units in R conditions)
-#' @param Shat an n by R matrix of standard errors (n units in R conditions)
+#' @param data a mash data object containing the Bhat matrix and standard errors
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @export
-mash_new = function(Bhat,Shat,
+mash_new = function(data,
                 Ulist,
                 gridmult= sqrt(2),
                 grid = NULL,
                 normalizeU = TRUE,
                 usepointmass = TRUE,
-                prior="nullbiased",
+                prior=c("uniform","nullbiased"),
                 optmethod = c("mixIP")){
 
   optmethod = match.arg(optmethod)
-  data = set_mash_data(Bhat, Shat)
+  prior = match.arg(prior)
+
   if(missing(grid)){grid = autoselect_grid(data,gridmult)}
   if(normalizeU){Ulist = normalize_Ulist(Ulist)}
   Ulist = expand_cov(Ulist,grid,usepointmass)
@@ -82,16 +82,20 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' May be a useful first step to identify top hits in each condition before a mash analysis.
 #' @return posterior_matrices from the ash runs
 #' @export
-mash_run_1by1_new = function(Bhat,Shat){
+mash_run_1by1_new = function(data){
+  Bhat = data$Bhat
+  Shat = data$Shat
   post_mean= post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
+  loglik = 0
   for(i in 1:ncol(Bhat)){
     ashres = ashr::ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
     post_mean[,i] = ashr::get_pm(ashres)
     post_sd[,i] = ashr::get_psd(ashres)
     lfsr[,i] = ashr::get_lfsr(ashres)
+    loglik = loglik + ashr::get_loglik(ashres) #return the sum of loglikelihoods
   }
   posterior_matrices = list(post_mean = post_mean, post_sd = post_sd, lfsr = lfsr)
-  return(list(posterior_matrices=posterior_matrices))
+  return(list(posterior_matrices=posterior_matrices,loglik=loglik))
 }
 
 #' Find effects that have lfsr < thresh in at least one condition
