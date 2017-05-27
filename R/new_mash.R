@@ -115,3 +115,11 @@ get_significant_results = function(m, thresh = 0.05){
 compute_loglik_from_matrix_and_pi = function(pi,lm){
   return(sum(log(lm$lik_matrix %*% pi)+lm$lfactors))
 }
+
+
+#' Initialize mixture proportions - currently by making them all equal
+#' @param K the number of components
+#' @return a vector of length K whose elements are positive and sums to 1
+initialize_pi = function(K){
+  return(rep(1/K,K))
+}
