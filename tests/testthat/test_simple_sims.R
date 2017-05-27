@@ -3,12 +3,11 @@ test_that("simple simulations look right", {
   test = simple_sims()
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
+  data = set_mash_data(test$Bhat, test$Shat)
+  U = cov_canonical(data, c("id","sing","equal_effects"))
+  res = mash_new(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
-  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","equal_effects"),
-             grid= c(0.5,1,2), prior="nullbiased")
-
-  print_biggest_comp(get_mash_fitted_g(res))
-  post = get_posterior_matrices(res)
+  post = res$posterior_matrices
 
   expect_lt(mean(abs(test$B-post$post_mean)),mean(abs(test$B-test$Bhat)))
 }
@@ -20,13 +19,11 @@ test_that("simple simulations look right; larger error", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  res = mash(test$Bhat, test$Shat, cov_methods = c("id","sing","equal_effects"),
-             grid= c(0.5,1,2), prior="nullbiased")
+  data = set_mash_data(test$Bhat, test$Shat)
+  U = cov_canonical(data, c("id","sing","equal_effects"))
+  res = mash_new(data, U,grid= c(0.5,1,2), prior="nullbiased")
+  post = res$posterior_matrices
 
-
-  post = get_posterior_matrices(res)
-
-  #plot(test$Bhat[,1], post$post_mean[,1], col = rep(1:4,100))
 
   ashres = ashr::ash(test$Bhat[,1],test$Shat[,1])
   #plot(ashr::get_pm(ashres),post$post_mean[,1], col = rep(1:4,100))

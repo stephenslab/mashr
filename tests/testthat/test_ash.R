@@ -5,13 +5,15 @@ test_that("get same result as ash", {
   # null, equal among conditions, present only in first condition, independent across conditions
   ashres = ashr::ash(sim_data$Bhat[,1],sim_data$Shat[,1],mixcompdist="normal",outputlevel=4) # get ash results for first condition
 
-  res = mashr2::mash(sim_data$Bhat, sim_data$Shat,
-                     cov_methods = list(sing1 = list(fn = "cov_first_singleton",args=NULL)),
+  data = set_mash_data(sim_data$Bhat, sim_data$Shat)
+  U  = list(first_singleton = cov_first_singleton(data))
+  res = mashr2::mash_new(data,
+                     U ,
                      grid = ashr::get_fitted_g(ashres)$sd,
                      prior = "nullbiased")
 
 
-  post = get_posterior_matrices(res)
+  post = res$posterior_matrices
 
   #plot(post$post_mean[,1],get_pm(ashres))
   expect_equal(post$post_mean[,1],get_pm(ashres))
@@ -20,8 +22,8 @@ test_that("get same result as ash", {
   expect_equal(post$post_neg[,1],get_np(ashres))
   expect_equal(post$post_zero[,1],get_lfdr(ashres))
 
-  mash_run_1by1(res)
-  post.ash = get_posterior_matrices(res,"ash")
+  m2 = mash_run_1by1_new(data)
+  post.ash = m2$posterior_matrices
   expect_equal(post.ash$lfsr[,1], get_lfsr(ashres))
   expect_equal(post.ash$post_mean[,1], get_pm(ashres))
   expect_equal(post.ash$post_sd[,1], get_psd(ashres))
