@@ -36,14 +36,15 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
   post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
   post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
   post_sd = sqrt(post_mean2 - post_mean^2)
-  post_pos=compute_weighted_quantity(post_arrays$post_pos,posterior_weights)
+  #post_pos=compute_weighted_quantity(post_arrays$post_pos,posterior_weights)
   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
+  lfsr = ashr:::compute_lfsr(post_neg,post_zero)
   return(list(post_mean = post_mean,
               post_sd = post_sd,
-              post_pos = post_pos,
               post_zero = post_zero,
-              post_neg = post_neg))
+              post_neg = post_neg,
+              lfsr = lfsr))
 }
 
 #' @title compute_posterior_arrays

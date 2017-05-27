@@ -18,7 +18,6 @@ test_that("get same result as ash", {
   #plot(post$post_mean[,1],get_pm(ashres))
   expect_equal(post$post_mean[,1],ashr::get_pm(ashres))
   expect_equal(post$post_sd[,1],ashr::get_psd(ashres))
-  expect_equal(post$post_pos[,1],ashr::get_pp(ashres))
   expect_equal(post$post_neg[,1],ashr::get_np(ashres))
   expect_equal(post$post_zero[,1],ashr::get_lfdr(ashres))
 

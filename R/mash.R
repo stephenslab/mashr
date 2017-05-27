@@ -13,7 +13,7 @@ mash = function(data,
                 grid = NULL,
                 normalizeU = TRUE,
                 usepointmass = TRUE,
-                prior=c("uniform","nullbiased"),
+                prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP")){
 
   optmethod = match.arg(optmethod)
@@ -152,12 +152,30 @@ initialize_pi = function(K){
   return(rep(1/K,K))
 }
 
+grid_min = function(Bhat,Shat){
+  min(Shat)/10
+}
 
-#' Automatically select
-#' TODO: this is just a place-holder
-autoselect_grid = function(data,gridmult){
+grid_max = function(Bhat,Shat){
+  if (all(Bhat^2 <= Shat^2)) {
+    8 * grid_min(Bhat,Shat) # the unusual case where we don't need much grid
+  }  else {
+    2 * sqrt(max(Bhat^2 - Shat^2))
+  }
+}
 
-  message("autoselect_grid is a place-holder\n")
-  return(c(0.5,1,2))
+#' Automatically select grid
+autoselect_grid = function(data,mult){
+  gmax = grid_max(data$Bhat, data$Shat)
+  gmin = grid_min(data$Bhat, data$Shat)
+  if (mult == 0) {
+    return(c(0, gmax/2))
+  }
+  else {
+    npoint = ceiling(log2(gmax/gmin)/log2(mult))
+    return(mult^((-npoint):0) * gmax)
+  }
+  #message("autoselect_grid is a place-holder\n")
+  #return(c(0.5,1,2))
 }
 

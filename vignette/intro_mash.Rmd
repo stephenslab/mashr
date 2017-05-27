@@ -55,6 +55,7 @@ and a loglik which indicates how well it fits.
   m.c$loglik
   get_posterior_matrices(m.c)
 ```
+
 # Step 3: set up data driven covariance 
 
 To set up the data driven covariances we first have to select a set of "strong" signals to learn them from. The simplest way to do this is to run a condition-by-condition analysis first. Here we select the strong signals as those with lfsr<0.05 in any condition.
@@ -69,4 +70,7 @@ Now use these to compute data-driven covariances (U.dd) and fit mash using both 
   m.dd = mash(data, c(U.c,U.dd))
   m.dd$loglik
 ```
+
+
+
 

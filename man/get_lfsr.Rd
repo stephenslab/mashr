@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_functions.R
 \name{get_lfsr}
 \alias{get_lfsr}
-\title{Extract lfdr from mash object}
+\title{Extract lfsr from mash object}
 \usage{
 get_lfsr(m)
 }
@@ -13,5 +13,5 @@ get_lfsr(m)
 a matrix of lfsr values, with (j,r)th entry corresponding to the lfsr for effect j in condition r
 }
 \description{
-Extract lfdr from mash object
+Extract lfsr from mash object
 }

@@ -5,7 +5,7 @@
 \title{Apply mash method to data}
 \usage{
 mash(data, Ulist, gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
-  usepointmass = TRUE, prior = c("uniform", "nullbiased"),
+  usepointmass = TRUE, prior = c("nullbiased", "uniform"),
   optmethod = c("mixIP"))
 }
 \arguments{

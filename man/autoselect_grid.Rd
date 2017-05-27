@@ -2,12 +2,10 @@
 % Please edit documentation in R/mash.R
 \name{autoselect_grid}
 \alias{autoselect_grid}
-\title{Automatically select
-TODO: this is just a place-holder}
+\title{Automatically select grid}
 \usage{
-autoselect_grid(data, gridmult)
+autoselect_grid(data, mult)
 }
 \description{
-Automatically select
-TODO: this is just a place-holder
+Automatically select grid
 }

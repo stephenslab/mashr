@@ -15,13 +15,12 @@ get_posterior_matrices = function(m){
   return(m$result$posterior_matrices)
 }
 
-#' Extract lfdr from mash object
+#' Extract lfsr from mash object
 #' @param m a mash object
 #' @return a matrix of lfsr values, with (j,r)th entry corresponding to the lfsr for effect j in condition r
 #' @export
 get_lfsr = function(m){
-  return(ashr:::compute_lfsr(m$result$posterior_matrices$post_neg,
-                             m$result$posterior_matrices$post_zero))
+  return(m$result$posterior_matrices$lfsr)
 }
 
 #' Find effects that have lfsr < thresh in at least one condition
