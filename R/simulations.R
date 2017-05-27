@@ -24,3 +24,26 @@ simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
   Bhat = B+E
   return(list(B=B,Bhat=Bhat,Shat=Shat))
 }
+
+
+#' Create some more simple simulated data for testing purposes
+#' @param nsamp number of samples of each type
+#' @param err_sd the standard deviation of the errors
+#' @details The simulation consists of five conditions with two types of effecc
+#' those present (and identical) in first two conditions and those present (and identical) in last three conditions
+#' @export
+simple_sims2 = function(nsamp = 100, err_sd=0.01){
+
+  ncond=5
+  b1 = rnorm(nsamp)
+  B.1 = matrix(cbind(b1,b1,0,0,0),nrow=nsamp, ncol=ncond) #independent effects
+  b2 = rnorm(nsamp)
+  B.2 = matrix(cbind(0,0,b2,b2,b2),nrow=nsamp, ncol=ncond) #independent effects
+
+  B = rbind(B.1, B.2)
+
+  Shat = matrix(err_sd, nrow=nrow(B), ncol=ncol(B))
+  E = matrix(rnorm(length(Shat), mean=0, sd=Shat), nrow=nrow(B),ncol=ncol(B))
+  Bhat = B+E
+  return(list(B=B,Bhat=Bhat,Shat=Shat))
+}

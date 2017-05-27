@@ -18,4 +18,5 @@ Add covariance matrices to m from "extreme deconvolution" (Bovy et al)
 }
 \details{
 Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
+The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
 }

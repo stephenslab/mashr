@@ -15,13 +15,15 @@ This vignette is being used to test the new mash development and document featur
 
 # Simple simulation
 
-
 Just set up data and run basic mash
 ```{r}
   library("mashr2")
   set.seed(1)
   data = simple_sims(1000,5,1)
-  m = mash(data$Bhat,data$Shat)
+  m=mash_init(data$Bhat,data$Shat)
+  mash_add_grid(m)
+  
+ # m = mash(data$Bhat,data$Shat) # this runs mash with just canonical covariance matrices
   mash_status(m)
 ```
   
@@ -32,15 +34,23 @@ Run 1-by-1 to add the strong signals
   mash_status(m)
   
   mash_add_strong_signals(m)
-  mash_compute_loglik(m)
-  mash_add_cov_pca(m)
+  
+  mash_add_cov_ed(m) # adds covariance matrices based on extreme deconvolution, initialized from pca
 
   mash_fit_g(m)
   mash_compute_loglik(m) 
 ```
 
-The log likelihood does not get much better because the simulations used
-only canonical covariances. So that is good!
+```{r}
+  mash_add_cov(m) #this adds canonical covariance matrices
+  mash_fit_g(m)
+  mash_compute_loglik(m) 
+```
+
+
+The log likelihood gets better after adding the canonical matrices because the simulations used the canonical covariances. So that is good.
+On the other hand the simple data-driven covariances did not do *too*
+bad so that is also good.
 
 
 Thoughts:

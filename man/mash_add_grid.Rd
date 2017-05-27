@@ -4,7 +4,7 @@
 \alias{mash_add_grid}
 \title{Add a grid of scaling factors to a mash object}
 \usage{
-mash_add_grid(m, grid)
+mash_add_grid(m, grid = NULL)
 }
 \arguments{
 \item{m}{the mash object}

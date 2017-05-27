@@ -2,8 +2,9 @@
 #' @param data a mash data object
 #' @param npc the number of PCs to use
 #' @param subset indices of the subset of data to use (defaults to all data)
-#' Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs,
-#' and the rank k covariance matrix
+#'
+#' @return Returns a list of covariance matrices: the npc rank-one covariance matrices based on the first npc PCs,
+#' and the rank npc covariance matrix
 data2cov_pca = function(data,npc,subset = NULL){
   assertthat::assert_that(npc>1)
   assertthat::assert_that(npc<=n_conditions(data))
@@ -19,6 +20,9 @@ data2cov_pca = function(data,npc,subset = NULL){
 
 
 #' produce list of rank 1 covariance matrices corresponding to rows of f
+#' @param f a matrix of factors (each row is a factor)
+#' @param name a string indicating the name to use
+#' @return a list of rank one matrices whose kth element is f[k,] f[k,]' and named name_k
 factors2cov = function(f, name){
   Ulist = list()
   for(i in 1:nrow(f)){

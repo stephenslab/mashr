@@ -11,9 +11,11 @@ data2cov_pca(data, npc, subset = NULL)
 
 \item{npc}{the number of PCs to use}
 
-\item{subset}{indices of the subset of data to use (defaults to all data)
-Returns a list of covariance matrices: the k rank-one covariance matrices based on the first k PCs,
-and the rank k covariance matrix}
+\item{subset}{indices of the subset of data to use (defaults to all data)}
+}
+\value{
+Returns a list of covariance matrices: the npc rank-one covariance matrices based on the first npc PCs,
+and the rank npc covariance matrix
 }
 \description{
 Perform PCA on data and return list of candidate covariance matrices

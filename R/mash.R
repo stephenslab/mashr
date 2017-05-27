@@ -147,8 +147,12 @@ mash_init = function(Bhat,Shat,usepointmass=TRUE){
 #' covariance matrices in m when fitting the model.
 #' They correspond to the omega values in Urbut et al.
 #' @export
-mash_add_grid = function(m,grid){
-  m$grid = grid
+mash_add_grid = function(m,grid=NULL){
+  if(is.null(grid)){
+    m$grid = autoselect_grid(m$data,sqrt(2))
+  } else {
+    m$grid = grid
+  }
 }
 
 #' Add a list of strong signals (to be used in data-drive covariance matrices)

@@ -6,6 +6,14 @@
 \usage{
 factors2cov(f, name)
 }
+\arguments{
+\item{f}{a matrix of factors (each row is a factor)}
+
+\item{name}{a string indicating the name to use}
+}
+\value{
+a list of rank one matrices whose kth element is f[k,] f[k,]' and named name_k
+}
 \description{
 produce list of rank 1 covariance matrices corresponding to rows of f
 }

@@ -1,6 +1,6 @@
 #' Add a list of covariance matrices to m
 #' @param m a mash object
-#' @param Ulist a list of covariance matrices to add to m
+#' @param cov_methods specifies which types of covariances to add to m
 #' @export
 mash_add_cov = function(m, cov_methods = c("identity","singletons","equal_effects","simple_het")){
   m$Ulist = compute_cov(m$data,cov_methods,m$Ulist)
@@ -90,7 +90,7 @@ mash_add_cov_list = function(m, Ulist){
 #' @param Ulist_init a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs
 #' @param subset a subset of data to be used when ED is run (default of NULL causes strong signals in m to be used)
 #' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
-#'
+#' The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
 #' @export
 mash_add_cov_ed = function(m, Ulist_init=NULL, subset=NULL){
   subset = check_subset(m,subset)
