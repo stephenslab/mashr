@@ -2,15 +2,16 @@
 % Please edit documentation in R/get_functions.R
 \name{get_posterior_matrices}
 \alias{get_posterior_matrices}
-\title{Return the posterior matrices from a mash object}
+\title{Extract posterior matrices from mash object}
 \usage{
-get_posterior_matrices(m, analysis = "mash")
+get_posterior_matrices(m)
 }
 \arguments{
-\item{m}{a mash object, as returned by \code{mash}}
-
-\item{analysis}{which analysis to return results from; can be "mash" or "ash"}
+\item{m}{a mash object}
+}
+\value{
+a list of posterior matrices computed
 }
 \description{
-Return the posterior matrices from a mash object
+Extract posterior matrices from mash object
 }

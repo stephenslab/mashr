@@ -12,7 +12,7 @@ mash_run_1by1(data)
 \item{Shat}{an n by R matrix of standard errors (n units in R conditions)}
 }
 \value{
-posterior_matrices from the ash runs
+a list similar to the output of mash, particularly including posterior matrices
 }
 \details{
 Performs simple "condition-by-condition" analysis

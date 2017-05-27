@@ -13,19 +13,19 @@ test_that("get same result as ash", {
                      prior = "nullbiased")
 
 
-  post = res$posterior_matrices
+  post = get_posterior_matrices(res)
 
   #plot(post$post_mean[,1],get_pm(ashres))
-  expect_equal(post$post_mean[,1],get_pm(ashres))
-  expect_equal(post$post_sd[,1],get_psd(ashres))
-  expect_equal(post$post_pos[,1],get_pp(ashres))
-  expect_equal(post$post_neg[,1],get_np(ashres))
-  expect_equal(post$post_zero[,1],get_lfdr(ashres))
+  expect_equal(post$post_mean[,1],ashr::get_pm(ashres))
+  expect_equal(post$post_sd[,1],ashr::get_psd(ashres))
+  expect_equal(post$post_pos[,1],ashr::get_pp(ashres))
+  expect_equal(post$post_neg[,1],ashr::get_np(ashres))
+  expect_equal(post$post_zero[,1],ashr::get_lfdr(ashres))
 
   m2 = mash_run_1by1(data)
-  post.ash = m2$posterior_matrices
-  expect_equal(post.ash$lfsr[,1], get_lfsr(ashres))
-  expect_equal(post.ash$post_mean[,1], get_pm(ashres))
-  expect_equal(post.ash$post_sd[,1], get_psd(ashres))
+  post.ash = get_posterior_matrices(m2)
+  expect_equal(post.ash$lfsr[,1], ashr::get_lfsr(ashres))
+  expect_equal(post.ash$post_mean[,1], ashr::get_pm(ashres))
+  expect_equal(post.ash$post_sd[,1], ashr::get_psd(ashres))
 }
 )

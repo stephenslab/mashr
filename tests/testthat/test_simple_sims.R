@@ -7,7 +7,7 @@ test_that("simple simulations look right", {
   U = cov_canonical(data, c("id","sing","equal_effects"))
   res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
-  post = res$posterior_matrices
+  post = get_posterior_matrices(res)
 
   expect_lt(mean(abs(test$B-post$post_mean)),mean(abs(test$B-test$Bhat)))
 }
@@ -22,7 +22,7 @@ test_that("simple simulations look right; larger error", {
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
   res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
-  post = res$posterior_matrices
+  post = get_posterior_matrices(res)
 
 
   ashres = ashr::ash(test$Bhat[,1],test$Shat[,1])

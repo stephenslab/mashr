@@ -39,8 +39,8 @@ mash = function(data,
   # compute log-likehood achieved
   loglik = compute_loglik_from_matrix_and_pi(pi,lm)
   fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
-
-  m=list(posterior_matrices = posterior_matrices, loglik = loglik, fitted_g = fitted_g)
+  result = list(posterior_matrices=posterior_matrices)
+  m=list(result=result, loglik = loglik, fitted_g = fitted_g)
   class(m) = "mash"
   return(m)
 }
@@ -113,7 +113,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' @details Performs simple "condition-by-condition" analysis
 #' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
 #' May be a useful first step to identify top hits in each condition before a mash analysis.
-#' @return posterior_matrices from the ash runs
+#' @return a list similar to the output of mash, particularly including posterior matrices
 #' @export
 mash_run_1by1 = function(data){
   Bhat = data$Bhat
@@ -128,18 +128,13 @@ mash_run_1by1 = function(data){
     loglik = loglik + ashr::get_loglik(ashres) #return the sum of loglikelihoods
   }
   posterior_matrices = list(post_mean = post_mean, post_sd = post_sd, lfsr = lfsr)
-  return(list(posterior_matrices=posterior_matrices,loglik=loglik))
+  result = list(posterior_matrices = posterior_matrices)
+  m = list(result=result,loglik=loglik)
+  class(m) = "mash_1by1"
+  return(m)
 }
 
-#' Find effects that have lfsr < thresh in at least one condition
-#' @param m the mash result (from joint or 1by1 analysis)
-#' @param thresh indicates the threshold below which to set signals
-#' @return a vector containing the indices of the significant effects
-#' @export
-get_significant_results = function(m, thresh = 0.05){
-  top_lfsr = apply(m$posterior_matrices$lfsr,1,min)
-  which(top_lfsr< thresh)
-}
+
 
 #' Compute loglikelihood from a matrix of log-likelihoods and fitted pi
 #' @param pi the vector of mixture proportions

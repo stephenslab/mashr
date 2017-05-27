@@ -1,72 +1,35 @@
-#' Return matrix of Bhat values from mash object
+#' Extract fitted g from mash object
 #' @param m a mash object
-#' @param subset.eff specifies the subset of effects (rows) to include
-#' @param subset.cond specifies the subset of conditions (columns) to include
+#' @return the fitted g (a list)
 #' @export
-get_Bhat = function(m, subset.eff=NULL, subset.cond=NULL){
-  if(is.null(subset.eff)){subset.eff = 1:n_effects.mash(m)}
-  if(is.null(subset.cond)){subset.cond = 1:n_conditions.mash(m)}
-  return(m$data$Bhat[subset.eff,subset.cond])
+get_fitted_g = function(m){
+  if(class(m)=="ash"){ashr::get_fitted_g(m)}
+  return(m$fitted_g)
 }
 
-#' Return matrix of Shat values from mash object
+#' Extract posterior matrices from mash object
 #' @param m a mash object
-#' @param subset.eff specifies the subset of effects (rows) to include
-#' @param subset.cond specifies the subset of conditions (columns) to include
+#' @return a list of posterior matrices computed
 #' @export
-get_Shat = function(m, subset.eff=NULL, subset.cond=NULL){
-  if(is.null(subset.eff)){subset.eff = 1:n_effects.mash(m)}
-  if(is.null(subset.cond)){subset.cond = 1:n_conditions.mash(m)}
-  return(m$data$Shat[subset.eff,subset.cond])
+get_posterior_matrices = function(m){
+  return(m$result$posterior_matrices)
 }
 
-
-#' Return matrix of Z scores from mash object
+#' Extract lfdr from mash object
 #' @param m a mash object
-#' @param subset.eff specifies the subset of effects (rows) to include
-#' @param subset.cond specifies the subset of conditions (columns) to include
+#' @return a matrix of lfsr values, with (j,r)th entry corresponding to the lfsr for effect j in condition r
 #' @export
-get_Z = function(m, subset.eff=NULL, subset.cond=NULL){
-  return(get_Bhat(m,subset.eff,subset.cond)/ get_Shat(m,subset.eff,subset.cond))
+get_lfsr = function(m){
+  return(ashr:::compute_lfsr(m$result$posterior_matrices$post_neg,
+                             m$result$posterior_matrices$post_zero))
 }
 
-
-
-#' Return the fitted g from a mash object
-#' @param m a mash object, as returned by \code{mash}
+#' Find effects that have lfsr < thresh in at least one condition
+#' @param m the mash result (from joint or 1by1 analysis)
+#' @param thresh indicates the threshold below which to set signals
+#' @return a vector containing the indices of the significant effects
 #' @export
-get_mash_fitted_g = function(m){return(list(pi=m$pi, Ulist = get_expanded_cov(m)))}
-
-#' Return the posterior matrices from a mash object
-#' @param m a mash object, as returned by \code{mash}
-#' @param analysis which analysis to return results from; can be "mash" or "ash"
-#' @export
-get_posterior_matrices = function(m,analysis = "mash"){return(m$posterior_matrices[[analysis]])}
-
-
-
-#' Extract grid from m
-#' @param m a mash object
-#' @return the grid in m
-#' @export
-get_grid = function(m){return(m$grid)}
-
-#' Extract covariance matrices in m
-#' @param m a mash object
-#' @return a list of covariance matrices in m
-#' @export
-get_cov = function(m){return(m$Ulist)}
-
-#' Get expanded list of covariance matrices in m, expanded by grid
-#' @param m a mash object
-#' @return a list of covariance matrices
-#' This takes the covariance matrix in m and multiplies them by the grid in m
-#' If a pointmass is included in m then it adds a null component
-#' @export
-get_expanded_cov = function(m){
-  if(is.null(m$grid)){stop("need to specify grid using mash_add_grid()")}
-  if(is.null(m$Ulist)){stop("need to specify some covariance matrices using add_cov()")}
-  scaled_Ulist = scale_cov(m$Ulist, m$grid)
-  if(m$usepointmass){scaled_Ulist = c(list(null=cov_all_zeros(m$data)),scaled_Ulist)}
-  return(scaled_Ulist)
+get_significant_results = function(m, thresh = 0.05){
+  top_lfsr = apply(get_lfsr(m),1,min)
+  which(top_lfsr< thresh)
 }

@@ -53,6 +53,7 @@ and a loglik which indicates how well it fits.
   U.c = cov_canonical(data)  
   m.c = mash(data, U.c)
   m.c$loglik
+  get_posterior_matrices(m.c)
 ```
 # Step 3: set up data driven covariance 
 
