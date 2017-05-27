@@ -24,7 +24,7 @@ This vignette is being used to test refactoring as it is done.
   Ulist = cov_canonical(data)
   m2 = mash_new(data$Bhat, data$Shat, Ulist)
   identical(m$posterior_matrices[["mash"]], m2$posterior_matrices)
-  
+  identical(mash_compute_loglik(m),m2$loglik)
 ```
 
   

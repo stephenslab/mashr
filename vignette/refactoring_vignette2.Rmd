@@ -1,0 +1,29 @@
+---
+title: "Refactor vignette 2"
+author: "Matthew Stephens"
+date: "May 27, 2017"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goal
+
+This vignette is a second one to test refactoring as it is done.
+
+```{r}
+  library("mashr2")
+  set.seed(1)
+  data = simple_sims(1000,5,1)
+  m.1by1 = mash_run_1by1_new(data$Bhat,data$Shat)
+  top_1by1_hits = get_significant_results(m.1by1)
+  U1 = cov_canonical(data)
+  U2 = cov_data_driven(data,top_1by1_hits)
+  m1 = mash_new(data$Bhat, data$Shat, U1)
+  m2 = mash_new(data$Bhat, data$Shat, U2)
+  m3 = mash_new(data$Bhat, data$Shat, c(U1,U2))
+```
+
