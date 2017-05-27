@@ -34,6 +34,9 @@ data2cov_ed = function(data,  subset=NULL, Ulist_init=NULL){
   Ulist_ed
 }
 
+#' For a vector x, return the rank one matrix xx'
+r1cov=function(x){x %*% t(x)}
+
 
 #' produce list of rank 1 covariance matrices corresponding to rows of f
 #' @param f a matrix of factors (each row is a factor)
