@@ -1,0 +1,167 @@
+#' Apply mash method to data
+#' @param data a mash data object containing the Bhat matrix and standard errors
+#' @param Ulist a list of covariance matrices to use
+#' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
+#' @param grid vector of grid values to use (scaling factors omega in paper)
+#' @param prior indicates what penalty to use on the likelihood, if any
+#' @param optmethod name of optimization method to use
+#' @return a list with elements posterior_matrices, loglik and fitted_g
+#' @export
+mash = function(data,
+                Ulist,
+                gridmult= sqrt(2),
+                grid = NULL,
+                normalizeU = TRUE,
+                usepointmass = TRUE,
+                prior=c("uniform","nullbiased"),
+                optmethod = c("mixIP")){
+
+  optmethod = match.arg(optmethod)
+  prior = match.arg(prior)
+
+  if(missing(grid)){grid = autoselect_grid(data,gridmult)}
+  if(normalizeU){Ulist = normalize_Ulist(Ulist)}
+  xUlist = expand_cov(Ulist,grid,usepointmass)
+
+  # calculate likelihood matrix
+  lm = calc_relative_lik_matrix(data,xUlist)
+
+  # set up prior
+  prior = set_prior(ncol(lm$lik_matrix),prior)
+
+  # main fitting procedure
+  pi = optimize_pi(lm$lik_matrix,prior=prior, optmethod=optmethod)
+
+  # compute posterior matrices
+  posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)
+  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
+
+  # compute log-likehood achieved
+  loglik = compute_loglik_from_matrix_and_pi(pi,lm)
+  fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
+
+  m=list(posterior_matrices = posterior_matrices, loglik = loglik, fitted_g = fitted_g)
+  class(m) = "mash"
+  return(m)
+}
+
+#' Compute loglikelihood for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object
+#' @param data a set of data on which to compute the loglikelihood
+#' @return the log-likelihood for data computed using g
+#' @export
+mash_compute_loglik = function(g,data){
+  if(class(g)=="mash"){g = g$fitted_g}
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+  return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors))
+}
+
+#' Compute posterior matrices for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object
+#' @param data a set of data on which to compute the posterior matrices
+#' @return A list of posterior matrices
+#' @export
+mash_compute_posterior_matrices = function(g,data){
+  if(class(g)=="mash"){g = g$fitted_g}
+
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+
+  posterior_weights = compute_posterior_weights(g$pi, lm_res$lik_matrix)
+  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
+
+  return(posterior_matrices)
+}
+
+
+#' sets prior to be a vector of length K depending on character string
+#' prior can be "nullbiased" or "uniform"
+set_prior = function(K,prior){
+  if(is.character(prior)){
+    if(prior=="uniform"){
+      prior=rep(1,K)
+    } else if(prior=="nullbiased"){
+      prior=rep(1,K); prior[1]=10
+    }
+  } else if(length(prior)!=K){
+    stop("prior is wrong length")
+  }
+  return(prior)
+}
+
+#' Create expanded list of covariance matrices expanded by grid, Sigma_{lk} = omega_l U_k
+#' @param Ulist a list of covarance matrices
+#' @param grid a grid of scalar values by which the covariance matrices are to be sc
+#' @param usepointmass if TRUE adds a point mass at 0 (null component) to the list
+#' @return A list of covariance matrices
+#' This takes the covariance matrices in Ulist and multiplies them by the grid values
+#' If usepointmass is TRUE then it adds a null component.
+#' @export
+expand_cov = function(Ulist,grid,usepointmass=TRUE){
+  scaled_Ulist = scale_cov(Ulist, grid)
+  R = nrow(Ulist[[1]])
+  if(usepointmass){
+    scaled_Ulist = c(list(null=matrix(0,nrow=R,ncol=R)),scaled_Ulist)
+  }
+  return(scaled_Ulist)
+}
+
+#' @title Perform condition-by-condition analyses
+#' @param Bhat an n by R matrix of observations (n units in R conditions)
+#' @param Shat an n by R matrix of standard errors (n units in R conditions)
+#' @details Performs simple "condition-by-condition" analysis
+#' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
+#' May be a useful first step to identify top hits in each condition before a mash analysis.
+#' @return posterior_matrices from the ash runs
+#' @export
+mash_run_1by1 = function(data){
+  Bhat = data$Bhat
+  Shat = data$Shat
+  post_mean= post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
+  loglik = 0
+  for(i in 1:ncol(Bhat)){
+    ashres = ashr::ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
+    post_mean[,i] = ashr::get_pm(ashres)
+    post_sd[,i] = ashr::get_psd(ashres)
+    lfsr[,i] = ashr::get_lfsr(ashres)
+    loglik = loglik + ashr::get_loglik(ashres) #return the sum of loglikelihoods
+  }
+  posterior_matrices = list(post_mean = post_mean, post_sd = post_sd, lfsr = lfsr)
+  return(list(posterior_matrices=posterior_matrices,loglik=loglik))
+}
+
+#' Find effects that have lfsr < thresh in at least one condition
+#' @param m the mash result (from joint or 1by1 analysis)
+#' @param thresh indicates the threshold below which to set signals
+#' @return a vector containing the indices of the significant effects
+#' @export
+get_significant_results = function(m, thresh = 0.05){
+  top_lfsr = apply(m$posterior_matrices$lfsr,1,min)
+  which(top_lfsr< thresh)
+}
+
+#' Compute loglikelihood from a matrix of log-likelihoods and fitted pi
+#' @param pi the vector of mixture proportions
+#' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
+#' @export
+compute_loglik_from_matrix_and_pi = function(pi,lm){
+  return(sum(log(lm$lik_matrix %*% pi)+lm$lfactors))
+}
+
+
+#' Initialize mixture proportions - currently by making them all equal
+#' @param K the number of components
+#' @return a vector of length K whose elements are positive and sums to 1
+initialize_pi = function(K){
+  return(rep(1/K,K))
+}
+
+
+#' Automatically select
+#' TODO: this is just a place-holder
+autoselect_grid = function(data,gridmult){
+  message("autoselect_grid is a place-holder\n")
+  return(c(0.5,1,2))
+}
+
