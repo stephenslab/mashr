@@ -196,3 +196,14 @@ normalize_cov = function(U){
 #' normalize a list of covariance matrices by
 #' applying \link{\code{normalize_cov}} to each element
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}
+
+#' Create names for covariance matrices
+#' @param names a string
+#' @param suffixes
+#' Adds _suffixes to names for each element of suffixes
+make_names = function(names,suffixes){paste0(names,"_",suffixes)}
+
+check_dim = function(mat,R){
+  if(!identical(dim(mat),c(R,R))){stop("Dimension of matrix must be R by R")}
+}
+
