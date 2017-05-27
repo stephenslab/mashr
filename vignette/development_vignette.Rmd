@@ -20,6 +20,8 @@ Just set up data and run basic mash
   library("mashr2")
   set.seed(1)
   data = simple_sims(1000,5,1)
+  
+  
   m=mash_init(data$Bhat,data$Shat)
   mash_add_grid(m)
   
@@ -62,4 +64,12 @@ Thoughts:
 - could store results from more than one mash run?
 - how to copy a whole mash environment?
 
+
+```{r}
+U1 = canonical_cov(R)
+U2 = data_driven_cov(Bhat,Shat)
+U = c(U1,U2)
+pi = est_pi(Bhat,Shat,U,grid)
+
+```
 

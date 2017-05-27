@@ -1,0 +1,42 @@
+---
+title: "Introduction to mashr"
+author: "Matthew Stephens"
+date: "May 26, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Goal
+
+This vignette introduces the `mashr` software for someone who
+is familiar with the basic idea in Urbut et al.
+
+# Outline
+
+There are a few steps to a mash analysis
+
+- Read in the data
+- Set up "canonical" covariance matrices (e.g. the bmalite matrices).
+- Set up the "data-driven" covariance matrices.
+    + locate the top signals (usually by a "condition-by-condition" or "1-by-1" analysis)
+    + use these top signals to compute data-driven covariance matrices
+- Set up a grid (the omega values)
+- Fit the hierarchical model (= estimate the mixture proportions pi)
+- Compute the posterior summaries
+
+# Simple simulation
+
+Just set up data and run basic mash
+```{r}
+  library("mashr2")
+  set.seed(1)
+  data = simple_sims(1000,5,1)
+  m=mash_init(data$Bhat,data$Shat)
+  mash_add_grid(m)
+  
+ # m = mash(data$Bhat,data$Shat) # this runs mash with just canonical covariance matrices
+  mash_status(m)
+```

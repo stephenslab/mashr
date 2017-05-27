@@ -10,7 +10,7 @@ mash_add_cov(m, cov_methods = c("identity", "singletons", "equal_effects",
 \arguments{
 \item{m}{a mash object}
 
-\item{Ulist}{a list of covariance matrices to add to m}
+\item{cov_methods}{specifies which types of covariances to add to m}
 }
 \description{
 Add a list of covariance matrices to m

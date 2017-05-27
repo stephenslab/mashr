@@ -1,0 +1,30 @@
+---
+title: "refactor vignette"
+author: "Matthew Stephens"
+date: "May 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goal
+
+This vignette is being used to test refactoring as it is done.
+
+```{r}
+  library("mashr2")
+  set.seed(1)
+  data = simple_sims(1000,5,1)
+  m = mash(data$Bhat,data$Shat)
+```
+
+```{r}
+  m2 = mash_new(data$Bhat, data$Shat, m$Ulist)
+  identical(m$posterior_matrices[["mash"]], m2$posterior_matrices)
+```
+
+  
+  
+  
