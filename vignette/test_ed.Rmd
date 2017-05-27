@@ -25,7 +25,6 @@ Just set up data and run basic mash
 
 ```{r}
   m = mash_init(data$Bhat,data$Shat)
-  mash_run_1by1(m)
   mash_add_strong_signals(m,1)
   mash_add_cov_pca(m)
   mash_add_grid(m,1)

@@ -5,6 +5,7 @@
 #' @param grid vector of grid values to use (scaling factors omega in paper)
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
+#' @return a list with elements posterior_matrices, loglik and fitted_g
 #' @export
 mash_new = function(data,
                 Ulist,
@@ -20,10 +21,10 @@ mash_new = function(data,
 
   if(missing(grid)){grid = autoselect_grid(data,gridmult)}
   if(normalizeU){Ulist = normalize_Ulist(Ulist)}
-  Ulist = expand_cov(Ulist,grid,usepointmass)
+  xUlist = expand_cov(Ulist,grid,usepointmass)
 
   # calculate likelihood matrix
-  lm = calc_relative_lik_matrix(data,Ulist)
+  lm = calc_relative_lik_matrix(data,xUlist)
 
   # set up prior
   prior = set_prior(ncol(lm$lik_matrix),prior)
@@ -33,14 +34,46 @@ mash_new = function(data,
 
   # compute posterior matrices
   posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)
-  posterior_matrices = compute_posterior_matrices(data, Ulist, posterior_weights)
+  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
 
   # compute log-likehood achieved
   loglik = compute_loglik_from_matrix_and_pi(pi,lm)
+  fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
-  return(list(posterior_matrices = posterior_matrices, loglik = loglik))
-
+  m=list(posterior_matrices = posterior_matrices, loglik = loglik, fitted_g = fitted_g)
+  class(m) = "mash"
+  return(m)
 }
+
+#' Compute loglikelihood for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object
+#' @param data a set of data on which to compute the loglikelihood
+#' @return the log-likelihood for data computed using g
+#' @export
+mash_compute_loglik = function(g,data){
+  if(class(g)=="mash"){g = g$fitted_g}
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+  return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors))
+}
+
+#' Compute posterior matrices for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object
+#' @param data a set of data on which to compute the posterior matrices
+#' @return A list of posterior matrices
+#' @export
+mash_compute_posterior_matrices = function(g,data){
+  if(class(g)=="mash"){g = g$fitted_g}
+
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+
+  posterior_weights = compute_posterior_weights(g$pi, lm_res$lik_matrix)
+  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
+
+  return(posterior_matrices)
+}
+
 
 #' sets prior to be a vector of length K depending on character string
 #' prior can be "nullbiased" or "uniform"
@@ -123,3 +156,5 @@ compute_loglik_from_matrix_and_pi = function(pi,lm){
 initialize_pi = function(K){
   return(rep(1/K,K))
 }
+
+

@@ -33,3 +33,14 @@ test_that("matrix of posterior probabilities looks right; and posterior means lo
   expect_equal(rowSums(post*post_array_list$post_mean[,,2]),post_matrix[,2])
 }
 )
+
+test_that("posterior calculations on test set match original",{
+  Bhat = rbind(c(1,2,3),c(2,4,6))
+  Shat = rbind(c(1,1,1),c(2,2,2))
+  data = set_mash_data(Bhat,Shat)
+  Ulist = cov_canonical(data)
+  m = mash_new(data,Ulist)
+  expect_equal(mash_compute_posterior_matrices(m,data),m$posterior_matrices)
+}
+)
+

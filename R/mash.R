@@ -100,23 +100,6 @@ mash_compute_posterior = function(m){
   m$posterior_matrices[["mash"]] = compute_posterior_matrices(m$data, get_expanded_cov(m), m$posterior_weights)
 }
 
-#' Compute loglikelihood for fitted mash object
-#' @param m a mash object
-#' @param Bhat a matrix of Bhat values
-#' @param Shat a matrix of corresponding Shat values
-#' @details If no data are supplied, then computes log-likelihood on data in m (ie training data).
-#' If data (Bhat and Shat) are supplied then computes log-likelihood under the model fit in m.
-#' The latter might be useful for computing log-likelihood on a "test" set for example.
-#' @export
-mash_compute_loglik = function(m,Bhat=NULL, Shat=NULL){
-  if(!fitted(m)){message("You need to fit mash using mash_fit_g first"); return();}
-  if(is.null(Bhat)){return(sum(log(m$lik_matrix %*% m$pi)+m$lfactors))} else {
-    if(is.null(Shat)){message("Please supply Shat"); return();}
-    data = set_mash_data(Bhat,Shat)
-    lm_res = calc_relative_lik_matrix(data,get_expanded_cov(m))
-    return(sum(log(lm_res$lik_matrix %*% m$pi) + lm_res$lfactors))
-  }
-}
 
 #' Tests whether m is fitted
 fitted = function(m){return(!is.null(m$pi))}
