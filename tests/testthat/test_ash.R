@@ -7,7 +7,7 @@ test_that("get same result as ash", {
 
   data = set_mash_data(sim_data$Bhat, sim_data$Shat)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mashr2::mash_new(data,
+  res = mashr2::mash(data,
                      U ,
                      grid = ashr::get_fitted_g(ashres)$sd,
                      prior = "nullbiased")
@@ -22,7 +22,7 @@ test_that("get same result as ash", {
   expect_equal(post$post_neg[,1],get_np(ashres))
   expect_equal(post$post_zero[,1],get_lfdr(ashres))
 
-  m2 = mash_run_1by1_new(data)
+  m2 = mash_run_1by1(data)
   post.ash = m2$posterior_matrices
   expect_equal(post.ash$lfsr[,1], get_lfsr(ashres))
   expect_equal(post.ash$post_mean[,1], get_pm(ashres))

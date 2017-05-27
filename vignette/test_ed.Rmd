@@ -16,17 +16,17 @@ Just set up data and run basic mash
   sim_data = simple_sims(1000,5,1)
   data = set_mash_data(sim_data$Bhat,sim_data$Shat)
  
-  m.1by1 = mash_run_1by1_new(data)
+  m.1by1 = mash_run_1by1(data)
   strong = get_significant_results(m.1by1)
   
   U.dd = cov_data_driven(data)
-  m.dd = mash_new(data,U.dd)
+  m.dd = mash(data,U.dd)
    m.dd$loglik
 ```
 
 ```{r}
   U.pc = data2cov_pca(data,5,strong)
-  m.pc = mash_new(data,U.pc)
+  m.pc = mash(data,U.pc)
 
   m.pc$loglik
 ```

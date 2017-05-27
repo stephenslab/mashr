@@ -39,7 +39,7 @@ test_that("posterior calculations on test set match original",{
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = set_mash_data(Bhat,Shat)
   Ulist = cov_canonical(data)
-  m = mash_new(data,Ulist)
+  m = mash(data,Ulist)
   expect_equal(mash_compute_posterior_matrices(m,data),m$posterior_matrices)
 }
 )

@@ -29,16 +29,16 @@ Just set up data
   
 Run 1-by-1 to add the strong signals and ed covariances
 ```{r}
-  m.1by1 = mash_run_1by1_new(data$Bhat, data$Shat)
+  m.1by1 = mash_run_1by1(data$Bhat, data$Shat)
   strong = get_significant_results(m.1by1)
   U1 = cov_canonical(data)
   U2 = cov_data_driven(data, strong) # adds covariance matrices based on extreme deconvolution, initialized from pca
   
-  m.1 = mash_new(data$Bhat,data$Shat, U1)
-  m.2 = mash_new(data$Bhat,data$Shat, U2)
-  m.3 = mash_new(data$Bhat,data$Shat, c(U1,U2))
-  m.4 = mash_new(data$Bhat,data$Shat, Utrue)
-  m.5 = mash_new(data$Bhat,data$Shat, c(Utrue,U1,U2))
+  m.1 = mash(data$Bhat,data$Shat, U1)
+  m.2 = mash(data$Bhat,data$Shat, U2)
+  m.3 = mash(data$Bhat,data$Shat, c(U1,U2))
+  m.4 = mash(data$Bhat,data$Shat, Utrue)
+  m.5 = mash(data$Bhat,data$Shat, c(Utrue,U1,U2))
   m.1$loglik
   m.2$loglik
   m.3$loglik

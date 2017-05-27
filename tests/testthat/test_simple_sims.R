@@ -5,7 +5,7 @@ test_that("simple simulations look right", {
   # null, equal among conditions, present only in first condition, independent across conditions
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
-  res = mash_new(data, U,grid= c(0.5,1,2), prior="nullbiased")
+  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
   post = res$posterior_matrices
 
@@ -21,7 +21,7 @@ test_that("simple simulations look right; larger error", {
 
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
-  res = mash_new(data, U,grid= c(0.5,1,2), prior="nullbiased")
+  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
   post = res$posterior_matrices
 
 
