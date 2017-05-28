@@ -1,28 +1,3 @@
-#' Extract fitted g from mash object
-#' @param m a mash object
-#' @return the fitted g (a list)
-#' @export
-get_fitted_g = function(m){
-  if(class(m)=="ash"){ashr::get_fitted_g(m)}
-  return(m$fitted_g)
-}
-
-#' Extract posterior matrices from mash object
-#' @param m a mash object
-#' @return a list of posterior matrices computed
-#' @export
-get_posterior_matrices = function(m){
-  return(m$result$posterior_matrices)
-}
-
-#' Extract lfsr from mash object
-#' @param m a mash object
-#' @return a matrix of lfsr values, with (j,r)th entry corresponding to the lfsr for effect j in condition r
-#' @export
-get_lfsr = function(m){
-  return(m$result$posterior_matrices$lfsr)
-}
-
 #' Find effects that have lfsr < thresh in at least one condition
 #' @param m the mash result (from joint or 1by1 analysis)
 #' @param thresh indicates the threshold below which to set signals

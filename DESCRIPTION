@@ -2,7 +2,7 @@ Package: mashr2
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Who wrote it
+Author: Matthew Stephens, Sarah Urbut
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
@@ -12,5 +12,5 @@ LazyData: true
 Imports:
     mvtnorm
 Suggests:
-    testthat
+    testthat, rmeta
 RoxygenNote: 6.0.1

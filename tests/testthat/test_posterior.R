@@ -11,7 +11,7 @@ test_that("array of posteriors looks right", {
   U1 = posterior_cov(diag(0.5^2,3),Ulist[[2]])
   mu1 = posterior_mean(Bhat[2,],diag(0.5^2,3),U1)
   expect_equal(post_array_list$post_mean[2,2,],as.vector(mu1))
-  expect_equal(post_array_list$post_pos + post_array_list$post_neg + post_array_list$post_zero, array(1,dim=c(2,3,3)))
+  #expect_equal(post_array_list$post_pos + post_array_list$post_neg + post_array_list$post_zero, array(1,dim=c(2,3,3)))
 }
 )
 
@@ -40,7 +40,7 @@ test_that("posterior calculations on test set match original",{
   data = set_mash_data(Bhat,Shat)
   Ulist = cov_canonical(data)
   m = mash(data,Ulist,grid=c(0.5,1,2))
-  expect_equal(mash_compute_posterior_matrices(m,data),get_posterior_matrices(m))
+  expect_equal(mash_compute_posterior_matrices(m,data),m$result)
 }
 )
 

@@ -24,11 +24,11 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist a list of covariance matrices for each mixture component
 #' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
-#' @return post_mean JxR matrix of posterior means
-#' @return post_sd JxR matrix of posterior (marginal) standard deviations
-#' @return post_pos JxR matrix of posterior (marginal) probability of being positive
-#' @return post_neg JxR matrix of posterior (marginal) probability of being negative
-#' @return post_zero JxR matrix of posterior (marginal) probability of being zero
+#' @return PosteriorMean JxR matrix of posterior means
+#' @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
+#' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
+#' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
+#' @return lfsr JxR matrix of local false sign rates
 #' @export
 compute_posterior_matrices=function(data,Ulist,posterior_weights){
 
@@ -40,10 +40,10 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
   lfsr = ashr:::compute_lfsr(post_neg,post_zero)
-  return(list(post_mean = post_mean,
-              post_sd = post_sd,
-              post_zero = post_zero,
-              post_neg = post_neg,
+  return(list(PosteriorMean = post_mean,
+              PosteriorSD = post_sd,
+              lfdr = post_zero,
+              NegativeProb = post_neg,
               lfsr = lfsr))
 }
 
@@ -53,7 +53,7 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
 #' @return post_mean JxPxR array of posterior means
 #' @return post_mean2 JxPxR array of posterior second moments
 #' @return post_var JxPxR array of posterior variances
-#' @return post_pos JxPxR array of posterior (marginal) probability of being positive
+# #' @return post_pos JxPxR array of posterior (marginal) probability of being positive
 #' @return post_neg JxPxR array of posterior (marginal) probability of being negative
 #' @return post_zero JxPxR array of posterior (marginal) probability of being zero
 #' @export
@@ -65,7 +65,7 @@ compute_posterior_arrays=function(data,Ulist){
   post_mean=array(NA,dim=c(J,P,R))
   post_mean2 = array(NA,dim=c(J,P,R)) #mean squared value
   post_var = array(NA,dim=c(J,P,R)) #mean squared value
-  post_pos=array(NA,dim=c(J,P,R))
+  #post_pos=array(NA,dim=c(J,P,R))
   post_zero=array(NA,dim=c(J,P,R))
   post_neg=array(NA,dim=c(J,P,R))
 
@@ -79,7 +79,7 @@ compute_posterior_arrays=function(data,Ulist){
       post_mean[j,p,]= mu1
       post_var[j,p,] = diag(U1)
       post_mean2[j,p,] = mu1^2 + diag(U1) #diag(U1) is the posterior variance
-      post_pos[j,p,] = ifelse(post_var[j,p,]==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=F))
+     # post_pos[j,p,] = ifelse(post_var[j,p,]==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=F))
       post_neg[j,p,] = ifelse(post_var[j,p,]==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=T))
       post_zero[j,p,] = ifelse(post_var[j,p,]==0,1,0)
     }
@@ -88,7 +88,7 @@ compute_posterior_arrays=function(data,Ulist){
               post_var = post_var,
               post_zero=post_zero,
               post_mean2= post_mean2,
-              post_pos=post_pos,
+      #        post_pos=post_pos,
               post_neg=post_neg))
 }
 

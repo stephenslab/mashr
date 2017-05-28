@@ -1,6 +1,6 @@
 # TODO:
 #   - make covariance matrices so canoncical ones take R instead of data
-# - make posterior matrices include lfsr
+# - replace get_posterior_matrices with individual access function
 #
 #
 # Thoughts:

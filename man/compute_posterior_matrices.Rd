@@ -14,13 +14,13 @@ compute_posterior_matrices(data, Ulist, posterior_weights)
 \item{posterior_weights}{the posterior probabilities of each mixture component in Ulist for the data}
 }
 \value{
-post_mean JxR matrix of posterior means
+PosteriorMean JxR matrix of posterior means
 
-post_sd JxR matrix of posterior (marginal) standard deviations
+PosteriorSD JxR matrix of posterior (marginal) standard deviations
 
-post_pos JxR matrix of posterior (marginal) probability of being positive
+NegativeProb JxR matrix of posterior (marginal) probability of being negative
 
-post_neg JxR matrix of posterior (marginal) probability of being negative
+ZeroProb JxR matrix of posterior (marginal) probability of being zero
 
-post_zero JxR matrix of posterior (marginal) probability of being zero
+lfsr JxR matrix of local false sign rates
 }

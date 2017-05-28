@@ -5,7 +5,7 @@
 #' @param grid vector of grid values to use (scaling factors omega in paper)
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
-#' @return a list with elements posterior_matrices, loglik and fitted_g
+#' @return a list with elements result, loglik and fitted_g
 #' @export
 mash = function(data,
                 Ulist,
@@ -39,8 +39,8 @@ mash = function(data,
   # compute log-likehood achieved
   loglik = compute_loglik_from_matrix_and_pi(pi,lm)
   fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
-  result = list(posterior_matrices=posterior_matrices)
-  m=list(result=result, loglik = loglik, fitted_g = fitted_g)
+
+  m=list(result=posterior_matrices, loglik = loglik, fitted_g = fitted_g)
   class(m) = "mash"
   return(m)
 }
@@ -127,9 +127,11 @@ mash_run_1by1 = function(data){
     lfsr[,i] = ashr::get_lfsr(ashres)
     loglik = loglik + ashr::get_loglik(ashres) #return the sum of loglikelihoods
   }
-  posterior_matrices = list(post_mean = post_mean, post_sd = post_sd, lfsr = lfsr)
-  result = list(posterior_matrices = posterior_matrices)
-  m = list(result=result,loglik=loglik)
+  posterior_matrices = list(PosteriorMean = post_mean,
+                            PosteriorSD = post_sd,
+                            lfsr = lfsr)
+
+  m = list(result=posterior_matrices,loglik=loglik)
   class(m) = "mash_1by1"
   return(m)
 }

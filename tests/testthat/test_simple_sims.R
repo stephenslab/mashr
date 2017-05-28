@@ -7,9 +7,7 @@ test_that("simple simulations look right", {
   U = cov_canonical(data, c("id","sing","equal_effects"))
   res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
-  post = get_posterior_matrices(res)
-
-  expect_lt(mean(abs(test$B-post$post_mean)),mean(abs(test$B-test$Bhat)))
+  expect_lt(mean(abs(test$B-ashr::get_pm(res))),mean(abs(test$B-test$Bhat)))
 }
 )
 
@@ -22,17 +20,15 @@ test_that("simple simulations look right; larger error", {
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
   res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
-  post = get_posterior_matrices(res)
-
 
   ashres = ashr::ash(test$Bhat[,1],test$Shat[,1])
   #plot(ashr::get_pm(ashres),post$post_mean[,1], col = rep(1:4,100))
 
   expect_lt( #check mean error is better than no shrinkage
-    mean(abs(test$B-post$post_mean)),
+    mean(abs(test$B-ashr::get_pm(res))),
     mean(abs(test$B-test$Bhat)))
   expect_lt( #check mean error is better than ash for condition 1
-    mean(abs(test$B[,1]-post$post_mean[,1])),
+    mean(abs(test$B[,1]-ashr::get_pm(res)[,1])),
     mean(abs(test$B[,1]-ashr::get_pm(ashres))))
 
 

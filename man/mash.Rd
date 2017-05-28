@@ -22,7 +22,7 @@ mash(data, Ulist, gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
 \item{optmethod}{name of optimization method to use}
 }
 \value{
-a list with elements posterior_matrices, loglik and fitted_g
+a list with elements result, loglik and fitted_g
 }
 \description{
 Apply mash method to data
