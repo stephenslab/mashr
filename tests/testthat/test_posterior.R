@@ -19,7 +19,7 @@ test_that("matrix of posterior probabilities looks right; and posterior means lo
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = set_mash_data(Bhat,Shat)
-  Ulist = compute_cov(data,c("id","sing","equal_ef","null"))
+  Ulist = cov_canonical(data,c("id","sing","equal_ef","null"))
   mm = calc_lik_matrix(data, Ulist)
   K = length(Ulist)
   prior = rep(1/K,K)

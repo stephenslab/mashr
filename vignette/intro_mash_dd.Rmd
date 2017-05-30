@@ -1,0 +1,80 @@
+---
+title: 'Introduction to mash: data-driven covariances'
+author: "Matthew Stephens"
+date: "May 30, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Goal
+
+This vignette introduces the use of data-driven covariance
+matries in `mashr`. You should read the \link{intro_mash} vignette before this.
+
+# Outline
+
+Recall the four major steps in a mash analysis:
+- Read in the data
+- Set up the covariance matrices to be used
+- Fit the model
+- Extract posterior summaries and other quantities of interest
+
+Here we pay more attention to Step 2, which can be split into
+two steps:
+- Set up the "canonical" covariance matrices.
+- Set up the "data-driven" covariance matrices.
+
+The first of these steps ("canonical" covariance matrices) is straightforward
+using `cov_canonical`, as illustrated in \link{intro_mash}.
+
+Setting up the data-driven matrices is slightly more complex,
+and there are multiple possible approaches. This vignette illustrates
+one approach.
+
+# Data-driven covariances
+
+
+    + locate the top signals (usually by a "condition-by-condition" or "1-by-1" analysis)
+    + use these top signals to compute data-driven covariance matrices
+
+
+# Step 2: set up the covariance matrices to be used
+
+The following sets up canonical covariances (`U.c`) and runs `mash`.
+The returned object is a list, including a loglik that
+indicates how well it fits.
+```{r}
+  U.c = cov_canonical(data)  
+  m.c = mash(data, U.c)
+  m.c$loglik
+```
+
+# Step 3: set up data driven covariance 
+
+To set up the data driven covariances we first have to select a set of "strong" signals to learn them from. The simplest way to do this is to run a condition-by-condition (1by1) analysis first. Here we select the strong signals as those with lfsr<0.05 in any condition in the 1by1 analysis.
+```{r}
+  m.1by1 = mash_run_1by1(data)
+  strong = get_significant_results(m.1by1,0.05)
+```
+
+Now use these to compute data-driven covariances (U.dd) and fit mash using both canonical and data-driven covariances. In this case they don't help the log-likelihood much as the data were simulated with only canonical covariances.
+```{r}
+  U.dd = cov_data_driven(data,subset=strong)
+  m.dd = mash(data, c(U.c,U.dd))
+  m.dd$loglik
+
+```
+And we can compare how many significant results we get
+```{r}
+  length(get_significant_results(m.dd,0.05))
+  length(strong)
+  length(get_significant_results(m.c))
+```
+
+To get lfsr for every effect in every condition use `get_lfsr`:
+```{r}
+  head(get_lfsr(m.dd))
+```

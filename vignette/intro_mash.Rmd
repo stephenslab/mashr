@@ -12,74 +12,92 @@ knitr::opts_chunk$set(echo = TRUE)
 # Goal
 
 This vignette introduces the `mashr` software for someone who
-is familiar with the basic idea in Urbut et al.
+is familiar with the basic idea in Urbut et al. In this first vignette we use only the "canonical" covariance matries to simplify presentation. 
+However, an important aspect of `mashr` is the use of data-driven covariance
+matrices that are learned from the data. See \link{intro_mash2_data_driven}.
 
 # Outline
 
-There are a few steps to a mash analysis
+There are essentially four steps to a mash analysis
 
 - Read in the data
-- Set up "canonical" covariance matrices (e.g. the bmalite matrices).
-- Set up the "data-driven" covariance matrices.
-    + locate the top signals (usually by a "condition-by-condition" or "1-by-1" analysis)
-    + use these top signals to compute data-driven covariance matrices
-- Fit the model and compute posterior summaries
+- Set up the covariance matrices to be used
+- Fit the model
+- Extract posterior summaries and other quantities of interest
 
 Here we do each of these step-by-step.
-
-# Simple simulation
-
-First we simulate some data for illustration
+However, first we simulate some data for illustration.
 ```{r}
   library("mashr2")
   set.seed(1)
   simdata = simple_sims(1000,5,1)
 ```
 
-# Step 1: Set up a mash data object
+# Step 1: Read in the data
 
-Mash needs a matrix of effects and a matrix of standard errors. 
-The following just sets up an object called `data` with those two pieces of information in it:
+To run `mash` you
+need data consisting of a matrix of effects (`Bhat`)
+and a matrix of standard errors (`Shat`), for $J$ effects (rows) in $R$ conditions (columns).
+
+[If you have only access to $Z$ scores, you can set `Bhat` to the Z scores,
+and set `Shat` to be the matrix with all 1s]. 
+
+The simulation above created both these matrices for us (in `simdata$Bhat` and `simdata$Shat`). To get these ready for applying `mash` you
+must first use `set_mash_data` to create a data object witho those two pieces of information:
 ```{r}
    data = set_mash_data(simdata$Bhat, simdata$Shat)
 ```
 
-# Step 2: run with canonical covariance matrices
+# Step 2: Set up the covariance matrices 
 
-The following sets up canonical covariances (`Uc`) and runs `mash`.
-The returned object is a list, including a loglik that
-indicates how well it fits.
+There are two types of covariance matrix you can use in `mash`: 
+"canonical" and "data-driven". The canonical ones are very easy to set
+up and so we use those here for illustration. However,
+in applications you will likely also want to use data-driven matrices, and this is an important feature of `mash`. See the \link{intro_mash_dd} vignette for more details on how to do this.
+
+The function to set up canonical covariance matries is `cov_canonical`. The following sets up canonical covariances in `U.c` (we used `.c` to indicate canonical), which is a named list of matrices.
 ```{r}
   U.c = cov_canonical(data)  
+  names(U.c)
+```
+
+# Step 3: fit the model
+
+Having set up the data and covariance matrices
+you are ready to fit the model using the `mash` function:
+```{r}
   m.c = mash(data, U.c)
-  m.c$loglik
 ```
+This can take a little time. 
+What this does is to fit a mixture model to the data, estimating
+the mixture proportions. Specifically the model is that the true effects
+follow a mixture of multivariate normal distributions:
+$$B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)$$
+where the $\omega_l$ are scaling factors set by the "grid" parameter in `mash` and the $U_k$ are the covariance matrices (here specified by `U.c`).
 
-# Step 3: set up data driven covariance 
+# Step 4: Extract Posterior Summaries
 
-To set up the data driven covariances we first have to select a set of "strong" signals to learn them from. The simplest way to do this is to run a condition-by-condition (1by1) analysis first. Here we select the strong signals as those with lfsr<0.05 in any condition in the 1by1 analysis.
+You can extract estimates (posterior means and posterior standard deviations)
+and measures of significance (local false sign rates) using functions like
+`get_pm` (posterior mean), `get_psd` (posteriore standard deviation)
+and `get_lfsr` (local false sign rate):
 ```{r}
-  m.1by1 = mash_run_1by1(data)
-  strong = get_significant_results(m.1by1,0.05)
+  head(get_lfsr(m.c))
+  head(get_pm(m.c))
+  head(get_psd(m.c))
 ```
+Each of these are $J \times R$ matrices.
 
-Now use these to compute data-driven covariances (U.dd) and fit mash using both canonical and data-driven covariances. In this case they don't help the log-likelihood much as the data were simulated with only canonical covariances.
+Use `get_significant_results` to find the indices of effects that are "significant", which here means they have lfsr<t in at least one condition, where t is a threshold you specify (default 0.05).
 ```{r}
-  U.dd = cov_data_driven(data,subset=strong)
-  m.dd = mash(data, c(U.c,U.dd))
-  m.dd$loglik
-
-```
-And we can compare how many significant results we get
-```{r}
-  length(get_significant_results(m.dd,0.05))
-  length(strong)
+  head(get_significant_results(m.c))
   length(get_significant_results(m.c))
 ```
 
-To get lfsr for every effect in every condition use `get_lfsr`:
+
+Use `get_loglik` to find the log-likelihood of the fit (this will only be useful when you have other fits to compare it with!)
 ```{r}
-  head(get_lfsr(m.dd))
+  get_loglik(m.c)
 ```
 
 

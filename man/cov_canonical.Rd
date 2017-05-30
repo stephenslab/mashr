@@ -2,31 +2,33 @@
 % Please edit documentation in R/compute_covs.R
 \name{cov_canonical}
 \alias{cov_canonical}
-\title{Compute a list of covariance matrices using supplied functions, and put them all together}
+\title{Compute a list of canonical covariance matrices}
 \usage{
 cov_canonical(data, cov_methods = c("identity", "singletons", "equal_effects",
-  "simple_het"), Ulist = NULL)
+  "simple_het"))
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}
 
-\item{cov_methods}{a named list defining the methods (functions and arguments) to be used}
-
-\item{Ulist}{optionally, an existing list of matrices to which the newly computed matrices will be added}
+\item{cov_methods}{a vector of strings indicating the matrices to be used:
+"identity" for the identity (effects are independent among conditions);
+"singletons" for the set of matrices with just one non-zero entry x_{jj} = 1 (j=1,...,R); (effect specific to condition j);
+"equal_effects" for the matrix of all 1s (effects are equal among conditions);
+"simple_het" for a set of matrices with 1s on the diagonal and all off-diagonal elements equal to 0.25, 0.5 or 0.75; see \code{cov_simple_het} for details; (effects are correlated among conditions).}
 }
 \value{
 a list of covariance matrices
 }
 \description{
-Compute a list of covariance matrices using supplied functions, and put them all together
+Compute a list of canonical covariance matrices
 }
 \details{
-Each element of methods may be either a character string which names a pre-defined method (see \code{cov_methods}) or a list with elements fn and args, specifying the function to call, and any additional arguments
+The default is that this function computes covariance matrices corresponding
+to the "bmalite" models.
 }
 \examples{
 data = set_mash_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
- cov_canonical(data,"id")
+ cov_canonical(data)
  cov_canonical(data,"singletons")
  cov_canonical(data,c("id","sing")) # can use partial matching of names
- cov_canonical(data,list("sing","id",eg = list(fn = cov_simple_het, args= list(corr=c(0.1,0.2)))))
 }
