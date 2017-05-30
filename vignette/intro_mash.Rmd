@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This vignette introduces the `mashr` software for someone who
 is familiar with the basic idea in Urbut et al. In this first vignette we use only the "canonical" covariance matries to simplify presentation. 
 However, an important aspect of `mashr` is the use of data-driven covariance
-matrices that are learned from the data. See \link{intro_mash2_data_driven}.
+matrices that are learned from the data, so when you are done here you should look at [the data-driven vignette](intro_mash_dd.html).
 
 # Outline
 
@@ -30,8 +30,10 @@ However, first we simulate some data for illustration.
 ```{r}
   library("mashr2")
   set.seed(1)
-  simdata = simple_sims(1000,5,1)
+  simdata = simple_sims(500,5,1)
 ```
+This simulation routine creates a dataset with 5 conditions, and four different types of effect: null, independent among conditions, condition-specific in condition 1, and shared (equal effects in all conditions). It creates 500 effects of each type for a total of 2000 effects.
+
 
 # Step 1: Read in the data
 
@@ -53,7 +55,7 @@ must first use `set_mash_data` to create a data object witho those two pieces of
 There are two types of covariance matrix you can use in `mash`: 
 "canonical" and "data-driven". The canonical ones are very easy to set
 up and so we use those here for illustration. However,
-in applications you will likely also want to use data-driven matrices, and this is an important feature of `mash`. See the \link{intro_mash_dd} vignette for more details on how to do this.
+in applications you will likely also want to use data-driven matrices, and this is an important feature of `mash`. See [the data-driven vignette](intro_mash_dd.html) for more details on how to do this.
 
 The function to set up canonical covariance matries is `cov_canonical`. The following sets up canonical covariances in `U.c` (we used `.c` to indicate canonical), which is a named list of matrices.
 ```{r}
@@ -88,19 +90,36 @@ and `get_lfsr` (local false sign rate):
 ```
 Each of these are $J \times R$ matrices.
 
-Use `get_significant_results` to find the indices of effects that are "significant", which here means they have lfsr<t in at least one condition, where t is a threshold you specify (default 0.05).
+Use `get_significant_results` to find the indices of effects that are "significant", which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is
+ordered from most significant to least significant.
 ```{r}
   head(get_significant_results(m.c))
   length(get_significant_results(m.c))
 ```
 
 
+## Measure of fit (log-likelihood)
+
 Use `get_loglik` to find the log-likelihood of the fit (this will only be useful when you have other fits to compare it with!)
 ```{r}
   get_loglik(m.c)
 ```
 
+## Estimated mixture proportions
+
+Use `get_estimated_pi` to extract the estimates of the mixture proportions
+for different types of covariance matrix:
+```{r}
+  get_estimated_pi(m.c)
+```
+
+Here we can see most of the mass is on the null, identity, singletons_1 (which corresponds to effects that are specific to condition 1) and equal_effects. This reassuringly matches the way that these data were generated.
 
 
+## Metaplot
 
+The following produces a meta-plot based on the posterior means and posterior variances of an effect. Here we look at the most significant result.
+```{r}
+mash_plot_meta(m.c,get_significant_results(m.c)[1])
+```
 

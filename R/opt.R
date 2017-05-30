@@ -7,7 +7,7 @@
 #' @return numeric vector specifying the optimal mixture weights
 optimize_pi = function(matrix_lik, pi_init = NULL,
                        prior=NULL,
-                       optmethod=c("mixEM","mixIP"),
+                       optmethod=c("mixIP","cxxMixSquarem"),
                        control=list() ){
   optmethod = match.arg(optmethod)
   K = ncol(matrix_lik)

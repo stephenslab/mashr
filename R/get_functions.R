@@ -3,11 +3,14 @@
 #' Find effects that have lfsr < thresh in at least one condition
 #' @param m the mash result (from joint or 1by1 analysis)
 #' @param thresh indicates the threshold below which to set signals
-#' @return a vector containing the indices of the significant effects
+#' @param sig_fn the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr
+#' @return a vector containing the indices of the significant effects, by order of most significant to least
 #' @export
-get_significant_results = function(m, thresh = 0.05){
-  top_lfsr = apply(get_lfsr(m),1,min)
-  which(top_lfsr< thresh)
+get_significant_results = function(m, thresh = 0.05, sig_fn=ashr::get_lfsr){
+  top = apply(sig_fn(m),1,min) #find top effect in each condition
+  sig = which(top < thresh)
+  ord = order(top[sig],decreasing=FALSE)
+  sig[ord]
 }
 
 

@@ -17,7 +17,7 @@ simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
   b2 = rnorm(nsamp)
   B.one[,1] = b2
 
-  B = rbind(B.id, B.all, B.zero, B.one)
+  B = rbind(B.zero, B.id, B.one, B.all)
 
   Shat = matrix(err_sd, nrow=nrow(B), ncol=ncol(B))
   E = matrix(rnorm(length(Shat), mean=0, sd=Shat), nrow=nrow(B),ncol=ncol(B))

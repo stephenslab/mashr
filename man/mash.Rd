@@ -6,7 +6,7 @@
 \usage{
 mash(data, Ulist, gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
   usepointmass = TRUE, prior = c("nullbiased", "uniform"),
-  optmethod = c("mixIP"))
+  optmethod = c("mixIP", "cxxMixSquareem"))
 }
 \arguments{
 \item{data}{a mash data object containing the Bhat matrix and standard errors}

@@ -1,0 +1,58 @@
+---
+title: "Simulation with non-canonical matrices"
+author: "Matthew Stephens"
+date: "May 26, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Goal
+
+To try out some simulations that don't match the canonical covariance matrices and illustrate how the data driven matrices help.
+
+# Simple simulation
+
+Here the function `simple_sims_2` simulates data in five conditions
+with just two types of effect:
+1. shared effects only in the first two conditions; and 2. shared effects only in the last three conditions.
+```{r}
+  library("mashr2")
+  set.seed(1)
+  simdata = simple_sims2(1000,1)
+  true.U1 = cbind(c(1,1,0,0,0),c(1,1,0,0,0),rep(0,5),rep(0,5),rep(0,5))
+  true.U2 = cbind(rep(0,5),rep(0,5),c(0,0,1,1,1),c(0,0,1,1,1),c(0,0,1,1,1))
+  U.true = list(true.U1 = true.U1, true.U2 = true.U2)
+```
+  
+# Simple simulation
+
+Run 1-by-1 to add the strong signals and ED covariances
+```{r}
+  data = set_mash_data(simdata$Bhat, simdata$Shat)
+  m.1by1 = mash_1by1(data)
+  strong = get_significant_results(m.1by1)
+  U.c = cov_canonical(data)
+  U.pca = cov_pca(data,5,strong)
+  U.ed = cov_ed(data,U.pca,strong)
+   # computes covariance matrices based on extreme deconvolution, initialized from pca
+  
+  m.c = mash(data, U.c)
+  m.ed = mash(data, U.ed)
+  m.c.ed = mash(data, c(U.c,U.ed))
+  m.true = mash(data, U.true)
+  
+  get_loglik(m.c)
+  get_loglik(m.ed)
+  get_loglik(m.c.ed)
+  get_loglik(m.true)
+```
+
+
+The log likelihood is much better from data-driven than canonical covariances. This is good! Indeed, here the data-driven fit is
+very slightly better fit than the true matrices, but only very slightly.
+
+

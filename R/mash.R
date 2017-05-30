@@ -14,7 +14,7 @@ mash = function(data,
                 normalizeU = TRUE,
                 usepointmass = TRUE,
                 prior=c("nullbiased","uniform"),
-                optmethod = c("mixIP")){
+                optmethod = c("mixIP","cxxMixSquareem")){
 
   optmethod = match.arg(optmethod)
   prior = match.arg(prior)
@@ -115,7 +115,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' May be a useful first step to identify top hits in each condition before a mash analysis.
 #' @return a list similar to the output of mash, particularly including posterior matrices
 #' @export
-mash_run_1by1 = function(data){
+mash_1by1 = function(data){
   Bhat = data$Bhat
   Shat = data$Shat
   post_mean= post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
