@@ -15,7 +15,6 @@ get_significant_results(m, thresh = 0.05, sig_fn = get_lfsr)
 }
 \value{
 a vector containing the indices of the significant effects, by order of most significant to least
-importFrom ashr get_lfsr
 }
 \description{
 Find effects that have lfsr < thresh in at least one condition

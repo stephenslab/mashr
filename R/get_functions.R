@@ -5,7 +5,7 @@
 #' @param thresh indicates the threshold below which to set signals
 #' @param sig_fn the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr
 #' @return a vector containing the indices of the significant effects, by order of most significant to least
-#' importFrom ashr get_lfsr
+#' @importFrom ashr get_lfsr
 #' @export
 get_significant_results = function(m, thresh = 0.05, sig_fn=get_lfsr){
   top = apply(sig_fn(m),1,min) #find top effect in each condition

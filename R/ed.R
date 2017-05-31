@@ -12,7 +12,7 @@
 #' @details This is a wrapper to ExtremeDeconvolution::extreme_deconvolution
 #' It fixes the projection to be the identity, and the means to be 0
 #'
-#' importFrom ExtremeDeconvolution extreme_deconvolution
+#' @importFrom ExtremeDeconvolution extreme_deconvolution
 #' @export
 ed_wrapper = function(data, Ulist_init, subset=NULL){
   if(is.null(subset)){subset = 1:n_effects(data)}
