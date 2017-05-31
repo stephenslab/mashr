@@ -5,6 +5,7 @@
 #' @param optmethod a string, giving name of optimization function to use
 #' @param control a list of parameters to be passed to optmethod
 #' @return numeric vector specifying the optimal mixture weights
+#' @importFrom assertthat are_equal
 optimize_pi = function(matrix_lik, pi_init = NULL,
                        prior=NULL,
                        optmethod=c("mixIP","mixEM","cxxMixSquarem"),
@@ -13,10 +14,8 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
   K = ncol(matrix_lik)
   if(missing(prior)){prior = rep(1,K)}
   if(missing(pi_init)){pi_init = initialize_pi(K)}
-  assertthat::are_equal(length(pi_init),K)
-  assertthat::are_equal(length(prior),K)
-
-  library("ashr") # I didn't manage to get do.call to work without this
+  are_equal(length(pi_init),K)
+  are_equal(length(prior),K)
   res = do.call(optmethod, args= list(matrix_lik = matrix_lik, prior=prior, pi_init = pi_init,control=control))
   return(res$pihat)
 }

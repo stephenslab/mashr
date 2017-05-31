@@ -5,9 +5,10 @@
 #' @param Ulist list of prior covariance matrices
 #' @param log if true computes log-likelihood
 #' @return P vector of multivariate normal likelihoods, with pth element p(bhat | Ulist[p], V)
+#' @importFrom mvtnorm dmvnorm
 #' @export
 calc_lik_vector=function(bhat,V,Ulist,log=FALSE){
-  sapply(seq(1:length(Ulist)),function(p){mvtnorm::dmvnorm(x=bhat, sigma=Ulist[[p]] + V,log=log)})
+  sapply(seq(1:length(Ulist)),function(p){dmvnorm(x=bhat, sigma=Ulist[[p]] + V,log=log)})
 }
 
 #' @title calc_lik_matrix

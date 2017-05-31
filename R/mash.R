@@ -143,6 +143,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
 #' May be a useful first step to identify top hits in each condition before a mash analysis.
 #' @return a list similar to the output of mash, particularly including posterior matrices
+#' importFrom ashr ash get_lm get_psd get_lfsr get_loglik
 #' @export
 mash_1by1 = function(data){
   Bhat = data$Bhat
@@ -150,11 +151,11 @@ mash_1by1 = function(data){
   post_mean= post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
   loglik = 0
   for(i in 1:ncol(Bhat)){
-    ashres = ashr::ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
-    post_mean[,i] = ashr::get_pm(ashres)
-    post_sd[,i] = ashr::get_psd(ashres)
-    lfsr[,i] = ashr::get_lfsr(ashres)
-    loglik = loglik + ashr::get_loglik(ashres) #return the sum of loglikelihoods
+    ashres = ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
+    post_mean[,i] = get_pm(ashres)
+    post_sd[,i] = get_psd(ashres)
+    lfsr[,i] = get_lfsr(ashres)
+    loglik = loglik + get_loglik(ashres) #return the sum of loglikelihoods
   }
   posterior_matrices = list(PosteriorMean = post_mean,
                             PosteriorSD = post_sd,

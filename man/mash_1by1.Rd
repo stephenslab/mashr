@@ -13,6 +13,7 @@ mash_1by1(data)
 }
 \value{
 a list similar to the output of mash, particularly including posterior matrices
+importFrom ashr ash get_lm get_psd get_lfsr get_loglik
 }
 \details{
 Performs simple "condition-by-condition" analysis

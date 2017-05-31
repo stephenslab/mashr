@@ -12,7 +12,15 @@ BugReports: http://github.com/stephenslab/mashr/issues
 License: BSD_3_clause + file LICENSE
 LazyData: true
 Depends: R (>= 3.3.0)
-Imports: utils, stats, ashr, mvtnorm
-Suggests: testthat, rmeta
+Imports:
+    assertthat,
+    utils,
+    stats,
+    rmeta,
+    ashr (>= 2.1-19),
+    mvtnorm,
+    ExtremeDeconvolution
+Suggests:
+    testthat
 NeedsCompilation: no
 RoxygenNote: 6.0.1

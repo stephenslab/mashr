@@ -22,4 +22,6 @@ Fit extreme deconvolution to mash data
 \details{
 This is a wrapper to ExtremeDeconvolution::extreme_deconvolution
 It fixes the projection to be the identity, and the means to be 0
+
+importFrom ExtremeDeconvolution extreme_deconvolution
 }

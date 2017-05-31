@@ -29,6 +29,7 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
 #' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 #' @return lfsr JxR matrix of local false sign rates
+#' @importFrom ashr compute_lfsr
 #' @export
 compute_posterior_matrices=function(data,Ulist,posterior_weights){
 
@@ -39,7 +40,7 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
   #post_pos=compute_weighted_quantity(post_arrays$post_pos,posterior_weights)
   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
-  lfsr = ashr:::compute_lfsr(post_neg,post_zero)
+  lfsr = compute_lfsr(post_neg,post_zero)
   return(list(PosteriorMean = post_mean,
               PosteriorSD = post_sd,
               lfdr = post_zero,

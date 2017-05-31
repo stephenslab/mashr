@@ -11,8 +11,12 @@ similarity among conditions to improve accuracy of effect estimates.
 See [Urbut et al](http://biorxiv.org/content/early/2017/05/09/096552)
 for details of the model and methods.
 
-*Which version of ashr are you currently using? The one on CRAN, or
-the one on Github?*
+*List non-base packages that need to be installed from CRAN.*
+
+*Give instructions for installing ashr from Github repo. Also give
+version that is currently being used.*
+
+*Add instructions for installing ExtremeDeconvolution.*
 
 To install:
 

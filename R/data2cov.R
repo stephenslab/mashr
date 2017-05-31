@@ -5,10 +5,11 @@
 #'
 #' @return Returns a list of covariance matrices: the npc rank-one covariance matrices based on the first npc PCs,
 #' and the rank npc covariance matrix
+#' @importFrom assertthat assert_that
 #' @export
 cov_pca = function(data,npc,subset){
-  assertthat::assert_that(npc>1)
-  assertthat::assert_that(npc<=n_conditions(data))
+  assert_that(npc>1)
+  assert_that(npc<=n_conditions(data))
   if(is.null(subset)){subset = 1:n_effects(data)}
   res.svd = svd(data$Bhat[subset,],nv=npc,nu=npc)
   message("svd currently performed on Bhat; maybe should be Bhat/Shat?")
