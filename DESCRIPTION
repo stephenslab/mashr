@@ -1,16 +1,16 @@
-Package: mashr2
+Package: mashr
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Multivariate Adaptive Shrinkage 
 Version: 0.1.0
 Author: Matthew Stephens, Sarah Urbut
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Maintainer: Matthew Stephens <mstephens@uchicago.edu>
+Description: An R package for Empirical Bayes shrinkage of multivariate effects 
+License: BSD-3
 Encoding: UTF-8
 LazyData: true
 Imports:
     mvtnorm
+    ashr
 Suggests:
     testthat, rmeta
 RoxygenNote: 6.0.1
