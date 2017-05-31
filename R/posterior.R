@@ -29,7 +29,6 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
 #' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 #' @return lfsr JxR matrix of local false sign rates
-#' @importFrom stats pnorm
 #' @export
 compute_posterior_matrices=function(data,Ulist,posterior_weights){
 
@@ -57,6 +56,7 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
 # #' @return post_pos JxPxR array of posterior (marginal) probability of being positive
 #' @return post_neg JxPxR array of posterior (marginal) probability of being negative
 #' @return post_zero JxPxR array of posterior (marginal) probability of being zero
+#' @importFrom stats pnorm
 #' @export
 compute_posterior_arrays=function(data,Ulist){
   R=n_conditions(data)

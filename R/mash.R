@@ -10,7 +10,6 @@
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @return a list with elements result, loglik and fitted_g
-#' @importFrom 
 #' @export
 mash = function(data,
                 Ulist = NULL,
