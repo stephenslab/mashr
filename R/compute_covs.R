@@ -12,6 +12,7 @@
 #'  cov_canonical(data)
 #'  cov_canonical(data,"singletons")
 #'  cov_canonical(data,c("id","sing")) # can use partial matching of names
+#' @importFrom utils modifyList
 #' @export
 cov_canonical = function(data,
                        cov_methods= c("identity","singletons","equal_effects","simple_het")){

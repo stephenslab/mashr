@@ -1,5 +1,4 @@
 .Rhistory
-.Rbuildignore
 .Rproj.user
 vignette/*.html
 tests/testthat/Rplots.pdf

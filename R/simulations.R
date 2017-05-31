@@ -3,6 +3,7 @@
 #' @param ncond number of conditions
 #' @param err_sd the standard deviation of the errors
 #' @details The simulation consists of equal numbers of four different types of effects: null, equal among conditions, present only in first condition, independent across conditions
+#' @importFrom stats rnorm
 #' @export
 simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
 
@@ -31,6 +32,7 @@ simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
 #' @param err_sd the standard deviation of the errors
 #' @details The simulation consists of five conditions with two types of effecc
 #' those present (and identical) in first two conditions and those present (and identical) in last three conditions
+#' @importFrom stats rnorm
 #' @export
 simple_sims2 = function(nsamp = 100, err_sd=0.01){
 

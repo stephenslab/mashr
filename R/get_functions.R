@@ -25,6 +25,7 @@ get_significant_results = function(m, thresh = 0.05, sig_fn=ashr::get_lfsr){
 #' `usepointmass=TRUE`).  If `dimension=grid` then the returned vector will be of length $L$ (or $L+1$).
 #' If `dimension=all` then the returned vector will be of length $LK$ (or $LK+1$).
 #' The names of the vector will be informative for which combination each element corresponds to.
+#' @importFrom ashr get_fitted_g
 #' @export
 get_estimated_pi = function(m, dimension = c("cov","grid","all")){
   dimension = match.arg(dimension)
@@ -56,7 +57,6 @@ get_estimated_pi = function(m, dimension = c("cov","grid","all")){
     return(pihat)
   }
 }
-
 
 get_estimated_pi_no_collapse = function(m){
   g = get_fitted_g(m)

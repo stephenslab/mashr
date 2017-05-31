@@ -10,6 +10,7 @@
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @return a list with elements result, loglik and fitted_g
+#' @importFrom 
 #' @export
 mash = function(data,
                 Ulist = NULL,
@@ -40,7 +41,7 @@ mash = function(data,
   if(fixg){
     if(missing(g)){stop("cannot fix g if g not supplied!")}
     if(!missing(prior)){stop("cannot supply prior if fixg is TRUE")}
-    if(!missing(optmethod)){step("cannot supply optmethod if fixg is TRUE")}
+    if(!missing(optmethod)){stop("cannot supply optmethod if fixg is TRUE")}
   } else {
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
