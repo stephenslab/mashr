@@ -14,7 +14,7 @@ mash = function(data,
                 normalizeU = TRUE,
                 usepointmass = TRUE,
                 prior=c("nullbiased","uniform"),
-                optmethod = c("mixIP","cxxMixSquareem")){
+                optmethod = c("mixIP","mixEM","cxxMixSquarem")){
 
   optmethod = match.arg(optmethod)
   prior = match.arg(prior)
