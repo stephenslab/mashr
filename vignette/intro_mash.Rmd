@@ -111,6 +111,7 @@ Use `get_estimated_pi` to extract the estimates of the mixture proportions
 for different types of covariance matrix:
 ```{r}
   get_estimated_pi(m.c)
+  barplot(get_estimated_pi(m.c),las=2)
 ```
 
 Here we can see most of the mass is on the null, identity, singletons_1 (which corresponds to effects that are specific to condition 1) and equal_effects. This reassuringly matches the way that these data were generated.
