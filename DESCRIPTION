@@ -9,7 +9,7 @@ Maintainer: Matthew Stephens <mstephens@uchicago.edu>
 Description: Empirical Bayes shrinkage of multivariate effects.
 URL: http://github.com/stephenslab/mashr
 BugReports: http://github.com/stephenslab/mashr/issues
-License: BSD-3
+License: BSD_3_clause + file LICENSE
 LazyData: true
 Depends: R (>= 3.3.0)
 Imports: utils, stats, ashr, mvtnorm
