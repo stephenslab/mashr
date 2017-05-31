@@ -21,7 +21,7 @@ test_that("get same result as ash", {
   expect_equal(ashr::get_np(res)[,1],ashr::get_np(ashres))
   expect_equal(ashr::get_lfdr(res)[,1],ashr::get_lfdr(ashres))
 
-  m2 = mash_run_1by1(data)
+  m2 = mash_1by1(data)
   expect_equal(ashr::get_lfsr(m2)[,1], ashr::get_lfsr(ashres))
   expect_equal(ashr::get_pm(m2)[,1], ashr::get_pm(ashres))
   expect_equal(ashr::get_psd(m2)[,1], ashr::get_psd(ashres))

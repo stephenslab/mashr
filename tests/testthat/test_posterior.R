@@ -34,13 +34,13 @@ test_that("matrix of posterior probabilities looks right; and posterior means lo
 }
 )
 
-test_that("posterior calculations on test set match original",{
+test_that("calculations on test set with fixg match original",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = set_mash_data(Bhat,Shat)
   Ulist = cov_canonical(data)
   m = mash(data,Ulist,grid=c(0.5,1,2))
-  expect_equal(mash_compute_posterior_matrices(m,data),m$result)
+  expect_equal(mash(data,g=get_fitted_g(m),fixg=TRUE)$result,m$result)
 }
 )
 
