@@ -3,34 +3,63 @@
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
+#' @param normalizeU whether or not to normalize the U covariances to have maximum of 1 on diagonal
+#' @param usepointmass whether to include a point mass at 0, corresponding to null in every condition
+#' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
+#' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @return a list with elements result, loglik and fitted_g
 #' @export
 mash = function(data,
-                Ulist,
+                Ulist = NULL,
                 gridmult= sqrt(2),
                 grid = NULL,
                 normalizeU = TRUE,
                 usepointmass = TRUE,
+                g = NULL,
+                fixg = FALSE,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem")){
 
-  optmethod = match.arg(optmethod)
-  prior = match.arg(prior)
 
-  if(missing(grid)){grid = autoselect_grid(data,gridmult)}
-  if(normalizeU){Ulist = normalize_Ulist(Ulist)}
+
+  if(!missing(g)){ # g is supplied
+    if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
+    if(!missing(grid)){stop("cannot supply both g and grid")}
+    if(!missing(normalizeU)){stop("cannot supply both g and normalizeU")}
+    if(!missing(usepointmass)){stop("cannot supply both g and usepointmass")}
+    Ulist = g$Ulist
+    grid = g$grid
+  } else { #g not supplied
+    if(missing(Ulist)){stop("must supply Ulist (or g from previous mash fit)")}
+    if(missing(grid)){grid = autoselect_grid(data,gridmult)}
+    if(normalizeU){Ulist = normalize_Ulist(Ulist)}
+  }
+
+  if(fixg){
+    if(missing(g)){stop("cannot fix g if g not supplied!")}
+    if(!missing(prior)){stop("cannot supply prior if fixg is TRUE")}
+    if(!missing(optmethod)){step("cannot supply optmethod if fixg is TRUE")}
+  } else {
+    optmethod = match.arg(optmethod)
+    prior = match.arg(prior)
+  }
+
+
   xUlist = expand_cov(Ulist,grid,usepointmass)
 
   # calculate likelihood matrix
   lm = calc_relative_lik_matrix(data,xUlist)
 
-  # set up prior
-  prior = set_prior(ncol(lm$lik_matrix),prior)
-
   # main fitting procedure
-  pi = optimize_pi(lm$lik_matrix,prior=prior, optmethod=optmethod)
+  if(!fixg){
+    prior = set_prior(ncol(lm$lik_matrix),prior)
+    pi = optimize_pi(lm$lik_matrix,prior=prior, optmethod=optmethod)
+  }
+  else{ #if fixg, just use g$pi for pi
+    pi = g$pi
+  }
 
   # compute posterior matrices
   posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)

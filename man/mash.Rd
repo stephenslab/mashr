@@ -4,9 +4,10 @@
 \alias{mash}
 \title{Apply mash method to data}
 \usage{
-mash(data, Ulist, gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
-  usepointmass = TRUE, prior = c("nullbiased", "uniform"),
-  optmethod = c("mixIP", "mixEM", "cxxMixSquarem"))
+mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
+  normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
+  prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
+  "cxxMixSquarem"))
 }
 \arguments{
 \item{data}{a mash data object containing the Bhat matrix and standard errors}
@@ -16,6 +17,14 @@ mash(data, Ulist, gridmult = sqrt(2), grid = NULL, normalizeU = TRUE,
 \item{gridmult}{scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid}
 
 \item{grid}{vector of grid values to use (scaling factors omega in paper)}
+
+\item{normalizeU}{whether or not to normalize the U covariances to have maximum of 1 on diagonal}
+
+\item{usepointmass}{whether to include a point mass at 0, corresponding to null in every condition}
+
+\item{g}{the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass}
+
+\item{fixg}{if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data}
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
