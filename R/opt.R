@@ -12,6 +12,11 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
                        optmethod=c("mixIP","mixEM","cxxMixSquarem"),
                        control=list() ){
   optmethod = match.arg(optmethod)
+  if(optmethod == "mixIP"){control = ashr:::set_control_mixIP(control)
+  } else {
+    control = ashr:::set_control_squarem(control, nrow(matrix_lik))
+  }
+
   K = ncol(matrix_lik)
   if(missing(prior)){prior = rep(1,K)}
   if(missing(pi_init)){pi_init = initialize_pi(K)}

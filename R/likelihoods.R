@@ -20,9 +20,10 @@ calc_lik_vector=function(bhat,V,Ulist,log=FALSE){
 #' @export
 calc_lik_matrix = function(data, Ulist, log=FALSE){
   J = n_effects(data)
-  Bhat = data$Bhat
-  Shat = data$Shat
-  t(sapply(seq(1:J),function(j){calc_lik_vector(Bhat[j,],diag(Shat[j,]^2),Ulist,log)}))
+  t(sapply(seq(1:J),
+           function(j){
+             calc_lik_vector(data$Bhat[j,],get_cov(data,j),Ulist,log)
+             }))
 }
 
 #' @title Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)

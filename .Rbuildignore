@@ -1,2 +1,4 @@
 ^mashr.Rproj$
 ^docs$
+^.*\.Rproj$
+^\.Rproj\.user$

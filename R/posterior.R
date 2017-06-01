@@ -75,7 +75,7 @@ compute_posterior_arrays=function(data,Ulist){
 
   for(j in 1:J){
     bhat=as.vector(t(data$Bhat[j,]))##turn i into a R x 1 vector
-    V=diag(data$Shat[j,])^2
+    V=get_cov(data,j)
     Vinv <- solve(V)
     for(p in 1:P){
       U1 <- posterior_cov(Vinv, Ulist[[p]])
