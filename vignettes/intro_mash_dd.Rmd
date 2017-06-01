@@ -6,108 +6,143 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center")
 ```
 
-# Goal
+## Goal
 
-This vignette introduces the important topic of using  
-data-driven covariance
-matries in `mashr`. You should read [the introductory vignette](intro_mash.html) before this.
+This vignette introduces the important topic of using data-driven
+covariance matries in `mashr`. You should read [the introductory
+vignette](intro_mash.html) before this.
 
-# Outline
+## Outline
 
 Recall the four major steps in a mash analysis:
+
 - Read in the data
+
 - Set up the covariance matrices to be used
+
 - Fit the model
+
 - Extract posterior summaries and other quantities of interest
 
 Here we pay more attention to Step 2, which can be split into
 two steps:
+
 - Set up the "canonical" covariance matrices.
+
 - Set up the "data-driven" covariance matrices.
 
-The first of these steps ("canonical" covariance matrices) is straightforward using `cov_canonical`, as illustrated in 
+The first of these steps ("canonical" covariance matrices) is
+straightforward using `cov_canonical`, as illustrated in
 [the introductory vignette](intro_mash.html).
 
-Setting up the data-driven matrices is slightly more complex,
-and there are multiple possible approaches. This vignette illustrates
-one approach.
+Setting up the data-driven matrices is slightly more complex, and
+there are multiple possible approaches. This vignette illustrates one
+approach.
 
-First we simulate some data for illustration (see the [the introductory vignette](intro_mash.html) for more details):
+First we simulate some data for illustration (see the
+[the introductory vignette](intro_mash.html) for more details):
+
 ```{r}
-  library("mashr")
-  set.seed(1)
-  simdata = simple_sims(500,5,1)
+library(ashr)
+library(mashr)
+set.seed(1)
+simdata = simple_sims(500,5,1)
 ```
 
-# Data-driven covariances
+## Data-driven covariances
 
 Although the user is free to set up data driven covariance matrices
-using any method that they would like, typically we suggest the following
-three-step strategy:
+using any method that they would like, typically we suggest the
+following three-step strategy:
 
-1. locate some strong signals (e.g. by running a "condition-by-condition" using `mash_1by1`).
-2. Use methods such as PCA or factor analysis on these top signals to compute some initial data-driven covariance matrices (e.g. using `cov_pca`)
-3. Use these data-driven covariance matrices as initializations for the extreme deconvolution (ED) algorithm (using `cov_ed`), to get some refined data-driven covariance matrix estimates.
+1. locate some strong signals (e.g. by running a
+"condition-by-condition" using `mash_1by1`).
 
-The ED step is helpful primarily 
-because the second step will often estimate
-the covariances of the observed data (Bhat) whereas what is required is the
-covariances of the actual underlying effects (B), and this is what
-ED estimates. However, ED can be quite sensitive to initialization,
-and so the goal of the second step is to provide a good initialization.
+2. Use methods such as PCA or factor analysis on these top signals to
+compute some initial data-driven covariance matrices (e.g. using
+`cov_pca`).
 
-## Step 1: select strong signals
+3. Use these data-driven covariance matrices as initializations for
+the extreme deconvolution (ED) algorithm (using `cov_ed`), to get some
+refined data-driven covariance matrix estimates.
 
-The simplest way to do this is to run a condition-by-condition (1by1) analysis. Here we select the strong signals as those with lfsr<0.05 in any condition in the 1by1 analysis.
+The ED step is helpful primarily because the second step will often
+estimate the covariances of the observed data (Bhat) whereas what is
+required is the covariances of the actual underlying effects (B), and
+this is what ED estimates. However, ED can be quite sensitive to
+initialization, and so the goal of the second step is to provide a
+good initialization.
+
+### Step 1: select strong signals
+
+The simplest way to do this is to run a condition-by-condition (1by1)
+analysis. Here we select the strong signals as those with lfsr<0.05 in
+any condition in the 1by1 analysis.
+
 ```{r}
-  data = set_mash_data(simdata$Bhat, simdata$Shat)
-  m.1by1 = mash_1by1(data)
-  strong = get_significant_results(m.1by1,0.05)
+data   = set_mash_data(simdata$Bhat, simdata$Shat)
+m.1by1 = mash_1by1(data)
+strong = get_significant_results(m.1by1,0.05)
 ```
 
-## Step 2: Obtain initial data-driven covariance matrices
+### Step 2: Obtain initial data-driven covariance matrices
 
-There are various approaches to this; here we just illustrate the simplest and quickest (but probably not the best), which is to use PCA.
-Specifically here we use the function `cov_pca`
-to produce covariance matrices based on the top 5 PCs of the strong signals.
-The result is a list of 6 covariance matrices: one based on all 5 PCs, and the others each based on one PC.
+There are various approaches to this; here we just illustrate the
+simplest and quickest (but probably not the best), which is to use
+PCA. Specifically here we use the function `cov_pca` to produce
+covariance matrices based on the top 5 PCs of the strong signals. The
+result is a list of 6 covariance matrices: one based on all 5 PCs, and
+the others each based on one PC.
+
 ```{r}
-  U.pca = cov_pca(data,5,strong)
-  names(U.pca)
+U.pca = cov_pca(data,5,strong)
+print(names(U.pca))
 ```
 
-## Step 3: Apply Extreme Deconvolution
+### Step 3: Apply Extreme Deconvolution
 
-The function `cov_ed` is used to apply the ED algorithm from a specified
-initialization (here `U.pca`) and to a specified subset of signals.
+The function `cov_ed` is used to apply the ED algorithm from a
+specified initialization (here `U.pca`) and to a specified subset of
+signals.
+
 ```{r}
-  U.ed = cov_ed(data, U.pca, strong)
+U.ed = cov_ed(data, U.pca, strong)
 ```
 
+## Run mash
 
-# Run mash
+After all this we are ready to run `mash` using the data driven
+matrices.
 
-After all this we are ready to run `mash` using the data driven matrices.
 ```{r}
-  m.ed = mash(data, U.ed)
-  get_loglik(m.ed)
+m.ed = mash(data, U.ed)
+print(get_loglik(m.ed),digits = 10)
 ```
 
-From the fit we see that the fit using the data-driven covariances
-is not as good as when we used 
-the canonical covariances (which was -16120.32; from [the introductory vignette](intro_mash.html)). This is expected for this
-simulation because the simulation actually used the canonical covariances!
+From the fit we see that the fit using the data-driven covariances is
+not as good as when we used the canonical covariances (which was
+-16120.32; from [the introductory vignette](intro_mash.html)). This is
+expected for this simulation because the simulation actually used the
+canonical covariances!
 
-In general we recommend running `mash` with both data-driven
-and canonical covariances. You could do this by combining the data-driven
+In general we recommend running `mash` with both data-driven and
+canonical covariances. You could do this by combining the data-driven
 and canonical covariances as in this (unrun) code:
 
 ```{r}
-  U.c = cov_canonical(data)  
-  m = mash(data, c(U.c,U.ed))
+U.c = cov_canonical(data)  
+m   = mash(data, c(U.c,U.ed))
 ```
 
-For an example with simulations that do not follow the standard canonical matrices see [here](simulate_noncanon.html)
+For an example with simulations that do not follow the standard
+canonical matrices see [here](simulate_noncanon.html).
+
+## Session information.
+
+```{r info}
+print(sessionInfo())
+```
