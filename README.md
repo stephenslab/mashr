@@ -1,7 +1,8 @@
 # mashr: Multivariate Adaptive Shrinkage in R
 
-Welcome to mashr! This package implements methods to estimate and test
-many effects in many conditions (or many effects on many outcomes).
+*Welcome to mashr!* This package implements methods to estimate and
+test many effects in many conditions (or many effects on many
+outcomes).
 
 The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of
@@ -22,15 +23,33 @@ introduction to mashr.
 
 ## Setup
 
-*List non-base packages that need to be installed from CRAN.*
+1. In R, install these three R packages from CRAN:
 
-*Give instructions for installing ashr from Github repo. Also give
-version that is currently being used.*
+   ```R
+   install.packages(c("assertthat","mvtnorm","rmeta"))
+   ```
 
-*Add instructions for installing ExtremeDeconvolution.*
+2. Install [ashr release 2.1-19](https://github.com/stephens999/ashr/releases/tag/v2.1-19):
+ 
+   ```R
+   library(devtools)
+   install_github("stephens999/ashr",ref = "v2.1-19")
+   ```
 
-```
-devtools::install_github("stephenslab/mashr")
-library("mashr")
-```
+3. Optionally, install MOSEK and the Rmosek package, for faster
+   optimization in the `ashr` package. See the
+   [ashr Github repository](https://github.com/stephens999/ashr) for
+   details.
 
+4. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution). Note that you will need to link to the
+   [GNU Scientific Library](https://www.gnu.org/software/gsl) to
+   build this package.
+
+5. Once you have installed all these packages, you can install and
+   load the most recent version of `mashr` available on Github:
+
+   ```R
+   library(devtools)
+   install_github("stephenslab/mashr")
+   library(mashr)
+   ```
