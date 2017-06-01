@@ -9,8 +9,7 @@ test_that("ashr get functions work",{
   expect_length(get_pm(m),6)
   expect_length(get_psd(m),6)
   expect_length(get_np(m),6)
-}
-)
+})
 
 test_that("get_estimated_pi works",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
@@ -27,6 +26,4 @@ test_that("get_estimated_pi works",{
   expect_length(get_estimated_pi(m2,"all"),3*length(Ulist)+1)
   expect_length(get_estimated_pi(m2,"cov"),length(Ulist)+1)
   expect_length(get_estimated_pi(m2,"grid"),4)
-}
-)
-
+})

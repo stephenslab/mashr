@@ -1,16 +1,18 @@
 test_that("get same result as ash", {
   set.seed(100)
-  sim_data = mashr2::simple_sims(nsamp = 100, err_sd = 0.5)
-  # The simulation consists of equal numbers of four different types of effects:
-  # null, equal among conditions, present only in first condition, independent across conditions
-  ashres = ashr::ash(sim_data$Bhat[,1],sim_data$Shat[,1],mixcompdist="normal",outputlevel=4) # get ash results for first condition
+  sim_data = mashr::simple_sims(nsamp = 100, err_sd = 0.5)
+  # The simulation consists of equal numbers of four different types
+  # of effects: null, equal among conditions, present only in first
+  # condition, independent across conditions
+  ashres = ashr::ash(sim_data$Bhat[,1],sim_data$Shat[,1],
+      mixcompdist="normal",outputlevel=4) # get ash results for first condition
 
   data = set_mash_data(sim_data$Bhat, sim_data$Shat)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mashr2::mash(data,
-                     U ,
-                     grid = ashr::get_fitted_g(ashres)$sd,
-                     prior = "nullbiased")
+  res = mashr::mash(data,
+                    U ,
+                    grid = ashr::get_fitted_g(ashres)$sd,
+                    prior = "nullbiased")
 
 
 

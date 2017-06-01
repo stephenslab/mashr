@@ -143,7 +143,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
 #' May be a useful first step to identify top hits in each condition before a mash analysis.
 #' @return a list similar to the output of mash, particularly including posterior matrices
-#' @importFrom ashr ash get_lm get_psd get_lfsr get_loglik
+#' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
 #' @export
 mash_1by1 = function(data){
   Bhat = data$Bhat

@@ -86,6 +86,7 @@ cov_singletons = function(data){
 #' Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @return an R by R matrix with all 0s except the (1,1) element is 1
+#' @export
 cov_first_singleton = function(data){
   R = n_conditions(data)
   res = matrix(0,nrow=R,ncol=R)
