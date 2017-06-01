@@ -180,3 +180,9 @@ result.
 ```{r}
 mash_plot_meta(m.c,get_significant_results(m.c)[1])
 ```
+
+## Session information.
+
+```{r info}
+print(sessionInfo())
+```
