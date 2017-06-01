@@ -28,12 +28,11 @@ There are essentially four steps to a mash analysis
 Here we do each of these step-by-step.
 However, first we simulate some data for illustration.
 ```{r}
-  library("mashr")
-  set.seed(1)
-  simdata = simple_sims(500,5,1)
+library(mashr)
+set.seed(1)
+simdata = simple_sims(500,5,1)
 ```
 This simulation routine creates a dataset with 5 conditions, and four different types of effect: null, independent among conditions, condition-specific in condition 1, and shared (equal effects in all conditions). It creates 500 effects of each type for a total of 2000 effects.
-
 
 # Step 1: Read in the data
 
@@ -67,7 +66,7 @@ The function to set up canonical covariance matries is `cov_canonical`. The foll
 
 Having set up the data and covariance matrices
 you are ready to fit the model using the `mash` function:
-```{r}
+```{r, eval = TRUE}
   m.c = mash(data, U.c)
 ```
 This can take a little time. 
@@ -83,7 +82,7 @@ You can extract estimates (posterior means and posterior standard deviations)
 and measures of significance (local false sign rates) using functions like
 `get_pm` (posterior mean), `get_psd` (posteriore standard deviation)
 and `get_lfsr` (local false sign rate):
-```{r}
+```{r, eval = TRUE}
   head(get_lfsr(m.c))
   head(get_pm(m.c))
   head(get_psd(m.c))
@@ -92,7 +91,7 @@ Each of these are $J \times R$ matrices.
 
 Use `get_significant_results` to find the indices of effects that are "significant", which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is
 ordered from most significant to least significant.
-```{r}
+```{r, eval = TRUE}
   head(get_significant_results(m.c))
   length(get_significant_results(m.c))
 ```
@@ -100,29 +99,27 @@ ordered from most significant to least significant.
 
 You can also get the significant results in just a subset of conditions.
 For example
-```{r}
+```{r, eval = TRUE}
   head(get_significant_results(m.c, conditions=1))
 ```
 
 ## Sharing
 
 Use `get_pairwise_sharing` to assess sharing of significant signals among each pair of conditions. Here the default definition of shared is "the same sign and within a factor 0.5 of each other".
-```{r}
+```{r, eval = TRUE}
   get_pairwise_sharing(m.c) 
 ```
 
 You can change the factor if you like. For example, here by setting the
 factor to be 0 you assess only if they are the same sign:
-```{r}
+```{r, eval = TRUE}
   get_pairwise_sharing(m.c, factor=0) 
 ```
-
-
 
 ## Measure of fit (log-likelihood)
 
 Use `get_loglik` to find the log-likelihood of the fit (this will only be useful when you have other fits to compare it with!)
-```{r}
+```{r, eval = TRUE}
   get_loglik(m.c)
 ```
 
@@ -130,7 +127,7 @@ Use `get_loglik` to find the log-likelihood of the fit (this will only be useful
 
 Use `get_estimated_pi` to extract the estimates of the mixture proportions
 for different types of covariance matrix:
-```{r}
+```{r, eval = TRUE}
   get_estimated_pi(m.c)
   barplot(get_estimated_pi(m.c),las=2)
 ```
@@ -143,7 +140,6 @@ that these data were generated.
 ## Metaplot
 
 The following produces a meta-plot based on the posterior means and posterior variances of an effect. Here we look at the most significant result.
-```{r}
+```{r, eval = TRUE}
 mash_plot_meta(m.c,get_significant_results(m.c)[1])
 ```
-

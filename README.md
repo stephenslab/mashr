@@ -1,9 +1,7 @@
 # mashr: Multivariate Adaptive Shrinkage in R
 
-Welcome to Multivariate Adaptive Shrinkage (R package)!
-
-The package implements methods to estimate and test many effects in
-many conditions (or many effects on many outcomes).
+Welcome to mashr! This package implements methods to estimate and test
+many effects in many conditions (or many effects on many outcomes).
 
 The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of
@@ -17,10 +15,10 @@ to create results for the paper. The original package code is
 
 ## Quick Start
 
-1. Following the setup instructions below.
+1. Follow the setup instructions below.
 
-2. See the [Introductory Vignette](vignette/mash_intro.html) for an
-introduction.
+2. See the [Introductory Vignette](docs/intro_mash.html) for an
+introduction to mashr.
 
 ## Setup
 
