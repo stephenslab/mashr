@@ -28,7 +28,7 @@ There are essentially four steps to a mash analysis
 Here we do each of these step-by-step.
 However, first we simulate some data for illustration.
 ```{r}
-  library("mashr2")
+  library("mashr")
   set.seed(1)
   simdata = simple_sims(500,5,1)
 ```
@@ -96,6 +96,27 @@ ordered from most significant to least significant.
   head(get_significant_results(m.c))
   length(get_significant_results(m.c))
 ```
+
+
+You can also get the significant results in just a subset of conditions.
+For example
+```{r}
+  head(get_significant_results(m.c, conditions=1))
+```
+
+## Sharing
+
+Use `get_pairwise_sharing` to assess sharing of significant signals among each pair of conditions. Here the default definition of shared is "the same sign and within a factor 0.5 of each other".
+```{r}
+  get_pairwise_sharing(m.c) 
+```
+
+You can change the factor if you like. For example, here by setting the
+factor to be 0 you assess only if they are the same sign:
+```{r}
+  get_pairwise_sharing(m.c, factor=0) 
+```
+
 
 
 ## Measure of fit (log-likelihood)

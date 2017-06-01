@@ -37,7 +37,7 @@ one approach.
 
 First we simulate some data for illustration (see the [the introductory vignette](intro_mash.html) for more details):
 ```{r}
-  library("mashr2")
+  library("mashr")
   set.seed(1)
   simdata = simple_sims(500,5,1)
 ```

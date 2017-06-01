@@ -1,7 +1,7 @@
 Package: mashr
 Type: Package
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.1.0
+Version: 0.1.1
 Author: Matthew Stephens, Sarah Urbut
 Maintainer: Matthew Stephens <mstephens@uchicago.edu>
 Description: An R package for Empirical Bayes shrinkage of multivariate effects 
@@ -9,7 +9,7 @@ License: BSD-3
 Encoding: UTF-8
 LazyData: true
 Imports:
-    mvtnorm
+    mvtnorm,
     ashr
 Suggests:
     testthat, rmeta

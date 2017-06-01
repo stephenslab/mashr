@@ -20,7 +20,7 @@ Here the function `simple_sims_2` simulates data in five conditions
 with just two types of effect:
 1. shared effects only in the first two conditions; and 2. shared effects only in the last three conditions.
 ```{r}
-  library("mashr2")
+  library("mashr")
   set.seed(1)
   simdata = simple_sims2(1000,1)
   true.U1 = cbind(c(1,1,0,0,0),c(1,1,0,0,0),rep(0,5),rep(0,5),rep(0,5))
