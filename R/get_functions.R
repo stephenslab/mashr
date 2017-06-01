@@ -81,9 +81,11 @@ get_estimated_pi_no_collapse = function(m){
 #'  in at least one of the two tissues. Then compute what fraction of these have an estimated (posterior mean) effect size within
 #'  a factor `factor` of one another. The results are returned as an R by R matrix.
 #' @examples
+#' \dontrun{
 #' get_pairwise_sharing(m) # sharing by magnitude (same sign)
 #' get_pairwise_sharing(m, factor=0) # sharing by sign
 #' get_pairwise_sharing(m, FUN=abs) # sharing by magnitude when sign is ignored
+#' }
 #' @export
 get_pairwise_sharing = function(m, factor=0.5, lfsr_thresh=0.05, FUN= identity){
   R = get_ncond(m)

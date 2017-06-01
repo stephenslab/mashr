@@ -74,7 +74,7 @@ This can take a little time.
 What this does is to fit a mixture model to the data, estimating
 the mixture proportions. Specifically the model is that the true effects
 follow a mixture of multivariate normal distributions:
-$$B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)$$
+$B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)$
 where the $\omega_l$ are scaling factors set by the "grid" parameter in `mash` and the $U_k$ are the covariance matrices (here specified by `U.c`).
 
 # Step 4: Extract Posterior Summaries
@@ -135,8 +135,10 @@ for different types of covariance matrix:
   barplot(get_estimated_pi(m.c),las=2)
 ```
 
-Here we can see most of the mass is on the null, identity, singletons_1 (which corresponds to effects that are specific to condition 1) and equal_effects. This reassuringly matches the way that these data were generated.
-
+Here we can see most of the mass is on the null, identity,
+`singletons_1` (which corresponds to effects that are specific to
+condition 1) and `equal_effects`. This reassuringly matches the way
+that these data were generated.
 
 ## Metaplot
 

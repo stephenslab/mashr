@@ -14,6 +14,8 @@ mash_plot_meta(m, i, xlab = "Effect size", ylab = "Condition", ...)
 \item{xlab}{Character string specifying x-axis label.}
 
 \item{ylab}{Character string specifying y-axis label.}
+
+\item{...}{Additional arguments passed to \code{\link[rmeta]{metaplot}}.}
 }
 \description{
 Plot metaplot for an effect based on posterior from mash

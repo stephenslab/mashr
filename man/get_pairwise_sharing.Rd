@@ -25,7 +25,9 @@ For each pair of tissues, first identify the effects that are significant (by lf
  a factor `factor` of one another. The results are returned as an R by R matrix.
 }
 \examples{
+\dontrun{
 get_pairwise_sharing(m) # sharing by magnitude (same sign)
 get_pairwise_sharing(m, factor=0) # sharing by sign
 get_pairwise_sharing(m, FUN=abs) # sharing by magnitude when sign is ignored
+}
 }
