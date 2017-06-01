@@ -2,7 +2,7 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.1-0
+Version: 0.1-1
 Date: 2017-05-31
 Author: Matthew Stephens, Sarah Urbut
 Maintainer: Matthew Stephens <mstephens@uchicago.edu>
