@@ -6,6 +6,7 @@
 #' @param control a list of parameters to be passed to optmethod
 #' @return numeric vector specifying the optimal mixture weights
 #' @importFrom assertthat are_equal
+#' @importFrom ashr mixIP mixEM cxxMixSquarem
 optimize_pi = function(matrix_lik, pi_init = NULL,
                        prior=NULL,
                        optmethod=c("mixIP","mixEM","cxxMixSquarem"),
