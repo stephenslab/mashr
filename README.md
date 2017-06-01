@@ -23,6 +23,9 @@ introduction to mashr.
 
 ## Setup
 
+These are the necessary steps to install the most recent version of
+the mashr package:
+
 1. In R, install these three R packages from CRAN:
 
    ```R
