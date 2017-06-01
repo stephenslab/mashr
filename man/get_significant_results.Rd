@@ -4,12 +4,15 @@
 \alias{get_significant_results}
 \title{Find effects that have lfsr < thresh in at least one condition}
 \usage{
-get_significant_results(m, thresh = 0.05, sig_fn = get_lfsr)
+get_significant_results(m, thresh = 0.05, conditions = NULL,
+  sig_fn = get_lfsr)
 }
 \arguments{
 \item{m}{the mash result (from joint or 1by1 analysis)}
 
 \item{thresh}{indicates the threshold below which to set signals}
+
+\item{conditions}{which conditions to include in check (default to all)}
 
 \item{sig_fn}{the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr}
 }

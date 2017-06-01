@@ -3,12 +3,17 @@
 #' Find effects that have lfsr < thresh in at least one condition
 #' @param m the mash result (from joint or 1by1 analysis)
 #' @param thresh indicates the threshold below which to set signals
+#' @param conditions which conditions to include in check (default to all)
 #' @param sig_fn the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr
 #' @return a vector containing the indices of the significant effects, by order of most significant to least
 #' @importFrom ashr get_lfsr
 #' @export
-get_significant_results = function(m, thresh = 0.05, sig_fn=get_lfsr){
-  top = apply(sig_fn(m),1,min) #find top effect in each condition
+get_significant_results = function(m, thresh = 0.05, conditions = NULL,
+    sig_fn = get_lfsr) {
+  if (is.null(conditions)) {
+    conditions = 1:get_ncond(m)
+  }
+  top = apply(sig_fn(m)[,conditions,drop=FALSE],1,min) # find top effect in each condition
   sig = which(top < thresh)
   ord = order(top[sig],decreasing=FALSE)
   sig[ord]
@@ -64,4 +69,39 @@ get_estimated_pi_no_collapse = function(m){
   pihat = g$pi
   names(pihat) = names(expand_cov(g$Ulist, g$grid, g$usepointmass))
   pihat
+}
+
+#' Compute the proportion of (significant) signals shared by magnitude in each pair of conditions
+#' @param m the mash fit
+#' @param factor a number in [0,1] the factor within which effects are considered to be shared
+#' @param lfsr_thresh the lfsr threshold for including an effect in the assessment
+#' @param FUN a function to be applied to the estimated effect sizes before assessing sharing. The most obvious choice beside the default
+#' 'FUN=identity' would be 'FUN=abs' if you want to ignore the sign of the effects when assesing sharing.
+#' @details For each pair of tissues, first identify the effects that are significant (by lfsr<lfsr_thresh)
+#'  in at least one of the two tissues. Then compute what fraction of these have an estimated (posterior mean) effect size within
+#'  a factor `factor` of one another. The results are returned as an R by R matrix.
+#' @examples
+#' get_pairwise_sharing(m) # sharing by magnitude (same sign)
+#' get_pairwise_sharing(m, factor=0) # sharing by sign
+#' get_pairwise_sharing(m, FUN=abs) # sharing by magnitude when sign is ignored
+#' @export
+get_pairwise_sharing = function(m, factor=0.5, lfsr_thresh=0.05, FUN= identity){
+  R = get_ncond(m)
+  lfsr = get_lfsr(m)
+  S=matrix(NA,nrow = R, ncol=R)
+  #colnames(S)=rownames(S)=colnames(maxz)
+  for(i in 1:R){
+    for(j in 1:R){
+      sig_i=get_significant_results(m,thresh=lfsr_thresh,conditions = i)
+      sig_j=get_significant_results(m,thresh=lfsr_thresh,conditions = j)
+      a=union(sig_i,sig_j)
+      ratio=FUN(get_pm(m)[a,i])/FUN(get_pm(m)[a,j])##divide effect sizes
+      S[i,j]=mean(ratio>factor & ratio<(1/factor))
+    }
+  }
+  return(S)
+}
+
+get_ncond = function(m){
+  return(ncol(get_pm(m)))
 }
