@@ -104,8 +104,8 @@ mash_compute_posterior_matrices = function(g,data){
 }
 
 
-#' sets prior to be a vector of length K depending on character string
-#' prior can be "nullbiased" or "uniform"
+# Sets prior to be a vector of length K depending on character string
+# prior can be "nullbiased" or "uniform".
 set_prior = function(K,prior){
   if(is.character(prior)){
     if(prior=="uniform"){
@@ -137,12 +137,20 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 }
 
 #' @title Perform condition-by-condition analyses
-#' @param Bhat an n by R matrix of observations (n units in R conditions)
-#' @param Shat an n by R matrix of standard errors (n units in R conditions)
-#' @description Performs simple "condition-by-condition" analysis
-#' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
-#' May be a useful first step to identify top hits in each condition before a mash analysis.
-#' @return a list similar to the output of mash, particularly including posterior matrices
+#' 
+#' @param data A list with the following two elements: \code{Bhat} an
+#' n by R matrix of observations (n units in R conditions); and
+#' \code{Shat}, an n by R matrix of standard errors (n units in R
+#' conditions),
+#' 
+#' @description Performs simple "condition-by-condition" analysis by
+#' running \code{ash} from package \code{ashr} on data from each
+#' condition, one at a time. May be a useful first step to identify
+#' top hits in each condition before a mash analysis.
+#' 
+#' @return A list similar to the output of mash, particularly
+#' including posterior matrices.
+#' 
 #' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
 #' @export
 mash_1by1 = function(data){
@@ -196,7 +204,7 @@ grid_max = function(Bhat,Shat){
   }
 }
 
-#' Automatically select grid
+# Automatically select grid.
 autoselect_grid = function(data,mult){
   gmax = grid_max(data$Bhat, data$Shat)
   gmin = grid_min(data$Bhat, data$Shat)

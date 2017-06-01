@@ -9,7 +9,7 @@ compute_weighted_quantity(post_array, posterior_weights)
 \arguments{
 \item{post_array}{J x K x R array of posterior quantity for each effect for each component in each condition}
 
-\item{weights}{J x K matrix of weights for each effect in each component (usually the posterior weights)}
+\item{posterior_weights}{J x K matrix of weights for each effect in each component (usually the posterior weights)}
 }
 \value{
 J by R matrix of quantities (eg posterior mean) for each effect in each condition. The (j,r) element is sum_k pi[j,k] a[j,k,r]

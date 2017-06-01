@@ -47,9 +47,9 @@ cov_canonical = function(data,
 #   data2cov_ed(data,subset=subset)
 # }
 
-
-#' A function that maps names of covariance matrices to covariance computation functions
-#' @return a named list of defaults for covariance function calculation
+# A function that maps names of covariance matrices to covariance
+# computation functions. The return value is a named list of defaults
+# for covariance function calculation.
 cov_methods = function(){
   list("null"= list(fn = cov_all_zeros, args = NULL),
         "identity" = list(fn = cov_identity, args= NULL),
@@ -59,18 +59,19 @@ cov_methods = function(){
   )
 }
 
-
-#' Compute an identity matrix
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @return the R by R identity matrix
+# Compute an identity matrix. The input data a mash data object, eg as
+# created by set_mash_data. The return value is the R by R identity
+# matrix.
 cov_identity = function(data){
   R = n_conditions(data)
   diag(R)
 }
 
-#' Compute all R singleton matrices corresponding to condition-specific effects
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @return a list with R entries, the rth entry being an R by R matrix with all 0s except the (r,r) element is 1
+# Compute all R singleton matrices corresponding to condition-specific
+# effects Input "data" a mash data object, eg as created by
+# set_mash_data.  The return value is a list with R entries, the rth
+# entry being an R by R matrix with all 0s except the (r,r) element is
+# 1.
 cov_singletons = function(data){
   R = n_conditions(data)
   nullmatrix = matrix(0,nrow=R,ncol=R)
@@ -138,13 +139,13 @@ scale_cov = function(Ulist, grid){
   return(Ulist)
 }
 
-#' multiply each element of a list by scalar
-#' (In our application each element of the list is a matrix)
+# Multiply each element of a list by scalar. (In our application each
+# element of the list is a matrix.)
 multiply_list = function(Ulist, x){lapply(Ulist, function(U){x*U})}
 
-
-#' normalize a covariance matrix soits maximum diagonal element is 1
-#' Divides each element of the matrix by its maximum diagonal element (provided that it is non-zero)
+# Normalize a covariance matrix soits maximum diagonal element is 1.
+# Divides each element of the matrix by its maximum diagonal element
+# (provided that it is non-zero).
 normalize_cov = function(U){
   if(max(diag(U))!=0){
     U = U/max(diag(U))
@@ -152,8 +153,8 @@ normalize_cov = function(U){
   return(U)
 }
 
-#' Normalize a list of covariance matrices by applying normalize_cov
-#' to each element.
+# Normalize a list of covariance matrices by applying normalize_cov
+# to each element.
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}
 
 #' Create names for covariance matrices

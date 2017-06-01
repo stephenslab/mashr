@@ -100,7 +100,7 @@ compute_posterior_arrays=function(data,Ulist){
 #' @title Compute weighted means of posterior arrays
 #' @description Generates a K x R matrix of posterior quantities (eg posterior mean) for each effect
 #' @param post_array J x K x R array of posterior quantity for each effect for each component in each condition
-#' @param weights J x K matrix of weights for each effect in each component (usually the posterior weights)
+#' @param posterior_weights J x K matrix of weights for each effect in each component (usually the posterior weights)
 #' @return J by R matrix of quantities (eg posterior mean) for each effect in each condition. The (j,r) element is sum_k pi[j,k] a[j,k,r]
 #' @export
 compute_weighted_quantity = function(post_array,posterior_weights){
