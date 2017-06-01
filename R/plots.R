@@ -1,6 +1,8 @@
 #' Plot metaplot for an effect based on posterior from mash
 #' @param m the result of a mash fit
 #' @param i index of the effect to plot
+#' @param xlab Character string specifying x-axis label.
+#' @param ylab Character string specifying y-axis label.
 #' @importFrom ashr get_pm get_psd
 #' @importFrom rmeta metaplot
 #' @export

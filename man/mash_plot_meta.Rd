@@ -10,6 +10,10 @@ mash_plot_meta(m, i, xlab = "Effect size", ylab = "Condition", ...)
 \item{m}{the result of a mash fit}
 
 \item{i}{index of the effect to plot}
+
+\item{xlab}{Character string specifying x-axis label.}
+
+\item{ylab}{Character string specifying y-axis label.}
 }
 \description{
 Plot metaplot for an effect based on posterior from mash
