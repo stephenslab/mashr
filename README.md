@@ -23,7 +23,7 @@ introduction to mashr.
 
 3. Then work through the other vignettes to learn more about mashr:
 [Introduction to mash: data-driven covariances](docs/intro_mash_dd.html)
-and [Simulation with non-canonical matrices](simulate_noncanon.html).
+and [Simulation with non-canonical matrices](docs/simulate_noncanon.html).
 
 ## Setup
 
