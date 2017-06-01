@@ -44,7 +44,7 @@ the mashr package:
 4. Once you have installed all these packages, you can install and
    load the most recent version of `mashr` available on Github. This
    command will automatically retrieve and install version 2.1-19 of
-   qthe `ashr` package released on Github.
+   the `ashr` package released on Github.
 
    ```R
    library(devtools)
