@@ -32,24 +32,19 @@ the mashr package:
    install.packages(c("assertthat","mvtnorm","rmeta"))
    ```
 
-2. Install [ashr release 2.1-19](https://github.com/stephens999/ashr/releases/tag/v2.1-19):
- 
-   ```R
-   library(devtools)
-   install_github("stephens999/ashr",ref = "v2.1-19")
-   ```
-
-3. Optionally, install MOSEK and the Rmosek package, for faster
+2. Optionally, install MOSEK and the Rmosek package, for faster
    optimization in the `ashr` package. See the
    [ashr Github repository](https://github.com/stephens999/ashr) for
    details.
 
-4. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution). Note that you will need to link to the
+3. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution#installation). Note that you will need to link to the
    [GNU Scientific Library](https://www.gnu.org/software/gsl) to
    build this package.
 
-5. Once you have installed all these packages, you can install and
-   load the most recent version of `mashr` available on Github:
+4. Once you have installed all these packages, you can install and
+   load the most recent version of `mashr` available on Github. This
+   command will automatically retrieve and install version 2.1-19 of
+   qthe `ashr` package released on Github.
 
    ```R
    library(devtools)
