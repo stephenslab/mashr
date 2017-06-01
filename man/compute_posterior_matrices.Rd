@@ -24,3 +24,6 @@ ZeroProb JxR matrix of posterior (marginal) probability of being zero
 
 lfsr JxR matrix of local false sign rates
 }
+\description{
+More detailed description of function goes here.
+}

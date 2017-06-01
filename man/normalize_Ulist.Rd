@@ -2,12 +2,12 @@
 % Please edit documentation in R/compute_covs.R
 \name{normalize_Ulist}
 \alias{normalize_Ulist}
-\title{normalize a list of covariance matrices by
-applying \link{\code{normalize_cov}} to each element}
+\title{Normalize a list of covariance matrices by applying normalize_cov
+to each element.}
 \usage{
 normalize_Ulist(Ulist)
 }
 \description{
-normalize a list of covariance matrices by
-applying \link{\code{normalize_cov}} to each element
+Normalize a list of covariance matrices by applying normalize_cov
+to each element.
 }

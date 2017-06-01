@@ -14,6 +14,6 @@ posterior_cov(Vinv, U)
 \value{
 R x R posterior covariance matrix
 }
-\details{
+\description{
 If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
 }

@@ -14,7 +14,7 @@ mash_1by1(data)
 \value{
 a list similar to the output of mash, particularly including posterior matrices
 }
-\details{
+\description{
 Performs simple "condition-by-condition" analysis
 by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
 May be a useful first step to identify top hits in each condition before a mash analysis.

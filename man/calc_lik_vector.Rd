@@ -18,6 +18,6 @@ calc_lik_vector(bhat, V, Ulist, log = FALSE)
 \value{
 P vector of multivariate normal likelihoods, with pth element p(bhat | Ulist[p], V)
 }
-\details{
+\description{
 computes vector of likelihoods for bhat for each of P prior covariances
 }

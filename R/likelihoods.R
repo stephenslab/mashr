@@ -1,5 +1,5 @@
 #' @title calc_lik_vector
-#' @details computes vector of likelihoods for bhat for each of P prior covariances
+#' @description computes vector of likelihoods for bhat for each of P prior covariances
 #' @param bhat Rx1 vector of bhat
 #' @param V RxR covariance matrix for likelihood
 #' @param Ulist list of prior covariance matrices
@@ -12,7 +12,7 @@ calc_lik_vector=function(bhat,V,Ulist,log=FALSE){
 }
 
 #' @title calc_lik_matrix
-#' @details computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
+#' @description computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist list of prior covariance matrices
 #' @param log if true computes log-likelihood
@@ -26,7 +26,7 @@ calc_lik_matrix = function(data, Ulist, log=FALSE){
 }
 
 #' @title Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)
-#' @details computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
+#' @description computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist list of prior covariance matrices
 #' @return J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1

@@ -14,6 +14,6 @@ compute_posterior_weights(pi, lik_mat)
 \value{
 a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect
 }
-\details{
+\description{
 computes posterior probabilities that each effect came from each component
 }

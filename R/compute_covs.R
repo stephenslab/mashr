@@ -152,8 +152,8 @@ normalize_cov = function(U){
   return(U)
 }
 
-#' normalize a list of covariance matrices by
-#' applying \link{\code{normalize_cov}} to each element
+#' Normalize a list of covariance matrices by applying normalize_cov
+#' to each element.
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}
 
 #' Create names for covariance matrices

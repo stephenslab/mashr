@@ -139,7 +139,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' @title Perform condition-by-condition analyses
 #' @param Bhat an n by R matrix of observations (n units in R conditions)
 #' @param Shat an n by R matrix of standard errors (n units in R conditions)
-#' @details Performs simple "condition-by-condition" analysis
+#' @description Performs simple "condition-by-condition" analysis
 #' by running \code{ash} from package \code{ashr} on data from each condition, one at a time.
 #' May be a useful first step to identify top hits in each condition before a mash analysis.
 #' @return a list similar to the output of mash, particularly including posterior matrices

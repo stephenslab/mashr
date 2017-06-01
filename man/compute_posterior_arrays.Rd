@@ -22,3 +22,6 @@ post_neg JxPxR array of posterior (marginal) probability of being negative
 
 post_zero JxPxR array of posterior (marginal) probability of being zero
 }
+\description{
+More detailed description of function goes here.
+}

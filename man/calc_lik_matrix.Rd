@@ -16,6 +16,6 @@ calc_lik_matrix(data, Ulist, log = FALSE)
 \value{
 J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V)
 }
-\details{
+\description{
 computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
 }

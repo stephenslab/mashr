@@ -2,7 +2,7 @@
 #' @param Vinv R x R inverse covariance matrix for the likelihood
 #' @param U R x R prior covariance matrix
 #' @return R x R posterior covariance matrix
-#' @details If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
+#' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
 #' @export
 posterior_cov <- function(Vinv, U){
   return(U %*% solve(Vinv %*% U + diag(nrow(U))))
@@ -14,13 +14,14 @@ posterior_cov <- function(Vinv, U){
 #' @param Vinv R x R inverse covariance matrix for the likelihood
 #' @param U1 R x R posterior covariance matrix, computed using posterior_cov
 #' @return R vector of posterior mean
-#' @details If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
+#' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
 #' @export
 posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% Vinv %*% bhat)
 }
 
 #' @title Compute posterior matrices
+#' @description More detailed description of function goes here.
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist a list of covariance matrices for each mixture component
 #' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
@@ -49,6 +50,7 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
 }
 
 #' @title compute_posterior_arrays
+#' @description More detailed description of function goes here.
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist list of P prior covariance matrices
 #' @return post_mean JxPxR array of posterior means
@@ -108,7 +110,7 @@ compute_weighted_quantity = function(post_array,posterior_weights){
 }
 
 #' @title compute posterior probabilities
-#' @details computes posterior probabilities that each effect came from each component
+#' @description computes posterior probabilities that each effect came from each component
 #' @param pi a K vector of mixture proportions
 #' @param lik_mat a JxK matrix of likelihoods
 #' @return a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect

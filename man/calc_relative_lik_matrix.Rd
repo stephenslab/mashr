@@ -14,6 +14,6 @@ calc_relative_lik_matrix(data, Ulist)
 \value{
 J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1
 }
-\details{
+\description{
 computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
 }
