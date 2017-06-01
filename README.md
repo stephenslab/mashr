@@ -21,6 +21,10 @@ to create results for the paper. The original package code is
 2. See the [Introductory Vignette](docs/intro_mash.html) for an
 introduction to mashr.
 
+3. Then work through the other vignettes to learn more about mashr:
+[Introduction to mash: data-driven covariances](docs/intro_mash_dd.html)
+and [Simulation with non-canonical matrices](simulate_noncanon.html).
+
 ## Setup
 
 These are the necessary steps to install the most recent version of

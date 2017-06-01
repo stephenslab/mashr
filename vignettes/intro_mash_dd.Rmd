@@ -1,7 +1,7 @@
 ---
-title: 'Introduction to mash: data-driven covariances'
+title:  "Introduction to mash: data-driven covariances"
 author: "Matthew Stephens"
-date: "May 30, 2017"
+date:   "May 30, 2017"
 output: html_document
 ---
 
