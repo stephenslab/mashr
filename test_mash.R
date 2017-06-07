@@ -1,11 +1,22 @@
 library(mashr)
-data <- get(load("death_time_cor_nonmash.rda"))
-data$betahat <- data$betahat[1:2,1:1000]
-data$sebetahat <- data$sebetahat[1:2,1:1000]
-mash_data <- set_mash_data(t(betahat), t(sebetahat))
-U.c = cov_canonical(mash_data)
+
+# SCRIPT PARAMETERS.
+i <- 1:1000  # Which samples to include.
+k <- 1:2     # Which dimensions to analyze.
+
+# Load the data.
+data      <- get(load("death_time_cor_nonmash.rda"))
+betahat   <- data$betahat[k,i]
+sebetahat <- data$sebetahat[k,i]
+mash_data <- set_mash_data(t(betahat),t(sebetahat))
+
+# Generate covariance matrices for mixture components.
+U.c <- cov_canonical(mash_data)
 print(names(U.c))
-#############  canonical mash performance ###############
-cat("starting the canonical mash \n")
-m.c = mash(mash_data, U.c)
-save(m.c, file = "mash_circadian_canonical.rda")
+
+# Run multivariate adaptive shrinkage ("mash") analysis.
+cat("starting the canonical mash\n")
+out <- mash(mash_data,U.c)
+
+# Record session info.
+print(sessionInfo())
