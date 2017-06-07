@@ -38,7 +38,6 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
   post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
   post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
   post_sd = sqrt(post_mean2 - post_mean^2)
-  #post_pos=compute_weighted_quantity(post_arrays$post_pos,posterior_weights)
   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
   lfsr = compute_lfsr(post_neg,post_zero)
@@ -68,8 +67,6 @@ compute_posterior_arrays=function(data,Ulist){
   P=length(Ulist)
   post_mean=array(NA,dim=c(J,P,R))
   post_mean2 = array(NA,dim=c(J,P,R)) #mean squared value
-  post_var = array(NA,dim=c(J,P,R)) #mean squared value
-  #post_pos=array(NA,dim=c(J,P,R))
   post_zero=array(NA,dim=c(J,P,R))
   post_neg=array(NA,dim=c(J,P,R))
 
@@ -81,18 +78,15 @@ compute_posterior_arrays=function(data,Ulist){
       U1 <- posterior_cov(Vinv, Ulist[[p]])
       mu1 <- as.array(posterior_mean(bhat, Vinv, U1))
       post_mean[j,p,]= mu1
-      post_var[j,p,] = diag(U1)
       post_mean2[j,p,] = mu1^2 + diag(U1) #diag(U1) is the posterior variance
-     # post_pos[j,p,] = ifelse(post_var[j,p,]==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=F))
-      post_neg[j,p,] = ifelse(post_var[j,p,]==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=T))
-      post_zero[j,p,] = ifelse(post_var[j,p,]==0,1,0)
+      post_var = diag(U1)
+      post_neg[j,p,] = ifelse(post_var==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=T))
+      post_zero[j,p,] = ifelse(post_var==0,1,0)
     }
   }
   return(list(post_mean=post_mean,
-              post_var = post_var,
               post_zero=post_zero,
               post_mean2= post_mean2,
-      #        post_pos=post_pos,
               post_neg=post_neg))
 }
 
