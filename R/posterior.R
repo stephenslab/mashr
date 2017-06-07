@@ -90,7 +90,6 @@ compute_posterior_arrays=function(data,Ulist){
               post_neg=post_neg))
 }
 
-
 #' @title Compute weighted means of posterior arrays
 #' @description Generates a K x R matrix of posterior quantities (eg posterior mean) for each effect
 #' @param post_array J x K x R array of posterior quantity for each effect for each component in each condition

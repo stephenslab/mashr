@@ -19,6 +19,7 @@ Imports:
     rmeta,
     ashr (>= 2.1-19),
     mvtnorm,
+    profmem,
     ExtremeDeconvolution
 Suggests:
     testthat

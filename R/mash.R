@@ -20,9 +20,8 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
-                optmethod = c("mixIP","mixEM","cxxMixSquarem")){
-
-
+                optmethod = c("mixIP","mixEM","cxxMixSquarem"),
+                verbose = TRUE) {
 
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
@@ -46,26 +45,56 @@ mash = function(data,
     prior = match.arg(prior)
   }
 
-
   xUlist = expand_cov(Ulist,grid,usepointmass)
 
-  # calculate likelihood matrix
-  lm = calc_relative_lik_matrix(data,xUlist)
+  # Get the number of samples (J), the number of mixture components
+  # (i.e., prior covariances).
+  J <- nrow(data$Bhat)
+  P <- length(xUlist)
+  
+  # Calculate likelihood matrix.
+  if (verbose)
+    cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
+  out.time <- system.time(out.mem <- profmem({
+    lm <- calc_relative_lik_matrix(data,xUlist)
+  }))
+  if (verbose)
+    cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
+                      "and took %0.2f seconds.\n"),
+                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                out.time["elapsed"]))
 
-  # main fitting procedure
+  # Main fitting procedure.
   if(!fixg){
-    prior = set_prior(ncol(lm$lik_matrix),prior)
-    pi = optimize_pi(lm$lik_matrix,prior=prior, optmethod=optmethod)
+    if (verbose)
+      cat(sprintf(" - Fitting model with %d mixture components.\n",P))
+    prior <- set_prior(ncol(lm$lik_matrix),prior)
+    out.time <- system.time(out.mem <- profmem({
+      pi <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
+    }))
+    if (verbose)
+      cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
+                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                  out.time["elapsed"]))
   }
   else{ #if fixg, just use g$pi for pi
     pi = g$pi
   }
 
-  # compute posterior matrices
-  posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)
-  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
+  # Compute posterior matrices.
+  if (verbose)
+    cat(" - Computing posterior matrices.\n")
+  out.time <- system.time(out.mem <- profmem({
+    posterior_weights  <- compute_posterior_weights(pi,lm$lik_matrix)
+    posterior_matrices <- compute_posterior_matrices(data,xUlist,
+                                                     posterior_weights)
+  }))
+  if (verbose)
+    cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f seconds.\n",
+                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                out.time["elapsed"]))
 
-  # compute log-likehood achieved
+  # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi,lm)
   fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
