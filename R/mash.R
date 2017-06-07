@@ -57,7 +57,7 @@ mash = function(data,
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
   out.time <- system.time(out.mem <- profmem({
     lm <- calc_relative_lik_matrix(data,xUlist)
-  }))
+  },threshold = 1000))
   if (verbose)
     cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
                       "and took %0.2f seconds.\n"),
@@ -71,7 +71,7 @@ mash = function(data,
     prior <- set_prior(ncol(lm$lik_matrix),prior)
     out.time <- system.time(out.mem <- profmem({
       pi <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
-    }))
+    },threshold = 1000))
     if (verbose)
       cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
                   sum(out.mem$bytes,na.rm = TRUE)/1024^2,
@@ -88,7 +88,7 @@ mash = function(data,
     posterior_weights  <- compute_posterior_weights(pi,lm$lik_matrix)
     posterior_matrices <- compute_posterior_matrices(data,xUlist,
                                                      posterior_weights)
-  }))
+  },threshold = 1000))
   if (verbose)
     cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f seconds.\n",
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,

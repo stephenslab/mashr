@@ -20,7 +20,7 @@ source("R/simulations.R")
 
 # SCRIPT PARAMETERS.
 i <- 1:1000  # Which samples to include.
-k <- 1:4     # Which dimensions to analyze.
+k <- 1:5     # Which dimensions to analyze.
 
 # Load the data.
 cat("Loading data.\n")
