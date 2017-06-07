@@ -10,7 +10,7 @@ set_mash_data = function(Bhat,Shat,V=diag(ncol(Bhat))){
   return(list(Bhat=Bhat, Shat=Shat, V=V))
 }
 
-#' return the covariance matrix for jth data point from mash data object
+# Return the covariance matrix for jth data point from mash data object.
 get_cov = function(data,j){
   data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
 }

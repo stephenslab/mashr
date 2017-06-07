@@ -6,17 +6,21 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center")
 ```
 
-# Goal
+## Goal
 
-This vignette introduces the `mashr` software for someone who
-is familiar with the basic idea in Urbut et al. In this first vignette we use only the "canonical" covariance matries to simplify presentation. 
-However, an important aspect of `mashr` is the use of data-driven covariance
-matrices that are learned from the data, so when you are done here you should look at [the data-driven vignette](intro_mash_dd.html).
+This vignette introduces the `mashr` software for someone who is
+familiar with the basic idea in Urbut et al. In this first vignette we
+use only the "canonical" covariance matries to simplify presentation.
+However, an important aspect of `mashr` is the use of data-driven
+covariance matrices that are learned from the data, so when you are
+done here you should look at [the data-driven
+vignette](intro_mash_dd.html).
 
-# Outline
+## Outline
 
 There are essentially four steps to a mash analysis
 
@@ -25,111 +29,141 @@ There are essentially four steps to a mash analysis
 - Fit the model
 - Extract posterior summaries and other quantities of interest
 
-Here we do each of these step-by-step.
-However, first we simulate some data for illustration.
+Here we do each of these step-by-step. However, first we simulate
+some data for illustration.
+
 ```{r}
+library(ashr)
 library(mashr)
 set.seed(1)
 simdata = simple_sims(500,5,1)
 ```
-This simulation routine creates a dataset with 5 conditions, and four different types of effect: null, independent among conditions, condition-specific in condition 1, and shared (equal effects in all conditions). It creates 500 effects of each type for a total of 2000 effects.
 
-# Step 1: Read in the data
+This simulation routine creates a dataset with 5 conditions, and four
+different types of effect: null, independent among conditions,
+condition-specific in condition 1, and shared (equal effects in all
+conditions). It creates 500 effects of each type for a total of 2000
+effects.
 
-To run `mash` you
-need data consisting of a matrix of effects (`Bhat`)
-and a matrix of standard errors (`Shat`), for $J$ effects (rows) in $R$ conditions (columns).
+## Step 1: Read in the data
 
-[If you have only access to $Z$ scores, you can set `Bhat` to the Z scores,
-and set `Shat` to be the matrix with all 1s]. 
+To run `mash` you need data consisting of a matrix of effects (`Bhat`)
+and a matrix of standard errors (`Shat`), for $J$ effects (rows) in
+$R$ conditions (columns).
 
-The simulation above created both these matrices for us (in `simdata$Bhat` and `simdata$Shat`). To get these ready for applying `mash` you
-must first use `set_mash_data` to create a data object witho those two pieces of information:
+[If you have only access to $Z$ scores, you can set `Bhat` to the Z
+scores, and set `Shat` to be the matrix with all 1s].
+
+The simulation above created both these matrices for us (in
+`simdata$Bhat` and `simdata$Shat`). To get these ready for applying
+`mash` you must first use `set_mash_data` to create a data object
+witho those two pieces of information:
+
 ```{r}
-   data = set_mash_data(simdata$Bhat, simdata$Shat)
+data = set_mash_data(simdata$Bhat, simdata$Shat)
 ```
 
 # Step 2: Set up the covariance matrices 
 
-There are two types of covariance matrix you can use in `mash`: 
+There are two types of covariance matrix you can use in `mash`:
 "canonical" and "data-driven". The canonical ones are very easy to set
-up and so we use those here for illustration. However,
-in applications you will likely also want to use data-driven matrices, and this is an important feature of `mash`. See [the data-driven vignette](intro_mash_dd.html) for more details on how to do this.
+up and so we use those here for illustration. However, in applications
+you will likely also want to use data-driven matrices, and this is an
+important feature of `mash`. See [the data-driven
+vignette](intro_mash_dd.html) for more details on how to do this.
 
-The function to set up canonical covariance matries is `cov_canonical`. The following sets up canonical covariances in `U.c` (we used `.c` to indicate canonical), which is a named list of matrices.
+The function to set up canonical covariance matries is
+`cov_canonical`. The following sets up canonical covariances in `U.c`
+(we used `.c` to indicate canonical), which is a named list of
+matrices.
+
 ```{r}
-  U.c = cov_canonical(data)  
-  names(U.c)
+U.c = cov_canonical(data)  
+print(names(U.c))
 ```
 
 # Step 3: fit the model
 
-Having set up the data and covariance matrices
-you are ready to fit the model using the `mash` function:
-```{r, eval = TRUE}
-  m.c = mash(data, U.c)
-```
-This can take a little time. 
-What this does is to fit a mixture model to the data, estimating
-the mixture proportions. Specifically the model is that the true effects
-follow a mixture of multivariate normal distributions:
-$B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)$
-where the $\omega_l$ are scaling factors set by the "grid" parameter in `mash` and the $U_k$ are the covariance matrices (here specified by `U.c`).
+Having set up the data and covariance matrices you are ready to fit
+the model using the `mash` function:
 
-# Step 4: Extract Posterior Summaries
-
-You can extract estimates (posterior means and posterior standard deviations)
-and measures of significance (local false sign rates) using functions like
-`get_pm` (posterior mean), `get_psd` (posteriore standard deviation)
-and `get_lfsr` (local false sign rate):
-```{r, eval = TRUE}
-  head(get_lfsr(m.c))
-  head(get_pm(m.c))
-  head(get_psd(m.c))
+```{r}
+m.c = mash(data, U.c)
 ```
+
+This can take a little time. What this does is to fit a mixture model
+to the data, estimating the mixture proportions. Specifically the
+model is that the true effects follow a mixture of multivariate normal
+distributions: $B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)$
+where the $\omega_l$ are scaling factors set by the "grid" parameter
+in `mash` and the $U_k$ are the covariance matrices (here specified by
+`U.c`).
+
+## Step 4: Extract Posterior Summaries
+
+You can extract estimates (posterior means and posterior standard
+deviations) and measures of significance (local false sign rates)
+using functions like `get_pm` (posterior mean), `get_psd` (posteriore
+standard deviation) and `get_lfsr` (local false sign rate):
+
+```{r}
+head(get_lfsr(m.c))
+head(get_pm(m.c))
+head(get_psd(m.c))
+```
+
 Each of these are $J \times R$ matrices.
 
-Use `get_significant_results` to find the indices of effects that are "significant", which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is
-ordered from most significant to least significant.
-```{r, eval = TRUE}
-  head(get_significant_results(m.c))
-  length(get_significant_results(m.c))
-```
+Use `get_significant_results` to find the indices of effects that are
+"significant", which here means they have lfsr less than t in at least
+one condition, where t is a threshold you specify (default 0.05). The
+output is ordered from most significant to least significant.
 
+```{r}
+head(get_significant_results(m.c))
+print(length(get_significant_results(m.c)))
+```
 
 You can also get the significant results in just a subset of conditions.
 For example
-```{r, eval = TRUE}
-  head(get_significant_results(m.c, conditions=1))
+```{r}
+print(head(get_significant_results(m.c, conditions=1)))
 ```
 
-## Sharing
+### Sharing
 
-Use `get_pairwise_sharing` to assess sharing of significant signals among each pair of conditions. Here the default definition of shared is "the same sign and within a factor 0.5 of each other".
-```{r, eval = TRUE}
-  get_pairwise_sharing(m.c) 
+Use `get_pairwise_sharing` to assess sharing of significant signals
+among each pair of conditions. Here the default definition of shared
+is "the same sign and within a factor 0.5 of each other".
+
+```{r}
+print(get_pairwise_sharing(m.c)) 
 ```
 
-You can change the factor if you like. For example, here by setting the
-factor to be 0 you assess only if they are the same sign:
-```{r, eval = TRUE}
-  get_pairwise_sharing(m.c, factor=0) 
+You can change the factor if you like. For example, here by setting
+the factor to be 0 you assess only if they are the same sign:
+
+```{r}
+print(get_pairwise_sharing(m.c, factor=0))
 ```
 
-## Measure of fit (log-likelihood)
+### Measure of fit (log-likelihood)
 
-Use `get_loglik` to find the log-likelihood of the fit (this will only be useful when you have other fits to compare it with!)
-```{r, eval = TRUE}
-  get_loglik(m.c)
+Use `get_loglik` to find the log-likelihood of the fit (this will only
+be useful when you have other fits to compare it with!)
+
+```{r}
+print(get_loglik(m.c))
 ```
 
-## Estimated mixture proportions
+### Estimated mixture proportions
 
-Use `get_estimated_pi` to extract the estimates of the mixture proportions
-for different types of covariance matrix:
-```{r, eval = TRUE}
-  get_estimated_pi(m.c)
-  barplot(get_estimated_pi(m.c),las=2)
+Use `get_estimated_pi` to extract the estimates of the mixture
+proportions for different types of covariance matrix:
+
+```{r}
+print(get_estimated_pi(m.c))
+barplot(get_estimated_pi(m.c),las = 2)
 ```
 
 Here we can see most of the mass is on the null, identity,
@@ -137,9 +171,18 @@ Here we can see most of the mass is on the null, identity,
 condition 1) and `equal_effects`. This reassuringly matches the way
 that these data were generated.
 
-## Metaplot
+### Metaplot
 
-The following produces a meta-plot based on the posterior means and posterior variances of an effect. Here we look at the most significant result.
-```{r, eval = TRUE}
+The following produces a meta-plot based on the posterior means and
+posterior variances of an effect. Here we look at the most significant
+result.
+
+```{r}
 mash_plot_meta(m.c,get_significant_results(m.c)[1])
+```
+
+## Session information.
+
+```{r info}
+print(sessionInfo())
 ```
