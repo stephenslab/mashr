@@ -19,6 +19,9 @@ calc_lik_vector=function(bhat,V,Ulist,log=FALSE){
 #' @return J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V)
 #' @export
 calc_lik_matrix = function(data, Ulist, log=FALSE){
+
+  # TO DO: Implement a faster vresion of this function using Rcpp or
+  # RcppArmadillo.
   J = n_effects(data)
   t(sapply(seq(1:J),
            function(j){
