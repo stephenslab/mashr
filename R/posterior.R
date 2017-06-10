@@ -62,7 +62,7 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
 #' @export
 compute_posterior_matrices_arma=function(data,Ulist,posterior_weights){
   res = calc_post_rcpp(t(data$Bhat), t(data$Shat), data$V,
-                       simplify2array(Ulist), posterior_weights)
+                       simplify2array(Ulist), t(posterior_weights))
   lfsr = compute_lfsr(res$post_neg, res$post_zero)
   return(list(PosteriorMean = res$post_mean,
               PosteriorSD = res$post_sd,

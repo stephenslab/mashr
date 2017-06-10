@@ -52,4 +52,3 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 		Rcpp::Named("post_neg") = pc.NegativeProb());
 }
 
-

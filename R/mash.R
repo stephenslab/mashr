@@ -51,18 +51,18 @@ mash = function(data,
   # (i.e., prior covariances).
   J <- nrow(data$Bhat)
   P <- length(xUlist)
-  
-  ## # Calculate likelihood matrix.
-  ## if (verbose)
-  ##   cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
-  ## out.time <- system.time(out.mem <- profmem({
-  ##   lm2 <- calc_relative_lik_matrix(data,xUlist)
-  ## },threshold = 1000))
-  ## if (verbose)
-  ##   cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
-  ##                     "and took %0.2f seconds.\n"),
-  ##               sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-  ##               out.time["elapsed"]))
+
+  # Calculate likelihood matrix.
+  if (verbose)
+    cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
+  out.time <- system.time(out.mem <- profmem({
+    lm2 <- calc_relative_lik_matrix(data,xUlist)
+  },threshold = 1000))
+  if (verbose)
+    cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
+                      "and took %0.2f seconds.\n"),
+                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                out.time["elapsed"]))
   # Calculate likelihood matrix via rcpp.
   if (verbose)
     cat(sprintf(" - Computing %d x %d likelihood matrix in C++.\n",J,P))
@@ -75,7 +75,7 @@ mash = function(data,
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,
                 out.time["elapsed"]))
 
-  ## print(c("Is result equal between R and C++?", all.equal(lm, lm2)))
+  print(c("Is result equal between R and C++?", all.equal(lm, lm2)))
 
   # Main fitting procedure.
   if(!fixg){
@@ -95,10 +95,10 @@ mash = function(data,
   }
 
   # Compute posterior matrices.
+  posterior_weights  <- compute_posterior_weights(pi,lm$lik_matrix)
   if (verbose)
     cat(" - Computing posterior matrices.\n")
   out.time <- system.time(out.mem <- profmem({
-    posterior_weights  <- compute_posterior_weights(pi,lm$lik_matrix)
     posterior_matrices <- compute_posterior_matrices(data,xUlist,
                                                      posterior_weights)
   },threshold = 1000))
@@ -106,7 +106,17 @@ mash = function(data,
     cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f seconds.\n",
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,
                 out.time["elapsed"]))
-
+  if (verbose)
+    cat(" - Computing posterior matrices in C++.\n")
+  out.time <- system.time(out.mem <- profmem({
+    posterior_matrices2 <- compute_posterior_matrices_arma(data,xUlist,
+                                                     posterior_weights)
+  },threshold = 1000))
+  if (verbose)
+    cat(sprintf(" - C++ Computation allocated %0.2f MB and took %0.2f seconds.\n",
+                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                out.time["elapsed"]))
+  print(c("Is result equal between R and C++?", all.equal(posterior_matrices, posterior_matrices2)))
   # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi,lm)
   fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)

@@ -106,8 +106,7 @@ inline arma::mat get_posterior_cov(const arma::mat & Vinv, const arma::mat & U)
 {
 	// U %*% solve(Vinv %*% U + diag(nrow(U)))
 	arma::mat S = Vinv * U;
-
-	S.diag() += static_cast<double>(U.n_rows);
+	S.diag() += 1.0;
 	return U * S.i();
 }
 
@@ -172,6 +171,7 @@ public:
 		int J = b_mat.n_cols, R = b_mat.n_rows;
 
 		post_mean.set_size(R, J);
+		post_mean2.set_size(R, J);
 		neg_prob.set_size(R, J);
 		zero_prob.set_size(R, J);
 	}
@@ -213,7 +213,7 @@ public:
 			post_mean.col(j) = mu1_mat * posterior_weights.col(j);
 			post_mean2.col(j) = mu2_mat * posterior_weights.col(j);
 			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
-			zero_prob.col(j) = zero_prob * posterior_weights.col(j);
+			zero_prob.col(j) = zero_mat * posterior_weights.col(j);
 		}
 		return 0;
 	}
@@ -223,10 +223,10 @@ public:
 	// @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
 	// @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
 	// @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
-	arma::mat PosteriorMean() { return post_mean; }
-	arma::mat PosteriorSD() { return arma::sqrt(post_mean2 - arma::pow(post_mean, 2)); }
-	arma::mat NegativeProb() { return neg_prob; }
-	arma::mat ZeroProb() { return zero_prob; }
+	arma::mat PosteriorMean() { return post_mean.t(); }
+	arma::mat PosteriorSD() { return arma::sqrt(post_mean2 - arma::pow(post_mean, 2)).t(); }
+	arma::mat NegativeProb() { return neg_prob.t(); }
+	arma::mat ZeroProb() { return zero_prob.t(); }
 
 private:
 	// input
