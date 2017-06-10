@@ -52,7 +52,7 @@ calc_relative_lik_matrix = function(data, Ulist){
 #' @importFrom Rcpp evalCpp
 #' @export
 calc_relative_lik_matrix_arma = function(data, Ulist){
-  matrix_llik = calc_lik_rcpp(data$Bhat, data$Shat, data$V, simplify2array(Ulist),log=TRUE)$data
+  matrix_llik = calc_lik_rcpp(t(data$Bhat), t(data$Shat), data$V, simplify2array(Ulist),log=TRUE)$data
   lfactors = apply(matrix_llik,1, max)
   matrix_llik = matrix_llik - lfactors #avoid numerical issues by subtracting max of each row
   return(list(lik_matrix = exp(matrix_llik), lfactors = lfactors ))

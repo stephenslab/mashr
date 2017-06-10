@@ -13,8 +13,16 @@ arma::vec dmvnorm(arma::mat x,
 	int n = x.n_rows;
 	int xdim = x.n_cols;
 	arma::vec out(n);
-	arma::mat rooti = arma::trans(arma::inv(trimatu(arma::chol(sigma))));
-	double rootisum = arma::sum(log(rooti.diag()));
+	arma::mat rooti;
+
+	try {
+		rooti = arma::trans(arma::inv(trimatu(arma::chol(sigma))));
+	} catch (const std::runtime_error & error) {
+		if (logd) out.fill(-arma::datum::inf);
+		else out.fill(0.0);
+		return out;
+	}
+	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(static_cast<double>(xdim) / 2.0) * log2pi;
 
 	for (int i = 0; i < n; i++) {
@@ -23,29 +31,66 @@ arma::vec dmvnorm(arma::mat x,
 	}
 
 	if (logd == false) {
-		out = exp(out);
+		out = arma::exp(out);
 	}
-	return(out);
+	return out;
 }
 
+
+double dmvnorm(arma::vec x,
+               arma::vec mean,
+               arma::mat sigma,
+               bool logd = false)
+{
+	arma::mat rooti;
+
+	try {
+		rooti = arma::trans(arma::inv(trimatu(arma::chol(sigma))));
+	} catch (const std::runtime_error & error) {
+		if (logd) return -arma::datum::inf;
+		else return 0.0;
+	}
+	double rootisum = arma::sum(arma::log(rooti.diag()));
+	double constants = -(static_cast<double>(x.n_elem) / 2.0) * log2pi;
+
+	arma::vec z = rooti * (x - mean) ;
+	double out = constants - 0.5 * arma::sum(z % z) + rootisum;
+
+	if (logd == false) {
+		out = std::exp(out);
+	}
+	return out;
+}
+
+
 // @title calc_lik
-// @description computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
-// @param b_mat
-// @param s_mat
-// @param v_mat
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param s_mat R by J
+// @param v_mat R by R
 // @param U_cube list of prior covariance matrices
 // @param logd if true computes log-likelihood
-// @return J x P vector of multivariate normal likelihoods, p(bhat | U[p], V)
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
 arma::mat calc_lik(arma::mat b_mat,
                    arma::mat s_mat,
                    arma::mat v_mat,
                    arma::cube U_cube,
-                   bool logd = false) {
-  b_mat.print("b_mat");
-  s_mat.print("s_mat");
-  v_mat.print("v_mat");
-  U_cube.print("U_cube");
-  return b_mat;
+                   bool logd = false)
+{
+	// In armadillo data are stored with column-major ordering
+	// slicing columns are therefore faster than rows
+	// lik is a J by P matrix
+	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+
+	for (unsigned j = 0; j < lik.n_rows; ++j) {
+		arma::mat sigma = (v_mat.each_col() % s_mat.col(j)).each_row() % s_mat.col(j).t(); // quicker than diagmat(s) * v diagmat(s)
+		for (unsigned p = 0; p < lik.n_cols; ++p) {
+			lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
+		}
+	}
+	return lik;
 }
+
 
 #endif

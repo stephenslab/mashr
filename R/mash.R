@@ -63,12 +63,11 @@ mash = function(data,
                       "and took %0.2f seconds.\n"),
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,
                 out.time["elapsed"]))
-
   # Calculate likelihood matrix via rcpp.
   if (verbose)
     cat(sprintf(" - Computing %d x %d likelihood matrix in C++.\n",J,P))
   out.time <- system.time(out.mem <- profmem({
-    lm <- calc_relative_lik_matrix_arma(data,xUlist)
+    lm2 <- calc_relative_lik_matrix_arma(data,xUlist)
   },threshold = 1000))
   if (verbose)
     cat(sprintf(paste(" - Likelihood calculations via Armadillo allocated %0.2f MB",
@@ -76,7 +75,8 @@ mash = function(data,
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,
                 out.time["elapsed"]))
 
-  stop("lik calc done!")
+  print(c("Is result equal between R and C++?", all.equal(lm, lm2)))
+
   # Main fitting procedure.
   if(!fixg){
     if (verbose)
