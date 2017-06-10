@@ -48,6 +48,29 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights){
               lfsr = lfsr))
 }
 
+#' @title Compute posterior matrices C++ version
+#' @description More detailed description of function goes here.
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param Ulist a list of covariance matrices for each mixture component
+#' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
+#' @return PosteriorMean JxR matrix of posterior means
+#' @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
+#' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
+#' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
+#' @return lfsr JxR matrix of local false sign rates
+#' @importFrom ashr compute_lfsr
+#' @export
+compute_posterior_matrices_arma=function(data,Ulist,posterior_weights){
+  res = calc_post_rcpp(t(data$Bhat), t(data$Shat), data$V,
+                       simplify2array(Ulist), posterior_weights)
+  lfsr = compute_lfsr(res$post_neg, res$post_zero)
+  return(list(PosteriorMean = res$post_mean,
+              PosteriorSD = res$post_sd,
+              lfdr = res$post_zero,
+              NegativeProb = res$post_neg,
+              lfsr = lfsr))
+}
+
 #' @title compute_posterior_arrays
 #' @description More detailed description of function goes here.
 #' @param data a mash data object, eg as created by \code{set_mash_data}

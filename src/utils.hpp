@@ -71,6 +71,7 @@ inline arma::vec pnorm(const arma::vec & x, const arma::vec & m, const arma::vec
                        bool logd = false, bool lower_tail = true)
 {
 	arma::vec res(x.n_elem);
+
 	for (unsigned i = 0; i < x.n_elem; i++) {
 		// FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
 		// see `normalCDF` function at:
@@ -105,6 +106,7 @@ inline arma::mat get_posterior_cov(const arma::mat & Vinv, const arma::mat & U)
 {
 	// U %*% solve(Vinv %*% U + diag(nrow(U)))
 	arma::mat S = Vinv * U;
+
 	S.diag() += static_cast<double>(U.n_rows);
 	return U * S.i();
 }
@@ -183,37 +185,37 @@ public:
 	int compute_posterior(const arma::mat & posterior_weights)
 	{
 		for (unsigned j = 0; j < b_mat.n_cols; ++j) {
-      // FIXME: improved math may help here
+			// FIXME: improved math may help here
 			arma::mat Vinv = get_cov(s_mat.col(j), v_mat).i();
-      arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-      // R X P matrices
-      arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-      arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-      arma::mat zero_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-      arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-      for (unsigned p = 0; p < U_cube.n_slices; ++p) {
-        arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
-        mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
-        arma::vec sigma = U1.diag(); // U1.diag() is the posterior covariance
-        mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + sigma;
-        // FIXME: please double-check the implementation logic here
-        // I'm not sure if it is correct
-        // against https://github.com/stephenslab/mashr/blob/master/R/posterior.R#L83
-        neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(sigma));
-        for (unsigned r = 0; r < sigma.n_elem; ++r) {
-          if (sigma.at(r) == 0) {
-            zero_mat.at(r, p) = 1.0;
-            neg_mat.at(r, p) = 0.0;
-          }
-        }
-      }
-      // compute weighted means of posterior arrays
-      post_mean.col(j) = mu1_mat * posterior_weights.col(j);
-      post_mean2.col(j) = mu2_mat * posterior_weights.col(j);
-      neg_prob.col(j) = neg_mat * posterior_weights.col(j);
-      zero_prob.col(j) = zero_prob * posterior_weights.col(j);
+			arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+			// R X P matrices
+			arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat zero_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+			for (unsigned p = 0; p < U_cube.n_slices; ++p) {
+				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
+				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
+				arma::vec sigma = U1.diag(); // U1.diag() is the posterior covariance
+				mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + sigma;
+				// FIXME: please double-check the implementation logic here
+				// I'm not sure if it is correct
+				// against https://github.com/stephenslab/mashr/blob/master/R/posterior.R#L83
+				neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(sigma));
+				for (unsigned r = 0; r < sigma.n_elem; ++r) {
+					if (sigma.at(r) == 0) {
+						zero_mat.at(r, p) = 1.0;
+						neg_mat.at(r, p) = 0.0;
+					}
+				}
+			}
+			// compute weighted means of posterior arrays
+			post_mean.col(j) = mu1_mat * posterior_weights.col(j);
+			post_mean2.col(j) = mu2_mat * posterior_weights.col(j);
+			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
+			zero_prob.col(j) = zero_prob * posterior_weights.col(j);
 		}
-    return 0;
+		return 0;
 	}
 
 

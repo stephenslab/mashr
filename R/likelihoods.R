@@ -42,7 +42,7 @@ calc_relative_lik_matrix = function(data, Ulist){
   return(list(lik_matrix = exp(matrix_llik), lfactors = lfactors ))
 }
 
-#' @title Calculate matrix of relative likelihoods via Armadillo
+#' @title Calculate matrix of relative likelihoods C++ version 
 #' @description computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist list of prior covariance matrices
