@@ -42,3 +42,18 @@ calc_relative_lik_matrix = function(data, Ulist){
   return(list(lik_matrix = exp(matrix_llik), lfactors = lfactors ))
 }
 
+#' @title Calculate matrix of relative likelihoods via Armadillo
+#' @description computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
+#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param Ulist list of prior covariance matrices
+#' @return J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1
+#' @useDynLib mashr
+#' @exportPattern ^[[:alpha:]]+
+#' @importFrom Rcpp evalCpp
+#' @export
+calc_relative_lik_matrix_arma = function(data, Ulist){
+  matrix_llik = calc_lik_rcpp(data$Bhat, data$Shat, data$V, simplify2array(Ulist),log=TRUE)$data
+  lfactors = apply(matrix_llik,1, max)
+  matrix_llik = matrix_llik - lfactors #avoid numerical issues by subtracting max of each row
+  return(list(lik_matrix = exp(matrix_llik), lfactors = lfactors ))
+}

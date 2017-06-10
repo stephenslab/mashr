@@ -17,10 +17,13 @@ Imports:
     utils,
     stats,
     rmeta,
+    Rcpp,
     ashr (>= 2.1-19),
     mvtnorm,
     profmem,
     ExtremeDeconvolution
+LinkingTo:
+    Rcpp, RcppArmadillo
 Suggests:
     testthat
 NeedsCompilation: no
