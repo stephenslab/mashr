@@ -20,8 +20,8 @@ source("R/set_data.R")
 source("R/simulations.R")
 
 # SCRIPT PARAMETERS.
-i <- 1:1000  # Which samples to include. default to 1:1000
-k <- 1:5     # Which dimensions to analyze. default to 1:5
+i <- 1:100  # Which samples to include. default to 1:1000
+k <- 1:3     # Which dimensions to analyze. default to 1:5
 
 # Load the data.
 cat("Loading data.\n")
