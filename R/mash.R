@@ -55,7 +55,7 @@ mash = function(data,
   # Calculate likelihood matrix.
   if (verbose)
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
-  out.time <- system.time(out.mem <- profmem({
+  out.time <- system.time(out.mem <- profmem::profmem({
     lm2 <- calc_relative_lik_matrix(data,xUlist)
   },threshold = 1000))
   if (verbose)
@@ -66,7 +66,7 @@ mash = function(data,
   # Calculate likelihood matrix via rcpp.
   if (verbose)
     cat(sprintf(" - Computing %d x %d likelihood matrix in C++.\n",J,P))
-  out.time <- system.time(out.mem <- profmem({
+  out.time <- system.time(out.mem <- profmem::profmem({
     lm <- calc_relative_lik_matrix_arma(data,xUlist)
   },threshold = 1000))
   if (verbose)
@@ -82,7 +82,7 @@ mash = function(data,
     if (verbose)
       cat(sprintf(" - Fitting model with %d mixture components.\n",P))
     prior <- set_prior(ncol(lm$lik_matrix),prior)
-    out.time <- system.time(out.mem <- profmem({
+    out.time <- system.time(out.mem <- profmem::profmem({
       pi <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
     },threshold = 1000))
     if (verbose)
@@ -98,7 +98,7 @@ mash = function(data,
   posterior_weights  <- compute_posterior_weights(pi,lm$lik_matrix)
   if (verbose)
     cat(" - Computing posterior matrices.\n")
-  out.time <- system.time(out.mem <- profmem({
+  out.time <- system.time(out.mem <- profmem::profmem({
     posterior_matrices <- compute_posterior_matrices(data,xUlist,
                                                      posterior_weights)
   },threshold = 1000))
@@ -108,7 +108,7 @@ mash = function(data,
                 out.time["elapsed"]))
   if (verbose)
     cat(" - Computing posterior matrices in C++.\n")
-  out.time <- system.time(out.mem <- profmem({
+  out.time <- system.time(out.mem <- profmem::profmem({
     posterior_matrices2 <- compute_posterior_matrices_arma(data,xUlist,
                                                      posterior_weights)
   },threshold = 1000))
