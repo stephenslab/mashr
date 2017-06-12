@@ -76,6 +76,7 @@ inline arma::vec pnorm(const arma::vec & x, const arma::vec & m, const arma::vec
 		// FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
 		// see `normalCDF` function at:
 		// http://en.cppreference.com/w/cpp/numeric/math/erfc
+		// also maybe we should try to come up with a vector version instead of loop
 		res(i) = 0.5 * std::erfc(-(x(i) - m(i)) / s(i) * M_SQRT1_2);
 	}
 	if (!lower_tail & !logd) {
@@ -184,10 +185,10 @@ public:
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
 	int compute_posterior(const arma::mat & posterior_weights)
 	{
+		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 		for (unsigned j = 0; j < b_mat.n_cols; ++j) {
 			// FIXME: improved math may help here
 			arma::mat Vinv = get_cov(s_mat.col(j), v_mat).i();
-			arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 			// R X P matrices
 			arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
@@ -199,7 +200,6 @@ public:
 				arma::vec sigma = U1.diag(); // U1.diag() is the posterior covariance
 				mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + sigma;
 				// FIXME: please double-check the implementation logic here
-				// I'm not sure if it is correct
 				// against https://github.com/stephenslab/mashr/blob/master/R/posterior.R#L83
 				neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(sigma));
 				for (unsigned r = 0; r < sigma.n_elem; ++r) {
