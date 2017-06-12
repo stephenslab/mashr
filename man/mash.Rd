@@ -10,7 +10,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   "cxxMixSquarem"))
 }
 \arguments{
-\item{data}{a mash data object containing the Bhat matrix and standard errors}
+\item{data}{a mash data object containing the Bhat matrix and standard errors; created using \code{set_mash_data}}
 
 \item{Ulist}{a list of covariance matrices to use}
 

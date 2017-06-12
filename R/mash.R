@@ -1,5 +1,5 @@
 #' Apply mash method to data
-#' @param data a mash data object containing the Bhat matrix and standard errors
+#' @param data a mash data object containing the Bhat matrix and standard errors; created using \code{set_mash_data}
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
@@ -10,6 +10,13 @@
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @return a list with elements result, loglik and fitted_g
+#' @example
+#' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
+#' Shat = matrix(rep(1,100),ncol=5)
+#' data = mashr::set_mash_data(Bhat,Shat)
+#' U.c = mashr::cov_canonical(data)
+#' res.mash = mashr::mash(data,U.c)
+#'
 #' @export
 mash = function(data,
                 Ulist = NULL,
@@ -137,20 +144,20 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 }
 
 #' @title Perform condition-by-condition analyses
-#' 
+#'
 #' @param data A list with the following two elements: \code{Bhat} an
 #' n by R matrix of observations (n units in R conditions); and
 #' \code{Shat}, an n by R matrix of standard errors (n units in R
 #' conditions),
-#' 
+#'
 #' @description Performs simple "condition-by-condition" analysis by
 #' running \code{ash} from package \code{ashr} on data from each
 #' condition, one at a time. May be a useful first step to identify
 #' top hits in each condition before a mash analysis.
-#' 
+#'
 #' @return A list similar to the output of mash, particularly
 #' including posterior matrices.
-#' 
+#'
 #' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
 #' @export
 mash_1by1 = function(data){
