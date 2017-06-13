@@ -2,8 +2,7 @@
 % Please edit documentation in R/likelihoods.R
 \name{calc_relative_lik_matrix}
 \alias{calc_relative_lik_matrix}
-\title{Calculate matrix of relative likelihoods (likelihoods,
-    normalized to avoid numeric issues).}
+\title{Calculate matrix of relative likelihoods.}
 \usage{
 calc_relative_lik_matrix(data, Ulist)
 }
@@ -15,9 +14,11 @@ calc_relative_lik_matrix(data, Ulist)
 }
 \value{
 The return value is a list containing the following components:
-    \item{lik_matrix}{J x P matrix containing \emph{relative}
-      likelihoods p(bhat[j] + Ulist[p], V), but normalized so that
-      the largest entry in each row is 1.}
+
+    \item{lik_matrix}{J x P matrix containing likelihoods p(bhat[j]
+      + Ulist[p], V), but normalized so that the largest entry in
+      each row is 1.}
+
     \item{lfactors}{Vector which will recover the original
       likelihoods; for example, \code{lfactors[i] +
       log(lik_matrix[i,])} yields the log-likelihoods corresponding

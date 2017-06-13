@@ -1,50 +1,77 @@
-#' @title calc_lik_vector
-#' @description computes vector of likelihoods for bhat for each of P prior covariances
-#' @param bhat Rx1 vector of bhat
-#' @param V RxR covariance matrix for likelihood
-#' @param Ulist list of prior covariance matrices
-#' @param log if true computes log-likelihood
-#' @return P vector of multivariate normal likelihoods, with pth element p(bhat | Ulist[p], V)
+#' @title Compute conditional likelihoods for bhat vector.
+#'
+#' @description Computes vector of likelihoods for bhat for each of P
+#'     prior covariances.
+#'
+#' @param bhat bhat vector (length R)
+#'
+#' @param V R x R covariance matrix for likelihood.
+#'
+#' @param Ulist list of prior covariance matrices.
+#'
+#' @param log If \code{TRUE}, the return value is a matrix of
+#'     log-likelihoods.
+#'
+#' @return Vector of length P in which the pth element contains the
+#'     multivariate normal likelihood p(bhat | Ulist[[p]], V).
+#'
 #' @importFrom mvtnorm dmvnorm
+#'
 #' @export
-calc_lik_vector=function(bhat,V,Ulist,log=FALSE){
-  sapply(seq(1:length(Ulist)),function(p){dmvnorm(x=bhat, sigma=Ulist[[p]] + V,log=log)})
-}
+calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
+  sapply(Ulist,function(p) dmvnorm(bhat,sigma = p + V,log = log))
 
-#' @title calc_lik_matrix
-#' @description computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param Ulist list of prior covariance matrices
-#' @param log if true computes log-likelihood
-#' @return J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V)
-#' @export
-calc_lik_matrix = function(data, Ulist, log=FALSE){
-
-  # TO DO: Implement a faster vresion of this function using Rcpp or
-  # RcppArmadillo.
-  J = n_effects(data)
-  t(sapply(seq(1:J),
-           function(j){
-             calc_lik_vector(data$Bhat[j,],get_cov(data,j),Ulist,log)
-             }))
-}
-
-#' @title Calculate matrix of relative likelihoods (likelihoods,
-#'     normalized to avoid numeric issues).
-#' @description Computes matrix of relative likelihoods for each of J
+#' @title Compute matrix of conditional likelihoods.
+#'
+#' @description computes matrix of condition likelihoods for each of J
 #'     rows of Bhat for each of P prior covariances.
+#'
 #' @param data A \code{mash} data object; e.g., created by
 #'     \code{\link{set_mash_data}}.
+#'
 #' @param Ulist List containing the prior covariance matrices.
+#'
+#' @param log If \code{TRUE}, the return value is a matrix of log-
+#'     likelihoods.
+#'
+#' @param version Explain what this argument is for.
+#'
+#' @return J x P matrix of multivariate normal likelihoods, p(bhat |
+#'     Ulist[p], V).
+#'
+#' @export
+calc_lik_matrix <- function (data, Ulist, log = FALSE,
+                             version = c("R","Rcpp")) {
+                                 
+  # TO DO: Implement a faster vresion of this function using Rcpp or
+  # RcppArmadillo.
+  J <- n_effects(data)
+  return(t(sapply(seq(1:J),
+                  function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
+                                              Ulist,log))))
+}
 
+#' @title Calculate matrix of relative likelihoods.
+#'
+#' @description Computes matrix of relative likelihoods for each of J
+#'     rows of Bhat for each of P prior covariances.
+#'
+#' @param data A \code{mash} data object; e.g., created by
+#'     \code{\link{set_mash_data}}.
+#'
+#' @param Ulist List containing the prior covariance matrices.
+#'
 #' @return The return value is a list containing the following components:
-#'     \item{lik_matrix}{J x P matrix containing \emph{relative}
-#'       likelihoods p(bhat[j] + Ulist[p], V), but normalized so that
-#'       the largest entry in each row is 1.}
+#'
+#'     \item{lik_matrix}{J x P matrix containing likelihoods p(bhat[j]
+#'       + Ulist[p], V), but normalized so that the largest entry in
+#'       each row is 1.}
+#'
 #'     \item{lfactors}{Vector which will recover the original
 #'       likelihoods; for example, \code{lfactors[i] +
 #'       log(lik_matrix[i,])} yields the log-likelihoods corresponding
 #'       to row i of the Bhat data matrix.}
+#'
 #' @export
 calc_relative_lik_matrix <- function (data, Ulist) {
 
