@@ -2,9 +2,8 @@
 #include <iostream>
 #include "RcppArmadillo.h"
 #include "mashutils.hpp"
-
-//' @export
 // [[Rcpp::depends(RcppArmadillo)]]
+
 // [[Rcpp::export]]
 Rcpp::List calc_lik_rcpp (Rcpp::NumericMatrix b_mat,
 			  Rcpp::NumericMatrix s_mat,
@@ -37,8 +36,6 @@ Rcpp::List calc_lik_rcpp (Rcpp::NumericMatrix b_mat,
 		Rcpp::Named("status") = 0);
 }
 
-//' @export
-// [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
                           Rcpp::NumericMatrix s_mat,

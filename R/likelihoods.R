@@ -42,9 +42,8 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @useDynLib mashr
 #'
 #' @importFrom Rcpp sourceCpp
-#'
-#' @importForm Rcpp evalCpp
-#'
+#' @importFrom Rcpp evalCpp
+#' @export calc_lik_rcpp
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
                              algorithm.version = c("Rcpp","R")) {
