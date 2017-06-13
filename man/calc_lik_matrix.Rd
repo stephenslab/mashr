@@ -4,8 +4,8 @@
 \alias{calc_lik_matrix}
 \title{Compute matrix of conditional likelihoods.}
 \usage{
-calc_lik_matrix(data, Ulist, log = FALSE, algorithm.version = c("R",
-  "Rcpp"))
+calc_lik_matrix(data, Ulist, log = FALSE, algorithm.version = c("Rcpp",
+  "R"))
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by

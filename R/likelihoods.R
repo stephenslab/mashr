@@ -45,7 +45,7 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #'
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
-                             algorithm.version = c("R","Rcpp")) {
+                             algorithm.version = c("Rcpp","R")) {
                                  
   if (algorithm.version == "R")
 
