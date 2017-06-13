@@ -4,4 +4,5 @@
 ^\.Rproj\.user$
 ^death_time_cor_nonmash\.rda$
 ^calc_lik_matrix_data\.RData$
-^test_mash\.Rd$
+^test_mashr\.R$
+^test_calc_lik_matrix\.R$

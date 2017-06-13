@@ -29,6 +29,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
 \item{optmethod}{name of optimization method to use}
+
+\item{verbose}{If \code{TRUE}, print progress to R console.}
 }
 \value{
 a list with elements result, loglik and fitted_g

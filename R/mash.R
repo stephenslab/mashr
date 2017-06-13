@@ -9,6 +9,7 @@
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
+#' @param verbose If \code{TRUE}, print progress to R console.
 #' @return a list with elements result, loglik and fitted_g
 #' @export
 mash = function(data,

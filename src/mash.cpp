@@ -1,7 +1,7 @@
 // Gao Wang (c) 2017 gaow@uchicago.edu
 #include <iostream>
 #include "RcppArmadillo.h"
-#include "mashutils.hpp"
+#include "mashutils.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]

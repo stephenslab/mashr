@@ -43,7 +43,7 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #'
 #' @importFrom Rcpp sourceCpp
 #' @importFrom Rcpp evalCpp
-#' @export calc_lik_rcpp
+#'
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
                              algorithm.version = c("Rcpp","R")) {
@@ -60,7 +60,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
 
     # Run the C implementation using the Rcpp interface.
     return(calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                         simplify2array(Ulist),log = TRUE)$data)
+                         simplify2array(Ulist),logd = TRUE)$data)
   else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
 }
