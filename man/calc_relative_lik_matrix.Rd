@@ -2,18 +2,28 @@
 % Please edit documentation in R/likelihoods.R
 \name{calc_relative_lik_matrix}
 \alias{calc_relative_lik_matrix}
-\title{Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)}
+\title{Calculate matrix of relative likelihoods (likelihoods,
+    normalized to avoid numeric issues).}
 \usage{
 calc_relative_lik_matrix(data, Ulist)
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{A \code{mash} data object; e.g., created by
+\code{\link{set_mash_data}}.}
 
-\item{Ulist}{list of prior covariance matrices}
+\item{Ulist}{List containing the prior covariance matrices.}
 }
 \value{
-J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1
+The return value is a list containing the following components:
+    \item{lik_matrix}{J x P matrix containing \emph{relative}
+      likelihoods p(bhat[j] + Ulist[p], V), but normalized so that
+      the largest entry in each row is 1.}
+    \item{lfactors}{Vector which will recover the original
+      likelihoods; for example, \code{lfactors[i] +
+      log(lik_matrix[i,])} yields the log-likelihoods corresponding
+      to row i of the Bhat data matrix.}
 }
 \description{
-computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
+Computes matrix of relative likelihoods for each of J
+    rows of Bhat for each of P prior covariances.
 }

@@ -29,17 +29,34 @@ calc_lik_matrix = function(data, Ulist, log=FALSE){
              }))
 }
 
-#' @title Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)
-#' @description computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param Ulist list of prior covariance matrices
-#' @return J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1
+#' @title Calculate matrix of relative likelihoods (likelihoods,
+#'     normalized to avoid numeric issues).
+#' @description Computes matrix of relative likelihoods for each of J
+#'     rows of Bhat for each of P prior covariances.
+#' @param data A \code{mash} data object; e.g., created by
+#'     \code{\link{set_mash_data}}.
+#' @param Ulist List containing the prior covariance matrices.
+
+#' @return The return value is a list containing the following components:
+#'     \item{lik_matrix}{J x P matrix containing \emph{relative}
+#'       likelihoods p(bhat[j] + Ulist[p], V), but normalized so that
+#'       the largest entry in each row is 1.}
+#'     \item{lfactors}{Vector which will recover the original
+#'       likelihoods; for example, \code{lfactors[i] +
+#'       log(lik_matrix[i,])} yields the log-likelihoods corresponding
+#'       to row i of the Bhat data matrix.}
 #' @export
-calc_relative_lik_matrix = function(data, Ulist){
-  matrix_llik = calc_lik_matrix(data,Ulist,log=TRUE)
-  lfactors = apply(matrix_llik,1, max)
-  matrix_llik = matrix_llik - lfactors #avoid numerical issues by subtracting max of each row
-  return(list(lik_matrix = exp(matrix_llik), lfactors = lfactors ))
+calc_relative_lik_matrix <- function (data, Ulist) {
+
+  # Compute the J x P matrix of conditional log-likelihoods.
+  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE)
+
+  # Avoid numerical issues (overflow or underflow) by subtracting the
+  # largest entry in each row.
+  lfactors    <- apply(matrix_llik,1,max)
+  matrix_llik <- matrix_llik - lfactors 
+  return(list(lik_matrix = exp(matrix_llik),
+              lfactors   = lfactors))
 }
 
 #' @title Calculate matrix of relative likelihoods C++ version 

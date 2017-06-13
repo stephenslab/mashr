@@ -63,6 +63,7 @@ mash = function(data,
                       "and took %0.2f seconds.\n"),
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,
                 out.time["elapsed"]))
+    
   # Calculate likelihood matrix via rcpp.
   if (verbose)
     cat(sprintf(" - Computing %d x %d likelihood matrix in C++.\n",J,P))
