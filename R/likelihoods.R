@@ -34,21 +34,33 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @param log If \code{TRUE}, the return value is a matrix of log-
 #'     likelihoods.
 #'
-#' @param version Explain what this argument is for.
+#' @param algorithm.version Explain what this argument is for.
 #'
 #' @return J x P matrix of multivariate normal likelihoods, p(bhat |
 #'     Ulist[p], V).
 #'
+#' @useDynLib mashr
+
+#' @importFrom Rcpp sourceCpp
+#'
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
-                             version = c("R","Rcpp")) {
+                             algorithm.version = c("R","Rcpp")) {
                                  
-  # TO DO: Implement a faster vresion of this function using Rcpp or
-  # RcppArmadillo.
-  J <- n_effects(data)
-  return(t(sapply(seq(1:J),
-                  function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
-                                              Ulist,log))))
+  if (algorithm.version == "R")
+
+    # Run the (considerably slower) version that is completely
+    # implemented using existing R functions.
+    return(t(sapply(seq(1:n_effects(data)),
+                    function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
+                                                Ulist,log))))
+  else if (algorithm.version == "Rcpp")
+
+    # Run the C implementation using the Rcpp interface.
+    return(calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
+                         simplify2array(Ulist),log = TRUE)$data)
+  else
+    stop("Algorithm version should be either \"R\" or \"Rcpp\"")
 }
 
 #' @title Calculate matrix of relative likelihoods.
@@ -84,20 +96,4 @@ calc_relative_lik_matrix <- function (data, Ulist) {
   matrix_llik <- matrix_llik - lfactors 
   return(list(lik_matrix = exp(matrix_llik),
               lfactors   = lfactors))
-}
-
-#' @title Calculate matrix of relative likelihoods C++ version 
-#' @description computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param Ulist list of prior covariance matrices
-#' @return J x P matrix of likelihoods, p(bhat[j] | Ulist[p], V), but normalized so that the max in each row is 1
-#' @useDynLib mashr
-#' @exportPattern ^[[:alpha:]]+
-#' @importFrom Rcpp evalCpp
-#' @export
-calc_relative_lik_matrix_arma = function(data, Ulist){
-  matrix_llik = calc_lik_rcpp(t(data$Bhat), t(data$Shat), data$V, simplify2array(Ulist), log=TRUE)$data
-  lfactors = apply(matrix_llik,1, max)
-  matrix_llik = matrix_llik - lfactors #avoid numerical issues by subtracting max of each row
-  return(list(lik_matrix = exp(matrix_llik), lfactors = lfactors ))
 }

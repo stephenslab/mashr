@@ -4,7 +4,8 @@
 \alias{calc_lik_matrix}
 \title{Compute matrix of conditional likelihoods.}
 \usage{
-calc_lik_matrix(data, Ulist, log = FALSE, version = c("R", "Rcpp"))
+calc_lik_matrix(data, Ulist, log = FALSE, algorithm.version = c("R",
+  "Rcpp"))
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by
@@ -15,7 +16,7 @@ calc_lik_matrix(data, Ulist, log = FALSE, version = c("R", "Rcpp"))
 \item{log}{If \code{TRUE}, the return value is a matrix of log-
 likelihoods.}
 
-\item{version}{Explain what this argument is for.}
+\item{algorithm.version}{Explain what this argument is for.}
 }
 \value{
 J x P matrix of multivariate normal likelihoods, p(bhat |

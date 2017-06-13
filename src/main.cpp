@@ -2,14 +2,15 @@
 #include <RcppArmadillo.h>
 #include <iostream>
 #include <utils.hpp>
+// using namespace Rcpp;
 
 // [[Rcpp::export]]
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,
                          Rcpp::NumericMatrix v_mat,
                          Rcpp::NumericVector U_3d,
-                         bool logd = false)
-{
+                         bool logd = false) {
+  
 	// hide armadillo warning / error messages
 	std::ostream nullstream(0);
 	arma::set_stream_err2(nullstream);
@@ -34,7 +35,6 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 	return Rcpp::List::create(Rcpp::Named("data") = res,
 		Rcpp::Named("status") = 0);
 }
-
 
 // [[Rcpp::export]]
 Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
