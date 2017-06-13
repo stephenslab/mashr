@@ -1,7 +1,5 @@
 library(profmem)
 library(mashr)
-# source("R/mash.R")
-# source("R/likelihoods.R")
 
 # Load the data.
 cat("Loading data.\n")

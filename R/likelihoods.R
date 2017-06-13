@@ -40,8 +40,10 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #'     Ulist[p], V).
 #'
 #' @useDynLib mashr
-
+#'
 #' @importFrom Rcpp sourceCpp
+#'
+#' @importForm Rcpp evalCpp
 #'
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
