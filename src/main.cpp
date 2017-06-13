@@ -4,6 +4,7 @@
 #include <utils.hpp>
 // using namespace Rcpp;
 
+//' @export
 // [[Rcpp::export]]
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,
