@@ -46,12 +46,13 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
                              algorithm.version = c("Rcpp","R")) {
-                                 
+  algorithm.version <- match.arg(algorithm.version)
+    
   if (algorithm.version == "R")
 
     # Run the (considerably slower) version that is completely
     # implemented using existing R functions.
-    return(t(sapply(seq(1:n_effects(data)),
+    return(t(sapply(1:n_effects(data),
                     function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
                                                 Ulist,log))))
   else if (algorithm.version == "Rcpp")
