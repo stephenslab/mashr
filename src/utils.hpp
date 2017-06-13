@@ -41,6 +41,20 @@ inline arma::vec dmvnorm(const arma::mat & x,
 }
 
 
+inline arma::vec dnorm(const arma::vec & x,
+                       const arma::vec & mu,
+                       const arma::vec & sigma2,
+                       bool logd = false)
+{
+	arma::vec res = LOG_INV_SQRT_2PI -
+	                arma::log(arma::sqrt(sigma2)) -
+	                arma::pow(x - mu, 2) / (2.0 * sigma2);
+
+	if (logd) return res;
+	else return arma::exp(res);
+}
+
+
 inline double dmvnorm(const arma::vec & x,
                       const arma::vec & mean,
                       const arma::mat & sigma,
@@ -107,6 +121,7 @@ inline arma::mat get_posterior_cov(const arma::mat & Vinv, const arma::mat & U)
 {
 	// U %*% solve(Vinv %*% U + diag(nrow(U)))
 	arma::mat S = Vinv * U;
+
 	S.diag() += 1.0;
 	return U * S.i();
 }
@@ -155,18 +170,42 @@ arma::mat calc_lik(const arma::mat & b_mat,
 }
 
 
+// @title calc_lik univariate version
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior sigma
+// @param b_vec of J
+// @param s_vec of J
+// @param v numeric
+// @param U_vec P vector
+// @param logd if true computes log-likelihood
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat calc_lik(const arma::vec & b_vec,
+                   const arma::vec & s_vec,
+                   double v,
+                   const arma::vec & U_vec,
+                   bool logd = false)
+{
+	arma::mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
+	arma::vec sigma = s_vec % s_vec * v;
+	arma::vec mean(b_vec.n_elem, arma::fill::zeros);
+
+	for (unsigned p = 0; p < lik.n_cols; ++p) {
+		lik.col(p) = dnorm(b_vec, mean, sigma + U_vec.at(p), logd);
+	}
+	return lik;
+}
+
+
 // @param b_mat R by J
 // @param s_mat R by J
 // @param v_mat R by R
 // @param U_cube list of prior covariance matrices, for each mixture component P by R by R
-// @param logd if true computes log-likelihood
-class PosteriorCalculator
+class PosteriorMASH
 {
 public:
-	PosteriorCalculator(const arma::mat & b_mat,
-	                    const arma::mat & s_mat,
-	                    const arma::mat & v_mat,
-	                    const arma::cube & U_cube) :
+	PosteriorMASH(const arma::mat & b_mat,
+	              const arma::mat & s_mat,
+	              const arma::mat & v_mat,
+	              const arma::cube & U_cube) :
 		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), U_cube(U_cube)
 	{
 		int J = b_mat.n_cols, R = b_mat.n_rows;
@@ -178,7 +217,7 @@ public:
 	}
 
 
-	~PosteriorCalculator() {}
+	~PosteriorMASH() {}
 
 	// @title Compute posterior matrices
 	// @description More detailed description of function goes here.
@@ -186,6 +225,7 @@ public:
 	int compute_posterior(const arma::mat & posterior_weights)
 	{
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+
 		for (unsigned j = 0; j < b_mat.n_cols; ++j) {
 			// FIXME: improved math may help here
 			arma::mat Vinv = get_cov(s_mat.col(j), v_mat).i();
@@ -242,5 +282,88 @@ private:
 	arma::mat zero_prob;
 };
 
+// @param b_vec of J
+// @param s_vec of J
+// @param v double
+// @param U_vec of P
+class PosteriorASH
+{
+public:
+	PosteriorASH(const arma::vec & b_vec,
+	             const arma::vec & s_vec,
+	             double v,
+	             const arma::vec & U_vec) :
+		b_vec(b_vec), s_vec(s_vec), v(v), U_vec(U_vec)
+	{
+		int J = b_vec.n_elem;
+
+		post_mean.set_size(J);
+		post_mean2.set_size(J);
+		neg_prob.set_size(J);
+		zero_prob.set_size(J);
+	}
+
+
+	~PosteriorASH() {}
+
+	// @title Compute posterior matrices
+	// @description univariate version of PosteriorMASH::compute_posterior(), same logic
+	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
+	int compute_posterior(const arma::mat & posterior_weights)
+	{
+		arma::vec sv = s_vec % s_vec * v;
+		int J = b_vec.n_elem;
+		int P = U_vec.n_elem;
+		arma::vec mean(J, arma::fill::zeros);
+		// J X P matrices
+		arma::mat mu1_mat(J, P, arma::fill::zeros);
+		arma::mat mu2_mat(J, P, arma::fill::zeros);
+		arma::mat zero_mat(J, P, arma::fill::zeros);
+		arma::mat neg_mat(J, P, arma::fill::zeros);
+
+		for (unsigned p = 0; p < P; ++p) {
+			arma::vec U1 = U_vec.at(p) / (sv * U_vec.at(p) + 1);
+			mu1_mat.col(p) = U1 / sv % b_vec;
+			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + U1;
+			neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(U1));
+			for (unsigned j = 0; j < J; ++j) {
+				if (U1.at(j) == 0) {
+					zero_mat.at(j, p) = 1.0;
+					neg_mat.at(j, p) = 0.0;
+				}
+			}
+		}
+		// compute weighted means of posterior arrays
+		for (unsigned j = 0; j < J; ++j) {
+			post_mean.at(j) = arma::dot(mu1_mat.row(j), posterior_weights.col(j));
+			post_mean2.at(j) = arma::dot(mu2_mat.row(j), posterior_weights.col(j));
+			neg_prob.at(j) = arma::dot(neg_mat.row(j), posterior_weights.col(j));
+			zero_prob.at(j) = arma::dot(zero_mat.row(j), posterior_weights.col(j));
+		}
+		return 0;
+	}
+
+
+	// @return PosteriorMean J vec of posterior means
+	// @return PosteriorSD J vec of posterior (marginal) standard deviations
+	// @return NegativeProb J vec of posterior (marginal) probability of being negative
+	// @return ZeroProb J vec of posterior (marginal) probability of being zero
+	arma::vec PosteriorMean() { return post_mean; }
+	arma::vec PosteriorSD() { return arma::sqrt(post_mean2 - arma::pow(post_mean, 2)); }
+	arma::vec NegativeProb() { return neg_prob; }
+	arma::vec ZeroProb() { return zero_prob; }
+
+private:
+	// input of J vecs
+	arma::vec b_vec;
+	arma::vec s_vec;
+	arma::vec U_vec;
+	double v;
+	// output of J vecs
+	arma::vec post_mean;
+	arma::vec post_mean2;
+	arma::vec neg_prob;
+	arma::vec zero_prob;
+};
 
 #endif

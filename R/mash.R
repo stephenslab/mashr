@@ -83,7 +83,7 @@ mash = function(data,
       cat(sprintf(" - Fitting model with %d mixture components.\n",P))
     prior <- set_prior(ncol(lm$lik_matrix),prior)
     out.time <- system.time(out.mem <- profmem::profmem({
-      pi <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
+      pi_s <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
     },threshold = 1000))
     if (verbose)
       cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
@@ -91,11 +91,11 @@ mash = function(data,
                   out.time["elapsed"]))
   }
   else{ #if fixg, just use g$pi for pi
-    pi = g$pi
+    pi_s = g$pi
   }
 
   # Compute posterior matrices.
-  posterior_weights  <- compute_posterior_weights(pi,lm$lik_matrix)
+  posterior_weights  <- compute_posterior_weights(pi_s,lm$lik_matrix)
   if (verbose)
     cat(" - Computing posterior matrices.\n")
   out.time <- system.time(out.mem <- profmem::profmem({
@@ -118,8 +118,8 @@ mash = function(data,
                 out.time["elapsed"]))
   print(c("Is result equal between R and C++?", all.equal(posterior_matrices, posterior_matrices2)))
   # Compute marginal log-likelihood.
-  loglik = compute_loglik_from_matrix_and_pi(pi,lm)
-  fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
+  loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
+  fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
   m=list(result=posterior_matrices, loglik = loglik, fitted_g = fitted_g)
   class(m) = "mash"
@@ -229,11 +229,11 @@ mash_1by1 = function(data){
 
 
 #' Compute loglikelihood from a matrix of log-likelihoods and fitted pi
-#' @param pi the vector of mixture proportions
+#' @param pi_s the vector of mixture proportions
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
 #' @export
-compute_loglik_from_matrix_and_pi = function(pi,lm){
-  return(sum(log(lm$lik_matrix %*% pi)+lm$lfactors))
+compute_loglik_from_matrix_and_pi = function(pi_s,lm){
+  return(sum(log(lm$lik_matrix %*% pi_s)+lm$lfactors))
 }
 
 
