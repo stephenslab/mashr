@@ -38,7 +38,7 @@ print(names(U.c))
 
 # Run multivariate adaptive shrinkage ("mash") analysis.
 cat("Running mash analysis.\n")
-r <- system.time(out <- mash(mash_data,U.c,add.mem.profile = TRUE))
+r <- system.time(out <- mash(mash_data,U.c,add.mem.profile = FALSE))
 
 # Record session info.
 print(sessionInfo())

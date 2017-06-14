@@ -84,41 +84,59 @@ mash = function(data,
     if (verbose)
       cat(sprintf(" - Fitting model with %d mixture components.\n",P))
     prior <- set_prior(ncol(lm$lik_matrix),prior)
-    out.time <- system.time(out.mem <- profmem::profmem({
-      pi_s <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
-    },threshold = 1000))
+    if (add.mem.profile)
+      out.time <- system.time(out.mem <- profmem::profmem({
+        pi_s <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
+      },threshold = 1000))
+    else
+      out.time <- system.time(pi_s <-
+                    optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod))
     if (verbose)
-      cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
-                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-                  out.time["elapsed"]))
+      if (add.mem.profile)
+        cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
+                     sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                    out.time["elapsed"]))
+      else
+        cat(sprintf(" - Model fitting took %0.2f seconds.\n",
+                    out.time["elapsed"]))
   }
   else{ #if fixg, just use g$pi for pi
     pi_s = g$pi
   }
 
   # Compute posterior matrices.
-  posterior_weights  <- compute_posterior_weights(pi_s,lm$lik_matrix)
+  posterior_weights <- compute_posterior_weights(pi_s,lm$lik_matrix)
+  # if (verbose)
+  #   cat(" - Computing posterior matrices.\n")
+  # out.time <- system.time(out.mem <- profmem::profmem({
+  #   posterior_matrices <- compute_posterior_matrices(data,xUlist,
+  #                                                    posterior_weights)
+  # },threshold = 1000))
+  # if (verbose)
+  #  cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f seconds.\n",
+  #               sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+  #               out.time["elapsed"]))
   if (verbose)
     cat(" - Computing posterior matrices.\n")
-  out.time <- system.time(out.mem <- profmem::profmem({
-    posterior_matrices <- compute_posterior_matrices(data,xUlist,
-                                                     posterior_weights)
-  },threshold = 1000))
+  if (add.mem.profile)
+    out.time <- system.time(out.mem <- profmem::profmem({
+      posterior_matrices <- compute_posterior_matrices_arma(data,xUlist,
+                                                       posterior_weights)
+    },threshold = 1000))
+  else
+    out.time <-
+      system.time(posterior_matrices <-
+        compute_posterior_matrices_arma(data,xUlist,posterior_weights))
   if (verbose)
-    cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f seconds.\n",
-                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-                out.time["elapsed"]))
-  if (verbose)
-    cat(" - Computing posterior matrices in C++.\n")
-  out.time <- system.time(out.mem <- profmem::profmem({
-    posterior_matrices2 <- compute_posterior_matrices_arma(data,xUlist,
-                                                     posterior_weights)
-  },threshold = 1000))
-  if (verbose)
-    cat(sprintf(" - C++ Computation allocated %0.2f MB and took %0.2f seconds.\n",
-                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-                out.time["elapsed"]))
-    print(c("Is result equal between R and C++?", all.equal(posterior_matrices, posterior_matrices2)))
+    if (add.mem.profile)
+      cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
+                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                  out.time["elapsed"]))
+    else
+      cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
+                  out.time["elapsed"]))
+  #  print(c("Is result equal between R and C++?",
+  #          all.equal(posterior_matrices, posterior_matrices2)))
     
   # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
