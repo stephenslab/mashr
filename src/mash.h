@@ -8,6 +8,20 @@ const double LOG_2PI = std::log(2.0 * M_PI);
 static const double INV_SQRT_2PI = 1.0 / std::sqrt(2.0 * M_PI);
 static const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
 
+inline arma::vec dnorm(const arma::vec & x,
+                       const arma::vec & mu,
+                       const arma::vec & sigma2,
+                       bool logd = false)
+{
+	arma::vec res = LOG_INV_SQRT_2PI -
+	                arma::log(arma::sqrt(sigma2)) -
+	                arma::pow(x - mu, 2) / (2.0 * sigma2);
+
+	if (logd) return res;
+	else return arma::exp(res);
+}
+
+
 inline arma::vec dmvnorm(const arma::mat & x,
                          const arma::rowvec & mean,
                          const arma::mat & sigma,
@@ -41,20 +55,6 @@ inline arma::vec dmvnorm(const arma::mat & x,
 }
 
 
-inline arma::vec dnorm(const arma::vec & x,
-                       const arma::vec & mu,
-                       const arma::vec & sigma2,
-                       bool logd = false)
-{
-	arma::vec res = LOG_INV_SQRT_2PI -
-	                arma::log(arma::sqrt(sigma2)) -
-	                arma::pow(x - mu, 2) / (2.0 * sigma2);
-
-	if (logd) return res;
-	else return arma::exp(res);
-}
-
-
 inline double dmvnorm(const arma::vec & x,
                       const arma::vec & mean,
                       const arma::mat & sigma,
@@ -84,15 +84,11 @@ inline double dmvnorm(const arma::vec & x,
 inline arma::vec pnorm(const arma::vec & x, const arma::vec & m, const arma::vec & s,
                        bool logd = false, bool lower_tail = true)
 {
-	arma::vec res(x.n_elem);
+	// FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
+	// see `normalCDF` function at:
+	// http://en.cppreference.com/w/cpp/numeric/math/erfc
+	arma::vec res = 0.5 * arma::erfc(-(x - m) / s * M_SQRT1_2);
 
-	for (unsigned i = 0; i < x.n_elem; i++) {
-		// FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
-		// see `normalCDF` function at:
-		// http://en.cppreference.com/w/cpp/numeric/math/erfc
-		// also maybe we should try to come up with a vector version instead of loop
-		res(i) = 0.5 * std::erfc(-(x(i) - m(i)) / s(i) * M_SQRT1_2);
-	}
 	if (!lower_tail & !logd) {
 		return 1.0 - res;
 	} else if (lower_tail & !logd) {
