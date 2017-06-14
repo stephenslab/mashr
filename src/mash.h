@@ -353,8 +353,8 @@ private:
 	// input of J vecs
 	arma::vec b_vec;
 	arma::vec s_vec;
-	arma::vec U_vec;
 	double v;
+	arma::vec U_vec;
 	// output of J vecs
 	arma::vec post_mean;
 	arma::vec post_mean2;
