@@ -22,7 +22,8 @@ mash = function(data,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
-                verbose = TRUE) {
+                verbose = TRUE,
+                add.mem.profile = FALSE) {
 
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
@@ -48,6 +49,11 @@ mash = function(data,
 
   xUlist = expand_cov(Ulist,grid,usepointmass)
 
+  # Check "add.mem.profile" argument.
+  if (add.mem.profile)
+    if (!requireNamespace("profmem",quietly = TRUE))
+      stop("add.mem.profile = TRUE requires the profmem package")
+    
   # Get the number of samples (J), the number of mixture components
   # (i.e., prior covariances).
   J <- nrow(data$Bhat)
@@ -56,15 +62,23 @@ mash = function(data,
   # Calculate likelihood matrix.
   if (verbose)
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
-  out.time <- system.time(out.mem <- profmem::profmem({
-    lm <- calc_relative_lik_matrix(data,xUlist)
-  },threshold = 1000))
-  if (verbose)
-    cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
-                      "and took %0.2f seconds.\n"),
-                sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-                out.time["elapsed"]))
-
+  if (add.mem.profile)
+    out.time <- system.time(out.mem <- profmem::profmem({
+      lm <- calc_relative_lik_matrix(data,xUlist)
+    },threshold = 1000))
+  else 
+    out.time <- system.time(lm <- calc_relative_lik_matrix(data,xUlist))
+  if (verbose) {
+    if (add.mem.profile)
+      cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
+                        "and took %0.2f seconds.\n"),
+                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                  out.time["elapsed"]))
+    else
+      cat(sprintf(" - Likelihood calculations took %0.2f seconds.\n",
+                  out.time["elapsed"]))
+  }
+        
   # Main fitting procedure.
   if(!fixg){
     if (verbose)
@@ -104,7 +118,8 @@ mash = function(data,
     cat(sprintf(" - C++ Computation allocated %0.2f MB and took %0.2f seconds.\n",
                 sum(out.mem$bytes,na.rm = TRUE)/1024^2,
                 out.time["elapsed"]))
-  print(c("Is result equal between R and C++?", all.equal(posterior_matrices, posterior_matrices2)))
+    print(c("Is result equal between R and C++?", all.equal(posterior_matrices, posterior_matrices2)))
+    
   # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
