@@ -15,6 +15,8 @@ compute_posterior_matrices(data, Ulist, posterior_weights,
 
 \item{posterior_weights}{Vector containing the posterior
 probability of each mixture component in Ulist for the data}
+
+\item{algorithm.version}{Explain what this argument is for.}
 }
 \value{
 The return value is a list containing the following
