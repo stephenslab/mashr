@@ -7,7 +7,7 @@
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
   prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "cxxMixSquarem"), verbose = TRUE)
+  "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE)
 }
 \arguments{
 \item{data}{a mash data object containing the Bhat matrix and standard errors}

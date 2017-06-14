@@ -2,27 +2,36 @@
 % Please edit documentation in R/posterior.R
 \name{compute_posterior_matrices}
 \alias{compute_posterior_matrices}
-\title{Compute posterior matrices}
+\title{Compute posterior matrices.}
 \usage{
-compute_posterior_matrices(data, Ulist, posterior_weights)
+compute_posterior_matrices(data, Ulist, posterior_weights,
+  algorithm.version = c("Rcpp", "R"))
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{A \code{mash} data object; e.g., created by
+\code{\link{set_mash_data}}.}
 
-\item{Ulist}{a list of covariance matrices for each mixture component}
+\item{Ulist}{List containing the prior covariance matrices.}
 
-\item{posterior_weights}{the posterior probabilities of each mixture component in Ulist for the data}
+\item{posterior_weights}{Vector containing the posterior
+probability of each mixture component in Ulist for the data}
 }
 \value{
-PosteriorMean JxR matrix of posterior means
+The return value is a list containing the following
+   components:
 
-PosteriorSD JxR matrix of posterior (marginal) standard deviations
+   \item{PosteriorMean}{J x R matrix of posterior means.}
 
-NegativeProb JxR matrix of posterior (marginal) probability of being negative
+   \item{PosteriorSD}{J x R matrix of posterior (marginal) standard
+   deviations.}
 
-ZeroProb JxR matrix of posterior (marginal) probability of being zero
+   \item{NegativeProb}{J x R matrix of posterior (marginal)
+    probability of being negative.}
 
-lfsr JxR matrix of local false sign rates
+   \item{ZeroProb}{J x R matrix of posterior (marginal) probability
+    of being zero.}
+
+   \item{lfsr}{J x R matrix of local false sign rates.}
 }
 \description{
 More detailed description of function goes here.

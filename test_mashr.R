@@ -41,4 +41,4 @@ cat("Running mash analysis.\n")
 r <- system.time(out <- mash(mash_data,U.c,add.mem.profile = FALSE))
 
 # Record session info.
-print(sessionInfo())
+# print(sessionInfo())

@@ -53,7 +53,7 @@ mash = function(data,
   if (add.mem.profile)
     if (!requireNamespace("profmem",quietly = TRUE))
       stop("add.mem.profile = TRUE requires the profmem package")
-    
+
   # Get the number of samples (J), the number of mixture components
   # (i.e., prior covariances).
   J <- nrow(data$Bhat)
@@ -106,27 +106,17 @@ mash = function(data,
 
   # Compute posterior matrices.
   posterior_weights <- compute_posterior_weights(pi_s,lm$lik_matrix)
-  # if (verbose)
-  #   cat(" - Computing posterior matrices.\n")
-  # out.time <- system.time(out.mem <- profmem::profmem({
-  #   posterior_matrices <- compute_posterior_matrices(data,xUlist,
-  #                                                    posterior_weights)
-  # },threshold = 1000))
-  # if (verbose)
-  #  cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f seconds.\n",
-  #               sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-  #               out.time["elapsed"]))
   if (verbose)
     cat(" - Computing posterior matrices.\n")
   if (add.mem.profile)
     out.time <- system.time(out.mem <- profmem::profmem({
-      posterior_matrices <- compute_posterior_matrices_arma(data,xUlist,
+      posterior_matrices <- compute_posterior_matrices(data,xUlist,
                                                        posterior_weights)
     },threshold = 1000))
   else
     out.time <-
       system.time(posterior_matrices <-
-        compute_posterior_matrices_arma(data,xUlist,posterior_weights))
+        compute_posterior_matrices(data,xUlist,posterior_weights))
   if (verbose)
     if (add.mem.profile)
       cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
@@ -135,8 +125,6 @@ mash = function(data,
     else
       cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                   out.time["elapsed"]))
-  #  print(c("Is result equal between R and C++?",
-  #          all.equal(posterior_matrices, posterior_matrices2)))
     
   # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
