@@ -36,3 +36,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"mashr_calc_lik_rcpp", (DL_FUNC) &mashr_calc_lik_rcpp, 5},
+    {"mashr_calc_post_rcpp", (DL_FUNC) &mashr_calc_post_rcpp, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_mashr(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

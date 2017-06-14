@@ -10,6 +10,7 @@
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
+#' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @return a list with elements result, loglik and fitted_g
 #' @export
 mash = function(data,

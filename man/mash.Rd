@@ -31,6 +31,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{optmethod}{name of optimization method to use}
 
 \item{verbose}{If \code{TRUE}, print progress to R console.}
+
+\item{add.mem.profile}{If \code{TRUE}, print memory usage to R console (requires R library `profmem`).}
 }
 \value{
 a list with elements result, loglik and fitted_g
