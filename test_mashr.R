@@ -1,24 +1,5 @@
-library(mashr)
-
-# For testing, load all packages listed in the "imports" field, and
-# load all the functions defined in the source files.
-# to overwrite the mashr package defaults
-library(assertthat)
 library(profmem)
-library(rmeta)
-library(ashr)
-library(mvtnorm)
-# source("R/mash.R")
-# source("R/compute_covs.R")
-# source("R/data2cov.R")
-# source("R/ed.R")
-# source("R/get_functions.R")
-# source("R/likelihoods.R")
-# source("R/opt.R")
-# source("R/plots.R")
-# source("R/posterior.R")
-# source("R/set_data.R")
-# source("R/simulations.R")
+library(mashr)
 
 # SCRIPT PARAMETERS.
 i <- 1:1000  # Which samples to include. default to 1:1000

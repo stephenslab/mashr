@@ -6,4 +6,4 @@
 ^calc_lik_matrix_data\.RData$
 ^test_mashr\.R$
 ^test_calc_lik_matrix\.R$
-^test_computer_posterior_matrices\.R$
+^test_compute_posterior_matrices\.R$
