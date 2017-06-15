@@ -59,7 +59,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
   else if (algorithm.version == "Rcpp") {
     # Run the C implementation using the Rcpp interface.
     res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                         simplify2array(Ulist),logd = TRUE)$data
+                         simplify2array(Ulist),logd = log)$data
     # Get column names for R > 1
     if (ncol(res) > 1) colnames(res) <- names(Ulist)
     return(res)
