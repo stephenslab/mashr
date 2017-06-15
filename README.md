@@ -2,7 +2,7 @@
 
 *Welcome to mashr!* This package implements methods to estimate and
 test many effects in many conditions (or many effects on many
-outcomes). 
+outcomes).
 
 The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of

@@ -2,5 +2,3 @@
 ^docs$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^death_time_cor_nonmash\.rda$
-^test_mash\.Rd$
