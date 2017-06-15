@@ -1,6 +1,6 @@
 // Gao Wang (c) 2017 gaow@uchicago.edu
-#ifndef _UTILS_HPP
-#define _UTILS_HPP
+#ifndef _MASH_H
+#define _MASH_H
 #include <cmath>
 #include <armadillo>
 
