@@ -27,10 +27,9 @@ inline arma::vec dmvnorm(const arma::mat & x,
                          const arma::mat & sigma,
                          bool logd = false)
 {
-	int n = x.n_rows;
-	int xdim = x.n_cols;
+	double xdim = static_cast<double>(x.n_cols);
 
-	arma::vec out(n);
+	arma::vec out(x.n_rows);
 	arma::mat rooti;
 
 	try {
@@ -38,12 +37,14 @@ inline arma::vec dmvnorm(const arma::mat & x,
 	} catch (const std::runtime_error & error) {
 		if (logd) out.fill(-arma::datum::inf);
 		else out.fill(0.0);
+		for (unsigned i = 0; i < x.n_rows; ++i)
+			if (arma::accu(arma::abs(x.row(i) - mean)) < 1e-6) out(i) = arma::datum::inf;
 		return out;
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
-	double constants = -(static_cast<double>(xdim) / 2.0) * LOG_2PI;
+	double constants = -(xdim / 2.0) * LOG_2PI;
 
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < x.n_rows; i++) {
 		arma::vec z = rooti * arma::trans(x.row(i) - mean) ;
 		out(i) = constants - 0.5 * arma::sum(z % z) + rootisum;
 	}
@@ -65,8 +66,9 @@ inline double dmvnorm(const arma::vec & x,
 	try {
 		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
 	} catch (const std::runtime_error & error) {
-		if (logd) return -arma::datum::inf;
-		else return 0.0;
+		double diff = arma::accu(arma::abs(x - mean));
+		if (logd) return (diff < 1e-6) ? arma::datum::inf : -arma::datum::inf;
+		else return (diff < 1e-6) ? arma::datum::inf : 0.0;
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(static_cast<double>(x.n_elem) / 2.0) * LOG_2PI;

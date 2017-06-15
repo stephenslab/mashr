@@ -13,8 +13,8 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 {
 
 	// hide armadillo warning / error messages
-	std::ostream nullstream(0);
-	arma::set_stream_err2(nullstream);
+	// std::ostream nullstream(0);
+	// arma::set_stream_err2(nullstream);
 	arma::mat res;
 
 	if (!Rf_isNull(U_3d.attr("dim"))) {
@@ -47,8 +47,8 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 {
 
 	// hide armadillo warning / error messages
-	std::ostream nullstream(0);
-	arma::set_stream_err2(nullstream);
+	// std::ostream nullstream(0);
+	// arma::set_stream_err2(nullstream);
 
 	if (!Rf_isNull(U_3d.attr("dim"))) {
 		// set cube data from R 3D array
