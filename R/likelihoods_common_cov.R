@@ -9,6 +9,9 @@
 #' @export
 calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
   V = mashr:::get_cov(data,1) # all covariances are same
-  t(plyr::laply(Ulist, function(U){dmvnorm(x=data$Bhat,sigma=V+U,log=log)}))
+  res = plyr::laply(Ulist,
+    function(U){dmvnorm(x=data$Bhat,sigma=V+U,log=log)})
+  dimnames(res) = NULL # just to make result identical to the non-common-cov version
+  t(res)
 }
 

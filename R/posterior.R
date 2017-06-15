@@ -20,33 +20,33 @@ posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% Vinv %*% bhat)
 }
 
-#' @title Compute posterior matrices
-#' @description More detailed description of function goes here.
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param Ulist a list of covariance matrices for each mixture component
-#' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
-#' @return PosteriorMean JxR matrix of posterior means
-#' @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
-#' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
-#' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
-#' @return lfsr JxR matrix of local false sign rates
-#' @importFrom ashr compute_lfsr
-#' @export
-compute_posterior_matrices=function(data,Ulist,posterior_weights){
-
-  post_arrays = compute_posterior_arrays(data,Ulist)
-  post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
-  post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
-  post_sd = sqrt(post_mean2 - post_mean^2)
-  post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
-  post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
-  lfsr = compute_lfsr(post_neg,post_zero)
-  return(list(PosteriorMean = post_mean,
-              PosteriorSD = post_sd,
-              lfdr = post_zero,
-              NegativeProb = post_neg,
-              lfsr = lfsr))
-}
+# #' @title Compute posterior matrices
+# #' @description More detailed description of function goes here.
+# #' @param data a mash data object, eg as created by \code{set_mash_data}
+# #' @param Ulist a list of covariance matrices for each mixture component
+# #' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
+# #' @return PosteriorMean JxR matrix of posterior means
+# #' @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
+# #' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
+# #' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
+# #' @return lfsr JxR matrix of local false sign rates
+# #' @importFrom ashr compute_lfsr
+# #' @export
+# compute_posterior_matrices=function(data,Ulist,posterior_weights){
+#
+#   post_arrays = compute_posterior_arrays(data,Ulist)
+#   post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
+#   post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
+#   post_sd = sqrt(post_mean2 - post_mean^2)
+#   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
+#   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
+#   lfsr = compute_lfsr(post_neg,post_zero)
+#   return(list(PosteriorMean = post_mean,
+#               PosteriorSD = post_sd,
+#               lfdr = post_zero,
+#               NegativeProb = post_neg,
+#               lfsr = lfsr))
+# }
 
 #' @title compute_posterior_arrays
 #' @description More detailed description of function goes here.
