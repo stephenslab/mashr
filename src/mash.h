@@ -34,7 +34,7 @@ inline arma::vec dmvnorm(const arma::mat & x,
 	arma::mat rooti;
 
 	try {
-		rooti = arma::trans(arma::inv(trimatu(arma::chol(sigma))));
+		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
 	} catch (const std::runtime_error & error) {
 		if (logd) out.fill(-arma::datum::inf);
 		else out.fill(0.0);
@@ -63,7 +63,7 @@ inline double dmvnorm(const arma::vec & x,
 	arma::mat rooti;
 
 	try {
-		rooti = arma::trans(arma::inv(trimatu(arma::chol(sigma))));
+		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
 	} catch (const std::runtime_error & error) {
 		if (logd) return -arma::datum::inf;
 		else return 0.0;
@@ -223,7 +223,7 @@ public:
 
 		for (unsigned j = 0; j < b_mat.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv = get_cov(s_mat.col(j), v_mat).i();
+			arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(j), v_mat));
 			// R X P matrices
 			arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
