@@ -48,19 +48,22 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 calc_lik_matrix <- function (data, Ulist, log = FALSE,
                              algorithm.version = c("Rcpp","R")) {
   algorithm.version <- match.arg(algorithm.version)
-    
+
   if (algorithm.version == "R")
 
     # Run the (considerably slower) version that is completely
     # implemented using existing R functions.
-    return(t(sapply(1:n_effects(data),
-                    function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
-                                                Ulist,log))))
-  else if (algorithm.version == "Rcpp")
-
+    return(matrix(t(sapply(1:n_effects(data),
+                           function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
+                                                       Ulist,log)))))
+  else if (algorithm.version == "Rcpp") {
     # Run the C implementation using the Rcpp interface.
-    return(calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                         simplify2array(Ulist),logd = TRUE)$data)
+    res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
+                         simplify2array(Ulist),logd = TRUE)$data
+    # Get column names for R > 1
+    if (ncol(res) > 1) colnames(res) <- names(Ulist)
+    return(res)
+  }
   else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
 }
