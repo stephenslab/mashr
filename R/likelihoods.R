@@ -16,15 +16,21 @@ calc_lik_vector=function(bhat,V,Ulist,log=FALSE){
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist list of prior covariance matrices
 #' @param log if true computes log-likelihood
-#' @return J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V)
+#' @return J x P vector of multivariate normal likelihoods, p(bhat_j | Ulist[p], V_j)
 #' @export
 calc_lik_matrix = function(data, Ulist, log=FALSE){
-  J = n_effects(data)
-  t(sapply(seq(1:J),
+  if(is_common_cov(data)){
+    calc_lik_matrix_common_cov(data,Ulist,log)
+  } else {
+    J = n_effects(data)
+    t(sapply(seq(1:J),
            function(j){
              calc_lik_vector(data$Bhat[j,],get_cov(data,j),Ulist,log)
              }))
+  }
 }
+
+
 
 #' @title Calculate matrix of relative likelihoods (likelihoods, normalized to avoid numeric issues)
 #' @description computes matrix of relative likelihoods for each of J rows of Bhat for each of P prior covariances

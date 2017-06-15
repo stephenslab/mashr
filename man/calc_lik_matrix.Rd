@@ -14,7 +14,7 @@ calc_lik_matrix(data, Ulist, log = FALSE)
 \item{log}{if true computes log-likelihood}
 }
 \value{
-J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V)
+J x P vector of multivariate normal likelihoods, p(bhat_j | Ulist[p], V_j)
 }
 \description{
 computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
