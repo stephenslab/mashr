@@ -61,7 +61,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 		pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights));
 		return Rcpp::List::create(Rcpp::Named("post_mean") =
-			  pc.PosteriorMean(),
+				pc.PosteriorMean(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),
 			Rcpp::Named("post_zero") = pc.ZeroProb(),
 			Rcpp::Named("post_neg") = pc.NegativeProb());
@@ -74,11 +74,10 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 		pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights));
 		return Rcpp::List::create(Rcpp::Named("post_mean") =
-			  pc.PosteriorMean(),
+				pc.PosteriorMean(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),
 			Rcpp::Named("post_zero") = pc.ZeroProb(),
 			Rcpp::Named("post_neg") = pc.NegativeProb());
 	}
 }
-
 

@@ -3,6 +3,7 @@
 #define _UTILS_HPP
 #include <cmath>
 #include <armadillo>
+#include <omp.h>
 
 const double LOG_2PI = std::log(2.0 * M_PI);
 static const double INV_SQRT_2PI = 1.0 / std::sqrt(2.0 * M_PI);
@@ -158,6 +159,7 @@ arma::mat calc_lik(const arma::mat & b_mat,
 
 	for (unsigned j = 0; j < lik.n_rows; ++j) {
 		arma::mat sigma = get_cov(s_mat.col(j), v_mat);
+#pragma omp parallel for schedule(static)
 		for (unsigned p = 0; p < lik.n_cols; ++p) {
 			lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
 		}
@@ -183,7 +185,7 @@ arma::mat calc_lik(const arma::vec & b_vec,
 	arma::mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
 	arma::vec sigma = s_vec % s_vec * v;
 	arma::vec mean(b_vec.n_elem, arma::fill::zeros);
-
+#pragma omp parallel for schedule(static)
 	for (unsigned p = 0; p < lik.n_cols; ++p) {
 		lik.col(p) = dnorm(b_vec, mean, sigma + U_vec.at(p), logd);
 	}
@@ -230,6 +232,7 @@ public:
 			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat zero_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+#pragma omp parallel for schedule(static)
 			for (unsigned p = 0; p < U_cube.n_slices; ++p) {
 				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
@@ -316,7 +319,7 @@ public:
 		arma::mat mu2_mat(J, P, arma::fill::zeros);
 		arma::mat zero_mat(J, P, arma::fill::zeros);
 		arma::mat neg_mat(J, P, arma::fill::zeros);
-
+#pragma omp parallel for schedule(static)
 		for (unsigned p = 0; p < P; ++p) {
 			arma::vec U1 = U_vec.at(p) / (sv * U_vec.at(p) + 1);
 			mu1_mat.col(p) = U1 / sv % b_vec;
@@ -330,6 +333,7 @@ public:
 			}
 		}
 		// compute weighted means of posterior arrays
+#pragma omp parallel for schedule(static)
 		for (unsigned j = 0; j < J; ++j) {
 			post_mean.at(j) = arma::dot(mu1_mat.row(j), posterior_weights.col(j));
 			post_mean2.at(j) = arma::dot(mu2_mat.row(j), posterior_weights.col(j));
