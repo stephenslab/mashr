@@ -4,7 +4,7 @@
 \alias{compute_posterior_matrices}
 \title{Compute posterior matrices (low memory version)}
 \usage{
-compute_posterior_matrices(data, Ulist, posterior_weights, common_cov = FALSE)
+compute_posterior_matrices(data, Ulist, posterior_weights)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}

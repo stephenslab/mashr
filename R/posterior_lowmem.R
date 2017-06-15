@@ -10,7 +10,7 @@
 #' @return lfsr JxR matrix of local false sign rates
 #' @importFrom ashr compute_lfsr
 #' @export
-compute_posterior_matrices=function(data,Ulist,posterior_weights, common_cov = FALSE){
+compute_posterior_matrices=function(data,Ulist,posterior_weights){
   R=n_conditions(data)
   J=n_effects(data)
   P=length(Ulist)
@@ -26,6 +26,8 @@ compute_posterior_matrices=function(data,Ulist,posterior_weights, common_cov = F
   post_mean2 = array(NA,dim=c(P,R)) #mean squared value
   post_zero=array(NA,dim=c(P,R))
   post_neg=array(NA,dim=c(P,R))
+
+  common_cov = is_common_cov(data) # check whether data have common covariance
 
   if(common_cov){
     V = get_cov(data,1)
