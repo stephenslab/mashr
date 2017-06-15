@@ -157,9 +157,9 @@ arma::mat calc_lik(const arma::mat & b_mat,
 	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
 	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 
+#pragma omp parallel for schedule(static)
 	for (unsigned j = 0; j < lik.n_rows; ++j) {
 		arma::mat sigma = get_cov(s_mat.col(j), v_mat);
-#pragma omp parallel for schedule(static)
 		for (unsigned p = 0; p < lik.n_cols; ++p) {
 			lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
 		}
@@ -224,6 +224,7 @@ public:
 	{
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 
+#pragma omp parallel for schedule(static)
 		for (unsigned j = 0; j < b_mat.n_cols; ++j) {
 			// FIXME: improved math may help here
 			arma::mat Vinv = get_cov(s_mat.col(j), v_mat).i();
@@ -232,7 +233,6 @@ public:
 			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat zero_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-#pragma omp parallel for schedule(static)
 			for (unsigned p = 0; p < U_cube.n_slices; ++p) {
 				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
