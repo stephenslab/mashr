@@ -12,6 +12,7 @@
 #' @param verbose If \code{TRUE}, print progress to R console.
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
+#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @return a list with elements result, loglik and fitted_g
 #' @example
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -33,7 +34,8 @@ mash = function(data,
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
                 add.mem.profile = FALSE,
-                algorithm.version = c("Rcpp","R")) {
+                algorithm.version = c("Rcpp","R"),
+                pi_thresh = 1e-10) {
 
   algorithm.version = match.arg(algorithm.version)
 
@@ -116,19 +118,22 @@ mash = function(data,
     pi_s = g$pi
   }
 
+  # threshold mixture components
+  which.comp = (pi_s > pi_thresh)
+
   # Compute posterior matrices.
-  posterior_weights <- compute_posterior_weights(pi_s,lm$lik_matrix)
+  posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
   if (verbose)
     cat(" - Computing posterior matrices.\n")
   if (add.mem.profile)
     out.time <- system.time(out.mem <- profmem::profmem({
-      posterior_matrices <- compute_posterior_matrices(data,xUlist,
+      posterior_matrices <- compute_posterior_matrices(data,xUlist[which.comp],
                                                        posterior_weights, algorithm.version)
     },threshold = 1000))
   else
     out.time <-
       system.time(posterior_matrices <-
-        compute_posterior_matrices(data,xUlist,posterior_weights, algorithm.version))
+        compute_posterior_matrices(data,xUlist[which.comp],posterior_weights, algorithm.version))
   if (verbose)
     if (add.mem.profile)
       cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",

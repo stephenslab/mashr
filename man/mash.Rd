@@ -8,7 +8,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
   prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
   "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
-  algorithm.version = c("Rcpp", "R"))
+  algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10)
 }
 \arguments{
 \item{data}{a mash data object containing the Bhat matrix and standard errors; created using \code{set_mash_data}}
@@ -36,6 +36,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{add.mem.profile}{If \code{TRUE}, print memory usage to R console (requires R library `profmem`).}
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
+
+\item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
 }
 \value{
 a list with elements result, loglik and fitted_g
