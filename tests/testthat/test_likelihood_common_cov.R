@@ -5,6 +5,7 @@ test_that("likelihood calculations with common cov look right",{
   Ulist = cov_singletons(data)
   mm = calc_lik_matrix(data, Ulist)
   mm2 = calc_lik_matrix_common_cov(data, Ulist)
+  expect_equal(is_common_cov(data),TRUE)
   expect_equal(mm,mm2)
 }
 )

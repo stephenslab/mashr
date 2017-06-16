@@ -61,27 +61,11 @@ compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
             algorithm.version = c("Rcpp","R")) {
   algorithm.version <- match.arg(algorithm.version)
-    
+
   if (algorithm.version == "R") {
 
-    # Run the (considerably slower) version that is completely
-    # implemented using existing R functions.
-    post_arrays <- compute_posterior_arrays(data,Ulist)
-    post_mean   <- compute_weighted_quantity(post_arrays$post_mean,
-                                             posterior_weights)
-    post_mean2  <- compute_weighted_quantity(post_arrays$post_mean2,
-                                           posterior_weights)
-    post_sd     <- sqrt(post_mean2 - post_mean^2)
-    post_zero   <- compute_weighted_quantity(post_arrays$post_zero,
-                                             posterior_weights)
-    post_neg    <- compute_weighted_quantity(post_arrays$post_neg,
-                                             posterior_weights)
-    lfsr        <- compute_lfsr(post_neg,post_zero)
-    return(list(PosteriorMean = post_mean,
-                PosteriorSD   = post_sd,
-                lfdr          = post_zero,
-                NegativeProb  = post_neg,
-                lfsr          = lfsr))
+    compute_posterior_matrices_R_lowmem(data, Ulist, posterior_weights)
+
   } else if (algorithm.version == "Rcpp") {
 
     # Run the C implementation using the Rcpp interface.
