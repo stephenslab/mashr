@@ -1,4 +1,4 @@
-#' @title Compute posterior matrices (low memory version)
+#' @title Compute posterior matrices (general version)
 #' @description Computes posterior matrices without allocating huge memory
 #' @param data a mash data object, eg as created by \code{set_mash_data}
 #' @param Ulist a list of P covariance matrices for each mixture component
@@ -10,7 +10,7 @@
 #' @return lfsr JxR matrix of local false sign rates
 #' @importFrom ashr compute_lfsr
 #' @export
-compute_posterior_matrices_R_lowmem=function(data,Ulist,posterior_weights){
+compute_posterior_matrices_general_R=function(data,Ulist,posterior_weights){
   R=n_conditions(data)
   J=n_effects(data)
   P=length(Ulist)

@@ -16,8 +16,22 @@ posterior_cov <- function(Vinv, U){
 #' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
 #' @export
 posterior_mean <- function(bhat, Vinv, U1){
-  return(U1 %*% Vinv %*% bhat)
+  return(U1 %*% (Vinv %*% bhat))
 }
+
+#' @title posterior_mean_matrix
+#' @param Bhat J by R matrix of observations
+#' @param Vinv R x R inverse covariance matrix for the likelihood
+#' @param U1 R x R posterior covariance matrix, computed using posterior_cov
+#' @return R vector of posterior mean
+#' @description Computes posterior mean under multivariate normal model for each row of matrix Bhat.
+#' Note that if bhat is N_R(b,V) and b is N_R(0,U) then b|bhat N_R(mu1,U1).
+#' This function returns a matrix with jth row equal to mu1(bhat) for bhat= Bhat[j,].
+#' @export
+posterior_mean_matrix <- function(Bhat, Vinv, U1){
+  return(Bhat %*% (Vinv %*% U1))
+}
+
 
 
 #' @title Compute posterior matrices.
@@ -63,9 +77,11 @@ compute_posterior_matrices <-
   algorithm.version <- match.arg(algorithm.version)
 
   if (algorithm.version == "R") {
-
-    compute_posterior_matrices_R_lowmem(data, Ulist, posterior_weights)
-
+    if(is_common_cov(data)){ # use more efficient computations for commmon covariance case
+      compute_posterior_matrices_common_cov_R(data, Ulist, posterior_weights)
+    } else {
+      compute_posterior_matrices_general_R(data, Ulist, posterior_weights)
+    }
   } else if (algorithm.version == "Rcpp") {
 
     # Run the C implementation using the Rcpp interface.
