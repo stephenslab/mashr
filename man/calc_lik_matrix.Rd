@@ -16,7 +16,7 @@ calc_lik_matrix(data, Ulist, log = FALSE, algorithm.version = c("Rcpp",
 \item{log}{If \code{TRUE}, the return value is a matrix of log-
 likelihoods.}
 
-\item{algorithm.version}{Explain what this argument is for.}
+\item{algorithm.version}{Indicate R or Rcpp version}
 }
 \value{
 J x P matrix of multivariate normal likelihoods, p(bhat |

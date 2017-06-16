@@ -7,10 +7,11 @@
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
   prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE)
+  "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
+  algorithm.version = c("Rcpp", "R"))
 }
 \arguments{
-\item{data}{a mash data object containing the Bhat matrix and standard errors}
+\item{data}{a mash data object containing the Bhat matrix and standard errors; created using \code{set_mash_data}}
 
 \item{Ulist}{a list of covariance matrices to use}
 
@@ -33,6 +34,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{verbose}{If \code{TRUE}, print progress to R console.}
 
 \item{add.mem.profile}{If \code{TRUE}, print memory usage to R console (requires R library `profmem`).}
+
+\item{algorithm.version}{Indicates whether to use R or Rcpp version}
 }
 \value{
 a list with elements result, loglik and fitted_g

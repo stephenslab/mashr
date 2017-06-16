@@ -21,6 +21,7 @@
 calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
   sapply(Ulist,function(p) dmvnorm(bhat,sigma = p + V,log = log))
 
+
 #' @title Compute matrix of conditional likelihoods.
 #'
 #' @description computes matrix of condition likelihoods for each of J
@@ -34,7 +35,7 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @param log If \code{TRUE}, the return value is a matrix of log-
 #'     likelihoods.
 #'
-#' @param algorithm.version Explain what this argument is for.
+#' @param algorithm.version Indicate R or Rcpp version
 #'
 #' @return J x P matrix of multivariate normal likelihoods, p(bhat |
 #'     Ulist[p], V).
@@ -50,12 +51,15 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
   algorithm.version <- match.arg(algorithm.version)
 
   if (algorithm.version == "R") {
-
+    if(is_common_cov(data)){
+      res <- calc_lik_matrix_common_cov(data,Ulist,log)
+    } else {
     # Run the (considerably slower) version that is completely
     # implemented using existing R functions.
-    res <- t(sapply(1:n_effects(data),
+      res <- t(sapply(1:n_effects(data),
                     function(j) calc_lik_vector(data$Bhat[j,],get_cov(data,j),
                                                 Ulist,log)))
+    }
     if (nrow(res) == 1) res <- matrix(res)
     return(res)
   }
@@ -81,6 +85,8 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
 #'
 #' @param Ulist List containing the prior covariance matrices.
 #'
+#' @param algorithm.version indicates R or Rcpp
+#'
 #' @return The return value is a list containing the following components:
 #'
 #'     \item{lik_matrix}{J x P matrix containing likelihoods p(bhat[j]
@@ -93,15 +99,17 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
 #'       to row i of the Bhat data matrix.}
 #'
 #' @export
-calc_relative_lik_matrix <- function (data, Ulist) {
+calc_relative_lik_matrix <- function (data, Ulist, algorithm.version= c("Rcpp","R")) {
+
+  algorithm.version = match.arg(algorithm.version)
 
   # Compute the J x P matrix of conditional log-likelihoods.
-  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE)
+  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE, algorithm.version)
 
   # Avoid numerical issues (overflow or underflow) by subtracting the
   # largest entry in each row.
   lfactors    <- apply(matrix_llik,1,max)
-  matrix_llik <- matrix_llik - lfactors 
+  matrix_llik <- matrix_llik - lfactors
   return(list(lik_matrix = exp(matrix_llik),
               lfactors   = lfactors))
 }

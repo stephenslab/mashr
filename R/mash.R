@@ -1,5 +1,5 @@
 #' Apply mash method to data
-#' @param data a mash data object containing the Bhat matrix and standard errors
+#' @param data a mash data object containing the Bhat matrix and standard errors; created using \code{set_mash_data}
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
@@ -11,7 +11,15 @@
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
+#' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @return a list with elements result, loglik and fitted_g
+#' @example
+#' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
+#' Shat = matrix(rep(1,100),ncol=5)
+#' data = mashr::set_mash_data(Bhat,Shat)
+#' U.c = mashr::cov_canonical(data)
+#' res.mash = mashr::mash(data,U.c)
+#'
 #' @export
 mash = function(data,
                 Ulist = NULL,
@@ -24,7 +32,10 @@ mash = function(data,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
-                add.mem.profile = FALSE) {
+                add.mem.profile = FALSE,
+                algorithm.version = c("Rcpp","R")) {
+
+  algorithm.version = match.arg(algorithm.version)
 
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
@@ -65,10 +76,10 @@ mash = function(data,
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
   if (add.mem.profile)
     out.time <- system.time(out.mem <- profmem::profmem({
-      lm <- calc_relative_lik_matrix(data,xUlist)
+      lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version)
     },threshold = 1000))
-  else 
-    out.time <- system.time(lm <- calc_relative_lik_matrix(data,xUlist))
+  else
+    out.time <- system.time(lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version))
   if (verbose) {
     if (add.mem.profile)
       cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
@@ -79,7 +90,7 @@ mash = function(data,
       cat(sprintf(" - Likelihood calculations took %0.2f seconds.\n",
                   out.time["elapsed"]))
   }
-        
+
   # Main fitting procedure.
   if(!fixg){
     if (verbose)
@@ -112,12 +123,12 @@ mash = function(data,
   if (add.mem.profile)
     out.time <- system.time(out.mem <- profmem::profmem({
       posterior_matrices <- compute_posterior_matrices(data,xUlist,
-                                                       posterior_weights)
+                                                       posterior_weights, algorithm.version)
     },threshold = 1000))
   else
     out.time <-
       system.time(posterior_matrices <-
-        compute_posterior_matrices(data,xUlist,posterior_weights))
+        compute_posterior_matrices(data,xUlist,posterior_weights, algorithm.version))
   if (verbose)
     if (add.mem.profile)
       cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
@@ -126,7 +137,7 @@ mash = function(data,
     else
       cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                   out.time["elapsed"]))
-    
+
   # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
@@ -199,20 +210,20 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 }
 
 #' @title Perform condition-by-condition analyses
-#' 
+#'
 #' @param data A list with the following two elements: \code{Bhat} an
 #' n by R matrix of observations (n units in R conditions); and
 #' \code{Shat}, an n by R matrix of standard errors (n units in R
 #' conditions),
-#' 
+#'
 #' @description Performs simple "condition-by-condition" analysis by
 #' running \code{ash} from package \code{ashr} on data from each
 #' condition, one at a time. May be a useful first step to identify
 #' top hits in each condition before a mash analysis.
-#' 
+#'
 #' @return A list similar to the output of mash, particularly
 #' including posterior matrices.
-#' 
+#'
 #' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
 #' @export
 mash_1by1 = function(data){
