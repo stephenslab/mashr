@@ -89,7 +89,7 @@ inline arma::vec pnorm(const arma::vec & x, const arma::vec & m, const arma::vec
 	// FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
 	// see `normalCDF` function at:
 	// http://en.cppreference.com/w/cpp/numeric/math/erfc
-	arma::vec res = 0.5 * arma::erfc(-(x - m) / s * M_SQRT1_2);
+	arma::vec res = 0.5 * arma::erfc((x - m) / s * M_SQRT1_2);
 
 	if (!lower_tail & !logd) {
 		return 1.0 - res;
@@ -238,7 +238,7 @@ public:
 				mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + sigma;
 				// FIXME: please double-check the implementation logic here
 				// against https://github.com/stephenslab/mashr/blob/master/R/posterior.R#L83
-				neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(sigma));
+				neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, arma::sqrt(sigma));
 				for (unsigned r = 0; r < sigma.n_elem; ++r) {
 					if (sigma.at(r) == 0) {
 						zero_mat.at(r, p) = 1.0;
@@ -321,7 +321,7 @@ public:
 			arma::vec U1 = U_vec.at(p) / (sv * U_vec.at(p) + 1);
 			mu1_mat.col(p) = U1 / sv % b_vec;
 			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + U1;
-			neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(U1));
+			neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, arma::sqrt(U1));
 			for (unsigned j = 0; j < J; ++j) {
 				if (U1.at(j) == 0) {
 					zero_mat.at(j, p) = 1.0;
