@@ -53,6 +53,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
   if (algorithm.version == "R") {
     if(is_common_cov(data)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)
+      colnames(res) <- names(Ulist)
     } else {
     # Run the (considerably slower) version that is completely
     # implemented using existing R functions.
@@ -66,7 +67,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
   else if (algorithm.version == "Rcpp") {
     # Run the C implementation using the Rcpp interface.
     res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                         simplify2array(Ulist),logd = log)$data
+                         simplify2array(Ulist), log, is_common_cov(data))$data
     # Get column names for R > 1
     if (ncol(res) > 1) colnames(res) <- names(Ulist)
     return(res)
