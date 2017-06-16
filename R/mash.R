@@ -11,6 +11,8 @@
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
+#' @param algorithm.version Indicates whether to use R or Rcpp version
+#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @return a list with elements result, loglik and fitted_g
 #' @example
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -31,7 +33,11 @@ mash = function(data,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
-                add.mem.profile = FALSE) {
+                add.mem.profile = FALSE,
+                algorithm.version = c("Rcpp","R"),
+                pi_thresh = 1e-10) {
+
+  algorithm.version = match.arg(algorithm.version)
 
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
@@ -72,10 +78,10 @@ mash = function(data,
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
   if (add.mem.profile)
     out.time <- system.time(out.mem <- profmem::profmem({
-      lm <- calc_relative_lik_matrix(data,xUlist)
+      lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version)
     },threshold = 1000))
-  else 
-    out.time <- system.time(lm <- calc_relative_lik_matrix(data,xUlist))
+  else
+    out.time <- system.time(lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version))
   if (verbose) {
     if (add.mem.profile)
       cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
@@ -86,7 +92,7 @@ mash = function(data,
       cat(sprintf(" - Likelihood calculations took %0.2f seconds.\n",
                   out.time["elapsed"]))
   }
-        
+
   # Main fitting procedure.
   if(!fixg){
     if (verbose)
@@ -112,19 +118,22 @@ mash = function(data,
     pi_s = g$pi
   }
 
+  # threshold mixture components
+  which.comp = (pi_s > pi_thresh)
+
   # Compute posterior matrices.
-  posterior_weights <- compute_posterior_weights(pi_s,lm$lik_matrix)
+  posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
   if (verbose)
     cat(" - Computing posterior matrices.\n")
   if (add.mem.profile)
     out.time <- system.time(out.mem <- profmem::profmem({
-      posterior_matrices <- compute_posterior_matrices(data,xUlist,
-                                                       posterior_weights)
+      posterior_matrices <- compute_posterior_matrices(data,xUlist[which.comp],
+                                                       posterior_weights, algorithm.version)
     },threshold = 1000))
   else
     out.time <-
       system.time(posterior_matrices <-
-        compute_posterior_matrices(data,xUlist,posterior_weights))
+        compute_posterior_matrices(data,xUlist[which.comp],posterior_weights, algorithm.version))
   if (verbose)
     if (add.mem.profile)
       cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
@@ -133,7 +142,7 @@ mash = function(data,
     else
       cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                   out.time["elapsed"]))
-    
+
   # Compute marginal log-likelihood.
   loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)

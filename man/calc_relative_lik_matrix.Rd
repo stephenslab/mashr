@@ -4,13 +4,15 @@
 \alias{calc_relative_lik_matrix}
 \title{Calculate matrix of relative likelihoods.}
 \usage{
-calc_relative_lik_matrix(data, Ulist)
+calc_relative_lik_matrix(data, Ulist, algorithm.version = c("Rcpp", "R"))
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by
 \code{\link{set_mash_data}}.}
 
 \item{Ulist}{List containing the prior covariance matrices.}
+
+\item{algorithm.version}{indicates R or Rcpp}
 }
 \value{
 The return value is a list containing the following components:

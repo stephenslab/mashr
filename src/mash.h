@@ -89,7 +89,7 @@ inline arma::vec pnorm(const arma::vec & x, const arma::vec & m, const arma::vec
 	// FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
 	// see `normalCDF` function at:
 	// http://en.cppreference.com/w/cpp/numeric/math/erfc
-	arma::vec res = 0.5 * arma::erfc(-(x - m) / s * M_SQRT1_2);
+	arma::vec res = 0.5 * arma::erfc((x - m) / s * M_SQRT1_2);
 
 	if (!lower_tail & !logd) {
 		return 1.0 - res;
@@ -107,6 +107,7 @@ inline arma::vec pnorm(const arma::vec & x, const arma::vec & m, const arma::vec
 inline arma::mat get_cov(const arma::vec & s, const ::arma::mat & V)
 {
 	return (V.each_col() % s).each_row() % s.t();
+	/* return arma::diagmat(s) * V * arma::diagmat(s); */
 }
 
 
@@ -145,23 +146,33 @@ inline arma::vec get_posterior_mean(const arma::vec & bhat, const arma::mat & Vi
 // @param v_mat R by R
 // @param U_cube list of prior covariance matrices
 // @param logd if true computes log-likelihood
+// @param common_cov if true use version for common covariance
 // @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
 arma::mat calc_lik(const arma::mat & b_mat,
                    const arma::mat & s_mat,
                    const arma::mat & v_mat,
                    const arma::cube & U_cube,
-                   bool logd = false)
+                   bool logd,
+                   bool common_cov)
 {
 	// In armadillo data are stored with column-major ordering
 	// slicing columns are therefore faster than rows
 	// lik is a J by P matrix
 	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
-	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 
-	for (unsigned j = 0; j < lik.n_rows; ++j) {
-		arma::mat sigma = get_cov(s_mat.col(j), v_mat);
+	if (common_cov) {
+		arma::rowvec mean(b_mat.n_rows, arma::fill::zeros);
+		arma::mat sigma = get_cov(s_mat.col(0), v_mat);
 		for (unsigned p = 0; p < lik.n_cols; ++p) {
-			lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
+			lik.col(p) = dmvnorm(b_mat, mean, sigma + U_cube.slice(p), logd);
+		}
+	} else {
+		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+		for (unsigned j = 0; j < lik.n_rows; ++j) {
+			arma::mat sigma = get_cov(s_mat.col(j), v_mat);
+			for (unsigned p = 0; p < lik.n_cols; ++p) {
+				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
+			}
 		}
 	}
 	return lik;
@@ -180,11 +191,12 @@ arma::mat calc_lik(const arma::vec & b_vec,
                    const arma::vec & s_vec,
                    double v,
                    const arma::vec & U_vec,
-                   bool logd = false)
+                   bool logd)
 {
 	arma::mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
 	arma::vec sigma = s_vec % s_vec * v;
 	arma::vec mean(b_vec.n_elem, arma::fill::zeros);
+
 	for (unsigned p = 0; p < lik.n_cols; ++p) {
 		lik.col(p) = dnorm(b_vec, mean, sigma + U_vec.at(p), logd);
 	}
@@ -238,7 +250,7 @@ public:
 				mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + sigma;
 				// FIXME: please double-check the implementation logic here
 				// against https://github.com/stephenslab/mashr/blob/master/R/posterior.R#L83
-				neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(sigma));
+				neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, arma::sqrt(sigma));
 				for (unsigned r = 0; r < sigma.n_elem; ++r) {
 					if (sigma.at(r) == 0) {
 						zero_mat.at(r, p) = 1.0;
@@ -317,11 +329,12 @@ public:
 		arma::mat mu2_mat(J, P, arma::fill::zeros);
 		arma::mat zero_mat(J, P, arma::fill::zeros);
 		arma::mat neg_mat(J, P, arma::fill::zeros);
+
 		for (unsigned p = 0; p < P; ++p) {
 			arma::vec U1 = U_vec.at(p) / (sv * U_vec.at(p) + 1);
 			mu1_mat.col(p) = U1 / sv % b_vec;
 			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2) + U1;
-			neg_mat.col(p) = pnorm(mean, mu1_mat.col(p), arma::sqrt(U1));
+			neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, arma::sqrt(U1));
 			for (unsigned j = 0; j < J; ++j) {
 				if (U1.at(j) == 0) {
 					zero_mat.at(j, p) = 1.0;

@@ -9,7 +9,8 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,
                          Rcpp::NumericMatrix v_mat,
                          Rcpp::NumericVector U_3d,
-                         bool logd = false)
+                         bool logd,
+                         bool common_cov)
 {
 
 	// hide armadillo warning / error messages
@@ -25,7 +26,8 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 			Rcpp::as<arma::mat>(s_mat),
 			Rcpp::as<arma::mat>(v_mat),
 			U_cube,
-			logd);
+			logd,
+			common_cov);
 	} else {
 		res = calc_lik(Rcpp::as<arma::vec>(b_mat),
 			Rcpp::as<arma::vec>(s_mat),
@@ -61,7 +63,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 		pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights));
 		return Rcpp::List::create(Rcpp::Named("post_mean") =
-				pc.PosteriorMean(),
+			  pc.PosteriorMean(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),
 			Rcpp::Named("post_zero") = pc.ZeroProb(),
 			Rcpp::Named("post_neg") = pc.NegativeProb());
@@ -74,10 +76,11 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 		pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights));
 		return Rcpp::List::create(Rcpp::Named("post_mean") =
-				pc.PosteriorMean(),
+			  pc.PosteriorMean(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),
 			Rcpp::Named("post_zero") = pc.ZeroProb(),
 			Rcpp::Named("post_neg") = pc.NegativeProb());
 	}
 }
+
 

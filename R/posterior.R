@@ -16,8 +16,23 @@ posterior_cov <- function(Vinv, U){
 #' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
 #' @export
 posterior_mean <- function(bhat, Vinv, U1){
-  return(U1 %*% Vinv %*% bhat)
+  return(U1 %*% (Vinv %*% bhat))
 }
+
+#' @title posterior_mean_matrix
+#' @param Bhat J by R matrix of observations
+#' @param Vinv R x R inverse covariance matrix for the likelihood
+#' @param U1 R x R posterior covariance matrix, computed using posterior_cov
+#' @return R vector of posterior mean
+#' @description Computes posterior mean under multivariate normal model for each row of matrix Bhat.
+#' Note that if bhat is N_R(b,V) and b is N_R(0,U) then b|bhat N_R(mu1,U1).
+#' This function returns a matrix with jth row equal to mu1(bhat) for bhat= Bhat[j,].
+#' @export
+posterior_mean_matrix <- function(Bhat, Vinv, U1){
+  return(Bhat %*% (Vinv %*% U1))
+}
+
+
 
 #' @title Compute posterior matrices.
 #'
@@ -31,7 +46,7 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @param posterior_weights Vector containing the posterior
 #'     probability of each mixture component in Ulist for the data
 #'
-#' @param algorithm.version Explain what this argument is for.
+#' @param algorithm.version Indicates whether to use R or Rcpp version
 #'
 #' @return The return value is a list containing the following
 #'    components:
@@ -60,27 +75,13 @@ compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
             algorithm.version = c("Rcpp","R")) {
   algorithm.version <- match.arg(algorithm.version)
-    
-  if (algorithm.version == "R") {
 
-    # Run the (considerably slower) version that is completely
-    # implemented using existing R functions.
-    post_arrays <- compute_posterior_arrays(data,Ulist)
-    post_mean   <- compute_weighted_quantity(post_arrays$post_mean,
-                                             posterior_weights)
-    post_mean2  <- compute_weighted_quantity(post_arrays$post_mean2,
-                                           posterior_weights)
-    post_sd     <- sqrt(post_mean2 - post_mean^2)
-    post_zero   <- compute_weighted_quantity(post_arrays$post_zero,
-                                             posterior_weights)
-    post_neg    <- compute_weighted_quantity(post_arrays$post_neg,
-                                             posterior_weights)
-    lfsr        <- compute_lfsr(post_neg,post_zero)
-    return(list(PosteriorMean = post_mean,
-                PosteriorSD   = post_sd,
-                lfdr          = post_zero,
-                NegativeProb  = post_neg,
-                lfsr          = lfsr))
+  if (algorithm.version == "R") {
+    if(is_common_cov(data)){ # use more efficient computations for commmon covariance case
+      compute_posterior_matrices_common_cov_R(data, Ulist, posterior_weights)
+    } else {
+      compute_posterior_matrices_general_R(data, Ulist, posterior_weights)
+    }
   } else if (algorithm.version == "Rcpp") {
 
     # Run the C implementation using the Rcpp interface.
@@ -94,60 +95,6 @@ compute_posterior_matrices <-
                 lfsr          = lfsr))
   } else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
-}
-
-#' @title compute_posterior_arrays
-#' @description More detailed description of function goes here.
-#' @param data a mash data object, eg as created by \code{set_mash_data}
-#' @param Ulist list of P prior covariance matrices
-#' @return post_mean JxPxR array of posterior means
-#' @return post_mean2 JxPxR array of posterior second moments
-#' @return post_var JxPxR array of posterior variances
-# #' @return post_pos JxPxR array of posterior (marginal) probability of being positive
-#' @return post_neg JxPxR array of posterior (marginal) probability of being negative
-#' @return post_zero JxPxR array of posterior (marginal) probability of being zero
-#' @importFrom stats pnorm
-#' @export
-compute_posterior_arrays=function(data,Ulist){
-  R=n_conditions(data)
-  J=n_effects(data)
-
-  P=length(Ulist)
-  post_mean=array(NA,dim=c(J,P,R))
-  post_mean2 = array(NA,dim=c(J,P,R)) #mean squared value
-  post_zero=array(NA,dim=c(J,P,R))
-  post_neg=array(NA,dim=c(J,P,R))
-
-  for(j in 1:J){
-    bhat=as.vector(t(data$Bhat[j,]))##turn i into a R x 1 vector
-    V=get_cov(data,j)
-    Vinv <- solve(V)
-    for(p in 1:P){
-      U1 <- posterior_cov(Vinv, Ulist[[p]])
-      mu1 <- as.array(posterior_mean(bhat, Vinv, U1))
-      post_mean[j,p,]= mu1
-      post_mean2[j,p,] = mu1^2 + diag(U1) #diag(U1) is the posterior variance
-      post_var = diag(U1)
-      post_neg[j,p,] = ifelse(post_var==0,0,pnorm(0,mean=mu1,sqrt(diag(U1)),lower.tail=T))
-      post_zero[j,p,] = ifelse(post_var==0,1,0)
-    }
-  }
-  return(list(post_mean=post_mean,
-              post_zero=post_zero,
-              post_mean2= post_mean2,
-              post_neg=post_neg))
-}
-
-#' @title Compute weighted means of posterior arrays
-#' @description Generates a K x R matrix of posterior quantities (eg posterior mean) for each effect
-#' @param post_array J x K x R array of posterior quantity for each effect for each component in each condition
-#' @param posterior_weights J x K matrix of weights for each effect in each component (usually the posterior weights)
-#' @return J by R matrix of quantities (eg posterior mean) for each effect in each condition. The (j,r) element is sum_k pi[j,k] a[j,k,r]
-#' @export
-compute_weighted_quantity = function(post_array,posterior_weights){
-  R = dim(post_array)[3]
-  weighted_array = post_array * rep(posterior_weights,R)
-  return(apply(weighted_array,c(1,3),sum))
 }
 
 #' @title compute posterior probabilities
