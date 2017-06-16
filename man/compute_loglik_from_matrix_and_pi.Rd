@@ -4,10 +4,10 @@
 \alias{compute_loglik_from_matrix_and_pi}
 \title{Compute loglikelihood from a matrix of log-likelihoods and fitted pi}
 \usage{
-compute_loglik_from_matrix_and_pi(pi, lm)
+compute_loglik_from_matrix_and_pi(pi_s, lm)
 }
 \arguments{
-\item{pi}{the vector of mixture proportions}
+\item{pi_s}{the vector of mixture proportions}
 
 \item{lm}{the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}}
 }

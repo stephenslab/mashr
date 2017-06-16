@@ -9,6 +9,8 @@
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
+#' @param verbose If \code{TRUE}, print progress to R console.
+#' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @return a list with elements result, loglik and fitted_g
 #' @example
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -27,9 +29,9 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
-                optmethod = c("mixIP","mixEM","cxxMixSquarem")){
-
-
+                optmethod = c("mixIP","mixEM","cxxMixSquarem"),
+                verbose = TRUE,
+                add.mem.profile = FALSE) {
 
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
@@ -52,29 +54,89 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-
-
+  tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
 
-  # calculate likelihood matrix
-  lm = calc_relative_lik_matrix(data,xUlist)
+  # Check "add.mem.profile" argument.
+  if (add.mem.profile)
+    if (!requireNamespace("profmem",quietly = TRUE))
+      stop("add.mem.profile = TRUE requires the profmem package")
 
-  # main fitting procedure
+  # Get the number of samples (J), the number of mixture components
+  # (i.e., prior covariances).
+  J <- nrow(data$Bhat)
+  P <- length(xUlist)
+
+  # Calculate likelihood matrix.
+  if (verbose)
+    cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
+  if (add.mem.profile)
+    out.time <- system.time(out.mem <- profmem::profmem({
+      lm <- calc_relative_lik_matrix(data,xUlist)
+    },threshold = 1000))
+  else 
+    out.time <- system.time(lm <- calc_relative_lik_matrix(data,xUlist))
+  if (verbose) {
+    if (add.mem.profile)
+      cat(sprintf(paste(" - Likelihood calculations allocated %0.2f MB",
+                        "and took %0.2f seconds.\n"),
+                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                  out.time["elapsed"]))
+    else
+      cat(sprintf(" - Likelihood calculations took %0.2f seconds.\n",
+                  out.time["elapsed"]))
+  }
+        
+  # Main fitting procedure.
   if(!fixg){
-    prior = set_prior(ncol(lm$lik_matrix),prior)
-    pi = optimize_pi(lm$lik_matrix,prior=prior, optmethod=optmethod)
+    if (verbose)
+      cat(sprintf(" - Fitting model with %d mixture components.\n",P))
+    prior <- set_prior(ncol(lm$lik_matrix),prior)
+    if (add.mem.profile)
+      out.time <- system.time(out.mem <- profmem::profmem({
+        pi_s <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
+      },threshold = 1000))
+    else
+      out.time <- system.time(pi_s <-
+                    optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod))
+    if (verbose)
+      if (add.mem.profile)
+        cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
+                     sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                    out.time["elapsed"]))
+      else
+        cat(sprintf(" - Model fitting took %0.2f seconds.\n",
+                    out.time["elapsed"]))
   }
   else{ #if fixg, just use g$pi for pi
-    pi = g$pi
+    pi_s = g$pi
   }
 
-  # compute posterior matrices
-  posterior_weights = compute_posterior_weights(pi, lm$lik_matrix)
-  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
-
-  # compute log-likehood achieved
-  loglik = compute_loglik_from_matrix_and_pi(pi,lm)
-  fitted_g = list(pi = pi, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
+  # Compute posterior matrices.
+  posterior_weights <- compute_posterior_weights(pi_s,lm$lik_matrix)
+  if (verbose)
+    cat(" - Computing posterior matrices.\n")
+  if (add.mem.profile)
+    out.time <- system.time(out.mem <- profmem::profmem({
+      posterior_matrices <- compute_posterior_matrices(data,xUlist,
+                                                       posterior_weights)
+    },threshold = 1000))
+  else
+    out.time <-
+      system.time(posterior_matrices <-
+        compute_posterior_matrices(data,xUlist,posterior_weights))
+  if (verbose)
+    if (add.mem.profile)
+      cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
+                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                  out.time["elapsed"]))
+    else
+      cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
+                  out.time["elapsed"]))
+    
+  # Compute marginal log-likelihood.
+  loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
+  fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
   m=list(result=posterior_matrices, loglik = loglik, fitted_g = fitted_g)
   class(m) = "mash"
@@ -184,11 +246,11 @@ mash_1by1 = function(data){
 
 
 #' Compute loglikelihood from a matrix of log-likelihoods and fitted pi
-#' @param pi the vector of mixture proportions
+#' @param pi_s the vector of mixture proportions
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
 #' @export
-compute_loglik_from_matrix_and_pi = function(pi,lm){
-  return(sum(log(lm$lik_matrix %*% pi)+lm$lfactors))
+compute_loglik_from_matrix_and_pi = function(pi_s,lm){
+  return(sum(log(lm$lik_matrix %*% pi_s)+lm$lfactors))
 }
 
 

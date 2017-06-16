@@ -2,22 +2,25 @@
 % Please edit documentation in R/likelihoods.R
 \name{calc_lik_vector}
 \alias{calc_lik_vector}
-\title{calc_lik_vector}
+\title{Compute conditional likelihoods for bhat vector.}
 \usage{
 calc_lik_vector(bhat, V, Ulist, log = FALSE)
 }
 \arguments{
-\item{bhat}{Rx1 vector of bhat}
+\item{bhat}{bhat vector (length R)}
 
-\item{V}{RxR covariance matrix for likelihood}
+\item{V}{R x R covariance matrix for likelihood.}
 
-\item{Ulist}{list of prior covariance matrices}
+\item{Ulist}{list of prior covariance matrices.}
 
-\item{log}{if true computes log-likelihood}
+\item{log}{If \code{TRUE}, the return value is a matrix of
+log-likelihoods.}
 }
 \value{
-P vector of multivariate normal likelihoods, with pth element p(bhat | Ulist[p], V)
+Vector of length P in which the pth element contains the
+    multivariate normal likelihood p(bhat | Ulist[[p]], V).
 }
 \description{
-computes vector of likelihoods for bhat for each of P prior covariances
+Computes vector of likelihoods for bhat for each of P
+    prior covariances.
 }

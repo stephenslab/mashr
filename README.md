@@ -2,7 +2,7 @@
 
 *Welcome to mashr!* This package implements methods to estimate and
 test many effects in many conditions (or many effects on many
-outcomes). 
+outcomes).
 
 The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of
@@ -36,16 +36,22 @@ the mashr package:
    install.packages(c("assertthat","mvtnorm","rmeta"))
    ```
 
-2. Optionally, install MOSEK and the Rmosek package, for faster
+2. Optionally, install the package used for memory profiling:
+
+   ```R
+   install.packages("profmem")
+   ```
+
+3. Optionally, install MOSEK and the Rmosek package, for faster
    optimization in the `ashr` package. See the
    [ashr Github repository](https://github.com/stephens999/ashr) for
    details.
 
-3. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution#installation). Note that you will need to link to the
+4. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution#installation). Note that you will need to link to the
    [GNU Scientific Library](https://www.gnu.org/software/gsl) to
    build this package.
 
-4. Once you have installed all these packages, you can install and
+5. Once you have installed all these packages, you can install and
    load the most recent version of `mashr` available on Github. This
    command will automatically retrieve and install version 2.1-19 of
    the `ashr` package released on Github.
@@ -55,3 +61,20 @@ the mashr package:
    install_github("stephenslab/mashr")
    library(mashr)
    ```
+
+   Alternatively, if you have cloned the repository locally, you can
+   install the package by following these steps:
+
+   ```
+   R CMD build mashr
+   R CMD INSTALL mashr_0.1-14.tar.gz
+   ```
+
+## Notes
+
++ When any changes are made to `roxygen2` markup or the C++ code in
+the [src](src) directory, simply run `devtools::document()` to update
+the [RcppExports.cpp](src/RcppExports.cpp), the package namespaces
+(see [NAMESPACE](NAMESPACE)), and the package documentation files (in
+the [man](man) directory),
+

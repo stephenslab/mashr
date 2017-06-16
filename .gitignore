@@ -1,4 +1,6 @@
 .Rhistory
 .Rproj.user
+src/*.o
+src/*.so
 vignette/*.html
 tests/testthat/Rplots.pdf

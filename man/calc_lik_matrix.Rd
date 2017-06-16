@@ -2,20 +2,27 @@
 % Please edit documentation in R/likelihoods.R
 \name{calc_lik_matrix}
 \alias{calc_lik_matrix}
-\title{calc_lik_matrix}
+\title{Compute matrix of conditional likelihoods.}
 \usage{
-calc_lik_matrix(data, Ulist, log = FALSE)
+calc_lik_matrix(data, Ulist, log = FALSE, algorithm.version = c("Rcpp",
+  "R"))
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{A \code{mash} data object; e.g., created by
+\code{\link{set_mash_data}}.}
 
-\item{Ulist}{list of prior covariance matrices}
+\item{Ulist}{List containing the prior covariance matrices.}
 
-\item{log}{if true computes log-likelihood}
+\item{log}{If \code{TRUE}, the return value is a matrix of log-
+likelihoods.}
+
+\item{algorithm.version}{Explain what this argument is for.}
 }
 \value{
-J x P vector of multivariate normal likelihoods, p(bhat_j | Ulist[p], V_j)
+J x P matrix of multivariate normal likelihoods, p(bhat |
+    Ulist[p], V).
 }
 \description{
-computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances
+computes matrix of condition likelihoods for each of J
+    rows of Bhat for each of P prior covariances.
 }

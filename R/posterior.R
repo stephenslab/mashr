@@ -8,7 +8,6 @@ posterior_cov <- function(Vinv, U){
   return(U %*% solve(Vinv %*% U + diag(nrow(U))))
 }
 
-
 #' @title posterior_mean
 #' @param bhat R vector of observations
 #' @param Vinv R x R inverse covariance matrix for the likelihood
@@ -20,33 +19,83 @@ posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% Vinv %*% bhat)
 }
 
-# #' @title Compute posterior matrices
-# #' @description More detailed description of function goes here.
-# #' @param data a mash data object, eg as created by \code{set_mash_data}
-# #' @param Ulist a list of covariance matrices for each mixture component
-# #' @param posterior_weights the posterior probabilities of each mixture component in Ulist for the data
-# #' @return PosteriorMean JxR matrix of posterior means
-# #' @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
-# #' @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
-# #' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
-# #' @return lfsr JxR matrix of local false sign rates
-# #' @importFrom ashr compute_lfsr
-# #' @export
-# compute_posterior_matrices=function(data,Ulist,posterior_weights){
-#
-#   post_arrays = compute_posterior_arrays(data,Ulist)
-#   post_mean=compute_weighted_quantity(post_arrays$post_mean,posterior_weights)
-#   post_mean2=compute_weighted_quantity(post_arrays$post_mean2,posterior_weights)
-#   post_sd = sqrt(post_mean2 - post_mean^2)
-#   post_zero=compute_weighted_quantity(post_arrays$post_zero,posterior_weights)
-#   post_neg=compute_weighted_quantity(post_arrays$post_neg,posterior_weights)
-#   lfsr = compute_lfsr(post_neg,post_zero)
-#   return(list(PosteriorMean = post_mean,
-#               PosteriorSD = post_sd,
-#               lfdr = post_zero,
-#               NegativeProb = post_neg,
-#               lfsr = lfsr))
-# }
+
+#' @title Compute posterior matrices.
+#'
+#' @description More detailed description of function goes here.
+#'
+#' @param data A \code{mash} data object; e.g., created by
+#'     \code{\link{set_mash_data}}.
+#'
+#' @param Ulist List containing the prior covariance matrices.
+#'
+#' @param posterior_weights Vector containing the posterior
+#'     probability of each mixture component in Ulist for the data
+#'
+#' @param algorithm.version Explain what this argument is for.
+#'
+#' @return The return value is a list containing the following
+#'    components:
+#'
+#'    \item{PosteriorMean}{J x R matrix of posterior means.}
+#'
+#'    \item{PosteriorSD}{J x R matrix of posterior (marginal) standard
+#'    deviations.}
+#'
+#'    \item{NegativeProb}{J x R matrix of posterior (marginal)
+#'     probability of being negative.}
+#'
+#'    \item{ZeroProb}{J x R matrix of posterior (marginal) probability
+#'     of being zero.}
+#'
+#'    \item{lfsr}{J x R matrix of local false sign rates.}
+#'
+#' @useDynLib mashr
+#'
+#' @importFrom ashr compute_lfsr
+#' @importFrom Rcpp sourceCpp
+#' @importFrom Rcpp evalCpp
+#'
+#' @export
+compute_posterior_matrices <-
+  function (data, Ulist, posterior_weights,
+            algorithm.version = c("Rcpp","R")) {
+  algorithm.version <- match.arg(algorithm.version)
+    
+  if (algorithm.version == "R") {
+
+    # Run the (considerably slower) version that is completely
+    # implemented using existing R functions.
+    post_arrays <- compute_posterior_arrays(data,Ulist)
+    post_mean   <- compute_weighted_quantity(post_arrays$post_mean,
+                                             posterior_weights)
+    post_mean2  <- compute_weighted_quantity(post_arrays$post_mean2,
+                                           posterior_weights)
+    post_sd     <- sqrt(post_mean2 - post_mean^2)
+    post_zero   <- compute_weighted_quantity(post_arrays$post_zero,
+                                             posterior_weights)
+    post_neg    <- compute_weighted_quantity(post_arrays$post_neg,
+                                             posterior_weights)
+    lfsr        <- compute_lfsr(post_neg,post_zero)
+    return(list(PosteriorMean = post_mean,
+                PosteriorSD   = post_sd,
+                lfdr          = post_zero,
+                NegativeProb  = post_neg,
+                lfsr          = lfsr))
+  } else if (algorithm.version == "Rcpp") {
+
+    # Run the C implementation using the Rcpp interface.
+    res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
+                           simplify2array(Ulist),t(posterior_weights))
+    lfsr <- compute_lfsr(res$post_neg,res$post_zero)
+    return(list(PosteriorMean = res$post_mean,
+                PosteriorSD   = res$post_sd,
+                lfdr          = res$post_zero,
+                NegativeProb  = res$post_neg,
+                lfsr          = lfsr))
+  } else
+    stop("Algorithm version should be either \"R\" or \"Rcpp\"")
+}
 
 #' @title compute_posterior_arrays
 #' @description More detailed description of function goes here.
@@ -90,7 +139,6 @@ compute_posterior_arrays=function(data,Ulist){
               post_neg=post_neg))
 }
 
-
 #' @title Compute weighted means of posterior arrays
 #' @description Generates a K x R matrix of posterior quantities (eg posterior mean) for each effect
 #' @param post_array J x K x R array of posterior quantity for each effect for each component in each condition
@@ -108,9 +156,9 @@ compute_weighted_quantity = function(post_array,posterior_weights){
 #' @param pi a K vector of mixture proportions
 #' @param lik_mat a JxK matrix of likelihoods
 #' @return a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect
-compute_posterior_weights=function(pi,lik_mat){
-  d= t(pi * t(lik_mat))
-  norm = rowSums(d) # normalize probabilities to sum to 1
+compute_posterior_weights <- function(pi, lik_mat) {
+  d    <- t(pi * t(lik_mat))
+  norm <- rowSums(d) # normalize probabilities to sum to 1
   return(d/norm)
 }
 
