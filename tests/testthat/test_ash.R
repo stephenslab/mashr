@@ -6,7 +6,7 @@ test_that("get same result as ash", {
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
-      mixcompdist="normal",outputlevel=4) # get ash results for first condition
+      mixcompdist="normal",outputlevel=3) # get ash results for first condition
 
   data = set_mash_data(sim_data$Bhat, sim_data$Shat)
   U  = list(first_singleton = cov_first_singleton(data))
