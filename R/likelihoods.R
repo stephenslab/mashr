@@ -100,9 +100,10 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
 #'       to row i of the Bhat data matrix.}
 #'
 #' @export
-calc_relative_lik_matrix <- function (data, Ulist, algorithm.version= c("Rcpp","R")) {
+calc_relative_lik_matrix <-
+  function (data, Ulist, algorithm.version= c("Rcpp","R")) {
 
-  algorithm.version = match.arg(algorithm.version)
+  algorithm.version <- match.arg(algorithm.version)
 
   # Compute the J x P matrix of conditional log-likelihoods.
   matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE, algorithm.version)
