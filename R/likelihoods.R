@@ -53,7 +53,8 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE,
   if (algorithm.version == "R") {
     if(is_common_cov(data)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)
-      colnames(res) <- names(Ulist)
+      if (nrow(res) == 1) res <- matrix(res)
+      if (ncol(res) > 1) colnames(res) <- names(Ulist)
     } else {
     # Run the (considerably slower) version that is completely
     # implemented using existing R functions.

@@ -22,14 +22,14 @@ inline arma::vec dnorm(const arma::vec & x,
 }
 
 
-inline arma::vec dmvnorm(const arma::mat & x,
-                         const arma::rowvec & mean,
-                         const arma::mat & sigma,
-                         bool logd = false)
+inline arma::vec dmvnorm_mat(const arma::mat & x,
+                             const arma::vec & mean,
+                             const arma::mat & sigma,
+                             bool logd = false)
 {
-	double xdim = static_cast<double>(x.n_cols);
+	double xdim = static_cast<double>(x.n_rows);
 
-	arma::vec out(x.n_rows);
+	arma::vec out(x.n_cols);
 	arma::mat rooti;
 
 	try {
@@ -37,15 +37,15 @@ inline arma::vec dmvnorm(const arma::mat & x,
 	} catch (const std::runtime_error & error) {
 		if (logd) out.fill(-arma::datum::inf);
 		else out.fill(0.0);
-		for (unsigned i = 0; i < x.n_rows; ++i)
-			if (arma::accu(arma::abs(x.row(i) - mean)) < 1e-6) out(i) = arma::datum::inf;
+		for (unsigned i = 0; i < x.n_cols; ++i)
+			if (arma::accu(arma::abs(x.col(i) - mean)) < 1e-6) out(i) = arma::datum::inf;
 		return out;
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(xdim / 2.0) * LOG_2PI;
 
-	for (int i = 0; i < x.n_rows; i++) {
-		arma::vec z = rooti * arma::trans(x.row(i) - mean) ;
+	for (int i = 0; i < x.n_cols; i++) {
+		arma::vec z = rooti * (x.col(i) - mean) ;
 		out(i) = constants - 0.5 * arma::sum(z % z) + rootisum;
 	}
 
@@ -161,10 +161,10 @@ arma::mat calc_lik(const arma::mat & b_mat,
 	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
 
 	if (common_cov) {
-		arma::rowvec mean(b_mat.n_rows, arma::fill::zeros);
+		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 		arma::mat sigma = get_cov(s_mat.col(0), v_mat);
 		for (unsigned p = 0; p < lik.n_cols; ++p) {
-			lik.col(p) = dmvnorm(b_mat, mean, sigma + U_cube.slice(p), logd);
+			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
 		}
 	} else {
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
