@@ -15,9 +15,6 @@ r_packages:
 
 r_github_packages: stephens999/ashr
 
-before_install:
-  - source travis/before-install.sh
-
 after_success:
   - Rscript -e 'covr::codecov()'
 
