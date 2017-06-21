@@ -15,9 +15,31 @@ r_packages:
 
 r_github_packages: stephens999/ashr
 
+before_install:
+  - source travis/before-install.sh
+
 after_success:
   - Rscript -e 'covr::codecov()'
 
 branches:
   only:
   - master
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+	    - ubuntu-toolchain-r-test
+          packages:
+	    - g++-4.9
+      env:
+        - COMPILER=g++-4.9
+        - CC=gcc-4.9
+        - CXX=g++-4.9
+
+before_install:
+  - source inst/travis-before-install.sh
+
