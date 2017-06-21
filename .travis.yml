@@ -6,6 +6,10 @@ cache: packages
 latex: false
 warnings_are_errors: false
 
+env:
+  global:
+    - _R_CHECK_FORCE_SUGGESTS_: false
+
 r_packages:
   - covr
 
