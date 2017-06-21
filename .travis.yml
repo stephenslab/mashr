@@ -34,6 +34,6 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.9']
       env:
-        - COMPILER=g++-4.9 -std=c11
-        - CC=gcc-4.9 -std=c11
-        - CXX=g++-4.9 -std=c11
+        - COMPILER="g++-4.9 -std=c11"
+        - CC="gcc-4.9 -std=c11"
+        - CXX="g++-4.9 -std=c11"
