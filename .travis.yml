@@ -41,6 +41,4 @@ matrix:
         - COMPILER="g++-4.9 -std=c11"
         - CC="gcc-4.9 -std=c11"
         - CXX="g++-4.9 -std=c11"
-        - FC=gfortran-4.9
-	- F77=gfortran-4.9
-
+	- F77="gfortran-4.9"
