@@ -13,6 +13,7 @@ install:
   ps: Bootstrap
 
 environment:
+  _R_CHECK_FORCE_SUGGESTS_: false
   global:
     USE_RTOOLS: yes
     R_VERSION: release
