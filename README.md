@@ -1,5 +1,8 @@
 # mashr: Multivariate Adaptive Shrinkage in R
 
+[![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr)
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/6xpn7vfe6tslm9wn?svg=true)](https://ci.appveyor.com/project/pcarbo/mashr)
+
 *Welcome to mashr!* This package implements methods to estimate and
 test many effects in many conditions (or many effects on many
 outcomes).
@@ -8,7 +11,7 @@ The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of
 similarity among conditions to improve accuracy of effect estimates.
 See [Urbut et al](http://biorxiv.org/content/early/2017/05/09/096552)
-for details of the model and methods.
+for details of the model and methods. 
 
 Note that this R package is a refactoring of the code originally used
 to create results for the paper. The original package code is

@@ -12,6 +12,13 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
                        optmethod=c("mixIP","mixEM","cxxMixSquarem"),
                        control=list() ){
   optmethod = match.arg(optmethod)
+
+  if (optmethod == "mixIP")
+   if (!requireNamespace("REBayes",quietly = TRUE)) {
+     warning(paste("optmethod = \"mixIP\" requires REBayes package;",
+                   "switching to optmethod = \"mixEM\""))
+     optmethod <- "mixEM"
+  }
   if(optmethod == "mixIP"){control = ashr:::set_control_mixIP(control)
   } else {
     control = ashr:::set_control_squarem(control, nrow(matrix_lik))

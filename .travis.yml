@@ -1,0 +1,19 @@
+# See http://docs.travis-ci.com/user/languages/r
+
+language: r
+sudo: false
+cache: packages
+latex: false
+warnings_are_errors: false
+
+r_packages:
+  - covr
+
+r_github_packages: stephens999/ashr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
+
+branches:
+  only:
+  - master
