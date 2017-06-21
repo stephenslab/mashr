@@ -18,6 +18,13 @@ r_github_packages: stephens999/ashr
 after_success:
   - Rscript -e 'covr::codecov()'
 
+before_install:
+  - mkdir -p ~/.R
+  - echo "CC=gcc-4.9 -std=c11" >> ~/.R/Makevars
+  - echo "CXX=g++-4.9 -std=c11" >> ~/.R/Makevars
+  - echo "CXX11=g++-4.9" >> ~/.R/Makevars
+  - cat ~/.R/Makevars
+  
 branches:
   only:
   - master
