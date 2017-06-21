@@ -23,7 +23,7 @@ test_that("compare likelihood computation R vs C++ in provided data of 100 X 5",
                     "and took %0.2f seconds.\n"),
               sum(out.mem$bytes,na.rm = TRUE)/1024^2,
               out.time["elapsed"]))
-  expect_equal(out1, out2, tolerance=1e-8)
+  expect_equal(out1, out2, tolerance=1e-5)
 }
 )
 
@@ -36,7 +36,7 @@ test_that("compare likelihood computation R vs C++ in simulated data R = 1", {
   Ulist = list(id=matrix(1,nrow=1))
   out1 = calc_lik_matrix(data,Ulist)
   out2 = calc_lik_matrix(data,Ulist,algorithm.version = "R")
-  expect_equal(out1, out2, tolerance=1e-8)
+  expect_equal(out1, out2, tolerance=1e-5)
 }
 )
 
@@ -47,7 +47,7 @@ test_that("compare likelihood computation R vs C++ in simulated data common cov"
   Ulist = cov_singletons(data)
   out1 = calc_lik_matrix(data, Ulist)
   out2 = calc_lik_matrix(data, Ulist, algorithm.version = "R")
-  expect_equal(out1, out2, tolerance=1e-8)
+  expect_equal(out1, out2, tolerance=1e-5)
 }
 )
 
@@ -71,7 +71,7 @@ test_that("compare posterior computation R vs C++ in provided data of 100 X 5", 
   },threshold = 1000))
   cat(sprintf("Computation allocated %0.2f MB and took %0.2f s.\n",
               sum(out.mem$bytes,na.rm = TRUE)/1024^2,out.time["elapsed"]))
-  expect_equal(out1, out2, tolerance=1e-8)
+  expect_equal(out1, out2, tolerance=1e-5)
 }
 )
 
@@ -87,6 +87,6 @@ test_that("compare posterior computation R vs C++ in simulated data R = 1", {
                                      algorithm.version = "R")
   out2 <- compute_posterior_matrices(data,Ulist,posterior_weights,
                                      algorithm.version = "Rcpp")
-  expect_equal(out1, out2, tolerance=1e-8)
+  expect_equal(out1, out2, tolerance=1e-5)
 }
 )
