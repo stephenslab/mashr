@@ -14,7 +14,7 @@
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @return a list with elements result, loglik and fitted_g
-#' @example
+#' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
 #' Shat = matrix(rep(1,100),ncol=5)
 #' data = mashr::set_mash_data(Bhat,Shat)

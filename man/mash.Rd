@@ -45,3 +45,11 @@ a list with elements result, loglik and fitted_g
 \description{
 Apply mash method to data
 }
+\examples{
+Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
+Shat = matrix(rep(1,100),ncol=5)
+data = mashr::set_mash_data(Bhat,Shat)
+U.c = mashr::cov_canonical(data)
+res.mash = mashr::mash(data,U.c)
+
+}
