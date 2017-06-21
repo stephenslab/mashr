@@ -15,16 +15,10 @@ install:
 environment:
   _R_CHECK_FORCE_SUGGESTS_: false
   global:
-    USE_RTOOLS: yes
+    NOT_CRAN: true
     R_VERSION: release
     R_ARCH: x64
 
-before_build:
-  - cp ../travis-tool.sh ./travis-tool.sh
-  - cp travis-tool.sh.cmd %TEST_DIR%/travis-tool.sh.cmd
-  - cd %TEST_DIR%
-  - bash -c "echo '^travis-tool/.sh/.cmd$' >> .Rbuildignore"
-  
 build_script:
   - travis-tool.sh install_deps
 
