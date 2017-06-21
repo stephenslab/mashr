@@ -19,12 +19,12 @@ Imports:
     rmeta,
     Rcpp (>= 0.12.11),
     ashr (>= 2.1-19),
-    mvtnorm,
-    ExtremeDeconvolution (>= 1.3)
+    mvtnorm
 LinkingTo:
     Rcpp, 
     RcppArmadillo
 Suggests:
+    ExtremeDeconvolution (>= 1.3),
     testthat,
     profmem
 NeedsCompilation: yes
