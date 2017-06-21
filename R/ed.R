@@ -12,14 +12,13 @@
 #' @details This is a wrapper to ExtremeDeconvolution::extreme_deconvolution
 #' It fixes the projection to be the identity, and the means to be 0
 #'
-#' @importFrom ExtremeDeconvolution extreme_deconvolution
 #' @export
 ed_wrapper = function(data, Ulist_init, subset=NULL){
   if(is.null(subset)){subset = 1:n_effects(data)}
   K = length(Ulist_init)
   R = n_conditions(data)
   pi_init = rep(1/K, K) # initial mix proportions
-  ed.res = extreme_deconvolution(data$Bhat[subset,],
+  ed.res = ExtremeDeconvolution::extreme_deconvolution(data$Bhat[subset,],
                                  data$Shat[subset,]^2,
                                  xamp = pi_init,
                                  xmean = matrix(0,nrow=K,ncol=R),
