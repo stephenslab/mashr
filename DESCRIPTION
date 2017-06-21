@@ -26,6 +26,7 @@ LinkingTo:
 Suggests:
     ExtremeDeconvolution (>= 1.3),
     testthat,
+    plyr,
     profmem
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
