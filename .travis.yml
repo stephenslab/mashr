@@ -31,10 +31,8 @@ matrix:
       compiler: gcc
       addons:
         apt:
-          sources:
-	    - ubuntu-toolchain-r-test
-          packages:
-	    - g++-4.9
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9']
       env:
         - COMPILER=g++-4.9
         - CC=gcc-4.9
@@ -42,4 +40,3 @@ matrix:
 
 before_install:
   - source inst/travis-before-install.sh
-
