@@ -29,3 +29,4 @@ Suggests:
     profmem
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
+Remotes: stephens999/ashr
