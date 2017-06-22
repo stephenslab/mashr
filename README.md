@@ -3,6 +3,7 @@
 [![CRAN Status Badge](http://www.r-pkg.org/badges/version/mashr)](https://cran.r-project.org/package=mashr) 
 [![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr)
 [![Appveyor Build status](https://ci.appveyor.com/api/projects/status/6xpn7vfe6tslm9wn?svg=true)](https://ci.appveyor.com/project/pcarbo/mashr)
+[![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://codecov.io/gh/stephenslab/mashr)
 
 *Welcome to mashr!* This package implements methods to estimate and
 test many effects in many conditions (or many effects on many
