@@ -2,7 +2,7 @@
 % Please edit documentation in R/mash.R
 \name{compute_loglik_from_matrix_and_pi}
 \alias{compute_loglik_from_matrix_and_pi}
-\title{Compute loglikelihood from a matrix of log-likelihoods and fitted pi}
+\title{Compute total loglikelihood from a matrix of log-likelihoods and fitted pi}
 \usage{
 compute_loglik_from_matrix_and_pi(pi_s, lm)
 }
@@ -12,5 +12,5 @@ compute_loglik_from_matrix_and_pi(pi_s, lm)
 \item{lm}{the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}}
 }
 \description{
-Compute loglikelihood from a matrix of log-likelihoods and fitted pi
+Compute total loglikelihood from a matrix of log-likelihoods and fitted pi
 }

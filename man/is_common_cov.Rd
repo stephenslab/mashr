@@ -2,10 +2,14 @@
 % Please edit documentation in R/likelihoods_common_cov.R
 \name{is_common_cov}
 \alias{is_common_cov}
-\title{checks if all rows of Shat are the same - if so covariances are equal}
+\title{Check that all covariates are equal.}
 \usage{
 is_common_cov(data)
 }
+\arguments{
+\item{data}{A mash data object.}
+}
 \description{
-checks if all rows of Shat are the same - if so covariances are equal
+checks if all rows of Shat are the same - if so
+    covariances are equal
 }

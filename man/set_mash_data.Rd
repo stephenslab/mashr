@@ -9,9 +9,10 @@ set_mash_data(Bhat, Shat, V = diag(ncol(Bhat)))
 \arguments{
 \item{Bhat}{an N by R matrix of observed estimates}
 
-\item{Shat}{an N by R matrix of corresponding standard errors}
+\item{Shat}{an N by R matrix of corresponding standard errors. Shat can be a scalar if all standard errors are equal.
+This is most useful if Bhat is a matrix of Z scores, so elements of Shat are all 1.}
 
-\item{V}{an R by R correlation matrix of error correlations
+\item{V}{an R by R correlation matrix of error correlations; must be positive definite.
 [So Bhat_j distributed as N(B_j,diag(Shat_j) V diag(Shat_j)) where _j denotes the jth row of a matrix]
 Defaults to identity}
 }

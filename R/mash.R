@@ -13,6 +13,7 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
+#' @param outputlevel controls amount of output; for now set to 99 if you want maximum output including debugging options
 #' @return a list with elements result, loglik and fitted_g
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -35,7 +36,8 @@ mash = function(data,
                 verbose = TRUE,
                 add.mem.profile = FALSE,
                 algorithm.version = c("Rcpp","R"),
-                pi_thresh = 1e-10) {
+                pi_thresh = 1e-10,
+                outputlevel = 0) {
 
   algorithm.version = match.arg(algorithm.version)
 
@@ -97,7 +99,7 @@ mash = function(data,
       cat(sprintf(" - Likelihood calculations took %0.2f seconds.\n",
                   out.time["elapsed"]))
   }
-    
+
   # Main fitting procedure.
   if(!fixg){
     if (verbose)
@@ -149,10 +151,12 @@ mash = function(data,
                   out.time["elapsed"]))
 
   # Compute marginal log-likelihood.
-  loglik = compute_loglik_from_matrix_and_pi(pi_s,lm)
+  vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
+  loglik = sum(vloglik)
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
-  m=list(result=posterior_matrices, loglik = loglik, fitted_g = fitted_g)
+  m=list(result=posterior_matrices, loglik = loglik, vloglik=vloglik, fitted_g = fitted_g)
+  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} #for debugging
   class(m) = "mash"
   return(m)
 }
@@ -167,6 +171,18 @@ mash_compute_loglik = function(g,data){
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist)
   return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors))
+}
+
+#' Compute vector of loglikelihood for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object
+#' @param data a set of data on which to compute the loglikelihood
+#' @return the vector of log-likelihoods for each data point computed using g
+#' @export
+mash_compute_vloglik = function(g,data){
+  if(class(g)=="mash"){g = g$fitted_g}
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+  return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors)
 }
 
 #' Compute posterior matrices for fitted mash object on new data
@@ -259,14 +275,21 @@ mash_1by1 = function(data){
 
 
 
-#' Compute loglikelihood from a matrix of log-likelihoods and fitted pi
+#' Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi
+#' @param pi_s the vector of mixture proportions
+#' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
+#' @export
+compute_vloglik_from_matrix_and_pi = function(pi_s,lm){
+  return(log(lm$lik_matrix %*% pi_s)+lm$lfactors)
+}
+
+#' Compute total loglikelihood from a matrix of log-likelihoods and fitted pi
 #' @param pi_s the vector of mixture proportions
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
 #' @export
 compute_loglik_from_matrix_and_pi = function(pi_s,lm){
-  return(sum(log(lm$lik_matrix %*% pi_s)+lm$lfactors))
+  return(sum(compute_vloglik_from_matrix_and_pi(pi_s,lm)))
 }
-
 
 #' Initialize mixture proportions - currently by making them all equal
 #' @param K the number of components
