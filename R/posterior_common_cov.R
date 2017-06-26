@@ -9,6 +9,7 @@
 #' @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 #' @return lfsr JxR matrix of local false sign rates
 #' @importFrom ashr compute_lfsr
+#' @importFrom stats pnorm
 #' @export
 compute_posterior_matrices_common_cov_R=function(data,Ulist,posterior_weights){
   R=n_conditions(data)

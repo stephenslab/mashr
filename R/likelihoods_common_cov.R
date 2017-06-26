@@ -7,9 +7,10 @@
 #' @details Compared with \code{calc_lik_matrix} this function exploits fact that observations are iid in this case,
 #' so the inverse covariance matrices only need to be done once, reducing computation to R^3 + JR^2 instead of JR^3
 #' @export
+#' @importFrom plyr alply
 calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
-  V = mashr:::get_cov(data,1) # all covariances are same
-  res = plyr::laply(Ulist,
+  V   = get_cov(data,1) # all covariances are same
+  res = laply(Ulist,
     function(U){dmvnorm(x=data$Bhat,sigma=V+U,log=log)})
   dimnames(res) = NULL # just to make result identical to the non-common-cov version
   t(res)
