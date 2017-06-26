@@ -11,7 +11,8 @@ URL: http://github.com/stephenslab/mashr
 BugReports: http://github.com/stephenslab/mashr/issues
 License: BSD_3_clause + file LICENSE
 LazyData: true
-Depends: R (>= 3.3.0)
+Depends: R (>= 3.3.0),
+    ashr (>= 2.1-19)
 Imports:
     assertthat,
     utils,
@@ -20,7 +21,6 @@ Imports:
     plyr,
     rmeta,
     Rcpp (>= 0.12.11),
-    ashr (>= 2.1-19),
     mvtnorm
 LinkingTo:
     Rcpp, 
