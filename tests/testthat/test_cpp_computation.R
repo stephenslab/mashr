@@ -83,16 +83,20 @@ test_that("compare posterior computation R vs C++ in simulated data R = 1", {
 }
 )
 
-test_that("compare likelihood computation R vs C++ in simulated data common cov", {
-  Bhat = rbind(c(1,2,3),c(2,4,6))
-  Shat = rbind(c(1,1,1),c(1,1,1))
-  data = set_mash_data(Bhat, Shat)
-  Ulist <- cov_canonical(data)
-  Ulist <- expand_cov(Ulist, 1:50)
+test_that(paste("compare likelihood computation R vs C++ in simulated",
+                "data common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,1,1),c(1,1,1))
+  data    <- set_mash_data(Bhat, Shat)
+  Ulist   <- cov_canonical(data)
+  Ulist   <- expand_cov(Ulist, 1:50)
   weights <- matrix(runif(length(Ulist) * 2), 2, length(Ulist))
   weights <- weights / rowSums(weights)
-  out1 = compute_posterior_matrices(data, Ulist, weights, algorithm.version = "Rcpp")
-  out2 = compute_posterior_matrices(data, Ulist, weights, algorithm.version = "R")
-  expect_equal(out1, out2, tolerance=1e-5)
-}
-)
+  
+  out1 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "Rcpp")
+  out2 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "R")
+  
+  expect_equal(out1, out2, tolerance = 1e-5)
+})

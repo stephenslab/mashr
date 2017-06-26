@@ -30,7 +30,7 @@ compute_posterior_matrices_common_cov_R=function(data,Ulist,posterior_weights){
   Vinv <- solve(V)
   # compute all the posterior covariances
   U1 = lapply(Ulist,function(U){posterior_cov(Vinv, U)})
-
+  
   for(p in 1:P){
       mu1 <- posterior_mean_matrix(data$Bhat, Vinv, U1[[p]]) # J by R matrix
       post_var = diag(U1[[p]]) # R vector
@@ -45,10 +45,11 @@ compute_posterior_matrices_common_cov_R=function(data,Ulist,posterior_weights){
         posterior_weights[,p]
 
       # only the non-null conditions have a probability of being negative
-      res_post_neg[,!null.cond] = res_post_neg[,!null.cond] +
-        posterior_weights[,p] * t(
-          pnorm(0,mean=t(mu1[,!null.cond]),sqrt(post_var[!null.cond]),
-                lower.tail=T))
+      if (!all(null.cond))
+        res_post_neg[,!null.cond] = res_post_neg[,!null.cond] +
+          posterior_weights[,p] * t(
+            pnorm(0,mean=t(mu1[,!null.cond]),sqrt(post_var[!null.cond]),
+                  lower.tail=T))
 
   }
 
