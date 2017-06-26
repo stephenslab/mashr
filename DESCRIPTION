@@ -2,8 +2,8 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.1-21
-Date: 2017-06-21
+Version: 0.1-22
+Date: 2017-06-26
 Author: Matthew Stephens, Sarah Urbut, Gao Wang, Peter Carbonetto
 Maintainer: Matthew Stephens <mstephens@uchicago.edu>
 Description: Empirical Bayes shrinkage of multivariate effects.

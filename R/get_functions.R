@@ -1,5 +1,20 @@
 #note that many of the get_ functions used in mashr (get_lfsr, get_pm etc) are defined in the ashr package
 
+#' Return the Bayes Factor for each effect
+#' @param m the mash result (from joint or 1by1 analysis); must have been computed using usepointmass=TRUE
+#' @return if m was fitted using usepointmass=TRUE then returns a vector of the log10(bf) values for each effect. That is, the jth element
+#' lbf[j] is log10(Pr(Bj | g=ghat-nonnull)/Pr(Bj | g = 0)) where ghat-nonnull is the non-null part of ghat.
+#' Otherwise returns NULL.
+#' @export
+get_log10bf = function(m) {
+  if(is.null(m$null_loglik)){
+    return(NULL)
+  } else {
+     return((m$alt_loglik - m$null_loglik)/log(10))
+  }
+}
+
+
 #' Find effects that are significant in at least one condition
 #' @param m the mash result (from joint or 1by1 analysis)
 #' @param thresh indicates the threshold below which to call signals significant

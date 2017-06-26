@@ -80,14 +80,11 @@ mash = function(data,
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
   if (add.mem.profile) {
     out.time <- system.time(out.mem <- profmem::profmem({
-      # lm <- calc_lik_matrix(data,xUlist,algorithm.version)
       lm <- calc_relative_lik_matrix(data,xUlist,log = TRUE,algorithm.version)
     },threshold = 1000))
   } else {
-    out.time <-
-      system.time(
-    # lm<-calc_lik_matrix(data,xUlist,log=TRUE,algorithm.version)
-    lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version))
+    out.time <- system.time(
+        lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version))
   }
   if (verbose) {
     if (add.mem.profile)
@@ -153,9 +150,21 @@ mash = function(data,
   # Compute marginal log-likelihood.
   vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
   loglik = sum(vloglik)
+  if(usepointmass){ # compute BF
+    null_loglik = log(lm$lik_matrix[,1])+lm$lfactors
+    alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm)
+  } else {
+    null_loglik = NULL
+    alt_loglik = NULL
+  }
+
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
-  m=list(result=posterior_matrices, loglik = loglik, vloglik=vloglik, fitted_g = fitted_g)
+  m=list(result=posterior_matrices,
+         loglik = loglik, vloglik=vloglik,
+         null_loglik = null_loglik,
+         alt_loglik = alt_loglik,
+         fitted_g = fitted_g)
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} #for debugging
   class(m) = "mash"
   return(m)
@@ -273,7 +282,13 @@ mash_1by1 = function(data){
   return(m)
 }
 
-
+#' Compute vector of alternative loglikelihoods from a matrix of log-likelihoods and fitted pi
+#' @param pi_s the vector of mixture proportions, with first element corresponding to null
+#' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
+#' whose first column corresponds to null
+compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm){
+  return(log(lm$lik_matrix[,-1,drop=FALSE] %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors)
+}
 
 #' Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi
 #' @param pi_s the vector of mixture proportions
