@@ -5,6 +5,7 @@
 #' @param apply_lower_bound indicates whether to also apply a lower bound for the
 #' correlations which can be computed based on all data. See \code{compute_null_correlation_lower_bound}
 #' @details Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
+#' @importFrom stats cor
 estimate_null_correlation = function(data, z_thresh=2, apply_lower_bound = TRUE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)
@@ -29,6 +30,8 @@ estimate_null_correlation = function(data, z_thresh=2, apply_lower_bound = TRUE)
 #' variance 1 and some covariance (same as correlation since they are variance 1).
 #' Then $E((z^j_1 - z^j_2)^2) = E(mu^j_1-mu^j_2)^2 + 2(1-cov(e_1,e_2)) > 2(1-cov(e_1,e_2))$.
 #' Thus $$cov(e_1,e_2) > 1- 0.5E((z^j_1 - z^j_2)^2)$$ gives a lower bound on the covariance.
+#'
+#' @param data Description of this argument goes here.
 compute_null_correlation_lower_bound = function(data){
   R = n_conditions(data)
   z = data$Bhat/data$Shat

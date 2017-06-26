@@ -6,6 +6,9 @@
 \usage{
 compute_null_correlation_lower_bound(data)
 }
+\arguments{
+\item{data}{Description of this argument goes here.}
+}
 \description{
 Compute a lower bound on the null correlation matrix from data
 }
