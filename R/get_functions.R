@@ -1,10 +1,10 @@
 #note that many of the get_ functions used in mashr (get_lfsr, get_pm etc) are defined in the ashr package
 
-#' Find effects that have lfsr < thresh in at least one condition
+#' Find effects that are significant in at least one condition
 #' @param m the mash result (from joint or 1by1 analysis)
-#' @param thresh indicates the threshold below which to set signals
+#' @param thresh indicates the threshold below which to call signals significant
 #' @param conditions which conditions to include in check (default to all)
-#' @param sig_fn the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr
+#' @param sig_fn the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr. (Small values must indicate significant.)
 #' @return a vector containing the indices of the significant effects, by order of most significant to least
 #' @importFrom ashr get_lfsr
 #' @export
@@ -19,6 +19,20 @@ get_significant_results = function(m, thresh = 0.05, conditions = NULL,
   sig[ord]
 }
 
+#' Count number of conditions each effect is significant in
+#' @param m the mash result (from joint or 1by1 analysis)
+#' @param thresh indicates the threshold below which to call signals significant
+#' @param conditions which conditions to include in check (default to all)
+#' @param sig_fn the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr
+#' @return a vector containing the number of significant conditions
+#' @export
+get_n_significant_conditions = function(m, thresh = 0.05, conditions = NULL,
+                                        sig_fn = get_lfsr){
+  if (is.null(conditions)) {
+    conditions = 1:get_ncond(m)
+  }
+  return(apply(sig_fn(m)[,conditions,drop=FALSE]<thresh,1,sum))
+}
 
 #' Return the estimated mixture proportions
 #' @param m the mash result

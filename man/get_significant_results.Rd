@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_functions.R
 \name{get_significant_results}
 \alias{get_significant_results}
-\title{Find effects that have lfsr < thresh in at least one condition}
+\title{Find effects that are significant in at least one condition}
 \usage{
 get_significant_results(m, thresh = 0.05, conditions = NULL,
   sig_fn = get_lfsr)
@@ -10,15 +10,15 @@ get_significant_results(m, thresh = 0.05, conditions = NULL,
 \arguments{
 \item{m}{the mash result (from joint or 1by1 analysis)}
 
-\item{thresh}{indicates the threshold below which to set signals}
+\item{thresh}{indicates the threshold below which to call signals significant}
 
 \item{conditions}{which conditions to include in check (default to all)}
 
-\item{sig_fn}{the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr}
+\item{sig_fn}{the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr. (Small values must indicate significant.)}
 }
 \value{
 a vector containing the indices of the significant effects, by order of most significant to least
 }
 \description{
-Find effects that have lfsr < thresh in at least one condition
+Find effects that are significant in at least one condition
 }
