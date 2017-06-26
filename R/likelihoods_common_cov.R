@@ -7,7 +7,7 @@
 #' @details Compared with \code{calc_lik_matrix} this function exploits fact that observations are iid in this case,
 #' so the inverse covariance matrices only need to be done once, reducing computation to R^3 + JR^2 instead of JR^3
 #' @export
-#' @importFrom plyr alply
+#' @importFrom plyr laply
 calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
   V   = get_cov(data,1) # all covariances are same
   res = laply(Ulist,
