@@ -14,6 +14,7 @@ library(mashr)
 # source("R/posterior.R")
 # source("R/set_data.R")
 # source("R/simulations.R")
+
 # SCRIPT PARAMETERS.
 J <- 1000 
 K <- 10 
