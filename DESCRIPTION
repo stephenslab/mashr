@@ -27,6 +27,7 @@ LinkingTo:
     RcppArmadillo
 Suggests:
     ExtremeDeconvolution (>= 1.3),
+    REBayes,
     testthat,
     profmem
 NeedsCompilation: yes

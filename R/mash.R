@@ -81,7 +81,7 @@ mash = function(data,
   if (add.mem.profile) {
     out.time <- system.time(out.mem <- profmem::profmem({
       # lm <- calc_lik_matrix(data,xUlist,algorithm.version)
-      lm <- calc_relative_lik_matrix(data,xUlist,log = TRUE,algorithm.version)
+      lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version)
     },threshold = 1000))
   } else {
     out.time <-
