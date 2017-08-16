@@ -93,3 +93,12 @@ the [RcppExports.cpp](src/RcppExports.cpp), the package namespaces
 (see [NAMESPACE](NAMESPACE)), and the package documentation files (in
 the [man](man) directory),
 
++ To build the vignette webpages, run the following commands in R from
+the [vignettes](vignettes) directory:
+
+```R
+library(rmarkdown)
+render("intro_mash.Rmd",output_dir = "../docs")
+render("intro_mash_dd.Rmd",output_dir = "../docs")
+render("simulate_noncanon.Rmd",output_dir = "../docs")
+```
