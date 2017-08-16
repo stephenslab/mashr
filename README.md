@@ -88,13 +88,13 @@ the mashr package:
 ## Notes
 
 + When any changes are made to `roxygen2` markup or the C++ code in
-the [src](src) directory, simply run `devtools::document()` to update
+the src directory, simply run `devtools::document()` to update
 the [RcppExports.cpp](src/RcppExports.cpp), the package namespaces
 (see [NAMESPACE](NAMESPACE)), and the package documentation files (in
-the [man](man) directory),
+the man directory),
 
 + To build the vignette webpages, run the following commands in R from
-the [vignettes](vignettes) directory:
+the vignettes directory:
 
 ```R
 library(rmarkdown)
