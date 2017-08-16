@@ -18,7 +18,8 @@ use only the "canonical" covariance matries to simplify presentation.
 However, an important aspect of `mashr` is the use of data-driven
 covariance matrices that are learned from the data, so when you are
 done here you should look at [the data-driven
-vignette](intro_mash_dd.html).
+vignette](intro_mash_dd.html) and the [non-canonical matrix
+vignette](simulate_noncanon.html).
 
 ## Outline
 
