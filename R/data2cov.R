@@ -41,6 +41,7 @@ r1cov=function(x){x %*% t(x)}
 #' @param f a matrix of factors (each row is a factor)
 #' @param name a string indicating the name to use
 #' @return a list of rank one matrices whose kth element is f[k,] f[k,]' and named name_k
+#' @export
 cov_from_factors = function(f, name){
   Ulist = list()
   for(i in 1:nrow(f)){
