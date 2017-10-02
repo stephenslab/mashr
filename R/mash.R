@@ -13,7 +13,7 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
-#' @param outputlevel controls amount of output; for now set to 99 if you want maximum output including debugging options
+#' @param outputlevel controls amount of computation / output; 0: only output estimated mixture component proportions, 1: output complete result, 99: additionally output debugging information
 #' @return a list with elements result, loglik and fitted_g
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -37,10 +37,9 @@ mash = function(data,
                 add.mem.profile = FALSE,
                 algorithm.version = c("Rcpp","R"),
                 pi_thresh = 1e-10,
-                outputlevel = 0) {
+                outputlevel = 1) {
 
   algorithm.version = match.arg(algorithm.version)
-
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
     if(!missing(grid)){stop("cannot supply both g and grid")}
@@ -122,42 +121,45 @@ mash = function(data,
     pi_s = g$pi
   }
 
-  # threshold mixture components
-  which.comp = (pi_s > pi_thresh)
-
-  # Compute posterior matrices.
-  posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
-  if (verbose)
-    cat(" - Computing posterior matrices.\n")
-  if (add.mem.profile)
-    out.time <- system.time(out.mem <- profmem::profmem({
-      posterior_matrices <- compute_posterior_matrices(data,xUlist[which.comp],
-                                                       posterior_weights, algorithm.version)
-    },threshold = 1000))
-  else
-    out.time <-
-      system.time(posterior_matrices <-
-        compute_posterior_matrices(data,xUlist[which.comp],posterior_weights, algorithm.version))
-  if (verbose)
+  if (outputlevel > 0) {
+    # threshold mixture components
+    which.comp = (pi_s > pi_thresh)
+    # Compute posterior matrices.
+    posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
+    if (verbose)
+      cat(" - Computing posterior matrices.\n")
     if (add.mem.profile)
-      cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
-                  sum(out.mem$bytes,na.rm = TRUE)/1024^2,
-                  out.time["elapsed"]))
+      out.time <- system.time(out.mem <- profmem::profmem({
+        posterior_matrices <- compute_posterior_matrices(data,xUlist[which.comp],
+                                                         posterior_weights, algorithm.version)
+      },threshold = 1000))
     else
-      cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
-                  out.time["elapsed"]))
-
-  # Compute marginal log-likelihood.
-  vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
-  loglik = sum(vloglik)
-  if(usepointmass){ # compute BF
-    null_loglik = log(lm$lik_matrix[,1])+lm$lfactors
-    alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm)
+      out.time <-
+        system.time(posterior_matrices <-
+          compute_posterior_matrices(data,xUlist[which.comp],posterior_weights, algorithm.version))
+    if (verbose)
+      if (add.mem.profile)
+        cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
+                    sum(out.mem$bytes,na.rm = TRUE)/1024^2,
+                    out.time["elapsed"]))
+      else
+        cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
+                    out.time["elapsed"]))
+    # Compute marginal log-likelihood.
+    vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
+    loglik = sum(vloglik)
+    if(usepointmass){ # compute BF
+      null_loglik = log(lm$lik_matrix[,1])+lm$lfactors
+      alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm)
+    } else {
+      null_loglik = NULL
+      alt_loglik = NULL
+    }
   } else {
+    posterior_matrices = NULL
     null_loglik = NULL
     alt_loglik = NULL
   }
-
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
 
   m=list(result=posterior_matrices,

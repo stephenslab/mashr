@@ -4,7 +4,7 @@
 \alias{cov_pca}
 \title{Perform PCA on data and return list of candidate covariance matrices}
 \usage{
-cov_pca(data, npc, subset)
+cov_pca(data, npc, subset = NULL)
 }
 \arguments{
 \item{data}{a mash data object}

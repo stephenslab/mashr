@@ -4,7 +4,7 @@
 \alias{cov_ed}
 \title{Perform "extreme deconvolution" (Bovy et al) on a subset of the data}
 \usage{
-cov_ed(data, Ulist_init, subset)
+cov_ed(data, Ulist_init, subset = NULL)
 }
 \arguments{
 \item{data}{a mash data object}
