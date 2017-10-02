@@ -7,7 +7,7 @@
 #' and the rank npc covariance matrix
 #' @importFrom assertthat assert_that
 #' @export
-cov_pca = function(data,npc,subset){
+cov_pca = function(data,npc,subset = NULL){
   assert_that(npc>1)
   assert_that(npc<=n_conditions(data))
   if(is.null(subset)){subset = 1:n_effects(data)}
@@ -27,7 +27,7 @@ cov_pca = function(data,npc,subset){
 #' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
 #' The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
 #' @export
-cov_ed = function(data, Ulist_init, subset){
+cov_ed = function(data, Ulist_init, subset = NULL){
   if(is.null(subset)){subset = 1:n_effects(data)}
   Ulist_ed = ed_wrapper(data, Ulist_init, subset)$Ulist
   names(Ulist_ed) = make_names("ED", 1:length(Ulist_ed))
