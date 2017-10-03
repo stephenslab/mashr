@@ -30,7 +30,7 @@ cov_pca = function(data,npc,subset = NULL){
 cov_ed = function(data, Ulist_init, subset = NULL){
   if(is.null(subset)){subset = 1:n_effects(data)}
   Ulist_ed = ed_wrapper(data, Ulist_init, subset)$Ulist
-  names(Ulist_ed) = make_names("ED", 1:length(Ulist_ed))
+  names(Ulist_ed) = make_names("ED", if(is.null(names(Ulist_init))) 1:length(Ulist_ed) else names(Ulist_init))
   Ulist_ed
 }
 
