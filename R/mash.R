@@ -13,7 +13,7 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
-#' @param outputlevel controls amount of computation / output; 0: only output estimated mixture component proportions, 1: output complete result, 99: additionally output debugging information
+#' @param outputlevel controls amount of computation / output; 1: only output estimated mixture component proportions, 2: output complete result, 99: additionally output debugging information
 #' @return a list with elements result, loglik and fitted_g
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -37,7 +37,7 @@ mash = function(data,
                 add.mem.profile = FALSE,
                 algorithm.version = c("Rcpp","R"),
                 pi_thresh = 1e-10,
-                outputlevel = 1) {
+                outputlevel = 2) {
 
   algorithm.version = match.arg(algorithm.version)
   if(!missing(g)){ # g is supplied
@@ -120,12 +120,11 @@ mash = function(data,
   else{ #if fixg, just use g$pi for pi
     pi_s = g$pi
   }
-
-  if (outputlevel > 0) {
-    # threshold mixture components
-    which.comp = (pi_s > pi_thresh)
-    # Compute posterior matrices.
-    posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
+  # threshold mixture components
+  which.comp = (pi_s > pi_thresh)
+  posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
+  # Compute posterior matrices.
+  if (outputlevel > 1) {
     if (verbose)
       cat(" - Computing posterior matrices.\n")
     if (add.mem.profile)
@@ -145,29 +144,30 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    # Compute marginal log-likelihood.
-    vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
-    loglik = sum(vloglik)
-    if(usepointmass){ # compute BF
-      null_loglik = log(lm$lik_matrix[,1])+lm$lfactors
-      alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm)
-    } else {
-      null_loglik = NULL
-      alt_loglik = NULL
-    }
   } else {
     posterior_matrices = NULL
+  }
+  # Compute marginal log-likelihood.
+  vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
+  loglik = sum(vloglik)
+  if(usepointmass){ # compute BF
+    null_loglik = log(lm$lik_matrix[,1])+lm$lfactors
+    alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm)
+  } else {
     null_loglik = NULL
     alt_loglik = NULL
   }
+  # results
   fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
-
   m=list(result=posterior_matrices,
          loglik = loglik, vloglik=vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
          fitted_g = fitted_g)
-  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} #for debugging
+  #for use with mash_compute_posterior_matries
+  if(outputlevel==1){m = c(m,list(posterior_weights=posterior_weights))}
+  #for debugging
+  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} 
   class(m) = "mash"
   return(m)
 }
@@ -197,17 +197,20 @@ mash_compute_vloglik = function(g,data){
 }
 
 #' Compute posterior matrices for fitted mash object on new data
-#' @param g a mash object or the fitted_g from a mash object
+#' @param g a mash object or the fitted_g from a mash object. When a mash object is given with `posterior_weights` attribute, the provided posterior weights will be used; otherwise it will be computed.
 #' @param data a set of data on which to compute the posterior matrices
 #' @return A list of posterior matrices
 #' @export
 mash_compute_posterior_matrices = function(g,data){
+  posterior_weights = g$posterior_weights
+
   if(class(g)=="mash"){g = g$fitted_g}
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
-  lm_res = calc_relative_lik_matrix(data,xUlist)
-
-  posterior_weights = compute_posterior_weights(g$pi, lm_res$lik_matrix)
+  if (is.null(posterior_weights)) {
+    lm_res = calc_relative_lik_matrix(data, xUlist)
+    posterior_weights = compute_posterior_weights(g$pi, lm_res$lik_matrix)
+  }
   posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
   return(posterior_matrices)
 }

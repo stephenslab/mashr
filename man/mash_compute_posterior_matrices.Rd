@@ -7,7 +7,7 @@
 mash_compute_posterior_matrices(g, data)
 }
 \arguments{
-\item{g}{a mash object or the fitted_g from a mash object}
+\item{g}{a mash object or the fitted_g from a mash object. When a mash object is given with `posterior_weights` attribute, the provided posterior weights will be used; otherwise it will be computed.}
 
 \item{data}{a set of data on which to compute the posterior matrices}
 }
