@@ -27,8 +27,11 @@ cov_canonical = function(data,
     }
     res[[i]] =  do.call(cov_method$fn, args = modifyList(list(data=data), as.list(cov_method$args) ))
 
-    if(is.list(res[[i]])){ #append _i to names if function returns multiple matrices
-      names(res[[i]]) = paste0(name, "_", 1:length(res[[i]]) )
+    if(is.list(res[[i]])){ 
+      if(is.null(names(res[[i]]))) {
+        ##append _i to names if function returns multiple matrices
+        names(res[[i]]) = paste0(name, "_", 1:length(res[[i]]) )
+        }
     } else {
       res[[i]] = list(res[[i]])
       names(res[[i]]) = name
@@ -81,6 +84,7 @@ cov_singletons = function(data){
     Ulist[[r]] = nullmatrix
     Ulist[[r]][r,r] = 1
   }
+  if (!is.null(colnames(data$Bhat))) {names(Ulist) = colnames(data$Bhat)}
   return(Ulist)
 }
 
