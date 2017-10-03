@@ -209,7 +209,6 @@ mash_compute_posterior_matrices = function(g,data){
 
   posterior_weights = compute_posterior_weights(g$pi, lm_res$lik_matrix)
   posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
-
   return(posterior_matrices)
 }
 
@@ -278,6 +277,10 @@ mash_1by1 = function(data){
   posterior_matrices = list(PosteriorMean = post_mean,
                             PosteriorSD = post_sd,
                             lfsr = lfsr)
+  for (i in names(posterior_matrices)) {
+    if (!is.null(colnames(data$Bhat))) colnames(posterior_matrices[[i]]) = colnames(data$Bhat)
+    if (!is.null(rownames(data$Bhat))) rownames(posterior_matrices[[i]]) = rownames(data$Bhat)
+  }
 
   m = list(result=posterior_matrices,loglik=loglik)
   class(m) = "mash_1by1"

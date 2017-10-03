@@ -88,11 +88,16 @@ compute_posterior_matrices <-
     res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
                            simplify2array(Ulist),t(posterior_weights), is_common_cov(data))
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
-    return(list(PosteriorMean = res$post_mean,
-                PosteriorSD   = res$post_sd,
-                lfdr          = res$post_zero,
-                NegativeProb  = res$post_neg,
-                lfsr          = lfsr))
+    posterior_matrices <- list(PosteriorMean = res$post_mean,
+                              PosteriorSD   = res$post_sd,
+                              lfdr          = res$post_zero,
+                              NegativeProb  = res$post_neg,
+                              lfsr          = lfsr)
+    for (i in names(posterior_matrices)) {
+      if (!is.null(colnames(data$Bhat))) colnames(posterior_matrices[[i]]) <- colnames(data$Bhat)
+      if (!is.null(rownames(data$Bhat))) rownames(posterior_matrices[[i]]) <- rownames(data$Bhat)
+    }
+    return(posterior_matrices)
   } else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
 }
