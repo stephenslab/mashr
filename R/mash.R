@@ -165,7 +165,7 @@ mash = function(data,
          alt_loglik = alt_loglik,
          fitted_g = fitted_g)
   #for debugging
-  names(posterior_weights) = which.comp
+  names(posterior_weights) = which(which.comp)
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} 
   class(m) = "mash"
   return(m)
