@@ -158,15 +158,14 @@ mash = function(data,
     alt_loglik = NULL
   }
   # results
-  fitted_g = list(pi = pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
-  m=list(result=posterior_matrices,
-         loglik = loglik, vloglik=vloglik,
+  fitted_g = list(pi=pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
+  m=list(result = posterior_matrices,
+         loglik = loglik, vloglik = vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
          fitted_g = fitted_g)
-  #for use with mash_compute_posterior_matries
-  if(outputlevel==1){m = c(m,list(posterior_weights=posterior_weights))}
   #for debugging
+  names(posterior_weights) = which.comp
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} 
   class(m) = "mash"
   return(m)
@@ -197,21 +196,20 @@ mash_compute_vloglik = function(g,data){
 }
 
 #' Compute posterior matrices for fitted mash object on new data
-#' @param g a mash object or the fitted_g from a mash object. When a mash object is given with `posterior_weights` attribute, the provided posterior weights will be used; otherwise it will be computed.
+#' @param g a mash object or the fitted_g from a mash object.
 #' @param data a set of data on which to compute the posterior matrices
+#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @return A list of posterior matrices
 #' @export
-mash_compute_posterior_matrices = function(g,data){
-  posterior_weights = g$posterior_weights
+mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10){
 
   if(class(g)=="mash"){g = g$fitted_g}
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
-  if (is.null(posterior_weights)) {
-    lm_res = calc_relative_lik_matrix(data, xUlist)
-    posterior_weights = compute_posterior_weights(g$pi, lm_res$lik_matrix)
-  }
-  posterior_matrices = compute_posterior_matrices(data, xUlist, posterior_weights)
+  lm_res = calc_relative_lik_matrix(data, xUlist)
+  which.comp = (g$pi > pi_thresh)
+  posterior_weights = compute_posterior_weights(g$pi[which.comp], lm_res$lik_matrix[,which.comp])
+  posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp], posterior_weights)
   return(posterior_matrices)
 }
 

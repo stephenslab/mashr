@@ -4,12 +4,14 @@
 \alias{mash_compute_posterior_matrices}
 \title{Compute posterior matrices for fitted mash object on new data}
 \usage{
-mash_compute_posterior_matrices(g, data)
+mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10)
 }
 \arguments{
 \item{g}{a mash object or the fitted_g from a mash object. When a mash object is given with `posterior_weights` attribute, the provided posterior weights will be used; otherwise it will be computed.}
 
 \item{data}{a set of data on which to compute the posterior matrices}
+
+\item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
 }
 \value{
 A list of posterior matrices
