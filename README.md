@@ -36,7 +36,7 @@ matrices](https://stephenslab.github.io/mashr/docs/simulate_noncanon.html).
 ## Setup
 
 Please follow these steps to install the [latest version of the
-mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-0):
+mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-2):
 
 1. In R, install these three R packages from CRAN:
 
@@ -61,12 +61,12 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-0):
 
 5. Once you have installed all these packages, you can install and
    load the [latest
-   release](https://github.com/stephenslab/mashr/releases/tag/v0.2-0)
+   release](https://github.com/stephenslab/mashr/releases/tag/v0.2-2)
    of the `mashr` package:
 
    ```R
    library(devtools)
-   install_github("stephenslab/mashr@v0.2-0")
+   install_github("stephenslab/mashr@v0.2-2")
    library(mashr)
    ```
 
@@ -84,7 +84,7 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-0):
 
    ```
    R CMD build mashr
-   R CMD INSTALL mashr_0.2-0.tar.gz
+   R CMD INSTALL mashr_0.2-2.tar.gz
    ```
 
 ## Notes
