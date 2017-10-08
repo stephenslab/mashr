@@ -1,8 +1,12 @@
 ---
-title:  "Introduction to mash: data-driven covariances"
+title: "Introduction to mash: data-driven covariances"
 author: "Matthew Stephens"
-date:   "May 30, 2017"
-output: html_document
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mashr intro with data-driven covariances}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

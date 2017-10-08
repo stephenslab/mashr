@@ -2,7 +2,7 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2-1
+Version: 0.2-2
 Date: 2017-10-07
 Author: Matthew Stephens, Sarah Urbut, Gao Wang, Peter Carbonetto
 Maintainer: Matthew Stephens <mstephens@uchicago.edu>
@@ -30,7 +30,9 @@ Suggests:
     ExtremeDeconvolution (>= 1.3),
     REBayes,
     testthat,
+    knitr,
     profmem
+VignetteBuilder: knitr
 NeedsCompilation: yes
 RoxygenNote: 6.0.1
 Remotes: stephens999/ashr

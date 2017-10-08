@@ -1,8 +1,12 @@
 ---
 title: "Introduction to mashr"
 author: "Matthew Stephens"
-date: "May 26, 2017"
-output: html_document
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mashr intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
