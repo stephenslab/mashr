@@ -44,7 +44,7 @@ inline arma::vec dmvnorm_mat(const arma::mat & x,
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(xdim / 2.0) * LOG_2PI;
 
-	for (int i = 0; i < x.n_cols; i++) {
+	for (unsigned i = 0; i < x.n_cols; i++) {
 		arma::vec z = rooti * (x.col(i) - mean) ;
 		out.at(i) = constants - 0.5 * arma::sum(z % z) + rootisum;
 	}
@@ -373,8 +373,8 @@ public:
 	int compute_posterior(const arma::mat & posterior_weights)
 	{
 		arma::vec sv = s_vec % s_vec * v;
-		int J = b_vec.n_elem;
-		int P = U_vec.n_elem;
+		unsigned J = b_vec.n_elem;
+		unsigned P = U_vec.n_elem;
 		arma::vec mean(J, arma::fill::zeros);
 		// J X P matrices
 		arma::mat mu1_mat(J, P, arma::fill::zeros);
