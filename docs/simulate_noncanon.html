@@ -160,30 +160,30 @@ m.c    = mash(data, U.c)
 #  - Computing 2000 x 151 likelihood matrix.
 #  - Likelihood calculations took 0.04 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.29 seconds.
+#  - Model fitting took 0.26 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.00 seconds.
+#  - Computation allocated took 0.01 seconds.
 m.ed   = mash(data, U.ed)
 #  - Computing 2000 x 91 likelihood matrix.
 #  - Likelihood calculations took 0.02 seconds.
 #  - Fitting model with 91 mixture components.
-#  - Model fitting took 0.16 seconds.
+#  - Model fitting took 0.13 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.
 m.c.ed = mash(data, c(U.c,U.ed))
 #  - Computing 2000 x 241 likelihood matrix.
 #  - Likelihood calculations took 0.06 seconds.
 #  - Fitting model with 241 mixture components.
-#  - Model fitting took 0.58 seconds.
+#  - Model fitting took 0.48 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.00 seconds.
+#  - Computation allocated took 0.01 seconds.
 m.true = mash(data, U.true)
 #  - Computing 2000 x 31 likelihood matrix.
 #  - Likelihood calculations took 0.01 seconds.
 #  - Fitting model with 31 mixture components.
-#  - Model fitting took 0.06 seconds.
+#  - Model fitting took 0.05 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.00 seconds.
+#  - Computation allocated took 0.01 seconds.
   
 print(get_loglik(m.c),digits = 10)
 # [1] -16169.17212

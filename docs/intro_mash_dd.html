@@ -187,9 +187,9 @@ strong = get_significant_results(m.1by1,0.05)</code></pre>
 <pre><code>#  - Computing 2000 x 91 likelihood matrix.
 #  - Likelihood calculations took 0.03 seconds.
 #  - Fitting model with 91 mixture components.
-#  - Model fitting took 0.18 seconds.
+#  - Model fitting took 0.13 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.00 seconds.</code></pre>
+#  - Computation allocated took 0.01 seconds.</code></pre>
 <pre class="r"><code>print(get_loglik(m.ed),digits = 10)</code></pre>
 <pre><code># [1] -16155.73391</code></pre>
 <p>From the fit we see that the fit using the data-driven covariances is not as good as when we used the canonical covariances (which was -16120.32; from <a href="intro_mash.html">the introductory vignette</a>). This is expected for this simulation because the simulation actually used the canonical covariances!</p>
@@ -197,7 +197,7 @@ strong = get_significant_results(m.1by1,0.05)</code></pre>
 <pre class="r"><code>U.c = cov_canonical(data)  
 m   = mash(data, c(U.c,U.ed))</code></pre>
 <pre><code>#  - Computing 2000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.14 seconds.
+#  - Likelihood calculations took 0.11 seconds.
 #  - Fitting model with 241 mixture components.</code></pre>
 <pre><code># Warning in REBayes::KWDual(A, rep(1, k), normalize(w), control = control): estimated mixing distribution has some negative values:
 #              consider reducing rtol</code></pre>
@@ -205,9 +205,9 @@ m   = mash(data, c(U.c,U.ed))</code></pre>
 # 0.849522254927991, : Optimization step yields mixture weights that are
 # either too small, or negative; weights have been corrected and renormalized
 # after the optimization.</code></pre>
-<pre><code>#  - Model fitting took 0.68 seconds.
+<pre><code>#  - Model fitting took 0.45 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.04 seconds.</code></pre>
+#  - Computation allocated took 0.07 seconds.</code></pre>
 <p>For an example with simulations that do not follow the standard canonical matrices see <a href="simulate_noncanon.html">here</a>.</p>
 </div>
 <div id="session-information." class="section level2">
@@ -228,10 +228,10 @@ m   = mash(data, c(U.c,U.ed))</code></pre>
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.1-24  ashr_2.1-26   rmarkdown_1.6
+# [1] mashr_0.2-0   ashr_2.1-26   rmarkdown_1.6
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_0.12.12             knitr_1.16              
+#  [1] Rcpp_0.12.12             knitr_1.17              
 #  [3] magrittr_1.5             REBayes_0.85            
 #  [5] MASS_7.3-47              doParallel_1.0.10       
 #  [7] pscl_1.4.9               SQUAREM_2016.8-2        
@@ -245,7 +245,7 @@ m   = mash(data, c(U.c,U.ed))</code></pre>
 # [23] digest_0.6.12            Matrix_1.2-10           
 # [25] codetools_0.2-15         evaluate_0.10.1         
 # [27] stringi_1.1.5            compiler_3.4.1          
-# [29] Rmosek_7.1.3             backports_1.1.0         
+# [29] Rmosek_8.0.69            backports_1.1.0         
 # [31] mvtnorm_1.0-6            truncnorm_1.0-7</code></pre>
 </div>
 

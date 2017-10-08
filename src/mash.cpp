@@ -4,6 +4,9 @@
 #include "mash.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
+// Enable C++11.
+// [[Rcpp::plugins(cpp11)]]
+
 // [[Rcpp::export]]
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,

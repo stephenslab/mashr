@@ -168,9 +168,9 @@ print(names(U.c))</code></pre>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
 #  - Likelihood calculations took 0.04 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.34 seconds.
+#  - Model fitting took 0.33 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.01 seconds.</code></pre>
+#  - Computation allocated took 0.02 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
 <div id="step-4-extract-posterior-summaries" class="section level2">
 <h2>Step 4: Extract Posterior Summaries</h2>
@@ -272,10 +272,10 @@ print(names(U.c))</code></pre>
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.1-24  ashr_2.1-26   rmarkdown_1.6
+# [1] mashr_0.2-0   ashr_2.1-26   rmarkdown_1.6
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_0.12.12      knitr_1.16        magrittr_1.5     
+#  [1] Rcpp_0.12.12      knitr_1.17        magrittr_1.5     
 #  [4] REBayes_0.85      MASS_7.3-47       doParallel_1.0.10
 #  [7] pscl_1.4.9        SQUAREM_2016.8-2  lattice_0.20-35  
 # [10] foreach_1.4.3     plyr_1.8.4        stringr_1.2.0    
@@ -284,7 +284,7 @@ print(names(U.c))</code></pre>
 # [19] assertthat_0.2.0  yaml_2.1.14       rprojroot_1.2    
 # [22] digest_0.6.12     Matrix_1.2-10     codetools_0.2-15 
 # [25] evaluate_0.10.1   stringi_1.1.5     compiler_3.4.1   
-# [28] Rmosek_7.1.3      backports_1.1.0   mvtnorm_1.0-6    
+# [28] Rmosek_8.0.69     backports_1.1.0   mvtnorm_1.0-6    
 # [31] truncnorm_1.0-7</code></pre>
 </div>
 </div>
