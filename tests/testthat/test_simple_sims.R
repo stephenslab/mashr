@@ -5,7 +5,7 @@ test_that("simple simulations look right", {
   # null, equal among conditions, present only in first condition, independent across conditions
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
-  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
+  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased",alpha=1)
 
   expect_lt(mean(abs(test$B-ashr::get_pm(res))),mean(abs(test$B-test$Bhat)))
 }

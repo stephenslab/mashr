@@ -63,9 +63,13 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-  if (alpha == 0) {
+  if (alpha == 0 && !all(data$Shat == 1)) {
     ## EZ model
     data$Bhat = data$Bhat / data$Shat
+    data$Shat_effective = data$Shat
+    data$Shat = data$Shat / data$Shat
+  } else {
+    data$Shat_effective = NULL
   }
   tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
@@ -150,9 +154,9 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    if (alpha == 0) {
-      ## EZ model, should use Shat to bring posterior(Bhat) back to scale
-      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat
+    if (!is.null(data$Shat_effective)) {
+      ## EZ model, need to bring posterior(Bhat) back to scale
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_effective
     }
   } else {
     posterior_matrices = NULL
