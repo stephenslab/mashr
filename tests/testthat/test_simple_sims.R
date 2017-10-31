@@ -19,7 +19,7 @@ test_that("simple simulations look right; larger error", {
 
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
-  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
+  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased",alpha=1)
 
   ashres = ashr::ash(test$Bhat[,1],test$Shat[,1])
   #plot(ashr::get_pm(ashres),post$post_mean[,1], col = rep(1:4,100))
