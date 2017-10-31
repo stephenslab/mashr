@@ -7,7 +7,7 @@
 #' @param usepointmass whether to include a point mass at 0, corresponding to null in every condition
 #' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
-#' @param alpha Numeric value of alpha parameter in the model. alpha = 1 for Exchangeable Effects (EE), alpha = 0 for Exchangeable Z-scores (EZ). Default is 0.
+#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
@@ -32,7 +32,7 @@ mash = function(data,
                 usepointmass = TRUE,
                 g = NULL,
                 fixg = FALSE,
-                alpha = 0,
+                alpha = 1,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
@@ -63,13 +63,15 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-  if (alpha == 0 && !all(data$Shat == 1)) {
-    ## EZ model
-    data$Bhat = data$Bhat / data$Shat
-    data$Shat_effective = data$Shat
-    data$Shat = data$Shat / data$Shat
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Bhat = data$Bhat / (data$Shat^alpha)
+    data$Shat_orig = data$Shat
+    data$Shat = data$Shat^(1-alpha)
   } else {
-    data$Shat_effective = NULL
+    data$Shat_orig = NULL
   }
   tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
@@ -154,9 +156,10 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    if (!is.null(data$Shat_effective)) {
-      ## EZ model, need to bring posterior(Bhat) back to scale
-      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_effective
+    if (!is.null(data$Shat_orig)) {
+      ## Recover the scale of posterior(Bhat)
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_orig^alpha
+      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_orig^alpha
     }
   } else {
     posterior_matrices = NULL
