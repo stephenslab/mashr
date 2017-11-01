@@ -67,11 +67,11 @@ mash = function(data,
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
     ## a special case when alpha = 1 is the EZ model
-    data$Bhat = data$Bhat / (data$Shat^alpha)
-    data$Shat_orig = data$Shat
+    data$Shat_adj = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_adj
     data$Shat = data$Shat^(1-alpha)
   } else {
-    data$Shat_orig = NULL
+    data$Shat_adj = NULL
   }
   tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
@@ -156,10 +156,10 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    if (!is.null(data$Shat_orig)) {
+    if (!is.null(data$Shat_adj)) {
       ## Recover the scale of posterior(Bhat)
-      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_orig^alpha
-      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_orig^alpha
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_adj
+      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_adj
     }
   } else {
     posterior_matrices = NULL

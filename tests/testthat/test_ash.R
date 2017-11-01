@@ -10,7 +10,7 @@ test_that("get same result as ash", {
 
   data = set_mash_data(sim_data$Bhat, sim_data$Shat)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",alpha=1)
+  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",alpha=0)
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)
