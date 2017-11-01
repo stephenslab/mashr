@@ -7,6 +7,7 @@
 #' @param usepointmass whether to include a point mass at 0, corresponding to null in every condition
 #' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
+#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
@@ -31,6 +32,7 @@ mash = function(data,
                 usepointmass = TRUE,
                 g = NULL,
                 fixg = FALSE,
+                alpha = 1,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
@@ -60,6 +62,16 @@ mash = function(data,
   } else {
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
+  }
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Shat_adj = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_adj
+    data$Shat = data$Shat^(1-alpha)
+  } else {
+    data$Shat_adj = NULL
   }
   tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
@@ -144,6 +156,11 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
+    if (!is.null(data$Shat_adj)) {
+      ## Recover the scale of posterior(Bhat)
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_adj
+      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_adj
+    }
   } else {
     posterior_matrices = NULL
   }
@@ -166,7 +183,7 @@ mash = function(data,
          fitted_g = fitted_g)
   #for debugging
   names(posterior_weights) = which(which.comp)
-  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} 
+  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
   class(m) = "mash"
   return(m)
 }
