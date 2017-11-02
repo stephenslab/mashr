@@ -7,6 +7,7 @@
 #' @param usepointmass whether to include a point mass at 0, corresponding to null in every condition
 #' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
+#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
@@ -31,6 +32,7 @@ mash = function(data,
                 usepointmass = TRUE,
                 g = NULL,
                 fixg = FALSE,
+                alpha = 1,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
@@ -60,6 +62,16 @@ mash = function(data,
   } else {
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
+  }
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Shat_alpha = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_alpha
+    data$Shat = data$Shat^(1-alpha)
+  } else {
+    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
   }
   tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
@@ -144,15 +156,20 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
+    if (!all(data$Shat_alpha == 1)) {
+      ## Recover the scale of posterior(Bhat)
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
+      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+    }
   } else {
     posterior_matrices = NULL
   }
   # Compute marginal log-likelihood.
-  vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm)
+  vloglik = compute_vloglik_from_matrix_and_pi(pi_s,lm,data$Shat_alpha)
   loglik = sum(vloglik)
   if(usepointmass){ # compute BF
-    null_loglik = log(lm$lik_matrix[,1])+lm$lfactors
-    alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm)
+    null_loglik = log(lm$lik_matrix[,1])+lm$lfactors-rowSums(log(data$Shat_alpha))
+    alt_loglik = compute_alt_loglik_from_matrix_and_pi(pi_s,lm,data$Shat_alpha)
   } else {
     null_loglik = NULL
     alt_loglik = NULL
@@ -166,7 +183,7 @@ mash = function(data,
          fitted_g = fitted_g)
   #for debugging
   names(posterior_weights) = which(which.comp)
-  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))} 
+  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
   class(m) = "mash"
   return(m)
 }
@@ -180,7 +197,7 @@ mash_compute_loglik = function(g,data){
   if(class(g)=="mash"){g = g$fitted_g}
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist)
-  return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors))
+  return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha))))
 }
 
 #' Compute vector of loglikelihood for fitted mash object on new data
@@ -192,7 +209,7 @@ mash_compute_vloglik = function(g,data){
   if(class(g)=="mash"){g = g$fitted_g}
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist)
-  return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors)
+  return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
 }
 
 #' Compute posterior matrices for fitted mash object on new data
@@ -210,6 +227,11 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10){
   which.comp = (g$pi > pi_thresh)
   posterior_weights = compute_posterior_weights(g$pi[which.comp], lm_res$lik_matrix[,which.comp])
   posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp], posterior_weights)
+  if (!all(data$Shat_alpha == 1)) {
+    ## Recover the scale of posterior(Bhat)
+    posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
+    posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+  }
   return(posterior_matrices)
 }
 
@@ -266,7 +288,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 mash_1by1 = function(data){
   Bhat = data$Bhat
   Shat = data$Shat
-  post_mean= post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
+  post_mean = post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
   loglik = 0
   for(i in 1:ncol(Bhat)){
     ashres = ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
@@ -292,24 +314,27 @@ mash_1by1 = function(data){
 #' @param pi_s the vector of mixture proportions, with first element corresponding to null
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
 #' whose first column corresponds to null
-compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm){
-  return(log(lm$lik_matrix[,-1,drop=FALSE] %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors)
+#' @param Shat_alpha matrix of Shat^alpha
+compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
+  return(log(lm$lik_matrix[,-1,drop=FALSE] %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
 #' Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi
 #' @param pi_s the vector of mixture proportions
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
+#' @param Shat_alpha matrix of Shat^alpha
 #' @export
-compute_vloglik_from_matrix_and_pi = function(pi_s,lm){
-  return(log(lm$lik_matrix %*% pi_s)+lm$lfactors)
+compute_vloglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
+  return(log(lm$lik_matrix %*% pi_s)+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
 #' Compute total loglikelihood from a matrix of log-likelihoods and fitted pi
 #' @param pi_s the vector of mixture proportions
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
+#' @param Shat_alpha matrix of Shat^alpha
 #' @export
-compute_loglik_from_matrix_and_pi = function(pi_s,lm){
-  return(sum(compute_vloglik_from_matrix_and_pi(pi_s,lm)))
+compute_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
+  return(sum(compute_vloglik_from_matrix_and_pi(pi_s,lm,Shat_alpha)))
 }
 
 #' Initialize mixture proportions - currently by making them all equal
