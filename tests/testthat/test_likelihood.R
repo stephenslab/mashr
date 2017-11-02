@@ -16,6 +16,7 @@ test_that("likelihood calculations on test set match original",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = set_mash_data(Bhat,Shat)
+  data$Shat_alpha = matrix(1, nrow(data$Bhat), ncol(data$Bhat))
   Ulist = cov_canonical(data)
   m = mash(data,Ulist,grid = c(0.5,1,2),alpha=0)
   expect_equal(mash_compute_loglik(m,data),m$loglik)
