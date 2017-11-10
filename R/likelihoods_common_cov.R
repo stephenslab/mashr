@@ -10,20 +10,30 @@
 #' @importFrom plyr laply
 calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
   V   = get_cov(data,1) # all covariances are same
-  res = laply(Ulist,
+  res = lapply(Ulist,
     function(U){dmvnorm(x=data$Bhat,sigma=V+U,log=log)})
+  res = matrix(unlist(res), ncol=length(res))
   dimnames(res) = NULL # just to make result identical to the non-common-cov version
-  t(res)
+  res
 }
 
 #' @title Check that all covariates are equal.
 #'
-#' @description checks if all rows of Shat are the same - if so
+#' @description checks if all rows of Shat (or Shat_alpha) are the same - if so
 #'     covariances are equal
 #'
 #' @param data A mash data object.
+#' @param Salpha Indicate the Shat to check (Shat or Shat_alpha)
 #'
 #' @export
-is_common_cov = function(data){
-  all((t(data$Shat) - data$Shat[1,]) == 0)
+is_common_cov = function(data, Salpha = TRUE){
+  if(Salpha){
+    if(data$alpha == 0){
+      all((t(data$Shat) - data$Shat[1,]) == 0)
+    } else{
+      all((t(data$Shat_alpha) - data$Shat_alpha[1, ]) == 0)
+    }
+  } else{
+    all((t(data$Shat) - data$Shat[1,]) == 0)
+  }
 }
