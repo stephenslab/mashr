@@ -13,7 +13,7 @@
 #' @export
 cov_udi = function(data, model = udi_model_matrix(n_conditions(data))) {
   if(is.vector(model)){model = matrix(model,nrow=1)}
-  res = alply(model, 1, cov_udi_single, data = data)
+  res = apply(model, 1, cov_udi_single, data = data)
   attributes(res) = NULL
   names(res) = names_cov_udi(model)
   return(res)
