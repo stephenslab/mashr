@@ -41,6 +41,8 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @param data A \code{mash} data object; e.g., created by
 #'     \code{\link{set_mash_data}}.
 #'
+#' @param A the linear transformation matrix, KxR matrix
+#'
 #' @param Ulist List containing the prior covariance matrices.
 #'
 #' @param posterior_weights Vector containing the posterior
@@ -51,18 +53,18 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @return The return value is a list containing the following
 #'    components:
 #'
-#'    \item{PosteriorMean}{J x R matrix of posterior means.}
+#'    \item{PosteriorMean}{J x K matrix of posterior means.}
 #'
-#'    \item{PosteriorSD}{J x R matrix of posterior (marginal) standard
+#'    \item{PosteriorSD}{J x K matrix of posterior (marginal) standard
 #'    deviations.}
 #'
-#'    \item{NegativeProb}{J x R matrix of posterior (marginal)
+#'    \item{NegativeProb}{J x K matrix of posterior (marginal)
 #'     probability of being negative.}
 #'
-#'    \item{ZeroProb}{J x R matrix of posterior (marginal) probability
+#'    \item{ZeroProb}{J x K matrix of posterior (marginal) probability
 #'     of being zero.}
 #'
-#'    \item{lfsr}{J x R matrix of local false sign rates.}
+#'    \item{lfsr}{J x K matrix of local false sign rates.}
 #'
 #' @useDynLib mashr
 #'
@@ -72,21 +74,25 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @export
 compute_posterior_matrices <-
-  function (data, Ulist, posterior_weights,
+  function (data, A=NULL, Ulist, posterior_weights,
             algorithm.version = c("Rcpp","R")) {
-  algorithm.version <- match.arg(algorithm.version)
+  algorithm.version <- match.arg(algorithm.version, c("Rcpp","R"))
+
+  if(!is.null(A)){
+    algorithm.version = 'R'
+  }
 
   if (algorithm.version == "R") {
-    if(is_common_cov(data)){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, Ulist, posterior_weights)
+    if(is_common_cov(data, Salpha = TRUE)){ # use more efficient computations for commmon covariance case
+      compute_posterior_matrices_common_cov_R(data, A=A, Ulist, posterior_weights)
     } else {
-      compute_posterior_matrices_general_R(data, Ulist, posterior_weights)
+      compute_posterior_matrices_general_R(data, A=A, Ulist, posterior_weights)
     }
   } else if (algorithm.version == "Rcpp") {
 
     # Run the C implementation using the Rcpp interface.
     res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                           simplify2array(Ulist),t(posterior_weights), is_common_cov(data))
+                           simplify2array(Ulist),t(posterior_weights), is_common_cov(data, Salpha = FALSE))
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
     posterior_matrices <- list(PosteriorMean = res$post_mean,
                               PosteriorSD   = res$post_sd,
