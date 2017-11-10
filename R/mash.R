@@ -8,6 +8,7 @@
 #' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
 #' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
+#' @param A the linear transformation matrix
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
@@ -33,6 +34,7 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 alpha = 1,
+                A = NULL,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
@@ -41,7 +43,19 @@ mash = function(data,
                 pi_thresh = 1e-10,
                 outputlevel = 2) {
 
-  algorithm.version = match.arg(algorithm.version)
+  algorithm.version = match.arg(algorithm.version, c("Rcpp","R"))
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Shat_alpha = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_alpha
+    data$Shat = data$Shat^(1-alpha)
+  } else {
+    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
+  }
+  data$alpha = alpha
+
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
     if(!missing(grid)){stop("cannot supply both g and grid")}
@@ -63,16 +77,6 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-  if (alpha != 0 && !all(data$Shat == 1)) {
-    ## alpha models dependence of effect size on standard error
-    ## alpha > 0 implies larger effects has large standard error
-    ## a special case when alpha = 1 is the EZ model
-    data$Shat_alpha = data$Shat^alpha
-    data$Bhat = data$Bhat / data$Shat_alpha
-    data$Shat = data$Shat^(1-alpha)
-  } else {
-    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
-  }
   tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
   xUlist = expand_cov(Ulist,grid,usepointmass)
 
@@ -91,11 +95,11 @@ mash = function(data,
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
   if (add.mem.profile) {
     out.time <- system.time(out.mem <- profmem::profmem({
-      lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version)
+      lm <- calc_relative_lik_matrix(data,xUlist, algorithm.version=algorithm.version)
     },threshold = 1000))
   } else {
     out.time <- system.time(
-        lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version))
+        lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version=algorithm.version))
   }
   if (verbose) {
     if (add.mem.profile)
@@ -141,13 +145,14 @@ mash = function(data,
       cat(" - Computing posterior matrices.\n")
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
-        posterior_matrices <- compute_posterior_matrices(data,xUlist[which.comp],
+        posterior_matrices <- compute_posterior_matrices(data, A=A, xUlist[which.comp],
                                                          posterior_weights, algorithm.version)
       },threshold = 1000))
     else
       out.time <-
         system.time(posterior_matrices <-
-          compute_posterior_matrices(data,xUlist[which.comp],posterior_weights, algorithm.version))
+          compute_posterior_matrices(data,A=A, xUlist[which.comp],
+                                     posterior_weights, algorithm.version))
     if (verbose)
       if (add.mem.profile)
         cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
@@ -156,11 +161,6 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    if (!all(data$Shat_alpha == 1)) {
-      ## Recover the scale of posterior(Bhat)
-      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
-      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
-    }
   } else {
     posterior_matrices = NULL
   }
@@ -180,7 +180,8 @@ mash = function(data,
          loglik = loglik, vloglik = vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
-         fitted_g = fitted_g)
+         fitted_g = fitted_g,
+         alpha=alpha)
   #for debugging
   names(posterior_weights) = which(which.comp)
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
@@ -215,23 +216,52 @@ mash_compute_vloglik = function(g,data){
 #' Compute posterior matrices for fitted mash object on new data
 #' @param g a mash object or the fitted_g from a mash object.
 #' @param data a set of data on which to compute the posterior matrices
+#' @param A the linear transformation matrix
+#' @param subset indices of the subset of data to use (set to NULL for all data)
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
+#' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @return A list of posterior matrices
 #' @export
-mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10){
-
+mash_compute_posterior_matrices = function(g, data, A = NULL, subset=NULL, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R")){
+  alpha = g$alpha
   if(class(g)=="mash"){g = g$fitted_g}
+  if (!is.null(A)){
+    algorithm.version = 'R'
+  }
+
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Shat_alpha = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_alpha
+    data$Shat = data$Shat^(1-alpha)
+  } else {
+    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
+  }
+  data$alpha = alpha
+
+  datasubset = data
+  if (!is.null(subset)){
+    datasubset$Bhat = data$Bhat[subset,]
+    datasubset$Shat = data$Shat[subset,]
+    datasubset$Shat_alpha = data$Shat_alpha[subset,]
+  } else{
+    subset = 1:n_effects(data)
+  }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data, xUlist)
   which.comp = (g$pi > pi_thresh)
   posterior_weights = compute_posterior_weights(g$pi[which.comp], lm_res$lik_matrix[,which.comp])
-  posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp], posterior_weights)
-  if (!all(data$Shat_alpha == 1)) {
-    ## Recover the scale of posterior(Bhat)
-    posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
-    posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
-  }
+  posterior_matrices = compute_posterior_matrices(data, A=A, xUlist[which.comp],
+                                                  posterior_weights[subset,],
+                                                  algorithm.version = algorithm.version)
+  # if (!all(data$Shat_alpha == 1)) {
+  #   ## Recover the scale of posterior(Bhat)
+  #   posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
+  #   posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+  # }
   return(posterior_matrices)
 }
 
@@ -275,6 +305,8 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' \code{Shat}, an n by R matrix of standard errors (n units in R
 #' conditions),
 #'
+#' @param alhpa Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).
+#'
 #' @description Performs simple "condition-by-condition" analysis by
 #' running \code{ash} from package \code{ashr} on data from each
 #' condition, one at a time. May be a useful first step to identify
@@ -285,13 +317,13 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #'
 #' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
 #' @export
-mash_1by1 = function(data){
+mash_1by1 = function(data, alpha=0){
   Bhat = data$Bhat
   Shat = data$Shat
   post_mean = post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
   loglik = 0
   for(i in 1:ncol(Bhat)){
-    ashres = ash(Bhat[,i],Shat[,i],mixcompdist="normal") # get ash results for first condition
+    ashres = ash(Bhat[,i],Shat[,i],mixcompdist="normal", alpha=alpha) # get ash results for first condition
     post_mean[,i] = get_pm(ashres)
     post_sd[,i] = get_psd(ashres)
     lfsr[,i] = get_lfsr(ashres)
