@@ -8,7 +8,6 @@
 #' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
 #' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
-#' @param A the linear transformation matrix
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
@@ -34,7 +33,6 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 alpha = 1,
-                A = NULL,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
@@ -43,7 +41,7 @@ mash = function(data,
                 pi_thresh = 1e-10,
                 outputlevel = 2) {
 
-  algorithm.version = match.arg(algorithm.version, c("Rcpp","R"))
+  algorithm.version = match.arg(algorithm.version)
   if (alpha != 0 && !all(data$Shat == 1)) {
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
@@ -95,11 +93,11 @@ mash = function(data,
     cat(sprintf(" - Computing %d x %d likelihood matrix.\n",J,P))
   if (add.mem.profile) {
     out.time <- system.time(out.mem <- profmem::profmem({
-      lm <- calc_relative_lik_matrix(data,xUlist, algorithm.version=algorithm.version)
+      lm <- calc_relative_lik_matrix(data,xUlist, algorithm.version)
     },threshold = 1000))
   } else {
     out.time <- system.time(
-        lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version=algorithm.version))
+        lm <- calc_relative_lik_matrix(data,xUlist,algorithm.version))
   }
   if (verbose) {
     if (add.mem.profile)
@@ -145,13 +143,13 @@ mash = function(data,
       cat(" - Computing posterior matrices.\n")
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
-        posterior_matrices <- compute_posterior_matrices(data, A=A, xUlist[which.comp],
+        posterior_matrices <- compute_posterior_matrices(data, xUlist[which.comp],
                                                          posterior_weights, algorithm.version)
       },threshold = 1000))
     else
       out.time <-
         system.time(posterior_matrices <-
-          compute_posterior_matrices(data,A=A, xUlist[which.comp],
+          compute_posterior_matrices(data,xUlist[which.comp],
                                      posterior_weights, algorithm.version))
     if (verbose)
       if (add.mem.profile)
@@ -161,6 +159,12 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
+    if (!all(data$Shat_alpha == 1) && algorithm.version=='Rcpp') {
+      message("'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+      ## Recover the scale of posterior(Bhat)
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
+      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+    }
   } else {
     posterior_matrices = NULL
   }
@@ -195,40 +199,9 @@ mash = function(data,
 #' @return the log-likelihood for data computed using g
 #' @export
 mash_compute_loglik = function(g,data){
-  if(class(g)=="mash"){g = g$fitted_g}
-  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
-  lm_res = calc_relative_lik_matrix(data,xUlist)
-  return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha))))
-}
-
-#' Compute vector of loglikelihood for fitted mash object on new data
-#' @param g a mash object or the fitted_g from a mash object
-#' @param data a set of data on which to compute the loglikelihood
-#' @return the vector of log-likelihoods for each data point computed using g
-#' @export
-mash_compute_vloglik = function(g,data){
-  if(class(g)=="mash"){g = g$fitted_g}
-  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
-  lm_res = calc_relative_lik_matrix(data,xUlist)
-  return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
-}
-
-#' Compute posterior matrices for fitted mash object on new data
-#' @param g a mash object or the fitted_g from a mash object.
-#' @param data a set of data on which to compute the posterior matrices
-#' @param A the linear transformation matrix
-#' @param subset indices of the subset of data to use (set to NULL for all data)
-#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
-#' @param algorithm.version Indicates whether to use R or Rcpp version
-#' @return A list of posterior matrices
-#' @export
-mash_compute_posterior_matrices = function(g, data, A = NULL, subset=NULL, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R")){
   alpha = g$alpha
   if(class(g)=="mash"){g = g$fitted_g}
-  if (!is.null(A)){
-    algorithm.version = 'R'
-  }
-
+  # transfer the data to have the same alpha value as the mash object
   if (alpha != 0 && !all(data$Shat == 1)) {
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
@@ -241,27 +214,83 @@ mash_compute_posterior_matrices = function(g, data, A = NULL, subset=NULL, pi_th
   }
   data$alpha = alpha
 
-  datasubset = data
-  if (!is.null(subset)){
-    datasubset$Bhat = data$Bhat[subset,]
-    datasubset$Shat = data$Shat[subset,]
-    datasubset$Shat_alpha = data$Shat_alpha[subset,]
-  } else{
-    subset = 1:n_effects(data)
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+  return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha))))
+}
+
+#' Compute vector of loglikelihood for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object
+#' @param data a set of data on which to compute the loglikelihood
+#' @return the vector of log-likelihoods for each data point computed using g
+#' @export
+mash_compute_vloglik = function(g,data){
+  alpha = g$alpha
+  if(class(g)=="mash"){g = g$fitted_g}
+  # transfer the data to have the same alpha value as the mash object
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Shat_alpha = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_alpha
+    data$Shat = data$Shat^(1-alpha)
+  } else {
+    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
   }
+  data$alpha = alpha
+
+  xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
+  lm_res = calc_relative_lik_matrix(data,xUlist)
+  return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
+}
+
+#' Compute posterior matrices for fitted mash object on new data
+#' @param g a mash object or the fitted_g from a mash object.
+#' @param data a set of data on which to compute the posterior matrices
+#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
+#' @param algorithm.version Indicates whether to use R or Rcpp version
+#' @param A the linear transformation matrix
+#' @return A list of posterior matrices
+#' @export
+mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A ){
+  if (!missing(A) && algorithm.version=='Rcpp'){
+    stop("FIXME: not implemented")
+  }
+
+  alpha = g$alpha
+  if(class(g)=="mash"){g = g$fitted_g}
+  if (alpha != 0 && !all(data$Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    data$Shat_alpha = data$Shat^alpha
+    data$Bhat = data$Bhat / data$Shat_alpha
+    data$Shat = data$Shat^(1-alpha)
+  } else {
+    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
+  }
+  data$alpha = alpha
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data, xUlist)
   which.comp = (g$pi > pi_thresh)
   posterior_weights = compute_posterior_weights(g$pi[which.comp], lm_res$lik_matrix[,which.comp])
-  posterior_matrices = compute_posterior_matrices(data, A=A, xUlist[which.comp],
-                                                  posterior_weights[subset,],
-                                                  algorithm.version = algorithm.version)
-  # if (!all(data$Shat_alpha == 1)) {
-  #   ## Recover the scale of posterior(Bhat)
-  #   posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
-  #   posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
-  # }
+  if(missing(A)){
+    posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
+                                                    posterior_weights,
+                                                    algorithm.version)
+  } else{
+    posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
+                                                    posterior_weights,
+                                                    algorithm.version, A)
+  }
+  if (!all(data$Shat_alpha == 1) && algorithm.version=='Rcpp') {
+    message("'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+    ## Recover the scale of posterior(Bhat)
+    posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
+    posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+  }
   return(posterior_matrices)
 }
 
