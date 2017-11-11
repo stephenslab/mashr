@@ -12,15 +12,8 @@
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm
 #' @export
-compute_posterior_matrices_general_R=function(data,A=NULL,Ulist,posterior_weights){
+compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights){
   R=n_conditions(data)
-  if(is.null(A)){
-    A = diag(R)
-    row.names(A) = colnames(data$Bhat)
-  }
-  if(ncol(A) != R){
-    stop('A is not a propor transformation')
-  }
   J=n_effects(data)
   P=length(Ulist)
   RA = nrow(A)
@@ -36,8 +29,9 @@ compute_posterior_matrices_general_R=function(data,A=NULL,Ulist,posterior_weight
   post_mean2 = array(NA,dim=c(P,RA)) #mean squared value
   post_zero=array(NA,dim=c(P,RA))
   post_neg=array(NA,dim=c(P,RA))
-
-  common_cov = is_common_cov(data, Salpha=FALSE) # check whether data have common covariance
+  # check if rows of Shat are same, if so,
+  # the covariances are same
+  common_cov = is_common_cov(data, Salpha=FALSE)
 
   if(common_cov){
     V = get_cov(data,1)
@@ -55,15 +49,17 @@ compute_posterior_matrices_general_R=function(data,A=NULL,Ulist,posterior_weight
     }
     for(p in 1:P){
       mu1 <- as.array(posterior_mean(bhat, Vinv, U1[[p]]))
+      # Transformation for mu
       muA <- A %*% (mu1 * data$Shat_alpha[j,])
 
+      # Transformation for Cov
       covU = diag(data$Shat_alpha[j,]) %*% (U1[[p]] %*% diag(data$Shat_alpha[j,]))
       pvar = A %*% (covU %*% t(A))
       if(any(pvar < 0)){
-        pvar[which(pvar < 0)] = 0
+        pvar[pvar < 0] = 0
       }
 
-      post_var = diag(pvar)
+      post_var = diag(pvar) # nrow(A) vector posterior variance
       post_mean[p,]= muA
       post_mean2[p,] = muA^2 + post_var #post_var is the posterior variance
 

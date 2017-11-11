@@ -12,15 +12,8 @@
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm
 #' @export
-compute_posterior_matrices_common_cov_R=function(data,A = NULL, Ulist, posterior_weights){
+compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights){
   R = n_conditions(data)
-  if(is.null(A)){
-    A = diag(R)
-    row.names(A) = colnames(data$Bhat)
-  }
-  if(ncol(A) != R){
-    stop('A is not a propor transformation')
-  }
   J = n_effects(data)
   P = length(Ulist)
   RA = nrow(A)
@@ -42,15 +35,16 @@ compute_posterior_matrices_common_cov_R=function(data,A = NULL, Ulist, posterior
 
   for(p in 1:P){
       mu1 <- posterior_mean_matrix(data$Bhat, Vinv, U1[[p]]) # J by R matrix
+      # Transformation for mu
       muA <- (mu1 * data$Shat_alpha) %*% t(A) # J by nrow(A) matrix
-
+      # Transformation for Cov
       covU = diag(data$Shat_alpha[1,]) %*% (U1[[p]] %*% diag(data$Shat_alpha[1,]))
       pvar = A %*% (covU %*% t(A))
       # correct for computing error
       if(any(pvar < 0)){
-        pvar[which(pvar < 0)] = 0
+        pvar[pvar < 0] = 0
       }
-      post_var = diag(pvar) # nrow(A) vector
+      post_var = diag(pvar) # nrow(A) vector posterior variance
 
       res_post_mean= res_post_mean + posterior_weights[,p] * muA
 

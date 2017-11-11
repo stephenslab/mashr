@@ -41,14 +41,14 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @param data A \code{mash} data object; e.g., created by
 #'     \code{\link{set_mash_data}}.
 #'
-#' @param A the linear transformation matrix, KxR matrix
-#'
 #' @param Ulist List containing the prior covariance matrices.
 #'
 #' @param posterior_weights Vector containing the posterior
 #'     probability of each mixture component in Ulist for the data
 #'
 #' @param algorithm.version Indicates whether to use R or Rcpp version
+#'
+#' @param A the linear transformation matrix, KxR matrix
 #'
 #' @return The return value is a list containing the following
 #'    components:
@@ -74,19 +74,32 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @export
 compute_posterior_matrices <-
-  function (data, A=NULL, Ulist, posterior_weights,
-            algorithm.version = c("Rcpp","R")) {
-  algorithm.version <- match.arg(algorithm.version, c("Rcpp","R"))
+  function (data, Ulist, posterior_weights,
+            algorithm.version = c("Rcpp","R"), A) {
+  algorithm.version <- match.arg(algorithm.version)
 
-  if(!is.null(A)){
-    algorithm.version = 'R'
+  if(!missing(A) && algorithm.version == 'Rcpp'){
+    stop("FIXME: not implemented")
+  }
+  # If A is missing, set A be identity matrix
+  R = n_conditions(data)
+  if(missing(A)){
+    A = diag(R)
+    row.names(A) = colnames(data$Bhat)
+  }
+  if(ncol(A) != R){
+    stop('A is not a propor transformation')
   }
 
   if (algorithm.version == "R") {
+    # check if covariances are same, if so, use more efficient computations
+    # if alpha = 0, we check if rows of Shat are same
+    # if alpha neq 0, we check if rows of Shat_alpha are same,
+    # the rows of Shat_alpha are same could imply the rows of Shat are same
     if(is_common_cov(data, Salpha = TRUE)){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, A=A, Ulist, posterior_weights)
+      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
     } else {
-      compute_posterior_matrices_general_R(data, A=A, Ulist, posterior_weights)
+      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
     }
   } else if (algorithm.version == "Rcpp") {
 
