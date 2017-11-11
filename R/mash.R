@@ -42,6 +42,7 @@ mash = function(data,
                 outputlevel = 2) {
 
   algorithm.version = match.arg(algorithm.version)
+
   if (alpha != 0 && !all(data$Shat == 1)) {
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
@@ -159,8 +160,8 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    if (!all(data$Shat_alpha == 1) && algorithm.version=='Rcpp') {
-      message("'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+    if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
+      message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
       ## Recover the scale of posterior(Bhat)
       posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
       posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
@@ -179,13 +180,12 @@ mash = function(data,
     alt_loglik = NULL
   }
   # results
-  fitted_g = list(pi=pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
+  fitted_g = list(pi=pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass, alpha=alpha)
   m=list(result = posterior_matrices,
          loglik = loglik, vloglik = vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
-         fitted_g = fitted_g,
-         alpha=alpha)
+         fitted_g = fitted_g)
   #for debugging
   names(posterior_weights) = which(which.comp)
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
@@ -199,8 +199,8 @@ mash = function(data,
 #' @return the log-likelihood for data computed using g
 #' @export
 mash_compute_loglik = function(g,data){
-  alpha = g$alpha
   if(class(g)=="mash"){g = g$fitted_g}
+  alpha = g$alpha
   # transfer the data to have the same alpha value as the mash object
   if (alpha != 0 && !all(data$Shat == 1)) {
     ## alpha models dependence of effect size on standard error
@@ -225,8 +225,8 @@ mash_compute_loglik = function(g,data){
 #' @return the vector of log-likelihoods for each data point computed using g
 #' @export
 mash_compute_vloglik = function(g,data){
-  alpha = g$alpha
   if(class(g)=="mash"){g = g$fitted_g}
+  alpha = g$alpha
   # transfer the data to have the same alpha value as the mash object
   if (alpha != 0 && !all(data$Shat == 1)) {
     ## alpha models dependence of effect size on standard error
@@ -258,8 +258,8 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
     stop("FIXME: not implemented")
   }
 
-  alpha = g$alpha
   if(class(g)=="mash"){g = g$fitted_g}
+  alpha = g$alpha
   if (alpha != 0 && !all(data$Shat == 1)) {
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
@@ -285,8 +285,8 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
                                                     posterior_weights,
                                                     algorithm.version, A)
   }
-  if (!all(data$Shat_alpha == 1) && algorithm.version=='Rcpp') {
-    message("'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+  if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
+    message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
     ## Recover the scale of posterior(Bhat)
     posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
     posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha

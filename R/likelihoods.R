@@ -53,12 +53,13 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
                              algorithm.version = c("Rcpp","R")) {
 
-  algorithm.version <- match.arg(algorithm.version, c("Rcpp","R"))
+  algorithm.version <- match.arg(algorithm.version)
 
   if (mc.cores > 1 & algorithm.version != "Rcpp")
     stop("Argument \"mc.cores\" only works for Rcpp version.")
 
   if (algorithm.version == "R") {
+    # check if the rows of Shat are same
     if(is_common_cov(data, Salpha=FALSE)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)
       if (nrow(res) == 1)
@@ -121,10 +122,10 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 calc_relative_lik_matrix <-
   function (data, Ulist, algorithm.version= c("Rcpp","R")) {
 
-  algorithm.version <- match.arg(algorithm.version, c("Rcpp","R"))
+  algorithm.version <- match.arg(algorithm.version)
 
   # Compute the J x P matrix of conditional log-likelihoods.
-  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE, algorithm.version=algorithm.version)
+  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE, algorithm.version)
 
   # Avoid numerical issues (overflow or underflow) by subtracting the
   # largest entry in each row.
