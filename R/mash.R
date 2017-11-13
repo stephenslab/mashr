@@ -334,7 +334,7 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' \code{Shat}, an n by R matrix of standard errors (n units in R
 #' conditions),
 #'
-#' @param alhpa Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).
+#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).
 #'
 #' @description Performs simple "condition-by-condition" analysis by
 #' running \code{ash} from package \code{ashr} on data from each
