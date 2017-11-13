@@ -88,7 +88,7 @@ compute_posterior_matrices <-
     row.names(A) = colnames(data$Bhat)
   }
   if(ncol(A) != R){
-    stop('A is not a propor transformation')
+    stop('A is not a proper transformation')
   }
 
   if (algorithm.version == "R") {
