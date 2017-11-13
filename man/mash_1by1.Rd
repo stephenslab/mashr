@@ -4,13 +4,15 @@
 \alias{mash_1by1}
 \title{Perform condition-by-condition analyses}
 \usage{
-mash_1by1(data)
+mash_1by1(data, alpha = 0)
 }
 \arguments{
 \item{data}{A list with the following two elements: \code{Bhat} an
 n by R matrix of observations (n units in R conditions); and
 \code{Shat}, an n by R matrix of standard errors (n units in R
 conditions),}
+
+\item{alhpa}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).}
 }
 \value{
 A list similar to the output of mash, particularly

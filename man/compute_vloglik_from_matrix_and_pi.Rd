@@ -4,12 +4,14 @@
 \alias{compute_vloglik_from_matrix_and_pi}
 \title{Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi}
 \usage{
-compute_vloglik_from_matrix_and_pi(pi_s, lm)
+compute_vloglik_from_matrix_and_pi(pi_s, lm, Shat_alpha)
 }
 \arguments{
 \item{pi_s}{the vector of mixture proportions}
 
 \item{lm}{the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}}
+
+\item{Shat_alpha}{matrix of Shat^alpha}
 }
 \description{
 Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi

@@ -4,12 +4,14 @@
 \alias{is_common_cov}
 \title{Check that all covariates are equal.}
 \usage{
-is_common_cov(data)
+is_common_cov(data, Salpha = TRUE)
 }
 \arguments{
 \item{data}{A mash data object.}
+
+\item{Salpha}{Indicate the Shat to check (Shat or Shat_alpha)}
 }
 \description{
-checks if all rows of Shat are the same - if so
+checks if all rows of Shat (or Shat_alpha) are the same - if so
     covariances are equal
 }

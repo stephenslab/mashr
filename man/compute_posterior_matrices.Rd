@@ -5,7 +5,7 @@
 \title{Compute posterior matrices.}
 \usage{
 compute_posterior_matrices(data, Ulist, posterior_weights,
-  algorithm.version = c("Rcpp", "R"))
+  algorithm.version = c("Rcpp", "R"), A)
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by
@@ -17,23 +17,25 @@ compute_posterior_matrices(data, Ulist, posterior_weights,
 probability of each mixture component in Ulist for the data}
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
+
+\item{A}{the linear transformation matrix, KxR matrix}
 }
 \value{
 The return value is a list containing the following
    components:
 
-   \item{PosteriorMean}{J x R matrix of posterior means.}
+   \item{PosteriorMean}{J x K matrix of posterior means.}
 
-   \item{PosteriorSD}{J x R matrix of posterior (marginal) standard
+   \item{PosteriorSD}{J x K matrix of posterior (marginal) standard
    deviations.}
 
-   \item{NegativeProb}{J x R matrix of posterior (marginal)
+   \item{NegativeProb}{J x K matrix of posterior (marginal)
     probability of being negative.}
 
-   \item{ZeroProb}{J x R matrix of posterior (marginal) probability
+   \item{ZeroProb}{J x K matrix of posterior (marginal) probability
     of being zero.}
 
-   \item{lfsr}{J x R matrix of local false sign rates.}
+   \item{lfsr}{J x K matrix of local false sign rates.}
 }
 \description{
 More detailed description of function goes here.

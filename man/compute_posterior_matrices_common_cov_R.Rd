@@ -4,25 +4,27 @@
 \alias{compute_posterior_matrices_common_cov_R}
 \title{Compute posterior matrices (when error covariance V_j is equal for all observations j)}
 \usage{
-compute_posterior_matrices_common_cov_R(data, Ulist, posterior_weights)
+compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{set_mash_data}}
+
+\item{A}{the linear transformation matrix, KxR matrix}
 
 \item{Ulist}{a list of P covariance matrices for each mixture component}
 
 \item{posterior_weights}{the JxP posterior probabilities of each mixture component in Ulist for the data}
 }
 \value{
-PosteriorMean JxR matrix of posterior means
+PosteriorMean JxK matrix of posterior means
 
-PosteriorSD JxR matrix of posterior (marginal) standard deviations
+PosteriorSD JxK matrix of posterior (marginal) standard deviations
 
-NegativeProb JxR matrix of posterior (marginal) probability of being negative
+NegativeProb JxK matrix of posterior (marginal) probability of being negative
 
-ZeroProb JxR matrix of posterior (marginal) probability of being zero
+ZeroProb JxK matrix of posterior (marginal) probability of being zero
 
-lfsr JxR matrix of local false sign rates
+lfsr JxK matrix of local false sign rates
 }
 \description{
 Computes posterior matrices without allocating huge memory

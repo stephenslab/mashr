@@ -6,8 +6,8 @@
 \usage{
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
-  prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
+  alpha = 1, prior = c("nullbiased", "uniform"), optmethod = c("mixIP",
+  "mixEM", "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
   algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10, outputlevel = 2)
 }
 \arguments{
@@ -26,6 +26,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{g}{the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass}
 
 \item{fixg}{if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data}
+
+\item{alpha}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.}
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
