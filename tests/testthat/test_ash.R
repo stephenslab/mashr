@@ -10,9 +10,9 @@ test_that("get same result as ash, EE model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
       mixcompdist="normal",outputlevel=3) # get ash results for first condition
 
-  data = set_mash_data(sim_data$Bhat, sim_data$Shat)
+  data = set_mash_data(sim_data$Bhat, sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", alpha = 0, usepointmass = F)
+  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", usepointmass = F)
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)
@@ -37,9 +37,9 @@ test_that("get same result as ash, EZ model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
       mixcompdist="normal",outputlevel=3, alpha = 1) # get ash results for first condition
 
-  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat)
+  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", alpha=1, usepointmass = F)
+  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", usepointmass = F)
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)
@@ -59,10 +59,10 @@ test_that("get same result as ash under transformation, EE model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
                mixcompdist="normal",outputlevel=3, alpha = 0) # get ash results for first condition
 
-  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat)
+  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
   res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
-             alpha=0, usepointmass = F, outputlevel = 1)
+             usepointmass = F, outputlevel = 1)
   A = rbind(c(1,0,0,0,0))
   res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
   print('FIXME: Rcpp not implemented')
@@ -86,10 +86,10 @@ test_that("get same result as ash under transformation, EZ model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
                mixcompdist="normal",outputlevel=3, alpha = 1) # get ash results for first condition
 
-  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat)
+  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
   res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
-             alpha=1, usepointmass = F, outputlevel = 1)
+             usepointmass = F, outputlevel = 1)
   A = rbind(c(1,0,0,0,0))
   res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
   print('FIXME: Rcpp not implemented')
