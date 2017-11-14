@@ -47,7 +47,7 @@ set_mash_data = function(Bhat,Shat=NULL,alpha,df=NULL,pval=NULL,V=diag(ncol(Bhat
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
-  return(list(Bhat=Bhat, Shat=Shat, V=V, alpha=alpha))
+  return(list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha))
 }
 
 # Return the covariance matrix for jth data point from mash data object.
