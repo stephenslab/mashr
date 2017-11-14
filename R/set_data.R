@@ -10,7 +10,7 @@
 #'  Defaults to identity
 #' @return a data object for passing into mash functions
 #' @export
-set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=NULL,pval=NULL,V=diag(ncol(Bhat))){
+set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
   if (missing(Shat) && missing(pval)) {
     Shat = 1
   }
@@ -27,12 +27,9 @@ set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=NULL,pval=NULL,V=diag(ncol(Bh
   if(length(Shat)==1){Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))}
   if(!identical(dim(Bhat),dim(Shat))){stop("dimensions of Bhat and Shat must match")}
   if(det(V)<1e-15){stop("V must be positive definite")}
-  if(missing(df) || is.infinite(df)) {
-    Shat_orig = NULL
-  } else {
+  if(!is.infinite(df)){
     if(length(df)==1){df = matrix(df,nrow=nrow(Bhat),ncol=ncol(Bhat))}
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
-    Shat_orig = Shat
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
 
