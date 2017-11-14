@@ -29,9 +29,10 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights){
   post_mean2 = array(NA,dim=c(P,RA)) #mean squared value
   post_zero=array(NA,dim=c(P,RA))
   post_neg=array(NA,dim=c(P,RA))
+
   # check if rows of Shat are same, if so,
   # the covariances are same
-  common_cov = is_common_cov(data, Salpha=FALSE)
+  common_cov = is_common_cov_Shat(data)
 
   if(common_cov){
     V = get_cov(data,1)
@@ -53,7 +54,8 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights){
       muA <- A %*% (mu1 * data$Shat_alpha[j,])
 
       # Transformation for Cov
-      covU = diag(data$Shat_alpha[j,]) %*% (U1[[p]] %*% diag(data$Shat_alpha[j,]))
+      # covU = diag(data$Shat_alpha[j,]) %*% (U1[[p]] %*% diag(data$Shat_alpha[j,]))
+      covU = data$Shat_alpha[j,] * t(data$Shat_alpha[j,] * U1[[p]])
       pvar = A %*% (covU %*% t(A))
       if(any(pvar < 0)){
         pvar[pvar < 0] = 0
