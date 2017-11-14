@@ -60,7 +60,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 
   if (algorithm.version == "R") {
     # check if the rows of Shat are same
-    if(is_common_cov(data, Salpha=FALSE)){
+    if(is_common_cov_Shat(data)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)
       if (nrow(res) == 1)
         res <- matrix(res)
@@ -83,7 +83,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     # Run the C implementation using the Rcpp interface.
     res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
                          simplify2array(Ulist),log,
-                         is_common_cov(data, Salpha=FALSE))
+                         is_common_cov_Shat(data))
     res <- res$data
 
     # Get column names for R > 1.
