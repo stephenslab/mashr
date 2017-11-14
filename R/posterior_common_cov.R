@@ -24,7 +24,7 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
   res_post_zero=array(0,dim=c(J,RA))
   res_post_neg=array(0,dim=c(J,RA))
 
-  if(!is_common_cov(data, Salpha=TRUE)){
+  if((!is_common_cov_Shat(data)) && (!is_common_cov_Shat_alpha(data))){
     stop("Can't call common_cov routine with data where covariance varies")
   } # check whether data have common covariance
 
