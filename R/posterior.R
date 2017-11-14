@@ -48,21 +48,23 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #'
+#' @param A the linear transformation matrix, KxR matrix
+#'
 #' @return The return value is a list containing the following
 #'    components:
 #'
-#'    \item{PosteriorMean}{J x R matrix of posterior means.}
+#'    \item{PosteriorMean}{J x K matrix of posterior means.}
 #'
-#'    \item{PosteriorSD}{J x R matrix of posterior (marginal) standard
+#'    \item{PosteriorSD}{J x K matrix of posterior (marginal) standard
 #'    deviations.}
 #'
-#'    \item{NegativeProb}{J x R matrix of posterior (marginal)
+#'    \item{NegativeProb}{J x K matrix of posterior (marginal)
 #'     probability of being negative.}
 #'
-#'    \item{ZeroProb}{J x R matrix of posterior (marginal) probability
+#'    \item{ZeroProb}{J x K matrix of posterior (marginal) probability
 #'     of being zero.}
 #'
-#'    \item{lfsr}{J x R matrix of local false sign rates.}
+#'    \item{lfsr}{J x K matrix of local false sign rates.}
 #'
 #' @useDynLib mashr
 #'
@@ -73,20 +75,44 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @export
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
-            algorithm.version = c("Rcpp","R")) {
+            algorithm.version = c("Rcpp","R"), A=NULL) {
   algorithm.version <- match.arg(algorithm.version)
 
+  if(!is.null(A) && algorithm.version == 'Rcpp'){
+    stop("FIXME: not implemented")
+  }
+  # If A is NULL, set A be identity matrix
+  R = n_conditions(data)
+  if(is.null(A)){
+    A = diag(R)
+    row.names(A) = colnames(data$Bhat)
+  }
+  if(ncol(A) != R){
+    stop('A is not a proper transformation')
+  }
+
   if (algorithm.version == "R") {
-    if(is_common_cov(data)){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, Ulist, posterior_weights)
+    # check if covariances are same, if so, use more efficient computations
+    # if alpha = 0, we check if rows of Shat are same
+    # if alpha neq 0, we check if rows of Shat_alpha are same,
+    # the rows of Shat_alpha are same could imply the rows of Shat are same
+    common_cov_Shat = is_common_cov_Shat(data)
+    if(data$alpha == 0){
+      common_cov_Shat_alpha = TRUE
+    } else{
+      common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
+    }
+
+    if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
+      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
     } else {
-      compute_posterior_matrices_general_R(data, Ulist, posterior_weights)
+      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
     }
   } else if (algorithm.version == "Rcpp") {
 
     # Run the C implementation using the Rcpp interface.
     res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                           simplify2array(Ulist),t(posterior_weights), is_common_cov(data))
+                           simplify2array(Ulist),t(posterior_weights), is_common_cov_Shat(data))
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
     posterior_matrices <- list(PosteriorMean = res$post_mean,
                               PosteriorSD   = res$post_sd,

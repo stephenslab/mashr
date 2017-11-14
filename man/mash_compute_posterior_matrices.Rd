@@ -4,7 +4,8 @@
 \alias{mash_compute_posterior_matrices}
 \title{Compute posterior matrices for fitted mash object on new data}
 \usage{
-mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10)
+mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
+  algorithm.version = c("Rcpp", "R"), A = NULL)
 }
 \arguments{
 \item{g}{a mash object or the fitted_g from a mash object.}
@@ -12,6 +13,10 @@ mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10)
 \item{data}{a set of data on which to compute the posterior matrices}
 
 \item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
+
+\item{algorithm.version}{Indicates whether to use R or Rcpp version}
+
+\item{A}{the linear transformation matrix}
 }
 \value{
 A list of posterior matrices

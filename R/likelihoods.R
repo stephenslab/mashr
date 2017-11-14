@@ -35,7 +35,7 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @param log If \code{TRUE}, the return value is a matrix of log-
 #'     likelihoods.
 #'
-#' @param mc.cores The argument supplied to 
+#' @param mc.cores The argument supplied to
 #'     \code{\link[parallel]{mclapply}} specifying the number of cores
 #'     to use. Note that this is only has an effect for the Rcpp version.
 #'
@@ -52,20 +52,22 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @export
 calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
                              algorithm.version = c("Rcpp","R")) {
+
   algorithm.version <- match.arg(algorithm.version)
 
   if (mc.cores > 1 & algorithm.version != "Rcpp")
     stop("Argument \"mc.cores\" only works for Rcpp version.")
-  
+
   if (algorithm.version == "R") {
-    if(is_common_cov(data)){
+    # check if the rows of Shat are same
+    if(is_common_cov_Shat(data)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)
       if (nrow(res) == 1)
         res <- matrix(res)
       if (ncol(res) > 1)
         colnames(res) <- names(Ulist)
     } else {
-      
+
       # Run the (considerably slower) version that is completely
       # implemented using existing R functions.
       res <- t(sapply(1:n_effects(data),
@@ -81,9 +83,9 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     # Run the C implementation using the Rcpp interface.
     res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
                          simplify2array(Ulist),log,
-                         is_common_cov(data))
+                         is_common_cov_Shat(data))
     res <- res$data
-    
+
     # Get column names for R > 1.
     if (ncol(res) > 1)
       colnames(res) <- names(Ulist)

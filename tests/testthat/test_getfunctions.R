@@ -35,5 +35,3 @@ test_that("get_estimated_pi works",{
   expect_length(get_estimated_pi(m2,"cov"),length(Ulist)+1)
   expect_length(get_estimated_pi(m2,"grid"),4)
 })
-
-

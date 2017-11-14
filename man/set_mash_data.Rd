@@ -4,13 +4,20 @@
 \alias{set_mash_data}
 \title{Create a data object for mash analysis}
 \usage{
-set_mash_data(Bhat, Shat, V = diag(ncol(Bhat)))
+set_mash_data(Bhat, Shat = NULL, alpha = 0, df = Inf, pval = NULL,
+  V = diag(ncol(Bhat)))
 }
 \arguments{
 \item{Bhat}{an N by R matrix of observed estimates}
 
 \item{Shat}{an N by R matrix of corresponding standard errors. Shat can be a scalar if all standard errors are equal.
-This is most useful if Bhat is a matrix of Z scores, so elements of Shat are all 1.}
+This is most useful if Bhat is a matrix of Z scores, so elements of Shat are all 1. Default is 1.}
+
+\item{alpha}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.}
+
+\item{df}{an N by R matrix of corresponding degrees of freedom of the t-statistic Bhat/Shat. Can be a scalar if all degrees of freedom are equal. Default is inf (for large samples).}
+
+\item{pval}{an N by R matrix of p-values of t-statistic Bhat/Shat. Shat and df should not be specified when pval is provided.}
 
 \item{V}{an R by R correlation matrix of error correlations; must be positive definite.
 [So Bhat_j distributed as N(B_j,diag(Shat_j) V diag(Shat_j)) where _j denotes the jth row of a matrix]

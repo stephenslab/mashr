@@ -23,6 +23,14 @@ simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
   Shat = matrix(err_sd, nrow=nrow(B), ncol=ncol(B))
   E = matrix(rnorm(length(Shat), mean=0, sd=Shat), nrow=nrow(B),ncol=ncol(B))
   Bhat = B+E
+  row_ids = paste0("effect_", 1:nrow(B))
+  col_ids = paste0("condition_", 1:ncol(B))
+  rownames(B) = row_ids
+  colnames(B) = col_ids
+  rownames(Bhat) = row_ids
+  colnames(Bhat) = col_ids
+  rownames(Shat) = row_ids
+  colnames(Shat) = col_ids
   return(list(B=B,Bhat=Bhat,Shat=Shat))
 }
 
@@ -47,5 +55,13 @@ simple_sims2 = function(nsamp = 100, err_sd=0.01){
   Shat = matrix(err_sd, nrow=nrow(B), ncol=ncol(B))
   E = matrix(rnorm(length(Shat), mean=0, sd=Shat), nrow=nrow(B),ncol=ncol(B))
   Bhat = B+E
+  row_ids = paste0("effect_", 1:nrow(B))
+  col_ids = paste0("condition_", 1:ncol(B))
+  rownames(B) = row_ids
+  colnames(B) = col_ids
+  rownames(Bhat) = row_ids
+  colnames(Bhat) = col_ids
+  rownames(Shat) = row_ids
+  colnames(Shat) = col_ids
   return(list(B=B,Bhat=Bhat,Shat=Shat))
 }

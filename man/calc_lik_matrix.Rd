@@ -16,7 +16,7 @@ calc_lik_matrix(data, Ulist, log = FALSE, mc.cores = 1,
 \item{log}{If \code{TRUE}, the return value is a matrix of log-
 likelihoods.}
 
-\item{mc.cores}{The argument supplied to 
+\item{mc.cores}{The argument supplied to
 \code{\link[parallel]{mclapply}} specifying the number of cores
 to use. Note that this is only has an effect for the Rcpp version.}
 
