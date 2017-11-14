@@ -13,7 +13,7 @@ test_that("ashr get functions work",{
   m = mash(data,Ulist,grid=c(0.5,1,2),usepointmass=FALSE)
   expect_null(get_log10bf(m))
   Ulist = cov_udi(data,c("I","D","U"))
-  m = mash(data,Ulist,grid=1,normalizeU=FALSE,alpha=0)
+  m = mash(data,Ulist,grid=1,normalizeU=FALSE)
   Ulist2 = c(list(null= mashr:::cov_all_zeros(data)),  cov_udi(data,c("I","D","U")))
   temp = calc_lik_matrix(data,Ulist2,log=TRUE)
   expect_equal(as.numeric(log10(exp(temp[,2]-temp[,1]))),as.numeric(get_log10bf(m)),tol=1e-3)
