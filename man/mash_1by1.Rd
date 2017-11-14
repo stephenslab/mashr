@@ -12,7 +12,7 @@ n by R matrix of observations (n units in R conditions); and
 \code{Shat}, an n by R matrix of standard errors (n units in R
 conditions),}
 
-\item{alhpa}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).}
+\item{alpha}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).}
 }
 \value{
 A list similar to the output of mash, particularly

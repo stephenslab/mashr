@@ -4,7 +4,7 @@
 \alias{set_mash_data}
 \title{Create a data object for mash analysis}
 \usage{
-set_mash_data(Bhat, Shat = NULL, df = NULL, pval = NULL,
+set_mash_data(Bhat, Shat = NULL, alpha = 0, df = NULL, pval = NULL,
   V = diag(ncol(Bhat)))
 }
 \arguments{
@@ -12,6 +12,8 @@ set_mash_data(Bhat, Shat = NULL, df = NULL, pval = NULL,
 
 \item{Shat}{an N by R matrix of corresponding standard errors. Shat can be a scalar if all standard errors are equal.
 This is most useful if Bhat is a matrix of Z scores, so elements of Shat are all 1. Default is 1.}
+
+\item{alpha}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.}
 
 \item{df}{an N by R matrix of corresponding degrees of freedom of the t-statistic Bhat/Shat. Can be a scalar if all degrees of freedom are equal. Default is inf (for large samples).}
 
