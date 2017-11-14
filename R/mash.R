@@ -1,5 +1,5 @@
 #' Apply mash method to data
-#' @param data a mash data object containing the Bhat matrix and standard errors; created using \code{set_mash_data}
+#' @param data a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{set_mash_data}
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
@@ -7,7 +7,6 @@
 #' @param usepointmass whether to include a point mass at 0, corresponding to null in every condition
 #' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
-#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
 #' @param verbose If \code{TRUE}, print progress to R console.
@@ -19,7 +18,7 @@
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
 #' Shat = matrix(rep(1,100),ncol=5)
-#' data = mashr::set_mash_data(Bhat,Shat)
+#' data = mashr::set_mash_data(Bhat,Shat, alpha=1)
 #' U.c = mashr::cov_canonical(data)
 #' res.mash = mashr::mash(data,U.c)
 #'
@@ -32,7 +31,6 @@ mash = function(data,
                 usepointmass = TRUE,
                 g = NULL,
                 fixg = FALSE,
-                alpha = 1,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","cxxMixSquarem"),
                 verbose = TRUE,
@@ -42,18 +40,6 @@ mash = function(data,
                 outputlevel = 2) {
 
   algorithm.version = match.arg(algorithm.version)
-
-  if (alpha != 0 && !all(data$Shat == 1)) {
-    ## alpha models dependence of effect size on standard error
-    ## alpha > 0 implies larger effects has large standard error
-    ## a special case when alpha = 1 is the EZ model
-    data$Shat_alpha = data$Shat^alpha
-    data$Bhat = data$Bhat / data$Shat_alpha
-    data$Shat = data$Shat^(1-alpha)
-  } else {
-    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
-  }
-  data$alpha = alpha
 
   if(!missing(g)){ # g is supplied
     if(!missing(Ulist)){stop("cannot supply both g and Ulist")}
@@ -180,12 +166,12 @@ mash = function(data,
     alt_loglik = NULL
   }
   # results
-  fitted_g = list(pi=pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass, alpha=alpha)
+  fitted_g = list(pi=pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
   m=list(result = posterior_matrices,
          loglik = loglik, vloglik = vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
-         fitted_g = fitted_g)
+         fitted_g = fitted_g, alpha=alpha)
   #for debugging
   names(posterior_weights) = which(which.comp)
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
@@ -199,21 +185,16 @@ mash = function(data,
 #' @return the log-likelihood for data computed using g
 #' @export
 mash_compute_loglik = function(g,data){
-  if(class(g)=="mash"){g = g$fitted_g}
-  alpha = g$alpha
-  # transfer the data to have the same alpha value as the mash object
-  if (alpha != 0 && !all(data$Shat == 1)) {
-    ## alpha models dependence of effect size on standard error
-    ## alpha > 0 implies larger effects has large standard error
-    ## a special case when alpha = 1 is the EZ model
-    data$Shat_alpha = data$Shat^alpha
-    data$Bhat = data$Bhat / data$Shat_alpha
-    data$Shat = data$Shat^(1-alpha)
-  } else {
-    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
+  if(class(g)=="mash"){
+    alpha = g$alpha
+    g = g$fitted_g
   }
-  data$alpha = alpha
-
+  else{
+    message('Warning: Please make sure the alpha in data is consistent with the `alpha` used to compute the fitted_g.')
+  }
+  if(alpha != data$alpha){
+    stop('The alpha in data is not the one used to compute the mash model.')
+  }
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist)
   return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha))))
@@ -225,20 +206,16 @@ mash_compute_loglik = function(g,data){
 #' @return the vector of log-likelihoods for each data point computed using g
 #' @export
 mash_compute_vloglik = function(g,data){
-  if(class(g)=="mash"){g = g$fitted_g}
-  alpha = g$alpha
-  # transfer the data to have the same alpha value as the mash object
-  if (alpha != 0 && !all(data$Shat == 1)) {
-    ## alpha models dependence of effect size on standard error
-    ## alpha > 0 implies larger effects has large standard error
-    ## a special case when alpha = 1 is the EZ model
-    data$Shat_alpha = data$Shat^alpha
-    data$Bhat = data$Bhat / data$Shat_alpha
-    data$Shat = data$Shat^(1-alpha)
-  } else {
-    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
+  if(class(g)=="mash"){
+    alpha = g$alpha
+    g = g$fitted_g
   }
-  data$alpha = alpha
+  else{
+    message('Warning: Please make sure the alpha in data is consistent with the `alpha` used to compute the fitted_g.')
+  }
+  if(alpha != data$alpha){
+    stop('The alpha in data is not the one used to compute the mash model.')
+  }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist)
@@ -253,38 +230,30 @@ mash_compute_vloglik = function(g,data){
 #' @param A the linear transformation matrix
 #' @return A list of posterior matrices
 #' @export
-mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A ){
-  if (!missing(A) && algorithm.version=='Rcpp'){
+mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL ){
+  if (!is.null(A) && algorithm.version=='Rcpp'){
     stop("FIXME: not implemented")
   }
 
-  if(class(g)=="mash"){g = g$fitted_g}
-  alpha = g$alpha
-  if (alpha != 0 && !all(data$Shat == 1)) {
-    ## alpha models dependence of effect size on standard error
-    ## alpha > 0 implies larger effects has large standard error
-    ## a special case when alpha = 1 is the EZ model
-    data$Shat_alpha = data$Shat^alpha
-    data$Bhat = data$Bhat / data$Shat_alpha
-    data$Shat = data$Shat^(1-alpha)
-  } else {
-    data$Shat_alpha = matrix(1, nrow(data$Shat), ncol(data$Shat))
+  if(class(g)=="mash"){
+    alpha = g$alpha
+    g = g$fitted_g
   }
-  data$alpha = alpha
+  else{
+    message('Warning: Please make sure the alpha in data is consistent with the `alpha` used to compute the fitted_g.')
+  }
+  if(alpha != data$alpha){
+    stop('The alpha in data is not the one used to compute the mash model.')
+  }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data, xUlist)
   which.comp = (g$pi > pi_thresh)
   posterior_weights = compute_posterior_weights(g$pi[which.comp], lm_res$lik_matrix[,which.comp])
-  if(missing(A)){
-    posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
-                                                    posterior_weights,
-                                                    algorithm.version)
-  } else{
-    posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
-                                                    posterior_weights,
-                                                    algorithm.version, A)
-  }
+  posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
+                                                  posterior_weights,
+                                                  algorithm.version, A=A)
+
   if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
     message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
     ## Recover the scale of posterior(Bhat)
