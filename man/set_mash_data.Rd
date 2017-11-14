@@ -4,7 +4,7 @@
 \alias{set_mash_data}
 \title{Create a data object for mash analysis}
 \usage{
-set_mash_data(Bhat, Shat = NULL, alpha = 0, df = NULL, pval = NULL,
+set_mash_data(Bhat, Shat = NULL, alpha = 0, df = Inf, pval = NULL,
   V = diag(ncol(Bhat)))
 }
 \arguments{
