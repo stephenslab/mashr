@@ -171,7 +171,7 @@ mash = function(data,
          loglik = loglik, vloglik = vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
-         fitted_g = fitted_g, alpha=alpha)
+         fitted_g = fitted_g, alpha=data$alpha)
   #for debugging
   names(posterior_weights) = which(which.comp)
   if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
@@ -188,13 +188,14 @@ mash_compute_loglik = function(g,data){
   if(class(g)=="mash"){
     alpha = g$alpha
     g = g$fitted_g
+    if(alpha != data$alpha){
+      stop('The alpha in data is not the one used to compute the mash model.')
+    }
   }
   else{
     message('Warning: Please make sure the alpha in data is consistent with the `alpha` used to compute the fitted_g.')
   }
-  if(alpha != data$alpha){
-    stop('The alpha in data is not the one used to compute the mash model.')
-  }
+
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist)
   return(sum(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha))))
@@ -209,12 +210,12 @@ mash_compute_vloglik = function(g,data){
   if(class(g)=="mash"){
     alpha = g$alpha
     g = g$fitted_g
+    if(alpha != data$alpha){
+      stop('The alpha in data is not the one used to compute the mash model.')
+    }
   }
   else{
     message('Warning: Please make sure the alpha in data is consistent with the `alpha` used to compute the fitted_g.')
-  }
-  if(alpha != data$alpha){
-    stop('The alpha in data is not the one used to compute the mash model.')
   }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
@@ -238,12 +239,12 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   if(class(g)=="mash"){
     alpha = g$alpha
     g = g$fitted_g
+    if(alpha != data$alpha){
+      stop('The alpha in data is not the one used to compute the mash model.')
+    }
   }
   else{
     message('Warning: Please make sure the alpha in data is consistent with the `alpha` used to compute the fitted_g.')
-  }
-  if(alpha != data$alpha){
-    stop('The alpha in data is not the one used to compute the mash model.')
   }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
