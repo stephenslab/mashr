@@ -54,7 +54,6 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights){
       muA <- A %*% (mu1 * data$Shat_alpha[j,])
 
       # Transformation for Cov
-      # covU = diag(data$Shat_alpha[j,]) %*% (U1[[p]] %*% diag(data$Shat_alpha[j,]))
       covU = data$Shat_alpha[j,] * t(data$Shat_alpha[j,] * U1[[p]])
       pvar = A %*% (covU %*% t(A))
       if(any(pvar < 0)){

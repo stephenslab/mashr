@@ -38,7 +38,6 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
       # Transformation for mu
       muA <- (mu1 * data$Shat_alpha) %*% t(A) # J by nrow(A) matrix
       # Transformation for Cov
-      # covU = diag(data$Shat_alpha[1,]) %*% (U1[[p]] %*% diag(data$Shat_alpha[1,]))
       covU = data$Shat_alpha[1,] * t(data$Shat_alpha[1,] * U1[[p]])
       pvar = A %*% (covU %*% t(A))
       # correct for computing error
