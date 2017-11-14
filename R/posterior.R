@@ -97,10 +97,13 @@ compute_posterior_matrices <-
     # if alpha neq 0, we check if rows of Shat_alpha are same,
     # the rows of Shat_alpha are same could imply the rows of Shat are same
     common_cov_Shat = is_common_cov_Shat(data)
-    if(data$alpha == 0){common_cov_Shat_alpha = TRUE}
-    else{common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)}
+    if(data$alpha == 0){
+      common_cov_Shat_alpha = TRUE
+    } else{
+      common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
+    }
 
-    if(common_cov_Shat & common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
+    if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
       compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
     } else {
       compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
