@@ -2,6 +2,7 @@
 #' @param Bhat an N by R matrix of observed estimates
 #' @param Shat an N by R matrix of corresponding standard errors. Shat can be a scalar if all standard errors are equal.
 #' This is most useful if Bhat is a matrix of Z scores, so elements of Shat are all 1. Default is 1.
+#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
 #' @param df an N by R matrix of corresponding degrees of freedom of the t-statistic Bhat/Shat. Can be a scalar if all degrees of freedom are equal. Default is inf (for large samples).
 #' @param pval an N by R matrix of p-values of t-statistic Bhat/Shat. Shat and df should not be specified when pval is provided.
 #' @param V an R by R correlation matrix of error correlations; must be positive definite.
@@ -9,7 +10,7 @@
 #'  Defaults to identity
 #' @return a data object for passing into mash functions
 #' @export
-set_mash_data = function(Bhat,Shat=NULL,df=NULL,pval=NULL,V=diag(ncol(Bhat))){
+set_mash_data = function(Bhat,Shat=NULL,alpha,df=NULL,pval=NULL,V=diag(ncol(Bhat))){
   if (missing(Shat) && missing(pval)) {
     Shat = 1
   }
@@ -34,7 +35,19 @@ set_mash_data = function(Bhat,Shat=NULL,df=NULL,pval=NULL,V=diag(ncol(Bhat))){
     Shat_orig = Shat
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-  return(list(Bhat=Bhat, Shat=Shat, V=V))
+
+  # transform data according to alpha
+  if (alpha != 0 && !all(Shat == 1)) {
+    ## alpha models dependence of effect size on standard error
+    ## alpha > 0 implies larger effects has large standard error
+    ## a special case when alpha = 1 is the EZ model
+    Shat_alpha = Shat^alpha
+    Bhat = Bhat / Shat_alpha
+    Shat = Shat^(1-alpha)
+  } else {
+    Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
+  }
+  return(list(Bhat=Bhat, Shat=Shat, V=V, alpha=alpha))
 }
 
 # Return the covariance matrix for jth data point from mash data object.
