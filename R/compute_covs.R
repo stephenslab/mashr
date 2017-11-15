@@ -27,7 +27,7 @@ cov_canonical = function(data,
     }
     res[[i]] =  do.call(cov_method$fn, args = modifyList(list(data=data), as.list(cov_method$args) ))
 
-    if(is.list(res[[i]])){ 
+    if(is.list(res[[i]])){
       if(is.null(names(res[[i]]))) {
         ##append _i to names if function returns multiple matrices
         names(res[[i]]) = paste0(name, "_", 1:length(res[[i]]) )
@@ -135,7 +135,6 @@ cov_simple_het = function(data, corr=c(0.25,0.5,0.75)){
 #' @param Ulist a list of matrices
 #' @param grid a vector of scaling factors (standard deviaions)
 #' @return a list with length length(Ulist)*length(grid), with values grid[i]^2*Ulist[[j]]
-#' @export
 scale_cov = function(Ulist, grid){
   orig_names = names(Ulist)
   Ulist = unlist( lapply(grid^2, function(x){multiply_list(Ulist,x)}), recursive=FALSE)

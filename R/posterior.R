@@ -3,7 +3,6 @@
 #' @param U R x R prior covariance matrix
 #' @return R x R posterior covariance matrix
 #' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
-#' @export
 posterior_cov <- function(Vinv, U){
   return(U %*% solve(Vinv %*% U + diag(nrow(U))))
 }
@@ -14,7 +13,6 @@ posterior_cov <- function(Vinv, U){
 #' @param U1 R x R posterior covariance matrix, computed using posterior_cov
 #' @return R vector of posterior mean
 #' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
-#' @export
 posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% (Vinv %*% bhat))
 }
@@ -27,7 +25,6 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @description Computes posterior mean under multivariate normal model for each row of matrix Bhat.
 #' Note that if bhat is N_R(b,V) and b is N_R(0,U) then b|bhat N_R(mu1,U1).
 #' This function returns a matrix with jth row equal to mu1(bhat) for bhat= Bhat[j,].
-#' @export
 posterior_mean_matrix <- function(Bhat, Vinv, U1){
   return(Bhat %*% (Vinv %*% U1))
 }
