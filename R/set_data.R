@@ -52,6 +52,25 @@ get_cov = function(data,j){
   data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
 }
 
+#' @title Check that all covariances are equal (Shat).
+#'
+#' @description checks if all rows of Shat are the same - if so
+#'     covariances are equal
+#'
+#' @param data A mash data object.
+is_common_cov_Shat = function(data){
+  all((t(data$Shat) - data$Shat[1,]) == 0)
+}
+
+#' @title Check that all rows of Shat_alpha are the same.
+#'
+#' @description checks if all rows of Shat_alpha are the same
+#'
+#' @param data A mash data object.
+is_common_cov_Shat_alpha = function(data){
+  all((t(data$Shat_alpha) - data$Shat_alpha[1, ]) == 0)
+}
+
 n_conditions = function(data){ncol(data$Bhat)}
 
 n_effects = function(data){nrow(data$Bhat)}
