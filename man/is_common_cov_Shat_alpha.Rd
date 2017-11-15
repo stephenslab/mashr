@@ -2,7 +2,7 @@
 % Please edit documentation in R/likelihoods_common_cov.R
 \name{is_common_cov_Shat_alpha}
 \alias{is_common_cov_Shat_alpha}
-\title{Check that all covariates are equal (Shat_alpha).}
+\title{Check that all rows of Shat_alpha are the same}
 \usage{
 is_common_cov_Shat_alpha(data)
 }
@@ -10,6 +10,5 @@ is_common_cov_Shat_alpha(data)
 \item{data}{A mash data object.}
 }
 \description{
-checks if all rows of Shat_alpha are the same - if so
-    covariances are equal
+checks if all rows of Shat_alpha are the same
 }

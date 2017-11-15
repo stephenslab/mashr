@@ -2,7 +2,7 @@
 % Please edit documentation in R/likelihoods_common_cov.R
 \name{is_common_cov_Shat}
 \alias{is_common_cov_Shat}
-\title{Check that all covariates are equal (Shat).}
+\title{Check that all covariances are equal (Shat).}
 \usage{
 is_common_cov_Shat(data)
 }
