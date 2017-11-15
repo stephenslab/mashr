@@ -1,5 +1,6 @@
 test_that("compare likelihood computation R vs C++ in provided data of 100 X 5", {
 
+
   load("calc_lik_matrix_data.RData")
   ## Get the number of samples (J) and the number of mixture components (P).
   J <- nrow(data$Bhat)
@@ -11,14 +12,14 @@ test_that("compare likelihood computation R vs C++ in provided data of 100 X 5",
                                                   algorithm.version = "R"))
   cat(sprintf("Likelihood calculations took %0.2f seconds.\n",
               out.time["elapsed"]))
-  
+
   ## Compute the likelihood matrix using the Rcpp implementation.
   cat(sprintf("Computing %d x %d likelihood matrix using Rcpp version.\n",J,P))
   out.time <- system.time(out2 <- calc_lik_matrix(data,Ulist,log = TRUE,
                                                   algorithm.version = "Rcpp"))
   cat(sprintf("Likelihood calculations took %0.2f seconds.\n",
               out.time["elapsed"]))
-  
+
   expect_equal(out1, out2, tolerance=1e-5)
 }
 )
@@ -92,11 +93,11 @@ test_that(paste("compare likelihood computation R vs C++ in simulated",
   Ulist   <- expand_cov(Ulist, 1:50)
   weights <- matrix(runif(length(Ulist) * 2), 2, length(Ulist))
   weights <- weights / rowSums(weights)
-  
+
   out1 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "Rcpp")
   out2 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "R")
-  
+
   expect_equal(out1, out2, tolerance = 1e-5)
 })

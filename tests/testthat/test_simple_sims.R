@@ -5,7 +5,7 @@ test_that("simple simulations look right", {
   # null, equal among conditions, present only in first condition, independent across conditions
   data = set_mash_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
-  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased",alpha=0)
+  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
   expect_lt(mean(abs(test$B-ashr::get_pm(res))),mean(abs(test$B-test$Bhat)))
 }
@@ -17,9 +17,9 @@ test_that("simple simulations look right; larger error", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  data = set_mash_data(test$Bhat, test$Shat)
+  data = set_mash_data(test$Bhat, test$Shat, alpha=0) #set alpha=0 for comparison with ash
   U = cov_canonical(data, c("id","sing","equal_effects"))
-  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased",alpha=0)
+  res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
   ashres = ashr::ash(test$Bhat[,1],test$Shat[,1])
   #plot(ashr::get_pm(ashres),post$post_mean[,1], col = rep(1:4,100))
