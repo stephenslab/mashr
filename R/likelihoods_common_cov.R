@@ -16,7 +16,7 @@ calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
   t(res)
 }
 
-#' @title Check that all covariates are equal (Shat).
+#' @title Check that all covariances are equal (Shat).
 #'
 #' @description checks if all rows of Shat are the same - if so
 #'     covariances are equal
@@ -29,10 +29,9 @@ is_common_cov_Shat = function(data){
   all((t(data$Shat) - data$Shat[1,]) == 0)
 }
 
-#' @title Check that all covariates are equal (Shat_alpha).
+#' @title Check that all rows of Shat_alpha are the same
 #'
-#' @description checks if all rows of Shat_alpha are the same - if so
-#'     covariances are equal
+#' @description checks if all rows of Shat_alpha are the same
 #'
 #' @param data A mash data object.
 #'
