@@ -22,21 +22,15 @@ calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
 #'     covariances are equal
 #'
 #' @param data A mash data object.
-#'
-#' @export
-#'
 is_common_cov_Shat = function(data){
   all((t(data$Shat) - data$Shat[1,]) == 0)
 }
 
-#' @title Check that all rows of Shat_alpha are the same
+#' @title Check that all rows of Shat_alpha are the same.
 #'
 #' @description checks if all rows of Shat_alpha are the same
 #'
 #' @param data A mash data object.
-#'
-#' @export
-#'
 is_common_cov_Shat_alpha = function(data){
   all((t(data$Shat_alpha) - data$Shat_alpha[1, ]) == 0)
 }

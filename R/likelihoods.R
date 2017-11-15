@@ -76,7 +76,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     }
     if (nrow(res) == 1)
       res <- matrix(res)
-    return(res)
+
   }
   else if (algorithm.version == "Rcpp") {
 
@@ -89,10 +89,12 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     # Get column names for R > 1.
     if (ncol(res) > 1)
       colnames(res) <- names(Ulist)
-    return(res)
   }
   else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
+
+  return(res)
+
 }
 
 #' @title Calculate matrix of relative likelihoods.
