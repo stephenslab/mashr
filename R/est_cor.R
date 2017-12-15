@@ -6,6 +6,7 @@
 #' correlations which can be computed based on all data. See \code{compute_null_correlation_lower_bound}
 #' @details Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
 #' @importFrom stats cor
+#' @export
 estimate_null_correlation = function(data, z_thresh=2, apply_lower_bound = TRUE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)
@@ -21,8 +22,6 @@ estimate_null_correlation = function(data, z_thresh=2, apply_lower_bound = TRUE)
   }
   return(Vhat)
 }
-
-
 
 #' @title compute_null_correlation_lower_bound
 #' @description Compute a lower bound on the null correlation matrix from data
