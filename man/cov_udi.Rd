@@ -8,7 +8,7 @@
 cov_udi(data, model = udi_model_matrix(n_conditions(data)))
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
 \item{model}{a model matrix with R columns, where R is the number of conditions in the data;
 each row should be a vector of length R with elements "U","D" and "I" indicating whether each effect

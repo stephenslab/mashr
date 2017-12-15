@@ -10,7 +10,7 @@
 #'  Defaults to identity
 #' @return a data object for passing into mash functions
 #' @export
-set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
+mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
   if (missing(Shat) && missing(pval)) {
     Shat = 1
   }

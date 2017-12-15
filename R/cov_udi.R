@@ -1,6 +1,6 @@
 #' Compute a list of covariance matrices corresponding to the
 #' "Unassociated", "Directly associated" and "Indirectly associated" models
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param model a model matrix with R columns, where R is the number of conditions in the data;
 #' each row should be a vector of length R with elements "U","D" and "I" indicating whether each effect
 #' is Unassociated, Directly associated or Indirectly associated

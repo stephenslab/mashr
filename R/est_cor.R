@@ -1,6 +1,6 @@
 #' @title Estimate null correlations
 #' @description Estimates a null correlation matrix from data
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param z_thresh the z score threshold below which to call an effect null
 #' @param apply_lower_bound indicates whether to also apply a lower bound for the
 #' correlations which can be computed based on all data. See \code{compute_null_correlation_lower_bound}

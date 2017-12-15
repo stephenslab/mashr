@@ -8,7 +8,7 @@ cov_canonical(data, cov_methods = c("identity", "singletons", "equal_effects",
   "simple_het"))
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
 \item{cov_methods}{a vector of strings indicating the matrices to be used:
 "identity" for the identity (effects are independent among conditions);
@@ -27,7 +27,7 @@ The default is that this function computes covariance matrices corresponding
 to the "bmalite" models.
 }
 \examples{
-data = set_mash_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
  cov_canonical(data)
  cov_canonical(data,"singletons")
  cov_canonical(data,c("id","sing")) # can use partial matching of names

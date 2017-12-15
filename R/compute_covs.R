@@ -1,5 +1,5 @@
 #' Compute a list of canonical covariance matrices
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param cov_methods a vector of strings indicating the matrices to be used:
 #' "identity" for the identity (effects are independent among conditions);
 #' "singletons" for the set of matrices with just one non-zero entry x_{jj} = 1 (j=1,...,R); (effect specific to condition j);
@@ -8,7 +8,7 @@
 #' @return a list of covariance matrices
 #' @details The default is that this function computes covariance matrices corresponding
 #' to the "bmalite" models.
-#' @examples data = set_mash_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+#' @examples data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #'  cov_canonical(data)
 #'  cov_canonical(data,"singletons")
 #'  cov_canonical(data,c("id","sing")) # can use partial matching of names
@@ -42,7 +42,7 @@ cov_canonical = function(data,
 }
 
 # #' Compute a list of data-driven covariance matrices;
-# #' @param data a mash data object, eg as created by \code{set_mash_data}
+# #' @param data a mash data object, eg as created by \code{mash_set_data}
 # #' @return a list of covariance matrices
 # #' @details currently just applies Extreme Deconvolution to a subset of signals; future expansion expected
 # #' @export
@@ -63,7 +63,7 @@ cov_methods = function(){
 }
 
 # Compute an identity matrix. The input data a mash data object, eg as
-# created by set_mash_data. The return value is the R by R identity
+# created by mash_set_data. The return value is the R by R identity
 # matrix.
 cov_identity = function(data){
   R = n_conditions(data)
@@ -72,7 +72,7 @@ cov_identity = function(data){
 
 # Compute all R singleton matrices corresponding to condition-specific
 # effects Input "data" a mash data object, eg as created by
-# set_mash_data.  The return value is a list with R entries, the rth
+# mash_set_data.  The return value is a list with R entries, the rth
 # entry being an R by R matrix with all 0s except the (r,r) element is
 # 1.
 cov_singletons = function(data){
@@ -89,7 +89,7 @@ cov_singletons = function(data){
 }
 
 #' Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @return an R by R matrix with all 0s except the (1,1) element is 1
 #' @export
 cov_first_singleton = function(data){
@@ -100,7 +100,7 @@ cov_first_singleton = function(data){
 }
 
 #' Compute an R by R matrix of all 1s
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @return a list with 1 entry, the R by R matrix of all 1s
 cov_equal_effects = function(data){
   R = n_conditions(data)
@@ -108,7 +108,7 @@ cov_equal_effects = function(data){
 }
 
 #' Compute an R by R matrix of all 0s
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @return a list with 1 entry, the R by R matrix of all 0s
 cov_all_zeros = function(data){
   R = ncol(data$Bhat)
@@ -116,7 +116,7 @@ cov_all_zeros = function(data){
 }
 
 #' Compute covariance matrices with diagonal element 1 and off-diagonal element corr
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param corr a vector containing the correlations to be used
 #' @return a list of matrices, one for each value in corr
 #' @export

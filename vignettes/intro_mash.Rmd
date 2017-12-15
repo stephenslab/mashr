@@ -61,11 +61,11 @@ scores, and set `Shat` to be the matrix with all 1s].
 
 The simulation above created both these matrices for us (in
 `simdata$Bhat` and `simdata$Shat`). To get these ready for applying
-`mash` you must first use `set_mash_data` to create a data object
+`mash` you must first use `mash_set_data` to create a data object
 witho those two pieces of information:
 
 ```{r}
-data = set_mash_data(simdata$Bhat, simdata$Shat)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
 ```
 
 # Step 2: Set up the covariance matrices 

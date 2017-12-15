@@ -29,7 +29,7 @@ test_that("compare likelihood computation R vs C++ in simulated data R = 1", {
   N = 10
   Shat = matrix(rep(1,N),ncol=1)
   Bhat = matrix(rnorm(N),ncol=1)
-  data = set_mash_data(Bhat,Shat)
+  data = mash_set_data(Bhat,Shat)
   Ulist = list(id=matrix(1,nrow=1))
   out1 = calc_lik_matrix(data,Ulist)
   out2 = calc_lik_matrix(data,Ulist,algorithm.version = "R")
@@ -40,7 +40,7 @@ test_that("compare likelihood computation R vs C++ in simulated data R = 1", {
 test_that("compare likelihood computation R vs C++ in simulated data common cov", {
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(1,1,1))
-  data = set_mash_data(Bhat, Shat)
+  data = mash_set_data(Bhat, Shat)
   Ulist = cov_singletons(data)
   out1 = calc_lik_matrix(data, Ulist)
   out2 = calc_lik_matrix(data, Ulist, algorithm.version = "R")
@@ -73,7 +73,7 @@ test_that("compare posterior computation R vs C++ in simulated data R = 1", {
   N = 10
   Shat = matrix(rep(1,N),ncol=1)
   Bhat = matrix(rnorm(N),ncol=1)
-  data = set_mash_data(Bhat,Shat)
+  data = mash_set_data(Bhat,Shat)
   Ulist = list(id=matrix(1,nrow=1))
   posterior_weights = matrix(rep(1,N),N,1)
   out1 <- compute_posterior_matrices(data,Ulist,posterior_weights,
@@ -88,7 +88,7 @@ test_that(paste("compare likelihood computation R vs C++ in simulated",
                 "data common cov"),{
   Bhat    <- rbind(c(1,2,3),c(2,4,6))
   Shat    <- rbind(c(1,1,1),c(1,1,1))
-  data    <- set_mash_data(Bhat, Shat)
+  data    <- mash_set_data(Bhat, Shat)
   Ulist   <- cov_canonical(data)
   Ulist   <- expand_cov(Ulist, 1:50)
   weights <- matrix(runif(length(Ulist) * 2), 2, length(Ulist))

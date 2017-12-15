@@ -7,7 +7,7 @@
 cov_first_singleton(data)
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 }
 \value{
 an R by R matrix with all 0s except the (1,1) element is 1

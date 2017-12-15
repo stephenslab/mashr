@@ -11,7 +11,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10, outputlevel = 2)
 }
 \arguments{
-\item{data}{a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{set_mash_data}}
+\item{data}{a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data}}
 
 \item{Ulist}{a list of covariance matrices to use}
 
@@ -50,7 +50,7 @@ Apply mash method to data
 \examples{
 Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
 Shat = matrix(rep(1,100),ncol=5)
-data = mashr::set_mash_data(Bhat,Shat, alpha=1)
+data = mashr::mash_set_data(Bhat,Shat, alpha=1)
 U.c = mashr::cov_canonical(data)
 res.mash = mashr::mash(data,U.c)
 

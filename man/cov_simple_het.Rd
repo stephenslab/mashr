@@ -7,7 +7,7 @@
 cov_simple_het(data, corr = c(0.25, 0.5, 0.75))
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
 \item{corr}{a vector containing the correlations to be used}
 }

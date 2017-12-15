@@ -1,7 +1,7 @@
 test_that("ashr get functions work",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
-  data = set_mash_data(Bhat,Shat)
+  data = mash_set_data(Bhat,Shat)
   Ulist = cov_canonical(data)
   m = mash(data,Ulist,grid=c(0.5,1,2))
   expect_length(get_lfsr(m),6)
@@ -22,7 +22,7 @@ test_that("ashr get functions work",{
 test_that("get_estimated_pi works",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
-  data = set_mash_data(Bhat,Shat)
+  data = mash_set_data(Bhat,Shat)
   Ulist = cov_canonical(data)
   m1 = mash(data,Ulist,grid=c(0.5,1,2),usepointmass = FALSE)
   m2 = mash(data,Ulist,grid=c(0.5,1,2),usepointmass = TRUE)

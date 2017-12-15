@@ -10,7 +10,7 @@ test_that("get same result as ash, EE model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
       mixcompdist="normal",outputlevel=3) # get ash results for first condition
 
-  data = set_mash_data(sim_data$Bhat, sim_data$Shat, alpha=0)
+  data = mash_set_data(sim_data$Bhat, sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
   res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", usepointmass = F)
 
@@ -37,7 +37,7 @@ test_that("get same result as ash, EZ model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
       mixcompdist="normal",outputlevel=3, alpha = 1) # get ash results for first condition
 
-  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
+  data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
   res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", usepointmass = F)
 
@@ -59,7 +59,7 @@ test_that("get same result as ash under transformation, EE model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
                mixcompdist="normal",outputlevel=3, alpha = 0) # get ash results for first condition
 
-  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=0)
+  data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
   res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
              usepointmass = F, outputlevel = 1)
@@ -86,7 +86,7 @@ test_that("get same result as ash under transformation, EZ model", {
   ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
                mixcompdist="normal",outputlevel=3, alpha = 1) # get ash results for first condition
 
-  data = set_mash_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
+  data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
   res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
              usepointmass = F, outputlevel = 1)

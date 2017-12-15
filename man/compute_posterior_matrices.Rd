@@ -9,7 +9,7 @@ compute_posterior_matrices(data, Ulist, posterior_weights,
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by
-\code{\link{set_mash_data}}.}
+\code{\link{mash_set_data}}.}
 
 \item{Ulist}{List containing the prior covariance matrices.}
 

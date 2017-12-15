@@ -3,7 +3,7 @@ test_that("simple simulations look right", {
   test = simple_sims()
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
-  data = set_mash_data(test$Bhat, test$Shat)
+  data = mash_set_data(test$Bhat, test$Shat)
   U = cov_canonical(data, c("id","sing","equal_effects"))
   res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 
@@ -17,7 +17,7 @@ test_that("simple simulations look right; larger error", {
   # The simulation consists of equal numbers of four different types of effects:
   # null, equal among conditions, present only in first condition, independent across conditions
 
-  data = set_mash_data(test$Bhat, test$Shat, alpha=0) #set alpha=0 for comparison with ash
+  data = mash_set_data(test$Bhat, test$Shat, alpha=0) #set alpha=0 for comparison with ash
   U = cov_canonical(data, c("id","sing","equal_effects"))
   res = mash(data, U,grid= c(0.5,1,2), prior="nullbiased")
 

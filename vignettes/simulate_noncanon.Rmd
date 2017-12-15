@@ -44,7 +44,7 @@ U.true  = list(true.U1 = true.U1, true.U2 = true.U2)
 Run 1-by-1 to add the strong signals and ED covariances.
 
 ```{r, collapse = TRUE}
-data   = set_mash_data(simdata$Bhat, simdata$Shat)
+data   = mash_set_data(simdata$Bhat, simdata$Shat)
 m.1by1 = mash_1by1(data)
 strong = get_significant_results(m.1by1)
 U.c    = cov_canonical(data)

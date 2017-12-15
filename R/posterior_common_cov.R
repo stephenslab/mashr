@@ -1,6 +1,6 @@
 #' @title Compute posterior matrices (when error covariance V_j is equal for all observations j)
 #' @description Computes posterior matrices without allocating huge memory
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param A the linear transformation matrix, KxR matrix
 #' @param Ulist a list of P covariance matrices for each mixture component
 #' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data

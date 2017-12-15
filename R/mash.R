@@ -1,5 +1,5 @@
 #' Apply mash method to data
-#' @param data a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{set_mash_data}
+#' @param data a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data}
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
@@ -18,7 +18,7 @@
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
 #' Shat = matrix(rep(1,100),ncol=5)
-#' data = mashr::set_mash_data(Bhat,Shat, alpha=1)
+#' data = mashr::mash_set_data(Bhat,Shat, alpha=1)
 #' U.c = mashr::cov_canonical(data)
 #' res.mash = mashr::mash(data,U.c)
 #'

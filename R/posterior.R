@@ -36,7 +36,7 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @description More detailed description of function goes here.
 #'
 #' @param data A \code{mash} data object; e.g., created by
-#'     \code{\link{set_mash_data}}.
+#'     \code{\link{mash_set_data}}.
 #'
 #' @param Ulist List containing the prior covariance matrices.
 #'

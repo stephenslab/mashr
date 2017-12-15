@@ -38,7 +38,7 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 
 #' @title calc_lik_matrix_common_cov
 #' @description computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances; special case when standard errors and variances are all same across j;
-#' @param data a mash data object, eg as created by \code{set_mash_data}
+#' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param Ulist list of prior covariance matrices
 #' @param log if true computes log-likelihood
 #' @return J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V), where V is same for each bhat
@@ -60,7 +60,7 @@ calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
 #'     rows of Bhat for each of P prior covariances.
 #'
 #' @param data A \code{mash} data object; e.g., created by
-#'     \code{\link{set_mash_data}}.
+#'     \code{\link{mash_set_data}}.
 #'
 #' @param Ulist List containing the prior covariance matrices.
 #'
@@ -133,7 +133,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 #'     rows of Bhat for each of P prior covariances.
 #'
 #' @param data A \code{mash} data object; e.g., created by
-#'     \code{\link{set_mash_data}}.
+#'     \code{\link{mash_set_data}}.
 #'
 #' @param Ulist List containing the prior covariance matrices.
 #'

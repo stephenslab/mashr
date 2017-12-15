@@ -30,7 +30,7 @@ autoselect_grid = function(data,mult){
 
 Bhat   <- matrix(rnorm(10000,0,2),nrow = 100,ncol = 100)
 Shat   <- matrix(1,nrow = 100,ncol = 100)
-data   <- set_mash_data(Bhat,Shat)
+data   <- mash_set_data(Bhat,Shat)
 U      <- cov_canonical(data)
 grid   <- autoselect_grid(data,sqrt(2))
 xUlist <- expand_cov(U,grid,TRUE)

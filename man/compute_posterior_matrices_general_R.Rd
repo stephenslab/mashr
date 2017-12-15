@@ -7,7 +7,7 @@
 compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
 \item{A}{the linear transformation matrix, KxR matrix}
 

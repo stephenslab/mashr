@@ -20,7 +20,7 @@ Compute vector of loglikelihood for fitted mash object on new data
 \details{
 The log-likelihood for each element is $p(Bhat_j | Shat_j,g,\alpha)$
 where $Bhat_j | B_j, Shat_j \sim N(B_j, Shat_j)$ and $B_j/Shat_j^\alpha | Shat_j \sim g$
-Here the value of $\alpha$ is set when setting up the data object in `set_mash_data`.
+Here the value of $\alpha$ is set when setting up the data object in `mash_set_data`.
 If g is a mash object (safest!) then the function will check that this value matches the $\alpha$ used when fitting `mash`.
 Note: as a convenience, this function can also be called with g a mixture distribution with same structure as the fitted_g from a mash object.
 This is mostly useful when doing simulations, where you might want to compute the

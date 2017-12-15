@@ -7,7 +7,7 @@
 estimate_null_correlation(data, z_thresh = 2, apply_lower_bound = TRUE)
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
 \item{z_thresh}{the z score threshold below which to call an effect null}
 

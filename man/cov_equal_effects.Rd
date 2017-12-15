@@ -7,7 +7,7 @@
 cov_equal_effects(data)
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{set_mash_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data}}
 }
 \value{
 a list with 1 entry, the R by R matrix of all 1s
