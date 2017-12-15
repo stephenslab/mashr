@@ -47,6 +47,14 @@ mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bha
   return(list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha))
 }
 
+#' Deprecated function call of `mash_set_data`.
+#' @export
+
+set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
+  .Deprecated("mash_set_data")
+  mash_set_data(Bhat,Shat,alpha,df,pval,V)
+}
+
 # Return the covariance matrix for jth data point from mash data object.
 get_cov = function(data,j){
   data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
