@@ -11,7 +11,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10, outputlevel = 2)
 }
 \arguments{
-\item{data}{a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data}}
+\item{data}{a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data} or \code{mash_set_data_contrast}}
 
 \item{Ulist}{a list of covariance matrices to use}
 
