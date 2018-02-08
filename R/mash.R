@@ -1,5 +1,5 @@
 #' Apply mash method to data
-#' @param data a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data}
+#' @param data a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data} or \code{mash_set_data_contrast}
 #' @param Ulist a list of covariance matrices to use
 #' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
 #' @param grid vector of grid values to use (scaling factors omega in paper)
