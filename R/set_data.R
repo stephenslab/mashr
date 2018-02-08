@@ -44,12 +44,13 @@ mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bha
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
-  return(list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha))
+  data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha)
+  class(data) = 'mash'
+  return(data)
 }
 
 #' Deprecated function call of `mash_set_data`.
 #' @export
-
 set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
   .Deprecated("mash_set_data")
   mash_set_data(Bhat,Shat,alpha,df,pval,V)
@@ -71,10 +72,11 @@ mash_set_data_contrast = function(mashdata, L){
   if(ncol(L) != R){
     stop('The contrast is not correct')
   }
-  mashdata$L = L
+
   # transfer Bhat
   Bhat = mashdata$Bhat %*% t(L)
-  Shat_orig = mashdata$Shat
+  mashdata$Shat_orig = mashdata$Shat
+  mashdata$L = L
 
   # get standard error for delta
   if(is_common_cov_Shat(mashdata)){
@@ -88,8 +90,8 @@ mash_set_data_contrast = function(mashdata, L){
   }
 
   data = list(Bhat = Bhat, Shat=Shat,
-              Shat_orig = Shat_orig,
-              Shat_alpha = matrix(1, nrow(BShat), ncol(BShat)),
+              Shat_orig = mashdata$Shat_orig,
+              Shat_alpha = matrix(1, nrow(Shat), ncol(Shat)),
               V = mashdata$V, alpha = 0, L = L)
   return(data)
 }
