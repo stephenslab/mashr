@@ -96,7 +96,12 @@ mash_set_data_contrast = function(mashdata, L){
 
 # Return the covariance matrix for jth data point from mash data object.
 get_cov = function(data,j){
-  data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
+  if(is.null(data$L)){
+    data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
+  } else{
+    Sigma = data$Shat_orig[j,] * t(data$V * data$Shat_orig[j,])
+    data$L %*% (Sigma %*% t(data$L))
+  }
 }
 
 #' @title Check that all covariances are equal (Shat).
@@ -106,7 +111,11 @@ get_cov = function(data,j){
 #'
 #' @param data A mash data object.
 is_common_cov_Shat = function(data){
-  all((t(data$Shat) - data$Shat[1,]) == 0)
+  if(is.null(data$L)){
+    all((t(data$Shat) - data$Shat[1,]) == 0)
+  } else{
+    all((t(data$Shat_orig) - data$Shat_orig[1,]) == 0)
+  }
 }
 
 #' @title Check that all rows of Shat_alpha are the same.
