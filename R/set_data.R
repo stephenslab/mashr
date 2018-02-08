@@ -55,6 +55,45 @@ set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bha
   mash_set_data(Bhat,Shat,alpha,df,pval,V)
 }
 
+#' Create a data object for mash contrast analysis
+#' @param mashdata a mash data object containing the Bhat matrix, standard errors, V; created using set_mash_data
+#' @param L the contrast matrix
+#' @return a data object after the contrast transfermation
+#' @export
+mash_set_data_contrast = function(mashdata, L){
+  # check data
+  if(class(mashdata) != 'mash'){
+    stop('data is not a "mash" object')
+  }
+
+  # check contrast
+  R = ncol(mashdata$Bhat)
+  if(ncol(L) != R){
+    stop('The contrast is not correct')
+  }
+  mashdata$L = L
+  # transfer Bhat
+  Bhat = mashdata$Bhat %*% t(L)
+  Shat_orig = mashdata$Shat
+
+  # get standard error for delta
+  if(is_common_cov_Shat(mashdata)){
+    V = get_cov(mashdata,1) # all covariances are same
+    Shat = matrix(rep(sqrt(diag(V)), each=nrow(Bhat)), nrow = nrow(Bhat))
+  } else{
+    Shat = t(sapply(1:nrow(Bhat), function(j){
+      V = get_cov(mashdata,j)
+      return(sqrt(diag(V)))
+    }))
+  }
+
+  data = list(Bhat = Bhat, Shat=Shat,
+              Shat_orig = Shat_orig,
+              Shat_alpha = matrix(1, nrow(BShat), ncol(BShat)),
+              V = mashdata$V, alpha = 0, L = L)
+  return(data)
+}
+
 # Return the covariance matrix for jth data point from mash data object.
 get_cov = function(data,j){
   data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
