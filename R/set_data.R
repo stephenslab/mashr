@@ -11,16 +11,16 @@
 #' @return a data object for passing into mash functions
 #' @export
 mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
-  if (missing(Shat) && missing(pval)) {
+  if (is.null(Shat) && is.null(pval)) {
     Shat = 1
   }
-  if (!missing(pval) && !missing(Shat)) {
+  if (!is.null(pval) && !is.null(Shat)) {
     stop("Either Shat or pval can be specified but not both.")
   }
-  if (!missing(pval) && !missing(df)) {
+  if (!is.null(pval) && !is.infinite(df)) {
     stop("Either df or pval can be specified but not both.")
   }
-  if (!missing(pval)) {
+  if (!is.null(pval)) {
     ## Shat and df have to be NULL
     Shat = Bhat / p2z(pval, Bhat)
   }
