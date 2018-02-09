@@ -155,7 +155,8 @@ calc_relative_lik_matrix <-
   algorithm.version <- match.arg(algorithm.version)
 
   # Compute the J x P matrix of conditional log-likelihoods.
-  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE, algorithm.version)
+  matrix_llik <- calc_lik_matrix(data,Ulist,log = TRUE,
+                                 algorithm.version =  algorithm.version)
 
   # Avoid numerical issues (overflow or underflow) by subtracting the
   # largest entry in each row.

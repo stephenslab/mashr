@@ -11,16 +11,16 @@
 #' @return a data object for passing into mash functions
 #' @export
 mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
-  if (missing(Shat) && missing(pval)) {
+  if (is.null(Shat) && is.null(pval)) {
     Shat = 1
   }
-  if (!missing(pval) && !missing(Shat)) {
+  if (!is.null(pval) && !is.null(Shat)) {
     stop("Either Shat or pval can be specified but not both.")
   }
-  if (!missing(pval) && !missing(df)) {
+  if (!is.null(pval) && !is.infinite(df)) {
     stop("Either df or pval can be specified but not both.")
   }
-  if (!missing(pval)) {
+  if (!is.null(pval)) {
     ## Shat and df have to be NULL
     Shat = Bhat / p2z(pval, Bhat)
   }
@@ -44,20 +44,67 @@ mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bha
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
-  return(list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha))
+  data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha)
+  class(data) = 'mash'
+  return(data)
 }
 
 #' Deprecated function call of `mash_set_data`.
 #' @export
-
 set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
   .Deprecated("mash_set_data")
   mash_set_data(Bhat,Shat,alpha,df,pval,V)
 }
 
+#' Create a data object for mash contrast analysis
+#' @param mashdata a mash data object containing the Bhat matrix, standard errors, V; created using set_mash_data
+#' @param L the contrast matrix
+#' @return a data object after the contrast transfermation
+#' @export
+mash_set_data_contrast = function(mashdata, L){
+  # check data
+  if(class(mashdata) != 'mash'){
+    stop('data is not a "mash" object')
+  }
+
+  # check contrast
+  R = ncol(mashdata$Bhat)
+  if(ncol(L) != R){
+    stop('The contrast is not correct')
+  }
+
+  # transfer Bhat
+  Bhat = mashdata$Bhat %*% t(L)
+  mashdata$Shat_orig = mashdata$Shat
+  mashdata$L = L
+
+  # get standard error for delta
+  if(is_common_cov_Shat(mashdata)){
+    V = get_cov(mashdata,1) # all covariances are same
+    Shat = matrix(rep(sqrt(diag(V)), each=nrow(Bhat)), nrow = nrow(Bhat))
+  } else{
+    Shat = t(sapply(1:nrow(Bhat), function(j){
+      V = get_cov(mashdata,j)
+      return(sqrt(diag(V)))
+    }))
+  }
+
+  data = list(Bhat = Bhat, Shat=Shat,
+              Shat_orig = mashdata$Shat_orig,
+              Shat_alpha = matrix(1, nrow(Shat), ncol(Shat)),
+              V = mashdata$V, alpha = 0, L = L)
+  class(data) = 'mash'
+  return(data)
+}
+
 # Return the covariance matrix for jth data point from mash data object.
 get_cov = function(data,j){
-  data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
+  if(is.null(data$L)){
+    data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
+  } else{
+    Sigma = data$Shat_orig[j,] * t(data$V * data$Shat_orig[j,])
+    data$L %*% (Sigma %*% t(data$L))
+  }
 }
 
 #' @title Check that all covariances are equal (Shat).
@@ -67,7 +114,11 @@ get_cov = function(data,j){
 #'
 #' @param data A mash data object.
 is_common_cov_Shat = function(data){
-  all((t(data$Shat) - data$Shat[1,]) == 0)
+  if(is.null(data$L)){
+    all((t(data$Shat) - data$Shat[1,]) == 0)
+  } else{
+    all((t(data$Shat_orig) - data$Shat_orig[1,]) == 0)
+  }
 }
 
 #' @title Check that all rows of Shat_alpha are the same.
