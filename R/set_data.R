@@ -93,6 +93,7 @@ mash_set_data_contrast = function(mashdata, L){
               Shat_orig = mashdata$Shat_orig,
               Shat_alpha = matrix(1, nrow(Shat), ncol(Shat)),
               V = mashdata$V, alpha = 0, L = L)
+  class(data) = 'mash'
   return(data)
 }
 
