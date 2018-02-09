@@ -6,7 +6,7 @@
 #' @details There is no true deviation exists in this case
 #' @export
 
-sim.contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
+sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
   # generate scalar
   Cs = rnorm(nsamp, 10)
   C = matrix(rep(Cs,ncond), nrow=nsamp, ncol=ncond)
@@ -33,7 +33,7 @@ sim.contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
 #' @details The simulation consists of equal numbers of four different types of deviations: null, equal among conditions, present only in first condition, independent across conditions
 #' @export
 
-sim.contrast2 = function(nsamp = 1000, ncond = 5, err_sd=sqrt(0.5)){
+sim_contrast2 = function(nsamp = 1000, ncond = 5, err_sd=sqrt(0.5)){
   # generate scalar
   Cs = rnorm(nsamp, mean=10, sd=1)
   C = matrix(rep(Cs,ncond), nrow=nsamp, ncol=ncond)
