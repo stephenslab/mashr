@@ -104,3 +104,11 @@ render("intro_mash.Rmd",output_dir = "../docs")
 render("intro_mash_dd.Rmd",output_dir = "../docs")
 render("simulate_noncanon.Rmd",output_dir = "../docs")
 ```
+
+## Citation
+
+If the data or code in this repository are useful for your research project, please cite our preprint:
+
+S M Urbut, G Wang, M Stephens. Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions. *bioRxiv* doi:10.1101/096552.
+
+
