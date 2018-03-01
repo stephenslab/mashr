@@ -71,7 +71,7 @@ test_that("get same result as ash under transformation, EE model", {
   expect_equal(as.numeric(ashr::get_pm(res)),ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(as.numeric(ashr::get_psd(res)),ashr::get_psd(ashres),tolerance = 1e-5)
   expect_equal(as.numeric(ashr::get_np(res)),ashr::get_np(ashres),tolerance = 1e-5)
-  expect_equal(as.numeric(ashr::get_lfdr(res)),ashr::get_lfdr(ashres),tolerance = 1e-5)
+  expect_equal(as.numeric(ashr::get_lfdr(res)),ashr::get_lfdr(ashres),tolerance = 5e-5)
 })
 
 test_that("get same result as ash under transformation, EZ model", {
@@ -98,5 +98,5 @@ test_that("get same result as ash under transformation, EZ model", {
   expect_equal(as.numeric(ashr::get_pm(res)),ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(as.numeric(ashr::get_psd(res)),ashr::get_psd(ashres),tolerance = 1e-5)
   expect_equal(as.numeric(ashr::get_np(res)),ashr::get_np(ashres),tolerance = 1e-5)
-  expect_equal(as.numeric(ashr::get_lfdr(res)),ashr::get_lfdr(ashres),tolerance = 1e-5)
+  expect_equal(as.numeric(ashr::get_lfdr(res)),ashr::get_lfdr(ashres),tolerance = 5e-5)
 })
