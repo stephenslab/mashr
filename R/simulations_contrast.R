@@ -5,7 +5,6 @@
 #' @param err_sd the standard deviation of the errors
 #' @details There is no true deviation exists in this case
 #' @export
-
 sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
   # generate scalar
   Cs = rnorm(nsamp, 10)
@@ -24,16 +23,23 @@ sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
   return(list(C=C,Chat=Chat,Shat=Shat))
 }
 
-#' Create simulation with signal
-#' data used for contrast analysis
-#' 10% of them are non-null
-#' @param nsamp number of samples of each type
-#' @param ncond number of conditions
-#' @param err_sd the standard deviation of the errors
-#' @details The simulation consists of equal numbers of four different types of deviations: null, equal among conditions, present only in first condition, independent across conditions
+#' @title Create simulation with signal data used for contrast
+#' analysis, 10\% percent of them are non-null.
+#' 
+#' @param nsamp Number of samples of each type.
+#' 
+#' @param ncond Number of conditions.
+#' 
+#' @param err_sd The standard deviation of the errors.
+#' 
+#' @details The simulation consists of equal numbers of four different
+#'   types of deviations: null, equal among conditions, present only in
+#'   first condition, independent across conditions.
+#' 
 #' @export
-
+#'
 sim_contrast2 = function(nsamp = 1000, ncond = 5, err_sd=sqrt(0.5)){
+    
   # generate scalar
   Cs = rnorm(nsamp, mean=10, sd=1)
   C = matrix(rep(Cs,ncond), nrow=nsamp, ncol=ncond)

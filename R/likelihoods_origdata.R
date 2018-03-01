@@ -1,16 +1,26 @@
-#' Compute vector of loglikelihood for fitted mash object on new data
-#' @param g a mash object
-#' @param data a set of data on which to compute the loglikelihood
-#' @return the vector of log-likelihoods for each data point computed using g
-#' @details The log-likelihood for each element is $p(Bhat_j | Shat_j,g,\alpha)$
-#' where $Bhat_j | B_j, Shat_j \sim N(B_j, Shat_j)$ and $B_j/Shat_j^\alpha | Shat_j \sim g$
-#' Here the value of $\alpha$ is set when setting up the data object in `mash_set_data`.
-#' If g is a mash object (safest!) then the function will check that this value matches the $\alpha$ used when fitting `mash`.
-#' Note: as a convenience, this function can also be called with g a mixture distribution with same structure as the fitted_g from a mash object.
-#' This is mostly useful when doing simulations, where you might want to compute the
-#' likelihood under the "true" g. When used in this way the user is responsible for
+#' @title Compute vector of loglikelihood for fitted mash object on new data.
+#' 
+#' @param g A mash object.
+#' 
+#' @param data A set of data on which to compute the loglikelihood.
+#' 
+#' @return The vector of log-likelihoods for each data point computed using g.
+#' 
+#' @details The log-likelihood for each element is \eqn{p(Bhat_j |
+#' Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
+#' Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g} Here the value
+#' of \eqn{\alpha} is set when setting up the data object in
+#' `mash_set_data`. If g is a mash object (safest!) then the function
+#' will check that this value matches the \eqn{\alpha} used when
+#' fitting `mash`.  Note: as a convenience, this function can also be
+#' called with g a mixture distribution with same structure as the
+#' fitted_g from a mash object. This is mostly useful when doing
+#' simulations, where you might want to compute the likelihood under
+#' the "true" g. When used in this way the user is responsible for
 #' making sure that the g makes sense with the alpha set in data.
+#' 
 #' @export
+#' 
 mash_compute_vloglik = function(g,data){
   if(class(g)=="mash"){
     alpha = g$alpha
@@ -28,13 +38,20 @@ mash_compute_vloglik = function(g,data){
   return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
 }
 
-#' Compute loglikelihood for fitted mash object on new data
-#' @param g a mash object or the fitted_g from a mash object
-#' @param data a set of data on which to compute the loglikelihood
-#' @return the log-likelihood for data computed using g
-#' @details The log-likelihood for each element is $p(Bhat_j | Shat_j,g,\alpha)$
-#' where $Bhat_j | B_j, Shat_j \sim N(B_j, Shat_j)$ and $B_j/Shat_j^\alpha | Shat_j \sim g$.
+#' @title Compute loglikelihood for fitted mash object on new data.
+#' 
+#' @param g A mash object or the fitted_g from a mash object.
+#' 
+#' @param data A set of data on which to compute the loglikelihood.
+#' 
+#' @return The log-likelihood for data computed using g.
+#' 
+#' @details The log-likelihood for each element is \eqn{p(Bhat_j |
+#' Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
+#' Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
+#' 
 #' @export
+#' 
 mash_compute_loglik = function(g,data){
   return( sum( mash_compute_vloglik(g,data) ) )
 }

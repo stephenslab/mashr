@@ -2,24 +2,24 @@
 % Please edit documentation in R/simulations_contrast.R
 \name{sim_contrast2}
 \alias{sim_contrast2}
-\title{Create simulation with signal
-data used for contrast analysis
-10% of them are non-null}
+\title{Create simulation with signal data used for contrast
+analysis, 10\% percent of them are non-null.}
 \usage{
 sim_contrast2(nsamp = 1000, ncond = 5, err_sd = sqrt(0.5))
 }
 \arguments{
-\item{nsamp}{number of samples of each type}
+\item{nsamp}{Number of samples of each type.}
 
-\item{ncond}{number of conditions}
+\item{ncond}{Number of conditions.}
 
-\item{err_sd}{the standard deviation of the errors}
+\item{err_sd}{The standard deviation of the errors.}
 }
 \description{
-Create simulation with signal
-data used for contrast analysis
-10% of them are non-null
+Create simulation with signal data used for contrast
+analysis, 10\% percent of them are non-null.
 }
 \details{
-The simulation consists of equal numbers of four different types of deviations: null, equal among conditions, present only in first condition, independent across conditions
+The simulation consists of equal numbers of four different
+  types of deviations: null, equal among conditions, present only in
+  first condition, independent across conditions.
 }

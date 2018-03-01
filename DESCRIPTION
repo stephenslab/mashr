@@ -35,5 +35,5 @@ Suggests:
     profmem
 VignetteBuilder: knitr
 NeedsCompilation: yes
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 Remotes: stephens999/ashr

@@ -2,22 +2,23 @@
 % Please edit documentation in R/likelihoods_origdata.R
 \name{mash_compute_loglik}
 \alias{mash_compute_loglik}
-\title{Compute loglikelihood for fitted mash object on new data}
+\title{Compute loglikelihood for fitted mash object on new data.}
 \usage{
 mash_compute_loglik(g, data)
 }
 \arguments{
-\item{g}{a mash object or the fitted_g from a mash object}
+\item{g}{A mash object or the fitted_g from a mash object.}
 
-\item{data}{a set of data on which to compute the loglikelihood}
+\item{data}{A set of data on which to compute the loglikelihood.}
 }
 \value{
-the log-likelihood for data computed using g
+The log-likelihood for data computed using g.
 }
 \description{
-Compute loglikelihood for fitted mash object on new data
+Compute loglikelihood for fitted mash object on new data.
 }
 \details{
-The log-likelihood for each element is $p(Bhat_j | Shat_j,g,\alpha)$
-where $Bhat_j | B_j, Shat_j \sim N(B_j, Shat_j)$ and $B_j/Shat_j^\alpha | Shat_j \sim g$.
+The log-likelihood for each element is \eqn{p(Bhat_j |
+Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
+Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
 }

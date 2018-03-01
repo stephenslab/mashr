@@ -1,16 +1,38 @@
-#' Create a data object for mash analysis
-#' @param Bhat an N by R matrix of observed estimates
-#' @param Shat an N by R matrix of corresponding standard errors. Shat can be a scalar if all standard errors are equal.
-#' This is most useful if Bhat is a matrix of Z scores, so elements of Shat are all 1. Default is 1.
-#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ). Default is 1. Please refer to equation (3.2) of M. Stephens 2016, Biostatistics for a discussion on alpha.
-#' @param df an N by R matrix of corresponding degrees of freedom of the t-statistic Bhat/Shat. Can be a scalar if all degrees of freedom are equal. Default is inf (for large samples).
-#' @param pval an N by R matrix of p-values of t-statistic Bhat/Shat. Shat and df should not be specified when pval is provided.
-#' @param V an R by R correlation matrix of error correlations; must be positive definite.
-#'  [So Bhat_j distributed as N(B_j,diag(Shat_j) V diag(Shat_j)) where _j denotes the jth row of a matrix]
-#'  Defaults to identity
-#' @return a data object for passing into mash functions
+#' @title Create a data object for mash analysis.
+#' 
+#' @param Bhat An N by R matrix of observed estimates.
+#' 
+#' @param Shat An N by R matrix of corresponding standard errors. Shat
+#'   can be a scalar if all standard errors are equal. This is most
+#'   useful if Bhat is a matrix of Z scores, so elements of Shat are all
+#'   1. Default is 1.
+#' 
+#' @param alpha Numeric value of alpha parameter in the model. alpha =
+#'   0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable
+#'   Z-scores (EZ). Default is 1. Please refer to equation (3.2) of
+#'   M. Stephens 2016, Biostatistics for a discussion on alpha.
+#' 
+#' @param df An N by R matrix of corresponding degrees of freedom of
+#'   the t-statistic Bhat/Shat. Can be a scalar if all degrees of
+#'   freedom are equal. Default is inf (for large samples).
+#' 
+#' @param pval An N by R matrix of p-values of t-statistic
+#'   Bhat/Shat. Shat and df should not be specified when pval is
+#'   provided.
+#' 
+#' @param V an R by R correlation matrix of error correlations; must
+#'   be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
+#'   V diag(Shat_j)) where _j denotes the jth row of a matrix].
+#'   Defaults to identity.
+#' 
+#' @return A data object for passing into mash functions.
+#'
+#' @importFrom stats pt
+#' 
 #' @export
-mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
+#' 
+mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
+                          pval = NULL, V = diag(ncol(Bhat))) {
   if (is.null(Shat) && is.null(pval)) {
     Shat = 1
   }
@@ -47,13 +69,6 @@ mash_set_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bha
   data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha)
   class(data) = 'mash'
   return(data)
-}
-
-#' Deprecated function call of `mash_set_data`.
-#' @export
-set_mash_data = function(Bhat,Shat=NULL,alpha=0,df=Inf,pval=NULL,V=diag(ncol(Bhat))){
-  .Deprecated("mash_set_data")
-  mash_set_data(Bhat,Shat,alpha,df,pval,V)
 }
 
 #' Create a data object for mash contrast analysis
@@ -134,6 +149,7 @@ n_conditions = function(data){ncol(data$Bhat)}
 
 n_effects = function(data){nrow(data$Bhat)}
 
+#' @importFrom stats qnorm
 p2z = function(pval, Bhat) {
   z = abs(qnorm(pval / 2))
   z[which(Bhat < 0)] = -1 * z[which(Bhat < 0)]

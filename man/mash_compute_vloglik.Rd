@@ -2,28 +2,32 @@
 % Please edit documentation in R/likelihoods_origdata.R
 \name{mash_compute_vloglik}
 \alias{mash_compute_vloglik}
-\title{Compute vector of loglikelihood for fitted mash object on new data}
+\title{Compute vector of loglikelihood for fitted mash object on new data.}
 \usage{
 mash_compute_vloglik(g, data)
 }
 \arguments{
-\item{g}{a mash object}
+\item{g}{A mash object.}
 
-\item{data}{a set of data on which to compute the loglikelihood}
+\item{data}{A set of data on which to compute the loglikelihood.}
 }
 \value{
-the vector of log-likelihoods for each data point computed using g
+The vector of log-likelihoods for each data point computed using g.
 }
 \description{
-Compute vector of loglikelihood for fitted mash object on new data
+Compute vector of loglikelihood for fitted mash object on new data.
 }
 \details{
-The log-likelihood for each element is $p(Bhat_j | Shat_j,g,\alpha)$
-where $Bhat_j | B_j, Shat_j \sim N(B_j, Shat_j)$ and $B_j/Shat_j^\alpha | Shat_j \sim g$
-Here the value of $\alpha$ is set when setting up the data object in `mash_set_data`.
-If g is a mash object (safest!) then the function will check that this value matches the $\alpha$ used when fitting `mash`.
-Note: as a convenience, this function can also be called with g a mixture distribution with same structure as the fitted_g from a mash object.
-This is mostly useful when doing simulations, where you might want to compute the
-likelihood under the "true" g. When used in this way the user is responsible for
+The log-likelihood for each element is \eqn{p(Bhat_j |
+Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
+Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g} Here the value
+of \eqn{\alpha} is set when setting up the data object in
+`mash_set_data`. If g is a mash object (safest!) then the function
+will check that this value matches the \eqn{\alpha} used when
+fitting `mash`.  Note: as a convenience, this function can also be
+called with g a mixture distribution with same structure as the
+fitted_g from a mash object. This is mostly useful when doing
+simulations, where you might want to compute the likelihood under
+the "true" g. When used in this way the user is responsible for
 making sure that the g makes sense with the alpha set in data.
 }
