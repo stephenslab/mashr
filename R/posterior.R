@@ -78,6 +78,11 @@ compute_posterior_matrices <-
   if(!is.null(A) && algorithm.version == 'Rcpp'){
     stop("FIXME: not implemented")
   }
+
+  if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){
+    stop('FIXME: the commonbaseline method is not implemented in Rcpp')
+  }
+
   # If A is NULL, set A be identity matrix
   R = n_conditions(data)
   if(is.null(A)){
