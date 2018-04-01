@@ -1,11 +1,13 @@
 #' @title Compute vector of loglikelihood for fitted mash object on new data.
-#' 
+#'
 #' @param g A mash object.
-#' 
+#'
 #' @param data A set of data on which to compute the loglikelihood.
-#' 
+#'
+#' @param algorithm.version Indicate R or Rcpp version
+#'
 #' @return The vector of log-likelihoods for each data point computed using g.
-#' 
+#'
 #' @details The log-likelihood for each element is \eqn{p(Bhat_j |
 #' Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
 #' Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g} Here the value
@@ -18,10 +20,10 @@
 #' simulations, where you might want to compute the likelihood under
 #' the "true" g. When used in this way the user is responsible for
 #' making sure that the g makes sense with the alpha set in data.
-#' 
+#'
 #' @export
-#' 
-mash_compute_vloglik = function(g,data){
+#'
+mash_compute_vloglik = function(g,data, algorithm.version= c("Rcpp","R")){
   if(class(g)=="mash"){
     alpha = g$alpha
     g = g$fitted_g
@@ -34,26 +36,28 @@ mash_compute_vloglik = function(g,data){
   }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
-  lm_res = calc_relative_lik_matrix(data,xUlist)
+  lm_res = calc_relative_lik_matrix(data,xUlist,algorithm.version=algorithm.version)
   return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
 }
 
 #' @title Compute loglikelihood for fitted mash object on new data.
-#' 
+#'
 #' @param g A mash object or the fitted_g from a mash object.
-#' 
+#'
 #' @param data A set of data on which to compute the loglikelihood.
-#' 
+#'
+#' @param algorithm.version Indicate R or Rcpp version
+#'
 #' @return The log-likelihood for data computed using g.
-#' 
+#'
 #' @details The log-likelihood for each element is \eqn{p(Bhat_j |
 #' Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
 #' Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
-#' 
+#'
 #' @export
-#' 
-mash_compute_loglik = function(g,data){
-  return( sum( mash_compute_vloglik(g,data) ) )
+#'
+mash_compute_loglik = function(g,data, algorithm.version=c("Rcpp", "R")){
+  return( sum( mash_compute_vloglik(g,data, algorithm.version = algorithm.version) ) )
 }
 
 #' Compute vector of alternative loglikelihoods from a matrix of log-likelihoods and fitted pi
