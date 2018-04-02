@@ -22,3 +22,15 @@ test_that("likelihood calculations on test set match original",{
   expect_equal(mash_compute_loglik(m$fitted_g,data),m$loglik)
 }
 )
+
+test_that('likelihood calculations on mash contrast set',{
+  Bhat = rbind(c(1,2,3),c(2,4,6))
+  Shat = rbind(c(1,1,1),c(2,2,2))
+  data = mash_set_data(Bhat,Shat)
+  L = diag(3); L[,1] = -1; L = L[2:3,]
+  data1 = mash_set_data_contrast(data, L)
+  Ulist = cov_canonical(data1)
+  # for mash contrast data, the algorithm need to be R
+  m1 = mash(data1,Ulist,grid = c(0.5,1,2), algorithm.version = 'R')
+  expect_equal(mash_compute_loglik(m1,data1, algorithm.version='R'),m1$loglik)
+})

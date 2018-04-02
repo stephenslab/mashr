@@ -4,12 +4,14 @@
 \alias{mash_compute_vloglik}
 \title{Compute vector of loglikelihood for fitted mash object on new data.}
 \usage{
-mash_compute_vloglik(g, data)
+mash_compute_vloglik(g, data, algorithm.version = c("Rcpp", "R"))
 }
 \arguments{
 \item{g}{A mash object.}
 
 \item{data}{A set of data on which to compute the loglikelihood.}
+
+\item{algorithm.version}{Indicate R or Rcpp version}
 }
 \value{
 The vector of log-likelihoods for each data point computed using g.

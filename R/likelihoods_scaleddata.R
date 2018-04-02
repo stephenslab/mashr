@@ -85,6 +85,10 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 
   algorithm.version <- match.arg(algorithm.version)
 
+  if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){
+    stop('FIXME: the commonbaseline method is not implemented in Rcpp')
+  }
+
   if (mc.cores > 1 & algorithm.version != "Rcpp")
     stop("Argument \"mc.cores\" only works for Rcpp version.")
 
