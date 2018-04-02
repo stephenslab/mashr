@@ -4,12 +4,14 @@
 \alias{mash_compute_loglik}
 \title{Compute loglikelihood for fitted mash object on new data.}
 \usage{
-mash_compute_loglik(g, data)
+mash_compute_loglik(g, data, algorithm.version = c("Rcpp", "R"))
 }
 \arguments{
 \item{g}{A mash object or the fitted_g from a mash object.}
 
 \item{data}{A set of data on which to compute the loglikelihood.}
+
+\item{algorithm.version}{Indicate R or Rcpp version}
 }
 \value{
 The log-likelihood for data computed using g.
