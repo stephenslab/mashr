@@ -193,6 +193,9 @@ mash = function(data,
 #' @return A list of posterior matrices
 #' @export
 mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE){
+  if (!is.null(A) && algorithm.version=='Rcpp'){
+    stop("FIXME: not implemented")
+  }
 
   if(class(g)=="mash"){
     alpha = g$alpha

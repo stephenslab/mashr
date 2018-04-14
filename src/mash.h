@@ -228,12 +228,12 @@ public:
 		int J = b_mat.n_cols, R = b_mat.n_rows;
 
 		post_mean.set_size(R, J);
-		post_mean2.set_size(R, J);
+		post_var.set_size(R, J);
 		post_cov.set_size(J, R, R);
 		neg_prob.set_size(R, J);
 		zero_prob.set_size(R, J);
 		post_mean.zeros();
-		post_mean2.zeros();
+		post_var.zeros();
     post_cov.zeros()
 		neg_prob.zeros();
 		zero_prob.zeros();
@@ -261,6 +261,9 @@ public:
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
+        if (report_post_cov) {
+          post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
+        }
 				arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 				mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
 				neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
@@ -273,10 +276,11 @@ public:
 			}
 			// compute weighted means of posterior arrays
 			post_mean.col(j) = mu1_mat * posterior_weights.col(j);
-			post_mean2.col(j) = mu2_mat * posterior_weights.col(j);
+			post_var.col(j) = mu2_mat * posterior_weights.col(j);
 			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
 			zero_prob.col(j) = zero_mat * posterior_weights.col(j);
 		}
+    post_var -= arma::pow(post_mean, 2.0);
 		return 0;
 	}
 
@@ -301,8 +305,12 @@ public:
 			arma::mat mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
 			// FIXME: better initialization?
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-			for (arma::uword j = 0; j < sigma.n_cols; ++j)
+			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
 				sigma.col(j) = Svec;
+        if (report_post_cov) {
+          post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
+        }
+      }
 			// R X J
 			arma::mat mu2_mat = arma::pow(mu1_mat, 2.0);
 			mu2_mat.each_col() += U1.diag();
@@ -316,10 +324,11 @@ public:
 			}
 			// compute weighted means of posterior arrays
 			post_mean += mu1_mat.each_row() % posterior_weights.row(p);
-			post_mean2 += mu2_mat.each_row() % posterior_weights.row(p);
+			post_var += mu2_mat.each_row() % posterior_weights.row(p);
 			neg_prob += neg_mat.each_row() % posterior_weights.row(p);
 			zero_prob += zero_mat.each_row() % posterior_weights.row(p);
 		}
+    post_var -= arma::pow(post_mean, 2.0);
 		return 0;
 	}
 
@@ -329,7 +338,7 @@ public:
 	// @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
 	// @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 	arma::mat PosteriorMean() { return post_mean.t(); }
-	arma::mat PosteriorSD() { return arma::sqrt(post_mean2 - arma::pow(post_mean, 2.0)).t(); }
+	arma::mat PosteriorSD() { return arma::sqrt(post_var).t(); }
 	arma::cube PosteriorCov() { return post_cov; }
 	arma::mat NegativeProb() { return neg_prob.t(); }
 	arma::mat ZeroProb() { return zero_prob.t(); }
@@ -343,7 +352,7 @@ private:
 	// output
 	// all R X J mat
 	arma::mat post_mean;
-	arma::mat post_mean2;
+	arma::mat post_var;
 	arma::mat neg_prob;
 	arma::mat zero_prob;
   // J X R X R cube
@@ -366,7 +375,7 @@ public:
 		int J = b_vec.n_elem;
 
 		post_mean.set_size(J);
-		post_mean2.set_size(J);
+		post_var.set_size(J);
 		neg_prob.set_size(J);
 		zero_prob.set_size(J);
 	}
@@ -405,10 +414,11 @@ public:
 		// compute weighted means of posterior arrays
 		for (arma::uword j = 0; j < J; ++j) {
 			post_mean.at(j) = arma::dot(mu1_mat.row(j), posterior_weights.col(j));
-			post_mean2.at(j) = arma::dot(mu2_mat.row(j), posterior_weights.col(j));
+			post_var.at(j) = arma::dot(mu2_mat.row(j), posterior_weights.col(j));
 			neg_prob.at(j) = arma::dot(neg_mat.row(j), posterior_weights.col(j));
 			zero_prob.at(j) = arma::dot(zero_mat.row(j), posterior_weights.col(j));
 		}
+    post_var -= arma::pow(post_mean, 2.0);
 		return 0;
 	}
 
@@ -418,8 +428,8 @@ public:
 	// @return NegativeProb J vec of posterior (marginal) probability of being negative
 	// @return ZeroProb J vec of posterior (marginal) probability of being zero
 	arma::vec PosteriorMean() { return post_mean; }
-	arma::vec PosteriorSD() { return arma::sqrt(PosteriorCov()); }
-	arma::vec PosteriorCov() { return post_mean2 - arma::pow(post_mean, 2.0); }
+	arma::vec PosteriorSD() { return arma::sqrt(post_var); }
+	arma::vec PosteriorCov() { return post_var; }
 	arma::vec NegativeProb() { return neg_prob; }
 	arma::vec ZeroProb() { return zero_prob; }
 
@@ -431,7 +441,7 @@ private:
 	arma::vec U_vec;
 	// output of J vecs
 	arma::vec post_mean;
-	arma::vec post_mean2;
+	arma::vec post_var;
 	arma::vec neg_prob;
 	arma::vec zero_prob;
 };
