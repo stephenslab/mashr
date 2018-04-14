@@ -229,7 +229,7 @@ public:
 
 		post_mean.set_size(R, J);
 		post_var.set_size(R, J);
-		post_cov.set_size(J, R, R);
+		post_cov.set_size(R, R, J);
 		neg_prob.set_size(R, J);
 		zero_prob.set_size(R, J);
 		post_mean.zeros();
