@@ -234,7 +234,7 @@ public:
 		zero_prob.set_size(R, J);
 		post_mean.zeros();
 		post_var.zeros();
-    post_cov.zeros()
+		post_cov.zeros();
 		neg_prob.zeros();
 		zero_prob.zeros();
 	}
@@ -245,7 +245,7 @@ public:
 	// @title Compute posterior matrices
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-  // @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
+	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
 	int compute_posterior(const arma::mat & posterior_weights, const bool report_post_cov)
 	{
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
@@ -261,9 +261,10 @@ public:
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
-        if (report_post_cov) {
-          post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
-        }
+				if (report_post_cov) {
+					post_cov.slice(j) +=
+						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
+				}
 				arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 				mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
 				neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
@@ -280,7 +281,7 @@ public:
 			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
 			zero_prob.col(j) = zero_mat * posterior_weights.col(j);
 		}
-    post_var -= arma::pow(post_mean, 2.0);
+		post_var -= arma::pow(post_mean, 2.0);
 		return 0;
 	}
 
@@ -288,7 +289,7 @@ public:
 	// @title Compute posterior matrices when covariance SVS is the same for all J conditions
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-  // @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
+	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
 	int compute_posterior_comcov(const arma::mat & posterior_weights, const bool report_post_cov)
 	{
 		arma::mat mean(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
@@ -307,10 +308,11 @@ public:
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
 				sigma.col(j) = Svec;
-        if (report_post_cov) {
-          post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
-        }
-      }
+				if (report_post_cov) {
+					post_cov.slice(j) +=
+						posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
+				}
+			}
 			// R X J
 			arma::mat mu2_mat = arma::pow(mu1_mat, 2.0);
 			mu2_mat.each_col() += U1.diag();
@@ -328,7 +330,7 @@ public:
 			neg_prob += neg_mat.each_row() % posterior_weights.row(p);
 			zero_prob += zero_mat.each_row() % posterior_weights.row(p);
 		}
-    post_var -= arma::pow(post_mean, 2.0);
+		post_var -= arma::pow(post_mean, 2.0);
 		return 0;
 	}
 
@@ -355,7 +357,7 @@ private:
 	arma::mat post_var;
 	arma::mat neg_prob;
 	arma::mat zero_prob;
-  // J X R X R cube
+	// J X R X R cube
 	arma::cube post_cov;
 };
 
@@ -418,7 +420,7 @@ public:
 			neg_prob.at(j) = arma::dot(neg_mat.row(j), posterior_weights.col(j));
 			zero_prob.at(j) = arma::dot(zero_mat.row(j), posterior_weights.col(j));
 		}
-    post_var -= arma::pow(post_mean, 2.0);
+		post_var -= arma::pow(post_mean, 2.0);
 		return 0;
 	}
 

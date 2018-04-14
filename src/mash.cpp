@@ -68,9 +68,9 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 		if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
 		else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
 		return Rcpp::List::create(
-      Rcpp::Named("post_mean") = pc.PosteriorMean(),
+			Rcpp::Named("post_mean") = pc.PosteriorMean(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),
-      Rcpp::Named("post_cov") = pc.PosteriorCov(),
+			Rcpp::Named("post_cov") = pc.PosteriorCov(),
 			Rcpp::Named("post_zero") = pc.ZeroProb(),
 			Rcpp::Named("post_neg") = pc.NegativeProb());
 	} else {
@@ -82,10 +82,11 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 		pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights));
 		return Rcpp::List::create(
-      Rcpp::Named("post_mean") =pc.PosteriorMean(),
-      Rcpp::Named("post_cov") = pc.PosteriorCov(),
+			Rcpp::Named("post_mean") = pc.PosteriorMean(),
+			Rcpp::Named("post_cov") = pc.PosteriorCov(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),
 			Rcpp::Named("post_zero") = pc.ZeroProb(),
 			Rcpp::Named("post_neg") = pc.NegativeProb());
 	}
 }
+
