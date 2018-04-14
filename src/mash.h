@@ -229,10 +229,12 @@ public:
 
 		post_mean.set_size(R, J);
 		post_mean2.set_size(R, J);
+		post_cov.set_size(J, R, R);
 		neg_prob.set_size(R, J);
 		zero_prob.set_size(R, J);
 		post_mean.zeros();
 		post_mean2.zeros();
+    post_cov.zeros()
 		neg_prob.zeros();
 		zero_prob.zeros();
 	}
@@ -243,7 +245,8 @@ public:
 	// @title Compute posterior matrices
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-	int compute_posterior(const arma::mat & posterior_weights)
+  // @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
+	int compute_posterior(const arma::mat & posterior_weights, const bool report_post_cov)
 	{
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 
@@ -281,7 +284,8 @@ public:
 	// @title Compute posterior matrices when covariance SVS is the same for all J conditions
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-	int compute_posterior_comcov(const arma::mat & posterior_weights)
+  // @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
+	int compute_posterior_comcov(const arma::mat & posterior_weights, const bool report_post_cov)
 	{
 		arma::mat mean(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
 		// R X R
@@ -326,6 +330,7 @@ public:
 	// @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 	arma::mat PosteriorMean() { return post_mean.t(); }
 	arma::mat PosteriorSD() { return arma::sqrt(post_mean2 - arma::pow(post_mean, 2.0)).t(); }
+	arma::cube PosteriorCov() { return post_cov; }
 	arma::mat NegativeProb() { return neg_prob.t(); }
 	arma::mat ZeroProb() { return zero_prob.t(); }
 
@@ -341,6 +346,8 @@ private:
 	arma::mat post_mean2;
 	arma::mat neg_prob;
 	arma::mat zero_prob;
+  // J X R X R cube
+	arma::cube post_cov;
 };
 
 // @param b_vec of J
@@ -411,7 +418,8 @@ public:
 	// @return NegativeProb J vec of posterior (marginal) probability of being negative
 	// @return ZeroProb J vec of posterior (marginal) probability of being zero
 	arma::vec PosteriorMean() { return post_mean; }
-	arma::vec PosteriorSD() { return arma::sqrt(post_mean2 - arma::pow(post_mean, 2.0)); }
+	arma::vec PosteriorSD() { return arma::sqrt(PosteriorCov()); }
+	arma::vec PosteriorCov() { return post_mean2 - arma::pow(post_mean, 2.0); }
 	arma::vec NegativeProb() { return neg_prob; }
 	arma::vec ZeroProb() { return zero_prob; }
 

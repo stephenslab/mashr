@@ -72,7 +72,7 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @export
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
-            algorithm.version = c("Rcpp","R"), A=NULL) {
+            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE) {
   algorithm.version <- match.arg(algorithm.version)
 
   if(!is.null(A) && algorithm.version == 'Rcpp'){
@@ -105,6 +105,7 @@ compute_posterior_matrices <-
       common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
     }
 
+    message("FIXME: output posterior matrices not implemented in R version")
     if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
       compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
     } else {
@@ -114,13 +115,16 @@ compute_posterior_matrices <-
 
     # Run the C implementation using the Rcpp interface.
     res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                           simplify2array(Ulist),t(posterior_weights), is_common_cov_Shat(data))
+                           simplify2array(Ulist),t(posterior_weights),
+                           is_common_cov_Shat(data),output_posterior_cov)
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
     posterior_matrices <- list(PosteriorMean = res$post_mean,
                               PosteriorSD   = res$post_sd,
                               lfdr          = res$post_zero,
                               NegativeProb  = res$post_neg,
                               lfsr          = lfsr)
+    if (output_posterior_cov)
+      posterior_matrices$PosteriorCov = res$post_cov
     for (i in names(posterior_matrices)) {
       if (!is.null(colnames(data$Bhat))) colnames(posterior_matrices[[i]]) <- colnames(data$Bhat)
       if (!is.null(rownames(data$Bhat))) rownames(posterior_matrices[[i]]) <- rownames(data$Bhat)
