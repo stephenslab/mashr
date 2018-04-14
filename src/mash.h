@@ -280,6 +280,10 @@ public:
 			post_var.col(j) = mu2_mat * posterior_weights.col(j);
 			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
 			zero_prob.col(j) = zero_mat * posterior_weights.col(j);
+			//
+			if (report_post_cov) {
+				post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
+			}
 		}
 		post_var -= arma::pow(post_mean, 2.0);
 		return 0;
@@ -331,6 +335,12 @@ public:
 			zero_prob += zero_mat.each_row() % posterior_weights.row(p);
 		}
 		post_var -= arma::pow(post_mean, 2.0);
+		//
+		if (report_post_cov) {
+			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
+				post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
+			}
+		}
 		return 0;
 	}
 

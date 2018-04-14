@@ -13,6 +13,9 @@ test_that("diag of posterior covariance matches posterior sd",{
   Shat = rbind(c(1,0.5,1),c(1,1,1))
   data = mash_set_data(Bhat,Shat)
   Ulist = cov_canonical(data)
-  m = mash(data,Ulist,outputlevel=3)
+  res = mash(data,Ulist,outputlevel=3)$result
+  expect_equal(res$PosteriorSD,
+               do.call(rbind, lapply(1:length(m$result$PosteriorCov),
+                                     function(i) sqrt(diag(m$result$PosteriorCov[[i]])))))
 }
 )
