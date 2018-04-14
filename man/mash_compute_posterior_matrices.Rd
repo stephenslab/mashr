@@ -5,7 +5,8 @@
 \title{Compute posterior matrices for fitted mash object on new data}
 \usage{
 mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
-  algorithm.version = c("Rcpp", "R"), A = NULL)
+  algorithm.version = c("Rcpp", "R"), A = NULL,
+  output_posterior_cov = FALSE)
 }
 \arguments{
 \item{g}{a mash object or the fitted_g from a mash object.}
@@ -17,6 +18,8 @@ mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
 \item{A}{the linear transformation matrix}
+
+\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
 }
 \value{
 A list of posterior matrices

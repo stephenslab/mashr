@@ -151,7 +151,7 @@ mash = function(data,
       posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
       posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
       if (!is.null(posterior_matrices$PosteriorCov)) {
-        posterior_matrices$PosteriorCov <- lapply(1:length(posterior_matrices$PosteriorCov) function(i) posterior_matrices$PosteriorCov[[i]] * data$Shat_alpha)
+        posterior_matrices$PosteriorCov <- lapply(1:length(posterior_matrices$PosteriorCov), function(i) posterior_matrices$PosteriorCov[[i]] * data$Shat_alpha)
       }
     }
   } else {
