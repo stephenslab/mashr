@@ -125,9 +125,9 @@ compute_posterior_matrices <-
                               lfsr          = lfsr)
     if (output_posterior_cov)
       posterior_matrices$PosteriorCov = res$post_cov
-    if (length(dim(posterior_matrices$PosteriorCov)) == 3)
-      posterior_matrices$PosteriorCov = lapply(1:dim(posterior_matrices$PosteriorCov)[3],
-                                               function(i) posterior_matrices$PosteriorCov[,,i])
+    ## if (length(dim(posterior_matrices$PosteriorCov)) == 3)
+    ##   posterior_matrices$PosteriorCov = lapply(1:dim(posterior_matrices$PosteriorCov)[3],
+    ##                                            function(i) posterior_matrices$PosteriorCov[,,i])
     for (i in names(posterior_matrices)) {
       if (!is.null(colnames(data$Bhat))) colnames(posterior_matrices[[i]]) <- colnames(data$Bhat)
       if (!is.null(rownames(data$Bhat))) rownames(posterior_matrices[[i]]) <- rownames(data$Bhat)
