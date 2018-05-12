@@ -7,8 +7,8 @@ test_that("likelihood calculations look right",{
   data2 = mash_set_data(Bhat[1,,drop=FALSE],Shat[1,,drop=FALSE])
   vv = calc_lik_matrix(data2, Ulist)
   expect_equal(mm[1,,drop=FALSE],vv)
-  mm2 = calc_relative_lik_matrix(data, Ulist)$lik_matrix
-  expect_equal(cor(mm[1,],mm2[1,]),1)
+  mm2 = calc_relative_lik_matrix(data, Ulist)$loglik_matrix
+  expect_equal(cor(mm[1,],exp(mm2[1,])),1)
 }
 )
 

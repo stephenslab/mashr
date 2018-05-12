@@ -166,6 +166,6 @@ calc_relative_lik_matrix <-
   # largest entry in each row.
   lfactors    <- apply(matrix_llik,1,max)
   matrix_llik <- matrix_llik - lfactors
-  return(list(lik_matrix = exp(matrix_llik),
+  return(list(loglik_matrix = matrix_llik,
               lfactors   = lfactors))
 }

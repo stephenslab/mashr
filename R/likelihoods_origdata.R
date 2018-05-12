@@ -37,7 +37,7 @@ mash_compute_vloglik = function(g,data, algorithm.version= c("Rcpp","R")){
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data,xUlist,algorithm.version=algorithm.version)
-  return(log(lm_res$lik_matrix %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
+  return(log(exp(lm_res$loglik_matrix) %*% g$pi) + lm_res$lfactors - rowSums(log(data$Shat_alpha)))
 }
 
 #' @title Compute loglikelihood for fitted mash object on new data.
@@ -66,7 +66,7 @@ mash_compute_loglik = function(g,data, algorithm.version=c("Rcpp", "R")){
 #' whose first column corresponds to null
 #' @param Shat_alpha matrix of Shat^alpha
 compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
-  return(log(lm$lik_matrix[,-1,drop=FALSE] %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors-rowSums(log(Shat_alpha)))
+  return(log(exp(lm$loglik_matrix[,-1,drop=FALSE]) %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
 #' Compute vector of null loglikelihoods from a matrix of log-likelihoods
@@ -74,7 +74,7 @@ compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
 #' whose first column corresponds to null
 #' @param Shat_alpha matrix of Shat^alpha
 compute_null_loglik_from_matrix = function(lm,Shat_alpha){
-  log(lm$lik_matrix[,1])+lm$lfactors-rowSums(log(Shat_alpha))
+  lm$loglik_matrix[,1]+lm$lfactors-rowSums(log(Shat_alpha))
 }
 
 #' Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi
@@ -82,7 +82,7 @@ compute_null_loglik_from_matrix = function(lm,Shat_alpha){
 #' @param lm the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
 #' @param Shat_alpha matrix of Shat^alpha
 compute_vloglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
-  return(log(lm$lik_matrix %*% pi_s)+lm$lfactors-rowSums(log(Shat_alpha)))
+  return(log(exp(lm$loglik_matrix) %*% pi_s)+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
 #' Compute total loglikelihood from a matrix of log-likelihoods and fitted pi

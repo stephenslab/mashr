@@ -101,14 +101,14 @@ mash = function(data,
   if(!fixg){
     if (verbose)
       cat(sprintf(" - Fitting model with %d mixture components.\n",P))
-    prior <- set_prior(ncol(lm$lik_matrix),prior)
+    prior <- set_prior(ncol(lm$loglik_matrix),prior)
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
-        pi_s <- optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod)
+        pi_s <- optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod)
       },threshold = 1000))
     else
       out.time <- system.time(pi_s <-
-                    optimize_pi(lm$lik_matrix,prior=prior,optmethod=optmethod))
+                    optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod))
     if (verbose)
       if (add.mem.profile)
         cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",
@@ -123,7 +123,7 @@ mash = function(data,
   }
   # threshold mixture components
   which.comp = (pi_s > pi_thresh)
-  posterior_weights <- compute_posterior_weights(pi_s[which.comp],lm$lik_matrix[,which.comp])
+  posterior_weights <- compute_posterior_weights(pi_s[which.comp],exp(lm$loglik_matrix[,which.comp]))
   # Compute posterior matrices.
   if (outputlevel > 1) {
     if (verbose)
@@ -208,7 +208,7 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
   lm_res = calc_relative_lik_matrix(data, xUlist)
   which.comp = (g$pi > pi_thresh)
-  posterior_weights = compute_posterior_weights(g$pi[which.comp], lm_res$lik_matrix[,which.comp])
+  posterior_weights = compute_posterior_weights(g$pi[which.comp], exp(lm_res$loglik_matrix[,which.comp]))
   posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
                                                   posterior_weights,
                                                   algorithm.version, A=A)
