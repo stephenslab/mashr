@@ -1,0 +1,117 @@
+---
+title: "eQTL analysis outline"
+author: "Matthew Stephens"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using mashr for eQTL studies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center",
+                      eval = TRUE)
+```
+
+
+# Introduction
+
+In the introductory `mashr` vignettes we assumed that the
+data were small enough that it was convenient to read them all in
+and do all the analyses on the same data.
+
+In larger applications, particularly eQTL studies, it can be more
+convenient to do different parts of the analyses on subsets of the tests. 
+Specifically, if you have millions of tests in dozens of conditions,
+it might be helpful to consider subsets of these millions of tests at any one time. Here we illustrate this idea.
+
+Our suggested workflow is to extract (at least) two subsets of tests from
+your complete data set:
+
+1. Results from a subset of "strong" tests corresponding
+to stronger effects in your study. For example, these tests might
+have been identified by taking the "top" eQTL in each gene based on univariate test results, or by some other approach such as a simple meta-analysis. 
+
+2. Results from a *random subset* of all tests. It is important
+that these be an unbiased representation of all the tests you are considering,
+including null and non-null tests, because `mashr` uses these tests
+to learn about the amount of signal in the data, and to "correct" estimates
+for the fact that many tests are null (analagous to a kind of multiple
+testing correction.)
+
+We will call the data from these tests `strong` and `random`.
+In our eQTL application in Urbut et al,
+the `strong` data contained about 16k tests (the top
+eQTL per gene), and for the `random` data we used 200k randomly-selected tests.
+
+## Analysis strategy outline
+
+The basic analysis strategy is now:
+
+1. Learn data-driven covariance matrices using `strong` tests.
+
+2. Fit the mashr model to the `random` tests, to learn the mixture weights on all the different covariance matrices and scaling coefficients.
+
+3. Compute posterior summaries on the `strong` tests, using the model fit from step 2. (At this stage
+you could actually compute posterior summaries for any sets of tests you like.
+For example you could read in all your tests in small batches and compute
+posterior summaries in batches. But for illustration we will just do
+it on the `strong` tests.)
+
+
+# Example
+
+First we simulate some data to illustrate the ideas. To make
+this convenient to run we simulate a small data. And we identify
+the strong hits inside of mash. But in practice you may of course
+want to use methods outside of R to extract the matries of data corresponding
+to strong and random tests.
+```{r}
+library(ashr)
+library(mashr)
+set.seed(1)
+simdata = simple_sims(10000,5,1) # simulates data on 40k tests
+
+# identify a subset of strong tests
+m.1by1 = mash_1by1(mash_set_data(simdata$Bhat,simdata$Shat))
+strong.subset = get_significant_results(m.1by1,0.05)
+
+# identify a random subset of 5000 tests
+random.subset = sample(1:40000,5000)
+
+data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.subset,])
+data.random = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
+```
+
+## Data driven covariances
+
+Now we use the strong tests to set up data-driven covariances
+```{r}
+U.pca = cov_pca(data.strong,5)
+U.ed = cov_ed(data.strong, U.pca)
+```
+
+## Fit mash model (estimate mixture proportions)
+
+Now we fit mash to the random tests using both data-driven and canonical covariances. (Remember the Crucial Rule! We have to fit using a random
+set of tests, and not a dataset that is enriched for strong tests.)
+The `outputlevel=1` option means that it will not compute posterior summaries for these tests (which saves time).
+```{r}
+U.c = cov_canonical(data.random)
+m = mash(data.random, Ulist = c(U.ed,U.c), outputlevel = 1)
+```
+
+## Compute posterior summaries
+
+Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the `strong` tests. We do
+this using the same `mash` function as above, but we
+specify to use the fit from the previous run of mash by specifying  
+`g=get_fitted_g(m), fixg=TRUE`. (In `mash` the parameter `g` is used to denote the mixture model which we learned above.)
+```{r}
+m2 = mash(data.strong, g=get_fitted_g(m), fixg=TRUE)
+head(get_lfsr(m2))
+```
+
+
