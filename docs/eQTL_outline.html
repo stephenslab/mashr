@@ -84,11 +84,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><p>Results from a <em>random subset</em> of all tests. It is important that these be an unbiased representation of all the tests you are considering, including null and non-null tests, because <code>mashr</code> uses these tests to learn about the amount of signal in the data, and to “correct” estimates for the fact that many tests are null (analagous to a kind of multiple testing correction.)</p></li>
 </ol>
 <p>We will call the data from these two sets of tests <code>strong</code> and <code>random</code> respectively.</p>
-<p>To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in <a href="https://www.biorxiv.org/content/early/2017/05/09/096552">Urbut et al</a>, the <code>strong</code> data contained about 16k tests (the top eQTL per gene), and for the <code>random</code> data we used 200k randomly-selected tests.</p>
+<p>To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in <a href="https://www.biorxiv.org/content/early/2017/05/09/096552">Urbut et al</a>, the <code>strong</code> data contained about 16k tests (the top eQTL per gene), and for the <code>random</code> data we used 20k randomly-selected tests. (If you suspect true effects are very sparse then you might want to increase the size of the random subset, say to 200k).</p>
 <div id="analysis-strategy-outline" class="section level2">
 <h2>Analysis strategy outline</h2>
 <p>The basic analysis strategy is now:</p>
 <ol style="list-style-type: decimal">
+<li><p>Learn correlation structure among null tests using <code>random</code> test.</p></li>
 <li><p>Learn data-driven covariance matrices using <code>strong</code> tests.</p></li>
 <li><p>Fit the mashr model to the <code>random</code> tests, to learn the mixture weights on all the different covariance matrices and scaling coefficients.</p></li>
 <li><p>Compute posterior summaries on the <code>strong</code> tests, using the model fit from step 2. (At this stage you could actually compute posterior summaries for any sets of tests you like. For example you could read in all your tests in small batches and compute posterior summaries in batches. But for illustration we will just do it on the <code>strong</code> tests.)</p></li>
@@ -108,13 +109,21 @@ m.1by1 =<span class="st"> </span><span class="kw">mash_1by1</span>(<span class="
 strong.subset =<span class="st"> </span><span class="kw">get_significant_results</span>(m.1by1,<span class="fl">0.05</span>)
 
 <span class="co"># identify a random subset of 5000 tests</span>
-random.subset =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(simdata<span class="op">$</span>Bhat),<span class="dv">5000</span>)
-
-data.strong =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[strong.subset,],simdata<span class="op">$</span>Shat[strong.subset,])
-data.random =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,])</code></pre></div>
+random.subset =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(simdata<span class="op">$</span>Bhat),<span class="dv">5000</span>)</code></pre></div>
+<div id="correlation-structure" class="section level2">
+<h2>Correlation structure</h2>
+<p>We estimate the correlation structure in the null tests from the <code>random</code> data (not the <code>strong</code> data because they will not necessarily contain any null tests).</p>
+<p>To do this we set up a temporary data object <code>data.temp</code> from the random tests and use <code>estimate_null_correlation</code> as in <a href="intro_correlations">this vignette</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data.temp =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,])
+Vhat =<span class="st"> </span><span class="kw">estimate_null_correlation</span>(data.temp)
+<span class="kw">rm</span>(data.temp)</code></pre></div>
+<p>Now we can set up our main data objects with this correlation structure in place:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data.random =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,],<span class="dt">V=</span>Vhat)
+data.strong =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[strong.subset,],simdata<span class="op">$</span>Shat[strong.subset,], <span class="dt">V=</span>Vhat)</code></pre></div>
+</div>
 <div id="data-driven-covariances" class="section level2">
 <h2>Data driven covariances</h2>
-<p>Now we use the strong tests to set up data-driven covariances</p>
+<p>Now we use the strong tests to set up data-driven covariances.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.pca =<span class="st"> </span><span class="kw">cov_pca</span>(data.strong,<span class="dv">5</span>)
 U.ed =<span class="st"> </span><span class="kw">cov_ed</span>(data.strong, U.pca)</code></pre></div>
 </div>
@@ -124,15 +133,9 @@ U.ed =<span class="st"> </span><span class="kw">cov_ed</span>(data.strong, U.pca
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw">cov_canonical</span>(data.random)
 m =<span class="st"> </span><span class="kw">mash</span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>#  - Computing 5000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.30 seconds.
-#  - Fitting model with 241 mixture components.</code></pre>
-<pre><code># Warning in REBayes::KWDual(A, rep(1, k), normalize(w), control = control): estimated mixing distribution has some negative values:
-#              consider reducing rtol</code></pre>
-<pre><code># Warning in mixIP(matrix_lik = structure(c(0.967364360904381,
-# 0.288163793112054, : Optimization step yields mixture weights that are
-# either too small, or negative; weights have been corrected and renormalized
-# after the optimization.</code></pre>
-<pre><code>#  - Model fitting took 3.68 seconds.</code></pre>
+#  - Likelihood calculations took 0.47 seconds.
+#  - Fitting model with 241 mixture components.
+#  - Model fitting took 4.20 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level2">
 <h2>Compute posterior summaries</h2>
@@ -140,24 +143,24 @@ m =<span class="st"> </span><span class="kw">mash</span>(data.random, <span clas
 <code>g=get_fitted_g(m), fixg=TRUE</code>. (In <code>mash</code> the parameter <code>g</code> is used to denote the mixture model which we learned above.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw">mash</span>(data.strong, <span class="dt">g=</span><span class="kw">get_fitted_g</span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#  - Computing 1428 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.08 seconds.
+#  - Likelihood calculations took 0.09 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.10 seconds.</code></pre>
+#  - Computation allocated took 0.02 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">get_lfsr</span>(m2))</code></pre></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4
-# effect_13096 3.438336e-05 7.244062e-01 6.526054e-01 6.280093e-01
-# effect_29826 2.951672e-05 5.511313e-01 5.100811e-01 7.219504e-01
-# effect_14042 3.125976e-02 6.563642e-03 5.698206e-03 1.779812e-02
-# effect_12524 5.968543e-01 7.466976e-01 5.658424e-01 6.967413e-05
-# effect_15456 1.203500e-04 6.501314e-01 5.116419e-01 6.559002e-01
-# effect_35844 5.023275e-10 1.925557e-10 9.635832e-09 5.028067e-11
+# effect_13096 1.381058e-05 7.503454e-01 6.874052e-01 6.678948e-01
+# effect_29826 5.177092e-05 7.346448e-01 6.923586e-01 7.622170e-01
+# effect_14042 5.669400e-02 1.529967e-02 1.311803e-02 4.596554e-02
+# effect_12524 5.386482e-01 6.905166e-01 4.978431e-01 2.552465e-05
+# effect_15456 8.662398e-05 5.733642e-01 4.369942e-01 6.176371e-01
+# effect_35844 3.413396e-10 2.143977e-10 9.175308e-09 6.573941e-11
 #               condition_5
-# effect_13096 7.919069e-01
-# effect_29826 5.060579e-01
-# effect_14042 9.224299e-07
-# effect_12524 6.031656e-01
-# effect_15456 5.582605e-01
-# effect_35844 2.474465e-12</code></pre>
+# effect_13096 8.183524e-01
+# effect_29826 6.874560e-01
+# effect_14042 6.019355e-06
+# effect_12524 5.360416e-01
+# effect_15456 5.033481e-01
+# effect_35844 3.296696e-12</code></pre>
 </div>
 </div>
 

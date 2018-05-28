@@ -45,17 +45,19 @@ We will call the data from these two sets of tests `strong` and `random` respect
 
 To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in [Urbut et al](https://www.biorxiv.org/content/early/2017/05/09/096552),
 the `strong` data contained about 16k tests (the top
-eQTL per gene), and for the `random` data we used 200k randomly-selected tests.
+eQTL per gene), and for the `random` data we used 20k randomly-selected tests. (If you suspect true effects are very sparse then you might want to increase the size of the random subset, say to 200k).
 
 ## Analysis strategy outline
 
 The basic analysis strategy is now:
 
-1. Learn data-driven covariance matrices using `strong` tests.
+1. Learn correlation structure among null tests using `random` test.
 
-2. Fit the mashr model to the `random` tests, to learn the mixture weights on all the different covariance matrices and scaling coefficients.
+2. Learn data-driven covariance matrices using `strong` tests. 
 
-3. Compute posterior summaries on the `strong` tests, using the model fit from step 2. (At this stage
+3. Fit the mashr model to the `random` tests, to learn the mixture weights on all the different covariance matrices and scaling coefficients.
+
+4. Compute posterior summaries on the `strong` tests, using the model fit from step 2. (At this stage
 you could actually compute posterior summaries for any sets of tests you like.
 For example you could read in all your tests in small batches and compute
 posterior summaries in batches. But for illustration we will just do
@@ -81,13 +83,33 @@ strong.subset = get_significant_results(m.1by1,0.05)
 # identify a random subset of 5000 tests
 random.subset = sample(1:nrow(simdata$Bhat),5000)
 
-data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.subset,])
-data.random = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
 ```
+
+
+## Correlation structure
+
+We estimate the correlation structure in the null tests from the `random` data (not the `strong` data because
+they will not necessarily contain any null tests).
+
+To do this we set up a temporary data object `data.temp`
+from the random tests and use `estimate_null_correlation` as in [this vignette](intro_correlations).
+```{r}
+data.temp = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
+Vhat = estimate_null_correlation(data.temp)
+rm(data.temp)
+```
+
+Now we can set up our main data objects with this
+correlation structure in place:
+```{r }
+data.random = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,],V=Vhat)
+data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.subset,], V=Vhat)
+```
+
 
 ## Data driven covariances
 
-Now we use the strong tests to set up data-driven covariances
+Now we use the strong tests to set up data-driven covariances. 
 ```{r}
 U.pca = cov_pca(data.strong,5)
 U.ed = cov_ed(data.strong, U.pca)
