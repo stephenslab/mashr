@@ -4,7 +4,7 @@ author: "Matthew Stephens"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{mashr intro with data-driven covariances}
+  %\VignetteIndexEntry{mashr intro with correlations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
