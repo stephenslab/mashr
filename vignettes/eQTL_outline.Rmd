@@ -41,8 +41,9 @@ to learn about the amount of signal in the data, and to "correct" estimates
 for the fact that many tests are null (analagous to a kind of multiple
 testing correction.)
 
-We will call the data from these tests `strong` and `random`.
-In our eQTL application in Urbut et al,
+We will call the data from these two sets of tests `strong` and `random` respectively.
+
+To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in [Urbut et al](https://www.biorxiv.org/content/early/2017/05/09/096552),
 the `strong` data contained about 16k tests (the top
 eQTL per gene), and for the `random` data we used 200k randomly-selected tests.
 
@@ -65,9 +66,8 @@ it on the `strong` tests.)
 
 First we simulate some data to illustrate the ideas. To make
 this convenient to run we simulate a small data. And we identify
-the strong hits inside of mash. But in practice you may of course
-want to use methods outside of R to extract the matries of data corresponding
-to strong and random tests.
+the strong hits using `mash_1by1`. But in practice you may want to use methods outside of R to extract the matrices of data corresponding
+to strong and random tests, and then read them in as you need them. For example, see  [here](https://github.com/stephenslab/gtexresults/blob/master/workflows/fastqtl_to_mash.ipynb) for scripts we use for processing fastQTL output.
 ```{r}
 library(ashr)
 library(mashr)
@@ -79,7 +79,7 @@ m.1by1 = mash_1by1(mash_set_data(simdata$Bhat,simdata$Shat))
 strong.subset = get_significant_results(m.1by1,0.05)
 
 # identify a random subset of 5000 tests
-random.subset = sample(1:40000,5000)
+random.subset = sample(1:nrow(simdata$Bhat),5000)
 
 data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.subset,])
 data.random = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
