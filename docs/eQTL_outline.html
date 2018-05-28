@@ -74,24 +74,91 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<p>Top hits:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">  top_hits =<span class="st"> </span>mashr<span class="op">::</span><span class="kw">mash_set_data</span>(<span class="kw">as.matrix</span>(dat<span class="op">$</span>test.z), <span class="kw">matrix</span>(<span class="dv">1</span>, <span class="kw">nrow</span>(dat<span class="op">$</span>test.z), <span class="kw">ncol</span>(dat<span class="op">$</span>test.z)))
-  sfa_res =<span class="st"> </span><span class="kw">as.matrix</span>(sfa_data<span class="op">$</span>lambda) <span class="op">%*%</span><span class="st"> </span><span class="kw">as.matrix</span>(sfa_data<span class="op">$</span>F)
-  <span class="co"># SFA matrices</span>
-  U.sfa =<span class="st"> </span><span class="kw">c</span>(mashr<span class="op">::</span><span class="kw">cov_from_factors</span>(<span class="kw">as.matrix</span>(sfa_data<span class="op">$</span>F), <span class="st">&quot;sfa${K}&quot;</span>), <span class="kw">list</span>(<span class="st">&quot;tSFA&quot;</span> =<span class="st"> </span><span class="kw">t</span>(sfa_res) <span class="op">%*%</span><span class="st"> </span>sfa_res <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(dat<span class="op">$</span>test.z)))
-    <span class="co"># SVD matrices</span>
-    U.pca =<span class="st"> </span>mashr<span class="op">::</span><span class="kw">cov_pca</span>(mash_data, <span class="op">$</span>{P})
-    <span class="co"># Emperical data matrices</span>
-    <span class="co"># `cov_ed` will take significantly longer when this empirical convariance matrix is added</span>
-    D.center =<span class="st"> </span><span class="kw">apply</span>(<span class="kw">as.matrix</span>(dat<span class="op">$</span>test.z), <span class="dv">2</span>, <span class="cf">function</span>(x) x <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(x))
-    <span class="co"># Denoised data-driven matrices</span>
-    U.dd =<span class="st"> </span><span class="kw">c</span>(U.sfa, U.pca, <span class="cf">if</span> (<span class="op">$</span>{empirical_cov} <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="kw">list</span>(<span class="st">&quot;XX&quot;</span> =<span class="st"> </span><span class="kw">t</span>(D.center) <span class="op">%*%</span><span class="st"> </span>D.center <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(dat<span class="op">$</span>test.z)) <span class="cf">else</span> <span class="kw">list</span>())
-    U.ed =<span class="st"> </span>mashr<span class="op">::</span><span class="kw">cov_ed</span>(mash_data, U.dd)
-    <span class="co"># Canonical matrices</span>
-    U.can =<span class="st"> </span>mashr<span class="op">::</span><span class="kw">cov_canonical</span>(mash_data)
-    <span class="kw">saveRDS</span>(<span class="kw">list</span>(<span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed, U.can), <span class="dt">DD_raw =</span> U.dd), <span class="op">$</span>{_output<span class="op">:</span>r})</code></pre></div>
-<p>[mash-fast_2] # Fit MASH mixture model (time estimate: &lt;5min) depends: R_library(“REBayes”) output: f“{_input:n}.V{vhat}.mash_model.rds&quot; R: expand = “<span class="math inline">\({ }&quot;, workdir = cwd, env = {'MOSEKLM_LICENSE_FILE': str(mosek_license)}  dat = readRDS(\)</span>{mash_input:r}) null.z = rbind(dat<span class="math inline">\(train.z, dat\)</span>validate.z) if (<span class="math inline">\({vhat}) {  V = cor(null.z[which(apply(abs(null.z),1, max) &lt; 2),])  } else {  V = diag(ncol(null.z))  }  mash_data = mashr::mash_set_data(as.matrix(null.z), matrix(1, nrow(null.z), ncol(null.z)), V=as.matrix(V))  saveRDS(mashr::mash(mash_data, Ulist = readRDS(\)</span>{_input:r})$Ulist, outputlevel = 1), ${_output:r})</p>
-<p>[mash-fast_3] # Posterior inference on the “top” set of gene-snp pairs (time estimate: &lt;3min) output: f“{_input:n}.posterior.rds&quot; R: expand = “<span class="math inline">\({ }&quot;, workdir = cwd  dat = readRDS(\)</span>{mash_input:r}) null.z = rbind(dat<span class="math inline">\(train.z, dat\)</span>validate.z) if (<span class="math inline">\({vhat}) {  V = cor(null.z[which(apply(abs(null.z),1, max) &lt; 2),])  } else {  V = diag(ncol(null.z))  }  mash_data = mashr::mash_set_data(as.matrix(dat\)</span>test.z), matrix(1, nrow(dat<span class="math inline">\(test.z), ncol(dat\)</span>test.z)), V=as.matrix(V)) saveRDS(mashr::mash_compute_posterior_matrices(readRDS(${_input:r}), mash_data), ${_output:r})</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In the introductory <code>mashr</code> vignettes we assumed that the data were small enough that it was convenient to read them all in and do all the analyses on the same data.</p>
+<p>In larger applications, particularly eQTL studies, it can be more convenient to do different parts of the analyses on subsets of the tests. Specifically, if you have millions of tests in dozens of conditions, it might be helpful to consider subsets of these millions of tests at any one time. Here we illustrate this idea.</p>
+<p>Our suggested workflow is to extract (at least) two subsets of tests from your complete data set:</p>
+<ol style="list-style-type: decimal">
+<li><p>Results from a subset of “strong” tests corresponding to stronger effects in your study. For example, these tests might have been identified by taking the “top” eQTL in each gene based on univariate test results, or by some other approach such as a simple meta-analysis.</p></li>
+<li><p>Results from a <em>random subset</em> of all tests. It is important that these be an unbiased representation of all the tests you are considering, including null and non-null tests, because <code>mashr</code> uses these tests to learn about the amount of signal in the data, and to “correct” estimates for the fact that many tests are null (analagous to a kind of multiple testing correction.)</p></li>
+</ol>
+<p>We will call the data from these tests <code>strong</code> and <code>random</code>. In our eQTL application in Urbut et al, the <code>strong</code> data contained about 16k tests (the top eQTL per gene), and for the <code>random</code> data we used 200k randomly-selected tests.</p>
+<div id="analysis-strategy-outline" class="section level2">
+<h2>Analysis strategy outline</h2>
+<p>The basic analysis strategy is now:</p>
+<ol style="list-style-type: decimal">
+<li><p>Learn data-driven covariance matrices using <code>strong</code> tests.</p></li>
+<li><p>Fit the mashr model to the <code>random</code> tests, to learn the mixture weights on all the different covariance matrices and scaling coefficients.</p></li>
+<li><p>Compute posterior summaries on the <code>strong</code> tests, using the model fit from step 2. (At this stage you could actually compute posterior summaries for any sets of tests you like. For example you could read in all your tests in small batches and compute posterior summaries in batches. But for illustration we will just do it on the <code>strong</code> tests.)</p></li>
+</ol>
+</div>
+</div>
+<div id="example" class="section level1">
+<h1>Example</h1>
+<p>First we simulate some data to illustrate the ideas. To make this convenient to run we simulate a small data. And we identify the strong hits inside of mash. But in practice you may of course want to use methods outside of R to extract the matries of data corresponding to strong and random tests.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ashr)
+<span class="kw">library</span>(mashr)
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+simdata =<span class="st"> </span><span class="kw">simple_sims</span>(<span class="dv">10000</span>,<span class="dv">5</span>,<span class="dv">1</span>) <span class="co"># simulates data on 40k tests</span>
+
+<span class="co"># identify a subset of strong tests</span>
+m.1by1 =<span class="st"> </span><span class="kw">mash_1by1</span>(<span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat,simdata<span class="op">$</span>Shat))
+strong.subset =<span class="st"> </span><span class="kw">get_significant_results</span>(m.1by1,<span class="fl">0.05</span>)
+
+<span class="co"># identify a random subset of 5000 tests</span>
+random.subset =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">40000</span>,<span class="dv">5000</span>)
+
+data.strong =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[strong.subset,],simdata<span class="op">$</span>Shat[strong.subset,])
+data.random =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,])</code></pre></div>
+<div id="data-driven-covariances" class="section level2">
+<h2>Data driven covariances</h2>
+<p>Now we use the strong tests to set up data-driven covariances</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.pca =<span class="st"> </span><span class="kw">cov_pca</span>(data.strong,<span class="dv">5</span>)
+U.ed =<span class="st"> </span><span class="kw">cov_ed</span>(data.strong, U.pca)</code></pre></div>
+</div>
+<div id="fit-mash-model-estimate-mixture-proportions" class="section level2">
+<h2>Fit mash model (estimate mixture proportions)</h2>
+<p>Now we fit mash to the random tests using both data-driven and canonical covariances. (Remember the Crucial Rule! We have to fit using a random set of tests, and not a dataset that is enriched for strong tests.) The <code>outputlevel=1</code> option means that it will not compute posterior summaries for these tests (which saves time).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw">cov_canonical</span>(data.random)
+m =<span class="st"> </span><span class="kw">mash</span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>#  - Computing 5000 x 241 likelihood matrix.
+#  - Likelihood calculations took 0.38 seconds.
+#  - Fitting model with 241 mixture components.</code></pre>
+<pre><code># Warning in REBayes::KWDual(A, rep(1, k), normalize(w), control = control): estimated mixing distribution has some negative values:
+#              consider reducing rtol</code></pre>
+<pre><code># Warning in mixIP(matrix_lik = structure(c(0.967364360904381,
+# 0.288163793112054, : Optimization step yields mixture weights that are
+# either too small, or negative; weights have been corrected and renormalized
+# after the optimization.</code></pre>
+<pre><code>#  - Model fitting took 3.70 seconds.</code></pre>
+</div>
+<div id="compute-posterior-summaries" class="section level2">
+<h2>Compute posterior summaries</h2>
+<p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests. We do this using the same <code>mash</code> function as above, but we specify to use the fit from the previous run of mash by specifying<br />
+<code>g=get_fitted_g(m), fixg=TRUE</code>. (In <code>mash</code> the parameter <code>g</code> is used to denote the mixture model which we learned above.)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw">mash</span>(data.strong, <span class="dt">g=</span><span class="kw">get_fitted_g</span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>#  - Computing 1428 x 241 likelihood matrix.
+#  - Likelihood calculations took 0.11 seconds.
+#  - Computing posterior matrices.
+#  - Computation allocated took 0.12 seconds.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">get_lfsr</span>(m2))</code></pre></div>
+<pre><code>#               condition_1  condition_2  condition_3  condition_4
+# effect_13096 3.438336e-05 7.244062e-01 6.526054e-01 6.280093e-01
+# effect_29826 2.951672e-05 5.511313e-01 5.100811e-01 7.219504e-01
+# effect_14042 3.125976e-02 6.563642e-03 5.698206e-03 1.779812e-02
+# effect_12524 5.968543e-01 7.466976e-01 5.658424e-01 6.967413e-05
+# effect_15456 1.203500e-04 6.501314e-01 5.116419e-01 6.559002e-01
+# effect_35844 5.023275e-10 1.925557e-10 9.635832e-09 5.028067e-11
+#               condition_5
+# effect_13096 7.919069e-01
+# effect_29826 5.060579e-01
+# effect_14042 9.224299e-07
+# effect_12524 6.031656e-01
+# effect_15456 5.582605e-01
+# effect_35844 2.474465e-12</code></pre>
+</div>
+</div>
 
 
 
