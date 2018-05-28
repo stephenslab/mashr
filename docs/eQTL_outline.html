@@ -113,7 +113,7 @@ random.subset =<span class="st"> </span><span class="kw">sample</span>(<span cla
 <div id="correlation-structure" class="section level2">
 <h2>Correlation structure</h2>
 <p>We estimate the correlation structure in the null tests from the <code>random</code> data (not the <code>strong</code> data because they will not necessarily contain any null tests).</p>
-<p>To do this we set up a temporary data object <code>data.temp</code> from the random tests and use <code>estimate_null_correlation</code> as in <a href="intro_correlations">this vignette</a>.</p>
+<p>To do this we set up a temporary data object <code>data.temp</code> from the random tests and use <code>estimate_null_correlation</code> as in <a href="intro_correlations.html">this vignette</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data.temp =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,])
 Vhat =<span class="st"> </span><span class="kw">estimate_null_correlation</span>(data.temp)
 <span class="kw">rm</span>(data.temp)</code></pre></div>
@@ -133,9 +133,9 @@ U.ed =<span class="st"> </span><span class="kw">cov_ed</span>(data.strong, U.pca
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw">cov_canonical</span>(data.random)
 m =<span class="st"> </span><span class="kw">mash</span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>#  - Computing 5000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.47 seconds.
+#  - Likelihood calculations took 0.45 seconds.
 #  - Fitting model with 241 mixture components.
-#  - Model fitting took 4.20 seconds.</code></pre>
+#  - Model fitting took 4.42 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level2">
 <h2>Compute posterior summaries</h2>
@@ -143,7 +143,7 @@ m =<span class="st"> </span><span class="kw">mash</span>(data.random, <span clas
 <code>g=get_fitted_g(m), fixg=TRUE</code>. (In <code>mash</code> the parameter <code>g</code> is used to denote the mixture model which we learned above.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw">mash</span>(data.strong, <span class="dt">g=</span><span class="kw">get_fitted_g</span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#  - Computing 1428 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.09 seconds.
+#  - Likelihood calculations took 0.08 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.02 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">get_lfsr</span>(m2))</code></pre></div>
