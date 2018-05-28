@@ -12,7 +12,7 @@
 
 <meta name="author" content="Matthew Stephens" />
 
-<meta name="date" content="2018-05-26" />
+<meta name="date" content="2018-05-28" />
 
 <title>Introduction to mash: data-driven covariances</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to mash: data-driven covariances</h1>
 <h4 class="author"><em>Matthew Stephens</em></h4>
-<h4 class="date"><em>2018-05-26</em></h4>
+<h4 class="date"><em>2018-05-28</em></h4>
 
 
 
@@ -104,39 +104,41 @@ simdata =<span class="st"> </span><span class="kw">simple_sims</span>(<span clas
 <h2>Data-driven covariances</h2>
 <p>Although the user is free to set up data driven covariance matrices using any method that they would like, typically we suggest the following three-step strategy:</p>
 <ol style="list-style-type: decimal">
-<li><p>locate some strong signals (e.g. by running a “condition-by-condition” using <code>mash_1by1</code>).</p></li>
+<li><p>Locate some strong signals. For example, here we do this within R by running a “condition-by-condition” using <code>mash_1by1</code>, but you could do this as a preprocessing step in other software - for example in eQTL studies you might instead put together a separate dataset containing the test results for only the “top” eQTL or eQTLs in each gene.</p></li>
 <li><p>Use methods such as PCA or factor analysis on these top signals to compute some initial data-driven covariance matrices (e.g. using <code>cov_pca</code>).</p></li>
 <li><p>Use these data-driven covariance matrices as initializations for the extreme deconvolution (ED) algorithm (using <code>cov_ed</code>), to get some refined data-driven covariance matrix estimates.</p></li>
 </ol>
 <p>The ED step is helpful primarily because the second step will often estimate the covariances of the observed data (Bhat) whereas what is required is the covariances of the actual underlying effects (B), and this is what ED estimates. However, ED can be quite sensitive to initialization, and so the goal of the second step is to provide a good initialization.</p>
 <div id="step-1-select-strong-signals" class="section level3">
 <h3>Step 1: select strong signals</h3>
-<p>The simplest way to do this is to run a condition-by-condition (1by1) analysis. Here we select the strong signals as those with lfsr&lt;0.05 in any condition in the 1by1 analysis.</p>
+<p>If your entire data set (matrix of <em>all</em> tests in all conditions) is not too big (eg &lt;100k tests say) then you can simply do this by setting up the entire data set as a mash data object (using <code>mash_set_data</code>), and then running a condition-by-condition (1by1) analysis on all the data. For example, here we select the strong signals as those with lfsr&lt;0.05 in any condition in the 1by1 analysis.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data   =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<span class="op">$</span>Bhat, simdata<span class="op">$</span>Shat)
 m.1by1 =<span class="st"> </span><span class="kw">mash_1by1</span>(data)
 strong =<span class="st"> </span><span class="kw">get_significant_results</span>(m.1by1,<span class="fl">0.05</span>)</code></pre></div>
+<p>This sets up a vector <code>strong</code> containing the indices corresponding to the “significant” rows of the test results in <code>data</code>. This vector is used in subsequent functions below to specify which rows of <code>data</code> to use.</p>
 </div>
 <div id="step-2-obtain-initial-data-driven-covariance-matrices" class="section level3">
 <h3>Step 2: Obtain initial data-driven covariance matrices</h3>
 <p>There are various approaches to this; here we just illustrate the simplest and quickest (but probably not the best), which is to use PCA. Specifically here we use the function <code>cov_pca</code> to produce covariance matrices based on the top 5 PCs of the strong signals. The result is a list of 6 covariance matrices: one based on all 5 PCs, and the others each based on one PC.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.pca =<span class="st"> </span><span class="kw">cov_pca</span>(data,<span class="dv">5</span>,strong)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.pca =<span class="st"> </span><span class="kw">cov_pca</span>(data,<span class="dv">5</span>,<span class="dt">subset=</span>strong)
 <span class="kw">print</span>(<span class="kw">names</span>(U.pca))</code></pre></div>
 </div>
 <div id="step-3-apply-extreme-deconvolution" class="section level3">
 <h3>Step 3: Apply Extreme Deconvolution</h3>
 <p>The function <code>cov_ed</code> is used to apply the ED algorithm from a specified initialization (here <code>U.pca</code>) and to a specified subset of signals.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.ed =<span class="st"> </span><span class="kw">cov_ed</span>(data, U.pca, strong)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.ed =<span class="st"> </span><span class="kw">cov_ed</span>(data, U.pca, <span class="dt">subset=</span>strong)</code></pre></div>
 </div>
 </div>
 <div id="run-mash" class="section level2">
 <h2>Run mash</h2>
-<p>After all this we are ready to run <code>mash</code> using the data driven matrices.</p>
+<p>After all this we are ready to run <code>mash</code> using the data driven matrices. Remember the Crucial Rule that we must fit mash to <em>all</em> tests - do not use only the <code>strong</code> subset here!!</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.ed =<span class="st"> </span><span class="kw">mash</span>(data, U.ed)
 <span class="kw">print</span>(<span class="kw">get_loglik</span>(m.ed),<span class="dt">digits =</span> <span class="dv">10</span>)</code></pre></div>
 <p>From the fit we see that the fit using the data-driven covariances is not as good as when we used the canonical covariances (which was -16120.32; from <a href="intro_mash.html">the introductory vignette</a>). This is expected for this simulation because the simulation actually used the canonical covariances!</p>
-<p>In general we recommend running <code>mash</code> with both data-driven and canonical covariances. You could do this by combining the data-driven and canonical covariances as in this (unrun) code:</p>
+<p>In general we recommend running <code>mash</code> with both data-driven and canonical covariances. You could do this by combining the data-driven and canonical covariances as in this code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw">cov_canonical</span>(data)  
-m   =<span class="st"> </span><span class="kw">mash</span>(data, <span class="kw">c</span>(U.c,U.ed))</code></pre></div>
+m   =<span class="st"> </span><span class="kw">mash</span>(data, <span class="kw">c</span>(U.c,U.ed))
+<span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits =</span> <span class="dv">10</span>)</code></pre></div>
 <p>For an example with simulations that do not follow the standard canonical matrices see <a href="simulate_noncanon.html">here</a>.</p>
 </div>
 <div id="session-information." class="section level2">

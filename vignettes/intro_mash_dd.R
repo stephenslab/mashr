@@ -15,11 +15,11 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
 #  strong = get_significant_results(m.1by1,0.05)
 
 ## ------------------------------------------------------------------------
-#  U.pca = cov_pca(data,5,strong)
+#  U.pca = cov_pca(data,5,subset=strong)
 #  print(names(U.pca))
 
 ## ------------------------------------------------------------------------
-#  U.ed = cov_ed(data, U.pca, strong)
+#  U.ed = cov_ed(data, U.pca, subset=strong)
 
 ## ------------------------------------------------------------------------
 #  m.ed = mash(data, U.ed)
@@ -28,6 +28,7 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
 ## ------------------------------------------------------------------------
 #  U.c = cov_canonical(data)
 #  m   = mash(data, c(U.c,U.ed))
+#  print(get_loglik(m),digits = 10)
 
 ## ----info----------------------------------------------------------------
 #  print(sessionInfo())

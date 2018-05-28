@@ -94,11 +94,25 @@ data.V =<span class="st"> </span><span class="kw">mash_set_data</span>(simdata<s
 <p>Now we have two mash data objects, one (<code>data.V</code>) with correlations specified, and one without (<code>data</code>). So analyses using <code>data.V</code> will allow for correlations, whereas analyses using <code>data</code> will assume measurements are independent.</p>
 <p>Here, for illustration purposes, we proceed to analyze the data with correlations, using just the simple canonical covariances as in the initial <a href="intro_mash.html">introductory vignette</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw">cov_canonical</span>(data.V) 
-m.c =<span class="st"> </span><span class="kw">mash</span>(data.V, U.c) <span class="co"># fits with correlations because data.V includes correlation information </span>
-<span class="kw">print</span>(<span class="kw">get_loglik</span>(m.c),<span class="dt">digits=</span><span class="dv">10</span>) <span class="co"># log-likelihood of the fit with correlations set to V</span></code></pre></div>
+m.c =<span class="st"> </span><span class="kw">mash</span>(data.V, U.c) <span class="co"># fits with correlations because data.V includes correlation information </span></code></pre></div>
+<pre><code>#  - Computing 2000 x 151 likelihood matrix.
+#  - Likelihood calculations took 0.21 seconds.
+#  - Fitting model with 151 mixture components.
+#  - Model fitting took 0.92 seconds.
+#  - Computing posterior matrices.
+#  - Computation allocated took 0.09 seconds.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m.c),<span class="dt">digits=</span><span class="dv">10</span>) <span class="co"># log-likelihood of the fit with correlations set to V</span></code></pre></div>
+<pre><code># [1] -16121.1117</code></pre>
 <p>We can also compare with the original analysis. (Note that the canonical covariances do not depend on the correlations, so we can use the same <code>U.c</code> here for both analyses. If we used data-driven covariances we might prefer to estimate these separately for each analysis as the correlations would affect them.)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c.orig =<span class="st"> </span><span class="kw">mash</span>(data, U.c) <span class="co"># fits without correlations because data object was set up without correlations</span>
-<span class="kw">print</span>(<span class="kw">get_loglik</span>(m.c.orig),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c.orig =<span class="st"> </span><span class="kw">mash</span>(data, U.c) <span class="co"># fits without correlations because data object was set up without correlations</span></code></pre></div>
+<pre><code>#  - Computing 2000 x 151 likelihood matrix.
+#  - Likelihood calculations took 0.09 seconds.
+#  - Fitting model with 151 mixture components.
+#  - Model fitting took 0.61 seconds.
+#  - Computing posterior matrices.
+#  - Computation allocated took 0.04 seconds.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m.c.orig),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
+<pre><code># [1] -16120.3214</code></pre>
 <p>The log-likelihoods with and without correlations are similar here, which is expected since there are no actual correlations in the data.</p>
 </div>
 

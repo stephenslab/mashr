@@ -12,7 +12,7 @@
 
 <meta name="author" content="Matthew Stephens" />
 
-<meta name="date" content="2018-05-26" />
+<meta name="date" content="2018-05-28" />
 
 <title>Introduction to mashr</title>
 
@@ -70,14 +70,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to mashr</h1>
 <h4 class="author"><em>Matthew Stephens</em></h4>
-<h4 class="date"><em>2018-05-26</em></h4>
+<h4 class="date"><em>2018-05-28</em></h4>
 
 
 
 <div id="goal" class="section level1">
 <h1>Goal</h1>
 <p>This vignette introduces the <code>mashr</code> software for someone who is familiar with the basic idea in <a href="https://www.biorxiv.org/content/early/2017/05/09/096552">Urbut et al.</a>, which we strongly recommend reading before proceeding.</p>
-<p>In this first vignette we use only the “canonical” covariance matries to simplify presentation. However, an important aspect of <code>mashr</code> is the use of data-driven covariance matrices that are learned from the data, so when you are done here you should look at <a href="intro_mash_dd.html">the data-driven vignette</a> and the <a href="simulate_noncanon.html">non-canonical matrix vignette</a>.</p>
+<p>In this first vignette we use only the “canonical” covariance matries to simplify presentation. However, an important aspect of <code>mashr</code> is the use of data-driven covariance matrices that are learned from the data, so when you are done here you should look at <a href="intro_mash_dd.html">the data-driven vignette</a> and the <a href="simulate_noncanon.html">non-canonical matrix vignette</a>. If you think you may have correlations in your data measurements then also look at how to incorporate <a href="intro_correlations.html">correlations</a>.</p>
 </div>
 <div id="outline" class="section level1">
 <h1>Outline</h1>
@@ -125,11 +125,11 @@ simdata =<span class="st"> </span><span class="kw">simple_sims</span>(<span clas
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c =<span class="st"> </span><span class="kw">mash</span>(data, U.c)</code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.13 seconds.
+#  - Likelihood calculations took 0.07 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.56 seconds.
+#  - Model fitting took 0.62 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.03 seconds.</code></pre>
+#  - Computation allocated took 0.04 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
 <p>Remember the Crucial Rule! This step must be peformed using all the tests (or a large random subset), because this is where <code>mash</code> learns that many tests are null and corrects for it.</p>
 </div>
@@ -231,7 +231,7 @@ simdata =<span class="st"> </span><span class="kw">simple_sims</span>(<span clas
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.2-8 ashr_2.2-7 
+# [1] mashr_0.2-9 ashr_2.2-7 
 # 
 # loaded via a namespace (and not attached):
 #  [1] Rcpp_0.12.16        plyr_1.8.4          iterators_1.0.9    
