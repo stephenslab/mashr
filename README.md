@@ -86,7 +86,7 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-6):
    R CMD INSTALL mashr_0.2-6.tar.gz
    ```
 
-## Notes
+## Developer notes
 
 + When any changes are made to `roxygen2` markup or the C++ code in
 the src directory, simply run `devtools::document()` to update

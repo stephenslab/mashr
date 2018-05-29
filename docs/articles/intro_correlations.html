@@ -63,7 +63,7 @@
       <h1>Accounting for correlations among measurements</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2018-05-28</h4>
+            <h4 class="date">2018-05-29</h4>
           </div>
 
     
@@ -93,21 +93,21 @@ data.V =<span class="st"> </span><span class="kw"><a href="../reference/mash_set
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.V) 
 m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.V, U.c) <span class="co"># fits with correlations because data.V includes correlation information </span></code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.05 seconds.
+#  - Likelihood calculations took 0.04 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.83 seconds.
+#  - Model fitting took 0.38 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.09 seconds.</code></pre>
+#  - Computation allocated took 0.05 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_loglik</a></span>(m.c),<span class="dt">digits=</span><span class="dv">10</span>) <span class="co"># log-likelihood of the fit with correlations set to V</span></code></pre></div>
 <pre><code># [1] -16121.1117</code></pre>
 <p>We can also compare with the original analysis. (Note that the canonical covariances do not depend on the correlations, so we can use the same <code>U.c</code> here for both analyses. If we used data-driven covariances we might prefer to estimate these separately for each analysis as the correlations would affect them.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c.orig =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c) <span class="co"># fits without correlations because data object was set up without correlations</span></code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.05 seconds.
+#  - Likelihood calculations took 0.03 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.62 seconds.
+#  - Model fitting took 0.30 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.06 seconds.</code></pre>
+#  - Computation allocated took 0.04 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_loglik</a></span>(m.c.orig),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
 <pre><code># [1] -16120.3214</code></pre>
 <p>The log-likelihoods with and without correlations are similar here, which is expected since there are no actual correlations in the data.</p>
