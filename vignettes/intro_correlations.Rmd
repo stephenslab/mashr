@@ -31,11 +31,11 @@ matrix is to estimate it using `estimate_null_correlation`, which,
 as its name suggests, uses the null tests (specifically, tests 
 without a strong $z$ score) to estimate the correlations.
 
-
 # Illustration
 
 Here we simulate data for illustration. The data does not have any correlation,
 but we will analyze it as if we did not know that.
+
 ```{r}
 library(ashr)
 library(mashr)
@@ -58,7 +58,6 @@ Here, for illustration purposes,
 we proceed to analyze the data with correlations,
 using just the simple canonical covariances
 as in the initial [introductory vignette](intro_mash.html).
-
 
 ```{r}
 U.c = cov_canonical(data.V) 
