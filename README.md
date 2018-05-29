@@ -23,14 +23,14 @@ to create results for the paper. The original package code is
 1. Follow the setup instructions below.
 
 2. See the [Introductory
-Vignette](https://stephenslab.github.io/mashr/docs/intro_mash.html) for an
+Vignette](https://stephenslab.github.io/mashr/articles/intro_mash.html) for an
 introduction to mashr.
 
 3. Then work through the other vignettes to learn more about mashr:
 [Introduction to mash: data-driven
-covariances](https://stephenslab.github.io/mashr/docs/intro_mash_dd.html)
+covariances](https://stephenslab.github.io/mashr/articles/intro_mash_dd.html)
 and [Simulation with non-canonical
-matrices](https://stephenslab.github.io/mashr/docs/simulate_noncanon.html).
+matrices](https://stephenslab.github.io/mashr/articles/simulate_noncanon.html).
 
 ## Setup
 
