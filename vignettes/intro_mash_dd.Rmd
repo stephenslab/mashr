@@ -157,7 +157,6 @@ m   = mash(data, c(U.c,U.ed))
 print(get_loglik(m),digits = 10)
 ```
 
-
 For an example with simulations that do not follow the standard
 canonical matrices see [here](simulate_noncanon.html).
 
