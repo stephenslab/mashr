@@ -94,20 +94,21 @@ the [RcppExports.cpp](src/RcppExports.cpp), the package namespaces
 (see [NAMESPACE](NAMESPACE)), and the package documentation files (in
 the man directory),
 
-+ To build the vignette webpages, run the following commands in R from
-the vignettes directory:
++ These are the R commands to build the website (make sure you are
+connected to Internet while running these commands):
 
 ```R
-library(rmarkdown)
-render("intro_mash.Rmd",output_dir = "../docs")
-render("intro_mash_dd.Rmd",output_dir = "../docs")
-render("simulate_noncanon.Rmd",output_dir = "../docs")
+library(pkgdown)
+build_site(mathjax = FALSE)
 ```
 
 ## Citation
 
-If the data or code in this repository are useful for your research project, please cite our preprint:
+If the data or code in this repository are useful for your research
+project, please cite our preprint:
 
-S M Urbut, G Wang, M Stephens. Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions. *bioRxiv* doi:10.1101/096552.
+S M Urbut, G Wang, M Stephens. Flexible statistical methods for
+estimating and testing effects in genomic studies with multiple
+conditions. *bioRxiv* doi:10.1101/096552.
 
 
