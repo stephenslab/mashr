@@ -14,18 +14,31 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
                       fig.height = 4,fig.align = "center")
 ```
 
-## Goal
+# Goal
 
 This vignette introduces the `mashr` software for someone who is
-familiar with the basic idea in Urbut et al. In this first vignette we
+familiar with the basic idea in [Urbut et al.](https://www.biorxiv.org/content/early/2017/05/09/096552), which
+we strongly recommend reading before proceeding.
+
+In this first vignette we
 use only the "canonical" covariance matries to simplify presentation.
 However, an important aspect of `mashr` is the use of data-driven
 covariance matrices that are learned from the data, so when you are
 done here you should look at [the data-driven
 vignette](intro_mash_dd.html) and the [non-canonical matrix
-vignette](simulate_noncanon.html).
+vignette](simulate_noncanon.html). If you think you may have correlations
+in your data measurements then also look at how to incorporate [correlations](intro_correlations.html).
 
-## Outline
+# Outline
+
+This package implements the "multivariate adaptive shrinkage" (mash) 
+method from [Urbut et al.](https://www.biorxiv.org/content/early/2017/05/09/096552).
+
+Mash is a method for dealing
+with large numbers of tests in many (e.g. dozens) different conditions.
+Here "conditions" can mean many different things: it could be different tissues
+(as in Urbut et al), or different time points,
+or different treatments, or even different phenotypes (think of testing multiple phenotypes at many genetic variants in a GWAS).
 
 There are essentially four steps to a mash analysis
 
@@ -34,7 +47,27 @@ There are essentially four steps to a mash analysis
 - Fit the model
 - Extract posterior summaries and other quantities of interest
 
-Here we do each of these step-by-step. However, first we simulate
+Here we go through an example that illustrates each of these steps in turn. 
+In this example we use the same (simulated) data at each step. In complex practical applications -- especially very large applications -- one might want to use different subsets of the data at different steps. For example, one might only want to extract posterior summaries (step 4) for a subset of the tests.
+We will deal with such complications in later vignettes. For now,
+we note the one crucial rule: 
+
+*The Crucial Rule:*  Step 3 (fitting the `mash` model) must
+be performed with either *all* the tests you performed, or -- if that
+causes computational challenges -- a *large random subset* of tests. 
+
+
+In particular, you must not use only a set of selected "significant" or "strong"
+tests in step 3. This is because `mash` uses step 3 to learn
+about the null signal in the data, as well as the non-null signal. In particular, in settings where most tests are null or nearly-null,
+this is the point where `mash` learns this, and consequently
+"shrinks" ("corrects") the posterior estimates towards 0. (Effectively this
+step is analogous to a "multiple testing correction" step.)
+
+
+# Simulate some data
+
+First we simulate
 some data for illustration.
 
 ```{r}
@@ -50,7 +83,7 @@ condition-specific in condition 1, and shared (equal effects in all
 conditions). It creates 500 effects of each type for a total of 2000
 effects.
 
-## Step 1: Read in the data
+# Step 1: Read in the data
 
 To run `mash` you need data consisting of a matrix of effects (`Bhat`)
 and a matrix of standard errors (`Shat`), for $J$ effects (rows) in
@@ -62,7 +95,7 @@ scores, and set `Shat` to be the matrix with all 1s].
 The simulation above created both these matrices for us (in
 `simdata$Bhat` and `simdata$Shat`). To get these ready for applying
 `mash` you must first use `mash_set_data` to create a data object
-witho those two pieces of information:
+with those two pieces of information:
 
 ```{r}
 data = mash_set_data(simdata$Bhat, simdata$Shat)
@@ -104,7 +137,11 @@ where the $\omega_l$ are scaling factors set by the "grid" parameter
 in `mash` and the $U_k$ are the covariance matrices (here specified by
 `U.c`).
 
-## Step 4: Extract Posterior Summaries
+Remember the Crucial Rule! This step must be peformed
+using all the tests (or a large random subset), because this is where
+`mash` learns that many tests are null and corrects for it.
+
+# Step 4: Extract Posterior Summaries
 
 You can extract estimates (posterior means and posterior standard
 deviations) and measures of significance (local false sign rates)
@@ -135,7 +172,7 @@ For example
 print(head(get_significant_results(m.c, conditions=1)))
 ```
 
-### Sharing
+## Sharing
 
 Use `get_pairwise_sharing` to assess sharing of significant signals
 among each pair of conditions. Here the default definition of shared
@@ -152,7 +189,7 @@ the factor to be 0 you assess only if they are the same sign:
 print(get_pairwise_sharing(m.c, factor=0))
 ```
 
-### Measure of fit (log-likelihood)
+## Measure of fit (log-likelihood)
 
 Use `get_loglik` to find the log-likelihood of the fit (this will only
 be useful when you have other fits to compare it with!)
@@ -161,7 +198,7 @@ be useful when you have other fits to compare it with!)
 print(get_loglik(m.c))
 ```
 
-### Estimated mixture proportions
+## Estimated mixture proportions
 
 Use `get_estimated_pi` to extract the estimates of the mixture
 proportions for different types of covariance matrix:
@@ -176,7 +213,7 @@ Here we can see most of the mass is on the null, identity,
 condition 1) and `equal_effects`. This reassuringly matches the way
 that these data were generated.
 
-### Metaplot
+## Metaplot
 
 The following produces a meta-plot based on the posterior means and
 posterior variances of an effect. Here we look at the most significant
@@ -186,7 +223,7 @@ result.
 mash_plot_meta(m.c,get_significant_results(m.c)[1])
 ```
 
-## Session information.
+# Session information.
 
 ```{r info}
 print(sessionInfo())

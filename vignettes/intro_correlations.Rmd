@@ -1,0 +1,82 @@
+---
+title: "Accounting for correlations among measurements"
+author: "Matthew Stephens"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mashr intro with correlations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center",
+                      eval = TRUE)
+```
+
+# Introduction
+
+In some settings measurements and tests in different conditions may be
+correlated with one another. For example, in eQTL applications
+this can occur due to sample overlap among the different conditions.
+
+Failure to deal with such correlations can cause false positives
+in a `mashr` analysis.
+
+To deal with these correlations `mashr` allows the user to specify
+a correlation matrix $V$ when setting up the data in `mash_set_data`. 
+The easiest way to specify this correlation
+matrix is to estimate it using `estimate_null_correlation`, which,
+as its name suggests, uses the null tests (specifically, tests 
+without a strong $z$ score) to estimate the correlations.
+
+# Illustration
+
+Here we simulate data for illustration. The data does not have any correlation,
+but we will analyze it as if we did not know that.
+
+```{r}
+library(ashr)
+library(mashr)
+set.seed(1)
+simdata = simple_sims(500,5,1)
+```
+
+Read in the data, and estimate correlations:
+```{r}
+data   = mash_set_data(simdata$Bhat, simdata$Shat)
+V = estimate_null_correlation(data)
+data.V = mash_set_data(simdata$Bhat, simdata$Shat, V=V)
+```
+
+Now we have two mash data objects, one (`data.V`) with correlations specified,
+and one without (`data`). So analyses using `data.V` will allow for correlations,
+whereas analyses using `data` will assume measurements are independent.
+
+Here, for illustration purposes, 
+we proceed to analyze the data with correlations,
+using just the simple canonical covariances
+as in the initial [introductory vignette](intro_mash.html).
+
+```{r}
+U.c = cov_canonical(data.V) 
+m.c = mash(data.V, U.c) # fits with correlations because data.V includes correlation information 
+print(get_loglik(m.c),digits=10) # log-likelihood of the fit with correlations set to V
+```
+
+We can also compare with the original analysis. 
+(Note that the canonical covariances
+do not depend on the correlations, so we can use the same `U.c` here
+for both analyses. If we used data-driven covariances we might prefer to
+estimate these separately for each analysis as the correlations would
+affect them.)
+```{r}
+m.c.orig = mash(data, U.c) # fits without correlations because data object was set up without correlations
+print(get_loglik(m.c.orig),digits=10)
+```
+
+The log-likelihoods with and without correlations are similar here,
+ which is expected since there are no actual correlations in the data.
+
+

@@ -64,8 +64,11 @@ Although the user is free to set up data driven covariance matrices
 using any method that they would like, typically we suggest the
 following three-step strategy:
 
-1. locate some strong signals (e.g. by running a
-"condition-by-condition" using `mash_1by1`).
+1. Locate some strong signals. For example, here we do this within
+R by running a "condition-by-condition" using `mash_1by1`, but you could
+do this as a preprocessing step in other software - for example
+in eQTL studies you might instead put together a separate dataset
+containing the test results for only the "top" eQTL or eQTLs in each gene.
 
 2. Use methods such as PCA or factor analysis on these top signals to
 compute some initial data-driven covariance matrices (e.g. using
@@ -84,8 +87,13 @@ good initialization.
 
 ### Step 1: select strong signals
 
-The simplest way to do this is to run a condition-by-condition (1by1)
-analysis. Here we select the strong signals as those with lfsr<0.05 in
+If your entire data set (matrix of *all* tests in all conditions) is 
+not too big (eg <100k tests say) then you can simply do this by
+setting up the entire data set as a mash data object 
+(using `mash_set_data`), and then 
+running a condition-by-condition (1by1)
+analysis on all the data. 
+For example, here we select the strong signals as those with lfsr<0.05 in
 any condition in the 1by1 analysis.
 
 ```{r}
@@ -93,6 +101,10 @@ data   = mash_set_data(simdata$Bhat, simdata$Shat)
 m.1by1 = mash_1by1(data)
 strong = get_significant_results(m.1by1,0.05)
 ```
+This sets up a vector `strong` containing the indices corresponding
+to the "significant" rows of the test results in `data`. This
+vector is used in subsequent functions below to specify which
+rows of `data` to use.
 
 ### Step 2: Obtain initial data-driven covariance matrices
 
@@ -104,7 +116,7 @@ result is a list of 6 covariance matrices: one based on all 5 PCs, and
 the others each based on one PC.
 
 ```{r}
-U.pca = cov_pca(data,5,strong)
+U.pca = cov_pca(data,5,subset=strong)
 print(names(U.pca))
 ```
 
@@ -115,13 +127,14 @@ specified initialization (here `U.pca`) and to a specified subset of
 signals.
 
 ```{r}
-U.ed = cov_ed(data, U.pca, strong)
+U.ed = cov_ed(data, U.pca, subset=strong)
 ```
 
 ## Run mash
 
 After all this we are ready to run `mash` using the data driven
-matrices.
+matrices. Remember the Crucial Rule that we must fit mash to *all*
+tests - do not use only the `strong` subset here!!
 
 ```{r}
 m.ed = mash(data, U.ed)
@@ -136,11 +149,12 @@ canonical covariances!
 
 In general we recommend running `mash` with both data-driven and
 canonical covariances. You could do this by combining the data-driven
-and canonical covariances as in this (unrun) code:
+and canonical covariances as in this code:
 
 ```{r}
 U.c = cov_canonical(data)  
 m   = mash(data, c(U.c,U.ed))
+print(get_loglik(m),digits = 10)
 ```
 
 For an example with simulations that do not follow the standard

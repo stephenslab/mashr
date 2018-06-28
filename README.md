@@ -23,14 +23,14 @@ to create results for the paper. The original package code is
 1. Follow the setup instructions below.
 
 2. See the [Introductory
-Vignette](https://stephenslab.github.io/mashr/docs/intro_mash.html) for an
+Vignette](https://stephenslab.github.io/mashr/articles/intro_mash.html) for an
 introduction to mashr.
 
 3. Then work through the other vignettes to learn more about mashr:
 [Introduction to mash: data-driven
-covariances](https://stephenslab.github.io/mashr/docs/intro_mash_dd.html)
+covariances](https://stephenslab.github.io/mashr/articles/intro_mash_dd.html)
 and [Simulation with non-canonical
-matrices](https://stephenslab.github.io/mashr/docs/simulate_noncanon.html).
+matrices](https://stephenslab.github.io/mashr/articles/simulate_noncanon.html).
 
 ## Setup
 
@@ -86,7 +86,7 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-6):
    R CMD INSTALL mashr_0.2-6.tar.gz
    ```
 
-## Notes
+## Developer notes
 
 + When any changes are made to `roxygen2` markup or the C++ code in
 the src directory, simply run `devtools::document()` to update
@@ -94,20 +94,21 @@ the [RcppExports.cpp](src/RcppExports.cpp), the package namespaces
 (see [NAMESPACE](NAMESPACE)), and the package documentation files (in
 the man directory),
 
-+ To build the vignette webpages, run the following commands in R from
-the vignettes directory:
++ These are the R commands to build the website (make sure you are
+connected to Internet while running these commands):
 
 ```R
-library(rmarkdown)
-render("intro_mash.Rmd",output_dir = "../docs")
-render("intro_mash_dd.Rmd",output_dir = "../docs")
-render("simulate_noncanon.Rmd",output_dir = "../docs")
+library(pkgdown)
+build_site(mathjax = FALSE)
 ```
 
 ## Citation
 
-If the data or code in this repository are useful for your research project, please cite our preprint:
+If the data or code in this repository are useful for your research
+project, please cite our preprint:
 
-S M Urbut, G Wang, M Stephens. Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions. *bioRxiv* doi:10.1101/096552.
+S M Urbut, G Wang, M Stephens. Flexible statistical methods for
+estimating and testing effects in genomic studies with multiple
+conditions. *bioRxiv* doi:10.1101/096552.
 
 

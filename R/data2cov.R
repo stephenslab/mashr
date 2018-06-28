@@ -12,8 +12,7 @@ cov_pca = function(data,npc,subset = NULL){
   assert_that(npc<=n_conditions(data))
   if(is.null(subset)){subset = 1:n_effects(data)}
   res.svd = svd(data$Bhat[subset,],nv=npc,nu=npc)
-  if (!all(data$Shat == 1))
-    message("svd currently performed on Bhat; maybe should be Bhat/Shat?")
+  # FIXME: we need to think of for the EE case what to use for svd input: Bhat or Bhat/Shat
   f = res.svd$v
   Ulist = cov_from_factors(t(f), "PCA")
   d = diag(res.svd$d[1:npc])

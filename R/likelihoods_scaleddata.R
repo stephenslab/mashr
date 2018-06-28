@@ -78,7 +78,6 @@ calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
 #'
 #' @useDynLib mashr
 #'
-#' @importFrom Rcpp sourceCpp
 #' @importFrom Rcpp evalCpp
 calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
                              algorithm.version = c("Rcpp","R")) {

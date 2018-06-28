@@ -66,7 +66,6 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @useDynLib mashr
 #'
 #' @importFrom ashr compute_lfsr
-#' @importFrom Rcpp sourceCpp
 #' @importFrom Rcpp evalCpp
 #'
 #' @export
