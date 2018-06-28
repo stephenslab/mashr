@@ -1,36 +1,36 @@
 #' @title Create a data object for mash analysis.
-#' 
+#'
 #' @param Bhat An N by R matrix of observed estimates.
-#' 
+#'
 #' @param Shat An N by R matrix of corresponding standard errors. Shat
 #'   can be a scalar if all standard errors are equal. This is most
 #'   useful if Bhat is a matrix of Z scores, so elements of Shat are all
 #'   1. Default is 1.
-#' 
+#'
 #' @param alpha Numeric value of alpha parameter in the model. alpha =
 #'   0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable
 #'   Z-scores (EZ). Default is 1. Please refer to equation (3.2) of
 #'   M. Stephens 2016, Biostatistics for a discussion on alpha.
-#' 
+#'
 #' @param df An N by R matrix of corresponding degrees of freedom of
 #'   the t-statistic Bhat/Shat. Can be a scalar if all degrees of
 #'   freedom are equal. Default is inf (for large samples).
-#' 
+#'
 #' @param pval An N by R matrix of p-values of t-statistic
 #'   Bhat/Shat. Shat and df should not be specified when pval is
 #'   provided.
-#' 
+#'
 #' @param V an R by R correlation matrix of error correlations; must
 #'   be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
 #'   V diag(Shat_j)) where _j denotes the jth row of a matrix].
 #'   Defaults to identity.
-#' 
+#'
 #' @return A data object for passing into mash functions.
 #'
 #' @importFrom stats pt
-#' 
+#'
 #' @export
-#' 
+#'
 mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
                           pval = NULL, V = diag(ncol(Bhat))) {
   if (is.null(Shat) && is.null(pval)) {
@@ -48,7 +48,9 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   }
   if(length(Shat)==1){Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))}
   if(!identical(dim(Bhat),dim(Shat))){stop("dimensions of Bhat and Shat must match")}
-  if(det(V)<1e-15){stop("V must be positive definite")}
+  R <- tryCatch(chol(V),error = function (e) FALSE)
+  if (!is.matrix(R))
+    stop("V must be positive definite")
   if(!is.infinite(df)){
     if(length(df)==1){df = matrix(df,nrow=nrow(Bhat),ncol=ncol(Bhat))}
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
