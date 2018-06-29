@@ -7,7 +7,7 @@
 #' @details Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
 #' @importFrom stats cor
 #' @export
-estimate_null_correlation = function(data, z_thresh=2, apply_lower_bound = TRUE){
+estimate_null_correlation = function(data, z_thresh=2, apply_lower_bound = FALSE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)
   nullish = which(max_absz < z_thresh)
