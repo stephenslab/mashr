@@ -17,7 +17,7 @@ useful if Bhat is a matrix of Z scores, so elements of Shat are all
 
 \item{alpha}{Numeric value of alpha parameter in the model. alpha =
 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable
-Z-scores (EZ). Default is 1. Please refer to equation (3.2) of
+Z-scores (EZ). Default is 0. Please refer to equation (3.2) of
 M. Stephens 2016, Biostatistics for a discussion on alpha.}
 
 \item{df}{An N by R matrix of corresponding degrees of freedom of
@@ -35,7 +35,4 @@ Defaults to identity.}
 }
 \value{
 A data object for passing into mash functions.
-}
-\description{
-Create a data object for mash analysis.
 }

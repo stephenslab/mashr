@@ -16,9 +16,6 @@ mash_compute_vloglik(g, data, algorithm.version = c("Rcpp", "R"))
 \value{
 The vector of log-likelihoods for each data point computed using g.
 }
-\description{
-Compute vector of loglikelihood for fitted mash object on new data.
-}
 \details{
 The log-likelihood for each element is \eqn{p(Bhat_j |
 Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,

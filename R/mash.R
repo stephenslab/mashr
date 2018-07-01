@@ -13,7 +13,7 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
-#' @param outputlevel controls amount of computation / output; 1: only output estimated mixture component proportions, 2: output complete result, 99: additionally output debugging information
+#' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights
 #' @return a list with elements result, loglik and fitted_g
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -21,7 +21,6 @@
 #' data = mashr::mash_set_data(Bhat,Shat, alpha=1)
 #' U.c = mashr::cov_canonical(data)
 #' res.mash = mashr::mash(data,U.c)
-#'
 #' @export
 mash = function(data,
                 Ulist = NULL,
@@ -131,13 +130,13 @@ mash = function(data,
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
         posterior_matrices <- compute_posterior_matrices(data, xUlist[which.comp],
-                                                         posterior_weights, algorithm.version)
+                                                         posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2))
       },threshold = 1000))
     else
       out.time <-
         system.time(posterior_matrices <-
           compute_posterior_matrices(data,xUlist[which.comp],
-                                     posterior_weights, algorithm.version))
+                                     posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2)))
     if (verbose)
       if (add.mem.profile)
         cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
@@ -147,10 +146,13 @@ mash = function(data,
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
     if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
-      message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+      ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
       ## Recover the scale of posterior(Bhat)
       posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
       posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+      if (!is.null(posterior_matrices$PosteriorCov)) {
+        posterior_matrices$PosteriorCov <- lapply(1:length(posterior_matrices$PosteriorCov), function(i) posterior_matrices$PosteriorCov[[i]] * data$Shat_alpha)
+      }
     }
   } else {
     posterior_matrices = NULL
@@ -174,7 +176,7 @@ mash = function(data,
          fitted_g = fitted_g, alpha=data$alpha)
   #for debugging
   names(posterior_weights) = which(which.comp)
-  if(outputlevel==99){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
+  if(outputlevel==4){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
   class(m) = "mash"
   return(m)
 }
@@ -187,9 +189,10 @@ mash = function(data,
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param A the linear transformation matrix
+#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #' @return A list of posterior matrices
 #' @export
-mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL ){
+mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE){
   if (!is.null(A) && algorithm.version=='Rcpp'){
     stop("FIXME: not implemented")
   }
@@ -211,10 +214,10 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   posterior_weights = compute_posterior_weights(g$pi[which.comp], exp(lm_res$loglik_matrix[,which.comp]))
   posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
                                                   posterior_weights,
-                                                  algorithm.version, A=A)
+                                                  algorithm.version, A=A, output_posterior_cov=output_posterior_cov)
 
   if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
-    message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+    ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
     ## Recover the scale of posterior(Bhat)
     posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
     posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
@@ -333,4 +336,3 @@ autoselect_grid = function(data,mult){
   #message("autoselect_grid is a place-holder\n")
   #return(c(0.5,1,2))
 }
-

@@ -39,7 +39,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 
 \item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
 
-\item{outputlevel}{controls amount of computation / output; 1: only output estimated mixture component proportions, 2: output complete result, 99: additionally output debugging information}
+\item{outputlevel}{controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights}
 }
 \value{
 a list with elements result, loglik and fitted_g
@@ -53,5 +53,4 @@ Shat = matrix(rep(1,100),ncol=5)
 data = mashr::mash_set_data(Bhat,Shat, alpha=1)
 U.c = mashr::cov_canonical(data)
 res.mash = mashr::mash(data,U.c)
-
 }

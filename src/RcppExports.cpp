@@ -23,8 +23,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // calc_post_rcpp
-Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericVector U_3d, Rcpp::NumericMatrix posterior_weights, bool common_cov);
-RcppExport SEXP _mashr_calc_post_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP v_matSEXP, SEXP U_3dSEXP, SEXP posterior_weightsSEXP, SEXP common_covSEXP) {
+Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericVector U_3d, Rcpp::NumericMatrix posterior_weights, bool common_cov, bool report_post_cov);
+RcppExport SEXP _mashr_calc_post_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP v_matSEXP, SEXP U_3dSEXP, SEXP posterior_weightsSEXP, SEXP common_covSEXP, SEXP report_post_covSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -34,14 +34,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type U_3d(U_3dSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type posterior_weights(posterior_weightsSEXP);
     Rcpp::traits::input_parameter< bool >::type common_cov(common_covSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_post_rcpp(b_mat, s_mat, v_mat, U_3d, posterior_weights, common_cov));
+    Rcpp::traits::input_parameter< bool >::type report_post_cov(report_post_covSEXP);
+    rcpp_result_gen = Rcpp::wrap(calc_post_rcpp(b_mat, s_mat, v_mat, U_3d, posterior_weights, common_cov, report_post_cov));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mashr_calc_lik_rcpp", (DL_FUNC) &_mashr_calc_lik_rcpp, 6},
-    {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 6},
+    {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 7},
     {NULL, NULL, 0}
 };
 

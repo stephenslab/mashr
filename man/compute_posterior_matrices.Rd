@@ -5,7 +5,8 @@
 \title{Compute posterior matrices.}
 \usage{
 compute_posterior_matrices(data, Ulist, posterior_weights,
-  algorithm.version = c("Rcpp", "R"), A = NULL)
+  algorithm.version = c("Rcpp", "R"), A = NULL,
+  output_posterior_cov = FALSE)
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by

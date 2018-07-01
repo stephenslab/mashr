@@ -7,5 +7,8 @@ test_that("posterior calculations with common cov match regular version",{
   out1 = compute_posterior_matrices_general_R(data,A=diag(3),Ulist,posterior_weights)
   out2 = compute_posterior_matrices_common_cov_R(data,A=diag(3),Ulist,posterior_weights)
   expect_equal(out1,out2)
+  out1 = calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V, simplify2array(Ulist),t(posterior_weights), TRUE, FALSE)
+  out2 = calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V, simplify2array(Ulist),t(posterior_weights), FALSE, FALSE)
+  expect_equal(out1,out2)
 }
 )

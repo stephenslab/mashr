@@ -14,10 +14,6 @@ sim_contrast2(nsamp = 1000, ncond = 5, err_sd = sqrt(0.5))
 
 \item{err_sd}{The standard deviation of the errors.}
 }
-\description{
-Create simulation with signal data used for contrast
-analysis, 10\% percent of them are non-null.
-}
 \details{
 The simulation consists of equal numbers of four different
   types of deviations: null, equal among conditions, present only in
