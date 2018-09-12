@@ -5,11 +5,11 @@ sudo: false
 cache: packages
 latex: false
 warnings_are_errors: false
+r_build_args: --no-build-vignettes
 
 env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_=FALSE
-    - r_build_args: --no-build-vignettes
     
 r_packages:
   - covr
