@@ -61,18 +61,27 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-  tryCatch(chol(data$V), error = function(e) stop("Input matrix V is not positive definite"))
+  is_positive_definite(data$V)
+
+  # Get the number of samples (J), the number of mixture components
+  # (i.e., prior covariances).
+  J <- nrow(data$Bhat)
+  R <- ncol(data$Bhat)
+
+  for (i in 1:length(Ulist)) {
+    check_covmat_basics(Ulist[[i]])
+    if (nrow(Ulist[[i]]) != R)
+      stop(paste("Matrices in Ulist must be of dimension", R, "by", R))
+  }
+
   xUlist = expand_cov(Ulist,grid,usepointmass)
+  P <- length(xUlist)
 
   # Check "add.mem.profile" argument.
   if (add.mem.profile)
     if (!requireNamespace("profmem",quietly = TRUE))
       stop("add.mem.profile = TRUE requires the profmem package")
 
-  # Get the number of samples (J), the number of mixture components
-  # (i.e., prior covariances).
-  J <- nrow(data$Bhat)
-  P <- length(xUlist)
 
   # Calculate likelihood matrix.
   if (verbose)

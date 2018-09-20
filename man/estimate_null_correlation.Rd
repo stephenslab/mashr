@@ -4,7 +4,8 @@
 \alias{estimate_null_correlation}
 \title{Estimate null correlations}
 \usage{
-estimate_null_correlation(data, z_thresh = 2, apply_lower_bound = TRUE)
+estimate_null_correlation(data, z_thresh = 2,
+  apply_lower_bound = FALSE)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}
