@@ -51,65 +51,32 @@ data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.sub
 
 # FLASH analysis
 
-**FIXME: we can review the code here and possibly implement `cov_flash` for future releases.**
+**FIXME**
+
+1. (we can review the code here and possibly implement `cov_flash` for future releases)
+2. (For the time being we remove the additional decomposition on FLASH loading because there are issues needs to be figured out. @yuxin)
 
 ```{r}
 library(flashr)
-require(mclust)
-library(plyr)
-library(assertthat)
-
 flash_pipeline = function(data, ...) {
   ## FIXME: need to adopt the current state-of-the art from Jason
   return(flash(data, ...))
 }
 
-cov_flash = function(data, nfc=10, subset = NULL, mode = 'EZ', factor_plot = NULL) {
-  assert_that(nfc>1)
+cov_flash = function(data, subset = NULL, mode = 'EZ', save_model = NULL) {
   if(is.null(subset)) subset = 1:mashr:::n_effects(data)
   ## FIXME: is this reasonable?
   if (mode == 'EZ') b = data$Bhat / data$Shat
   else b = data$Bhat
   b.center = apply(b, 2, function(x) x - mean(x))
-  fdata = flash_set_data(b)
+  fdata = flash_set_data(b.center)
   fmodel = flash_pipeline(fdata, greedy = TRUE, backfit = TRUE)
   flash_f = fmodel$ldf$f
   row.names(flash_f) = colnames(b)
-  pve = order(fmodel$pve, decreasing = TRUE)
-  if (!is.null(factor_plot)) {
-      pdf(factor_plot)
-      for(i in pve){
-          barplot(flash_f[,i], main=paste0('Factor ', i, ' pve= ',
-          round(fmodel$pve[i],3)), las=2, cex.names = 0.7)
-      }
-      dev.off()
-  }
-  K = min(nfc, ncol(fmodel$ldf$l))
-  if (K > 1) {
-    ## FLASH on the loading
-    ## Because there might be patterns in the loading
-    ## that the initial FLASH run did not separate out
-    flash_l = fmodel$ldf$l[,1:K]
-    colnames(flash_l) = paste0('Factor', seq(1,K))
-    ## We do not have to fit FLASH again
-    ## unless we care about whether or not there are indeed
-    ## unseparated patterns in the initial L
-    ## fldata = flash_set_data(flash_l)
-    ## flmodel = flash_pipeline(fldata, greedy = TRUE, backfit = TRUE)
-    ## Cluster loadings
-    mod = Mclust(flash_l)
-    U_list = plyr::alply(mod$parameters$variance$sigma,3)
-    mu_list = plyr::alply(mod$parameters$mean,2)
-    ll = lapply(1:length(U_list), function(i) U_list[[i]] + mu_list[[i]] %*% t(mu_list[[i]]))
-    U.loading = lapply(ll, function(U) fmodel$fit$EF[,1:K] %*% (U %*% t(fmodel$fit$EF[,1:K])))
-    names(U.loading) = paste0('Load', K, "_", (1:length(U.loading)))
-  } else {
-    U.loading = NULL
-  }
-  flash_lf = flashr:::flash_get_fitted_values(fmodel)
+  if (!is.null(save_model)) saveRDS(fmodel, save_model)
   U.flash = c(cov_from_factors(t(as.matrix(flash_f)), "Flash"),
-      list("tFlash" = t(flash_lf) %*% flash_lf / nrow(b)))
-  return(list(U.loading = U.loading, U.flash = U.flash))
+      list("tFlash" = t(fmodel$fitted_values) %*% fmodel$fitted_values / nrow(b)))
+  return(U.flash)
 }
 ```
 
