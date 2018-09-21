@@ -58,16 +58,21 @@ library(flashr)
 require(mclust)
 library(plyr)
 library(assertthat)
-cov_flash = function(data, nfc, subset = NULL, mode = 'EZ', factor_plot = NULL) {
+
+flash_pipeline = function(data, ...) {
+  ## FIXME: need to adopt the current state-of-the art from Jason
+  return(flash(data, ...))
+}
+
+cov_flash = function(data, nfc=10, subset = NULL, mode = 'EZ', factor_plot = NULL) {
   assert_that(nfc>1)
-  assert_that(nfc<=mashr:::n_conditions(data))
   if(is.null(subset)) subset = 1:mashr:::n_effects(data)
   ## FIXME: is this reasonable?
   if (mode == 'EZ') b = data$Bhat / data$Shat
   else b = data$Bhat
   b.center = apply(b, 2, function(x) x - mean(x))
   fdata = flash_set_data(b)
-  fmodel = flash(fdata, greedy = TRUE, backfit = TRUE)
+  fmodel = flash_pipeline(fdata, greedy = TRUE, backfit = TRUE)
   flash_f = fmodel$ldf$f
   row.names(flash_f) = colnames(b)
   pve = order(fmodel$pve, decreasing = TRUE)
@@ -79,24 +84,26 @@ cov_flash = function(data, nfc, subset = NULL, mode = 'EZ', factor_plot = NULL) 
       }
       dev.off()
   }
-  ## flash on the loading
   K = min(nfc, ncol(fmodel$ldf$l))
-  flash_l = fmodel$ldf$l[,1:K,drop=F]
-  colnames(flash_l) = paste0('Factor', seq(1,K))
-  fldata = flash_set_data(flash_l)
-  flmodel = flash(fldata, greedy = TRUE, backfit = TRUE)
-  ## Cluster loadings
-  mod = Mclust(flash_l)
-  U_list = plyr::alply(mod$parameters$variance$sigma,3)
-  mu_list = plyr::alply(mod$parameters$mean,2)
-  ll = list()
-  for (i in 1:length(U_list)) {
-      ll[[i]] = U_list[[i]] + mu_list[[i]] %*% t(mu_list[[i]])
+  if (K > 1) {
+    ## FLASH on the loading
+    ## Because there might be patterns in the loading
+    ## that the initial FLASH run did not separate out
+    flash_l = fmodel$ldf$l[,1:K]
+    colnames(flash_l) = paste0('Factor', seq(1,K))
+    fldata = flash_set_data(flash_l)
+    flmodel = flash_pipeline(fldata, greedy = TRUE, backfit = TRUE)
+    ## Cluster loadings
+    mod = Mclust(flash_l)
+    U_list = plyr::alply(mod$parameters$variance$sigma,3)
+    mu_list = plyr::alply(mod$parameters$mean,2)
+    ll = lapply(1:length(U_list), function(i) U_list[[i]] + mu_list[[i]] %*% t(mu_list[[i]]))
+    U.loading = lapply(ll, function(U) fmodel$fit$EF[,1:K] %*% (U %*% t(fmodel$fit$EF[,1:K])))
+    names(U.loading) = paste0('Load', K, "_", (1:length(U.loading)))
+  } else {
+    U.loading = NULL
   }
-  U.loading = lapply(ll, function(U) fmodel$fit$EF[,1:K] %*% (U %*% t(fmodel$fit$EF[,1:K])))
-  names(U.loading) = paste0('Load', K, "_", (1:length(U.loading)))
-  ## Rank 1 results
-  flash_lf = flash_get_fitted_values(fmodel)
+  flash_lf = flashr:::flash_get_fitted_values(fmodel)
   U.flash = c(cov_from_factors(t(as.matrix(flash_f)), "Flash"),
       list("tFlash" = t(flash_lf) %*% flash_lf / nrow(b)))
   return(list(U.loading = U.loading, U.flash = U.flash))
@@ -104,10 +111,10 @@ cov_flash = function(data, nfc, subset = NULL, mode = 'EZ', factor_plot = NULL) 
 ```
 
 ```{r}
-U.f = cov_flash(data.strong, 5)
+U.f = cov_flash(data.strong)
 ```
 
-## Finalize covariances
+# Finalize covariances
 
 ```{r}
 U.pca = cov_pca(data.strong, 5)
@@ -122,7 +129,7 @@ Now we fit mash to the random tests using both data-driven and canonical covaria
 m = mash(data.random, Ulist = c(U.ed,U.c), outputlevel = 1)
 ```
 
-## Compute posterior summaries
+# Compute posterior summaries
 
 Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the `strong` tests.
 ```{r}
