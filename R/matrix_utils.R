@@ -13,7 +13,7 @@ check_covmat_basics = function(x) {
         stop(paste(substitute(x), "cannot contain NaN values"))
     if (nrow(x) != ncol(x))
         stop(paste(substitute(x), "is not a square matrix"))
-    if (sum(x == t(x)) != (nrow(x)^2))
+    if (!isSymmetric(x))
         stop(paste(substitute(x), "is not a symmetric matrix"))
   return(TRUE)
 }
@@ -22,7 +22,6 @@ check_covmat_basics = function(x) {
 ## @param X input matrix
 check_positive_definite = function(x) {
   check_covmat_basics(x)
-  if (det(x) <= 0)
-    stop(paste(substitute(x), "must be positive definite"))
+  tryCatch(chol(x), error = function(e) stop(paste(substitute(x), "must be positive definite")))
   return(TRUE)
 }
