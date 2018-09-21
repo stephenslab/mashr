@@ -1,0 +1,132 @@
+---
+title: "Using flashr for mashr prior specification"
+author: "Gao Wang and others"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{using flashr for mashr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center",
+                      eval = TRUE)
+```
+
+# Introduction
+
+This is continuation of the [eQTL analysis vignette][eqtl].
+In that vignette we have used PCA to compute data driven covariances. Here we demonstrate
+the use of additional data driven covariance, via [flash](https://github.com/stephenslab/flashr) decomposition.
+
+# Dataset simulation
+
+Same as the [eQTL analysis vignette][eqtl] we simulate a toy data-set,
+
+```{r}
+library(ashr)
+library(mashr)
+set.seed(1)
+simdata = simple_sims(10000,5,1) # simulates data on 40k tests
+
+# identify a subset of strong tests
+m.1by1 = mash_1by1(mash_set_data(simdata$Bhat,simdata$Shat))
+strong.subset = get_significant_results(m.1by1,0.05)
+
+# identify a random subset of 5000 tests
+random.subset = sample(1:nrow(simdata$Bhat),5000)
+```
+
+and create `random` and `strong` sets,
+
+```{r}
+data.temp = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
+Vhat = estimate_null_correlation(data.temp)
+rm(data.temp)
+data.random = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,],V=Vhat)
+data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.subset,], V=Vhat)
+```
+
+# FLASH analysis
+
+**FIXME: we can review the code here and possibly implement `cov_flash` for future releases.**
+
+```{r}
+library(flashr)
+require(mclust)
+library(plyr)
+library(assertthat)
+cov_flash = function(data, nfc, subset = NULL, mode = 'EZ', factor_plot = NULL) {
+  assert_that(nfc>1)
+  assert_that(nfc<=mashr:::n_conditions(data))
+  if(is.null(subset)) subset = 1:mashr:::n_effects(data)
+  ## FIXME: is this reasonable?
+  if (mode == 'EZ') b = data$Bhat / data$Shat
+  else b = data$Bhat
+  b.center = apply(b, 2, function(x) x - mean(x))
+  fdata = flash_set_data(b)
+  fmodel = flash(fdata, greedy = TRUE, backfit = TRUE)
+  flash_f = fmodel$ldf$f
+  row.names(flash_f) = colnames(b)
+  pve = order(fmodel$pve, decreasing = TRUE)
+  if (!is.null(factor_plot)) {
+      pdf(factor_plot)
+      for(i in pve){
+          barplot(flash_f[,i], main=paste0('Factor ', i, ' pve= ',
+          round(fmodel$pve[i],3)), las=2, cex.names = 0.7)
+      }
+      dev.off()
+  }
+  ## flash on the loading
+  K = min(nfc, ncol(fmodel$ldf$l))
+  flash_l = fmodel$ldf$l[,1:K,drop=F]
+  colnames(flash_l) = paste0('Factor', seq(1,K))
+  fldata = flash_set_data(flash_l)
+  flmodel = flash(fldata, greedy = TRUE, backfit = TRUE)
+  ## Cluster loadings
+  mod = Mclust(flash_l)
+  U_list = plyr::alply(mod$parameters$variance$sigma,3)
+  mu_list = plyr::alply(mod$parameters$mean,2)
+  ll = list()
+  for (i in 1:length(U_list)) {
+      ll[[i]] = U_list[[i]] + mu_list[[i]] %*% t(mu_list[[i]])
+  }
+  U.loading = lapply(ll, function(U) fmodel$fit$EF[,1:K] %*% (U %*% t(fmodel$fit$EF[,1:K])))
+  names(U.loading) = paste0('Load', K, "_", (1:length(U.loading)))
+  ## Rank 1 results
+  flash_lf = flash_get_fitted_values(fmodel)
+  U.flash = c(cov_from_factors(t(as.matrix(flash_f)), "Flash"),
+      list("tFlash" = t(flash_lf) %*% flash_lf / nrow(b)))
+  return(list(U.loading = U.loading, U.flash = U.flash))
+}
+```
+
+```{r}
+U.f = cov_flash(data.strong, 5)
+```
+
+## Finalize covariances
+
+```{r}
+U.pca = cov_pca(data.strong, 5)
+U.ed = cov_ed(data.strong, c(U.f$U.flash, U.f$U.loading, U.pca))
+U.c = cov_canonical(data.random)
+```
+    
+## Fit mash model (estimate mixture proportions)
+
+Now we fit mash to the random tests using both data-driven and canonical covariances. 
+```{r}
+m = mash(data.random, Ulist = c(U.ed,U.c), outputlevel = 1)
+```
+
+## Compute posterior summaries
+
+Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the `strong` tests.
+```{r}
+m2 = mash(data.strong, g=get_fitted_g(m), fixg=TRUE)
+head(get_lfsr(m2))
+```
+[eqtl]: https://stephenslab.github.io/mashr/articles/eQTL_outline.html
