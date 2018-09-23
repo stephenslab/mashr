@@ -13,8 +13,6 @@
 # (We should probably only ever export likelihood functions for the originaldata to avoid
 # confusion?)
 
-
-
 #' @title Compute conditional likelihoods for bhat vector.
 #'
 #' @description Computes vector of likelihoods for bhat for each of P
@@ -52,7 +50,6 @@ calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
   dimnames(res) = NULL # just to make result identical to the non-common-cov version
   t(res)
 }
-
 
 #' @title Compute matrix of conditional likelihoods.
 #'
@@ -92,6 +89,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     stop("Argument \"mc.cores\" only works for Rcpp version.")
 
   if (algorithm.version == "R") {
+      
     # check if the rows of Shat are same
     if(is_common_cov_Shat(data)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)

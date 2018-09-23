@@ -27,6 +27,8 @@ check_covmat_basics = function(x) {
 ## @param X input matrix
 check_positive_definite = function(x) {
   check_covmat_basics(x)
-  tryCatch(chol(x), error = function(e) labelled_stop(substitute(x), "must be positive definite"))
+  tryCatch(chol(x),
+    error = function(e) labelled_stop(substitute(x),
+                                      "must be positive definite"))
   return(TRUE)
 }
