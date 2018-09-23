@@ -56,7 +56,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-
+  Shat[which(is.nan(Shat) | is.infinite(Shat))] = 0
   # transform data according to alpha
   if (alpha != 0 && !all(Shat == 1)) {
     ## alpha models dependence of effect size on standard error
@@ -68,6 +68,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
+  Bhat[which(is.nan(Bhat))] = 0
   data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha)
   class(data) = 'mash'
   return(data)
