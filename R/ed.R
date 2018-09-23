@@ -13,7 +13,7 @@
 #' It fixes the projection to be the identity, and the means to be 0
 #'
 #' @export
-ed_wrapper = function(data, Ulist_init, subset=NULL){
+ed_wrapper = function(data, Ulist_init, subset=NULL, ...){
   if(is.null(subset)){subset = 1:n_effects(data)}
   K = length(Ulist_init)
   R = n_conditions(data)
@@ -23,6 +23,7 @@ ed_wrapper = function(data, Ulist_init, subset=NULL){
                                  xamp = pi_init,
                                  xmean = matrix(0,nrow=K,ncol=R),
                                  xcovar = Ulist_init,
-                                 fixmean = TRUE)
+                                 fixmean = TRUE,
+                                 ...)
   return(list(pi = ed.res$xamp, Ulist = ed.res$xcovar, av_loglik = ed.res$avgloglikedata))
 }

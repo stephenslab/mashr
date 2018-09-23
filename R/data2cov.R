@@ -27,9 +27,8 @@ cov_pca = function(data,npc,subset = NULL){
 #' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
 #' The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
 #' @export
-cov_ed = function(data, Ulist_init, subset = NULL){
-  if(is.null(subset)){subset = 1:n_effects(data)}
-  Ulist_ed = ed_wrapper(data, Ulist_init, subset)$Ulist
+cov_ed = function(data, Ulist_init, subset = NULL, ...){
+  Ulist_ed = ed_wrapper(data, Ulist_init, subset, ...)$Ulist
   names(Ulist_ed) = make_names("ED", if(is.null(names(Ulist_init))) 1:length(Ulist_ed) else names(Ulist_init))
   Ulist_ed
 }
