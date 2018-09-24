@@ -134,8 +134,8 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
   if (length(rows) > 0)
     warning(paste("Some mixture components result in non-finite likelihoods,",
                   "either\n","due to numerical underflow/overflow,",
-                  "or due to marginal covariance\n",
-                  "matrices that are not s.p.d.:\n",
+                  "or due to covariance matrices\n",
+                  "that are not s.p.d.:",
                   paste(rows,collapse=", "),
                   "\n"))
   
