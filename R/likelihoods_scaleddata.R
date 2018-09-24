@@ -43,12 +43,17 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @details Compared with \code{calc_lik_matrix} this function exploits fact that observations are iid in this case,
 #' so the inverse covariance matrices only need to be done once, reducing computation to R^3 + JR^2 instead of JR^3
 #' @importFrom plyr laply
-calc_lik_matrix_common_cov = function(data, Ulist, log=FALSE){
-  V   = get_cov(data,1) # all covariances are same
-  res = laply(Ulist,
-              function(U){dmvnorm(x=data$Bhat,sigma=V+U,log=log)})
+calc_lik_matrix_common_cov = function(data, Ulist, log = FALSE){
+  V   <- get_cov(data,1) # all covariances are same
+  res <- laply(Ulist,function(U) {
+    R <- tryCatch(chol(U + V),error = function(e) FALSE)
+    if (is.logical(R))
+      return(rep(-Inf,nrow(data$Bhat)))
+    else
+      return(dmvnorm(x = data$Bhat,sigma = V + U,log = log))
+   })
   dimnames(res) = NULL # just to make result identical to the non-common-cov version
-  t(res)
+  return(t(res))
 }
 
 #' @title Compute matrix of conditional likelihoods.
@@ -124,6 +129,16 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
   else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
 
+  # Give a warning if any columns have -Inf likelihoods.
+  rows <- which(apply(res,2,function (x) any(is.infinite(x))))
+  if (length(rows) > 0)
+    warning(paste("Some mixture components result in non-finite likelihoods,",
+                  "either\n","due to numerical underflow/overflow,",
+                  "or due to marginal covariance\n",
+                  "matrices that are not s.p.d.:\n",
+                  paste(rows,collapse=", "),
+                  "\n"))
+  
   return(res)
 
 }
