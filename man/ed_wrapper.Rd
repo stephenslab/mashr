@@ -4,7 +4,7 @@
 \alias{ed_wrapper}
 \title{Fit extreme deconvolution to mash data}
 \usage{
-ed_wrapper(data, Ulist_init, subset = NULL)
+ed_wrapper(data, Ulist_init, subset = NULL, ...)
 }
 \arguments{
 \item{data}{mash data object}

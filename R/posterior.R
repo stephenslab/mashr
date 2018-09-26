@@ -45,7 +45,7 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #'
-#' @param A the linear transformation matrix, KxR matrix
+#' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
 #'
 #' @return The return value is a list containing the following
 #'    components:
@@ -75,7 +75,7 @@ compute_posterior_matrices <-
   algorithm.version <- match.arg(algorithm.version)
 
   if(!is.null(A) && algorithm.version == 'Rcpp'){
-    stop("FIXME: not implemented")
+    stop("FIXME: The linear transfermation for the posterior distribution is not implemented Rcpp")
   }
 
   if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){

@@ -17,7 +17,7 @@ mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
-\item{A}{the linear transformation matrix}
+\item{A}{the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.}
 
 \item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
 }

@@ -9,7 +9,7 @@ compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
-\item{A}{the linear transformation matrix, KxR matrix}
+\item{A}{the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.}
 
 \item{Ulist}{a list of P covariance matrices for each mixture component}
 

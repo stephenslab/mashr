@@ -1,7 +1,7 @@
 #' @title Compute posterior matrices (general version)
 #' @description Computes posterior matrices without allocating huge memory
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' @param A the linear transformation matrix, KxR matrix
+#' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
 #' @param Ulist a list of P covariance matrices for each mixture component
 #' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data
 #' @return PosteriorMean JxK matrix of posterior means
@@ -15,19 +15,19 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights){
   R=n_conditions(data)
   J=n_effects(data)
   P=length(Ulist)
-  RA = nrow(A)
+  K = nrow(A)
 
   # allocate arrays for returned results
-  res_post_mean=array(NA,dim=c(J,RA))
-  res_post_mean2 = array(NA,dim=c(J,RA)) #mean squared value
-  res_post_zero=array(NA,dim=c(J,RA))
-  res_post_neg=array(NA,dim=c(J,RA))
+  res_post_mean=array(NA,dim=c(J,K))
+  res_post_mean2 = array(NA,dim=c(J,K)) #mean squared value
+  res_post_zero=array(NA,dim=c(J,K))
+  res_post_neg=array(NA,dim=c(J,K))
 
   # allocate arrays for temporary calculations
-  post_mean=array(NA,dim=c(P,RA))
-  post_mean2 = array(NA,dim=c(P,RA)) #mean squared value
-  post_zero=array(NA,dim=c(P,RA))
-  post_neg=array(NA,dim=c(P,RA))
+  post_mean=array(NA,dim=c(P,K))
+  post_mean2 = array(NA,dim=c(P,K)) #mean squared value
+  post_zero=array(NA,dim=c(P,K))
+  post_neg=array(NA,dim=c(P,K))
 
   # check if rows of Shat are same, if so,
   # the covariances are same

@@ -19,7 +19,7 @@ probability of each mixture component in Ulist for the data}
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
-\item{A}{the linear transformation matrix, KxR matrix}
+\item{A}{the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.}
 }
 \value{
 The return value is a list containing the following
