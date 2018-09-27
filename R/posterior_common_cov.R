@@ -5,16 +5,21 @@
 #' @param Ulist a list of P covariance matrices for each mixture component
 #' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
+#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @return PosteriorMean JxK matrix of posterior means
 #' @return PosteriorSD JxK matrix of posterior (marginal) standard deviations
 #' @return NegativeProb JxK matrix of posterior (marginal) probability of being negative
 #' @return ZeroProb JxK matrix of posterior (marginal) probability of being zero
 #' @return lfsr JxK matrix of local false sign rates
 #' @return PosteriorCov K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
+#' @return PosteriorSamples M x K x J array of samples, if the \code{posterior_samples = M > 0}
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm
 #' @importFrom plyr aaply
-compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE){
+#' @importFrom MASS mvrnorm
+compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
+                                                 posterior_samples = 0, seed = 123){
   R = n_conditions(data)
   J = n_effects(data)
   P = length(Ulist)
@@ -29,6 +34,13 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
   if(output_posterior_cov){
     # record sum_{p} pi_{jp}(U1[p] + mu_{jp}mu_{jp}^{T})
     post_sec_w_sum = array(0,dim=c(K, K, J))
+  }
+
+  if(posterior_samples > 0){
+    set.seed(seed)
+    res_post_samples = array(0, dim=c(posterior_samples, K, J))
+    Z = apply(posterior_weights, 1, function(p) rowSums(rmultinom(posterior_samples, 1, p)))
+    Z_cumsum = apply(Z, 2, cumsum)
   }
 
   if((!is_common_cov_Shat(data)) && (!is_common_cov_Shat_alpha(data))){
@@ -72,6 +84,36 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
         post_sec[] <- apply(muA_s, 3, '+', pvar)
         post_sec_w_sum <-post_sec_w_sum + aaply(post_sec, c(1,2), function(x,y){x*y}, posterior_weights[,p])
       }
+
+      if(posterior_samples > 0){
+        ind = which(Z[p,] > 0)
+        for(j in ind){
+          if(p == 1){
+            res_post_samples[1:Z_cumsum[p,j],,j] = mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar)
+          }else{
+            res_post_samples[(Z_cumsum[p-1,j]+1):Z_cumsum[p,j],,j] = mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar)
+          }
+        }
+        # Use sapply, instead of for loop
+        # if(p == 1){
+        #   temp = sapply(1:J, function(j){
+        #     if(Z[p,j] > 0){
+        #       rbind(mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar),
+        #             matrix(0, posterior_samples-Z[p, j], K))
+        #     }else{matrix(0, posterior_samples, K)}
+        #   }, simplify = 'array')
+        #   res_post_samples = res_post_samples + temp
+        # }else{
+        #   temp = sapply(1:J, function(j){
+        #     if(Z[p,j] > 0){
+        #       rbind(matrix(0, Z_cumsum[p-1,j], K),
+        #             mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar),
+        #             matrix(0, posterior_samples-Z_cumsum[p, j], K))
+        #     }else{matrix(0, posterior_samples, K)}
+        #   }, simplify = 'array')
+        #   res_post_samples = res_post_samples + temp
+        # }
+      }
   }
 
   res_post_sd = sqrt(res_post_mean2 - res_post_mean^2)
@@ -106,5 +148,11 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
     dimnames(res_post_cov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
+
+  if(posterior_samples > 0){
+    dimnames(res_post_samples) <- list(paste0("sample_",(1:posterior_samples)), colnames(data$Bhat), rownames(data$Bhat))
+    posterior_matrices$PosteriorSamples = res_post_samples
+  }
+
   return(posterior_matrices)
 }

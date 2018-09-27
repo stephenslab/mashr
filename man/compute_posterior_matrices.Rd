@@ -6,7 +6,7 @@
 \usage{
 compute_posterior_matrices(data, Ulist, posterior_weights,
   algorithm.version = c("Rcpp", "R"), A = NULL,
-  output_posterior_cov = FALSE)
+  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by
@@ -22,6 +22,10 @@ probability of each mixture component in Ulist for the data}
 \item{A}{the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.}
 
 \item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
+
+\item{posterior_samples}{the number of points to be sampled from the posterior distribution of sample j. The default is 0.}
+
+\item{seed}{A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 }
 \value{
 The return value is a list containing the following
@@ -41,6 +45,8 @@ The return value is a list containing the following
    \item{lfsr}{J x K matrix of local false sign rates.}
 
    \item{PosteriorCov}{K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+
+   \item{PosteriorSamples}{M x K x J array of samples, if the \code{posterior_samples = M > 0}.}
 }
 \description{
 More detailed description of function goes here.

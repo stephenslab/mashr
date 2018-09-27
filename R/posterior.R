@@ -49,6 +49,10 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #'
+#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#'
+#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
+#'
 #' @return The return value is a list containing the following
 #'    components:
 #'
@@ -67,6 +71,8 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #'    \item{PosteriorCov}{K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
 #'
+#'    \item{PosteriorSamples}{M x K x J array of samples, if the \code{posterior_samples = M > 0}.}
+#'
 #' @useDynLib mashr
 #'
 #' @importFrom ashr compute_lfsr
@@ -75,7 +81,8 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @export
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
-            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE) {
+            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE,
+            posterior_samples = 0, seed = 123) {
   algorithm.version <- match.arg(algorithm.version)
 
   if(!is.null(A) && algorithm.version == 'Rcpp'){
@@ -110,11 +117,17 @@ compute_posterior_matrices <-
 
     # message("FIXME: output posterior matrices not implemented in R version")
     if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov)
+      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+                                              posterior_samples = posterior_samples, seed=seed)
     } else {
-      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov)
+      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+                                           posterior_samples = posterior_samples, seed=seed)
     }
   } else if (algorithm.version == "Rcpp") {
+    message('FIXME: The sampling method is not implement in Rcpp.')
+    if(posterior_samples > 0){
+      stop('FIXME: The sampling method is not implement in Rcpp.')
+    }
 
     # Run the C implementation using the Rcpp interface.
     res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,

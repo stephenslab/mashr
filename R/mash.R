@@ -13,6 +13,8 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
+#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights
 #' @return a list with elements result, loglik and fitted_g
 #' @examples
@@ -36,6 +38,8 @@ mash = function(data,
                 add.mem.profile = FALSE,
                 algorithm.version = c("Rcpp","R"),
                 pi_thresh = 1e-10,
+                posterior_samples = 0,
+                seed = 123,
                 outputlevel = 2) {
 
   algorithm.version = match.arg(algorithm.version)
@@ -139,13 +143,15 @@ mash = function(data,
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
         posterior_matrices <- compute_posterior_matrices(data, xUlist[which.comp],
-                                                         posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2))
+                                                         posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2),
+                                                         posterior_samples = posterior_samples, seed = seed)
       },threshold = 1000))
     else
       out.time <-
         system.time(posterior_matrices <-
           compute_posterior_matrices(data,xUlist[which.comp],
-                                     posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2)))
+                                     posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2),
+                                     posterior_samples = posterior_samples, seed = seed))
     if (verbose)
       if (add.mem.profile)
         cat(sprintf(" - Computation allocated %0.2f MB and took %0.2f s.\n",
@@ -198,10 +204,13 @@ mash = function(data,
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
+#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #' @return A list of posterior matrices
 #' @export
-mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE){
+mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE,
+                                           posterior_samples = 0, seed = 123){
   if (!is.null(A) && algorithm.version=='Rcpp'){
     stop("FIXME: The linear transfermation for the posterior distribution is not implemented Rcpp")
   }
@@ -223,7 +232,8 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   posterior_weights = compute_posterior_weights(g$pi[which.comp], exp(lm_res$loglik_matrix[,which.comp]))
   posterior_matrices = compute_posterior_matrices(data, xUlist[which.comp],
                                                   posterior_weights,
-                                                  algorithm.version, A=A, output_posterior_cov=output_posterior_cov)
+                                                  algorithm.version, A=A, output_posterior_cov=output_posterior_cov,
+                                                  posterior_samples = posterior_samples, seed=seed)
 
   if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
     ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
