@@ -47,6 +47,8 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
 #'
+#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
+#'
 #' @return The return value is a list containing the following
 #'    components:
 #'
@@ -62,6 +64,8 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'     of being zero.}
 #'
 #'    \item{lfsr}{J x K matrix of local false sign rates.}
+#'
+#'    \item{PosteriorCov}{K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
 #'
 #' @useDynLib mashr
 #'
@@ -104,11 +108,11 @@ compute_posterior_matrices <-
       common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
     }
 
-    message("FIXME: output posterior matrices not implemented in R version")
+    # message("FIXME: output posterior matrices not implemented in R version")
     if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
+      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov)
     } else {
-      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
+      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov)
     }
   } else if (algorithm.version == "Rcpp") {
 

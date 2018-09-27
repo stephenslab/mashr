@@ -4,14 +4,17 @@
 #' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
 #' @param Ulist a list of P covariance matrices for each mixture component
 #' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data
+#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #' @return PosteriorMean JxK matrix of posterior means
 #' @return PosteriorSD JxK matrix of posterior (marginal) standard deviations
 #' @return NegativeProb JxK matrix of posterior (marginal) probability of being negative
 #' @return ZeroProb JxK matrix of posterior (marginal) probability of being zero
 #' @return lfsr JxK matrix of local false sign rates
+#' @return PosteriorCov K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm
-compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights){
+#' @importFrom plyr aaply
+compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE){
   R = n_conditions(data)
   J = n_effects(data)
   P = length(Ulist)
@@ -22,6 +25,11 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
   res_post_mean2 = array(0,dim=c(J,K)) #mean squared value
   res_post_zero=array(0,dim=c(J,K))
   res_post_neg=array(0,dim=c(J,K))
+
+  if(output_posterior_cov){
+    # record sum_{p} pi_{jp}(U1[p] + mu_{jp}mu_{jp}^{T})
+    post_sec_w_sum = array(0,dim=c(K, K, J))
+  }
 
   if((!is_common_cov_Shat(data)) && (!is_common_cov_Shat_alpha(data))){
     stop("Can't call common_cov routine with data where covariance varies")
@@ -39,11 +47,8 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
       # Transformation for Cov
       covU = data$Shat_alpha[1,] * t(data$Shat_alpha[1,] * U1[[p]])
       pvar = A %*% (covU %*% t(A))
-      # correct for computing error
-      if(any(pvar < 0)){
-        pvar[pvar < 0] = 0
-      }
-      post_var = diag(pvar) # nrow(A) vector posterior variance
+
+      post_var = pmax(0,diag(pvar)) # length K vector posterior variance
 
       res_post_mean= res_post_mean + posterior_weights[,p] * muA
 
@@ -60,7 +65,13 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
           posterior_weights[,p] * t(
             pnorm(0,mean=t(muA[,!null.cond]),sqrt(post_var[!null.cond]),
                   lower.tail=T))
-
+      if(output_posterior_cov){
+        muA_s <- array(0, dim=c(K,K,J))
+        muA_s[] <- apply(muA, 1, tcrossprod)
+        post_sec <- array(0, dim=c(K,K,J))
+        post_sec[] <- apply(muA_s, 3, '+', pvar)
+        post_sec_w_sum <-post_sec_w_sum + aaply(post_sec, c(1,2), function(x,y){x*y}, posterior_weights[,p])
+      }
   }
 
   res_post_sd = sqrt(res_post_mean2 - res_post_mean^2)
@@ -81,9 +92,19 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
     colnames(res_post_neg) = row.names(A)
     colnames(res_lfsr) = row.names(A)
   }
-  return(list(PosteriorMean = res_post_mean,
-              PosteriorSD = res_post_sd,
-              lfdr = res_post_zero,
-              NegativeProb = res_post_neg,
-              lfsr = res_lfsr))
+  posterior_matrices = list(PosteriorMean = res_post_mean,
+                            PosteriorSD   = res_post_sd,
+                            lfdr          = res_post_zero,
+                            NegativeProb  = res_post_neg,
+                            lfsr          = res_lfsr)
+
+  if(output_posterior_cov){
+    muAw_s <- array(0, dim=c(K,K,J))
+    muAw_s[] <- apply(res_post_mean, 1, tcrossprod)
+    res_post_cov = post_sec_w_sum - muAw_s
+
+    dimnames(res_post_cov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
+    posterior_matrices$PosteriorCov = res_post_cov
+  }
+  return(posterior_matrices)
 }
