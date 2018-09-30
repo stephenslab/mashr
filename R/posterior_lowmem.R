@@ -1,19 +1,19 @@
 #' @title Compute posterior matrices (general version)
 #' @description Computes posterior matrices without allocating huge memory
-#' @param data a mash data object, eg as created by \code{mash_set_data}
-#' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
+#' @param data a mash data object, eg as created by \code{mash_set_data} or \code{mash_set_data_contrast}
+#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #' @param Ulist a list of P covariance matrices for each mixture component
 #' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
-#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
-#' @return PosteriorMean JxK matrix of posterior means
-#' @return PosteriorSD JxK matrix of posterior (marginal) standard deviations
-#' @return NegativeProb JxK matrix of posterior (marginal) probability of being negative
-#' @return ZeroProb JxK matrix of posterior (marginal) probability of being zero
-#' @return lfsr JxK matrix of local false sign rates
-#' @return PosteriorCov K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
-#' @return PosteriorSamples M x K x J array of samples, if the \code{posterior_samples = M > 0}
+#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
+#' @return PosteriorMean JxQ matrix of posterior means
+#' @return PosteriorSD JxQ matrix of posterior (marginal) standard deviations
+#' @return NegativeProb JxQ matrix of posterior (marginal) probability of being negative
+#' @return ZeroProb JxQ matrix of posterior (marginal) probability of being zero
+#' @return lfsr JxQ matrix of local false sign rates
+#' @return PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
+#' @return PosteriorSamples MxQxJ array of samples, if the \code{posterior_samples = M > 0}
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm
 #' @importFrom plyr aaply
@@ -23,28 +23,28 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
   R=n_conditions(data)
   J=n_effects(data)
   P=length(Ulist)
-  K = nrow(A)
+  Q = nrow(A)
 
   # allocate arrays for returned results
-  res_post_mean=array(NA,dim=c(J,K))
-  res_post_mean2 = array(NA,dim=c(J,K)) #mean squared value
-  res_post_zero=array(NA,dim=c(J,K))
-  res_post_neg=array(NA,dim=c(J,K))
+  res_post_mean=array(NA,dim=c(J,Q))
+  res_post_mean2 = array(NA,dim=c(J,Q)) #mean squared value
+  res_post_zero=array(NA,dim=c(J,Q))
+  res_post_neg=array(NA,dim=c(J,Q))
 
   # allocate arrays for temporary calculations
-  post_mean=array(NA,dim=c(P,K))
-  post_mean2 = array(NA,dim=c(P,K)) #mean squared value
-  post_zero=array(NA,dim=c(P,K))
-  post_neg=array(NA,dim=c(P,K))
+  post_mean=array(NA,dim=c(P,Q))
+  post_mean2 = array(NA,dim=c(P,Q)) #mean squared value
+  post_zero=array(NA,dim=c(P,Q))
+  post_neg=array(NA,dim=c(P,Q))
 
   if(output_posterior_cov){
-    res_post_cov = array(NA, dim=c(K, K, J))
-    post_cov=array(NA, dim=c(K,K,P))
+    res_post_cov = array(NA, dim=c(Q, Q, J))
+    post_cov=array(NA, dim=c(Q,Q,P))
   }
 
   if(posterior_samples > 0){
     set.seed(seed)
-    res_post_samples = array(NA, dim=c(posterior_samples, K, J))
+    res_post_samples = array(NA, dim=c(posterior_samples, Q, J))
   }
 
   # check if rows of Shat are same, if so,
@@ -59,7 +59,7 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
   }
 
   for(j in 1:J){
-    bhat=as.vector(t(data$Bhat[j,]))##turn i into a R x 1 vector
+    bhat=as.vector(t(data$Bhat[j,]))##turn j into a R x 1 vector
     if(!common_cov){
       V=get_cov(data,j)
       Vinv <- solve(V)
@@ -78,7 +78,7 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
       covU = data$Shat_alpha[j,] * t(data$Shat_alpha[j,] * U1[[p]])
       pvar = A %*% (covU %*% t(A))
 
-      post_var = pmax(0,diag(pvar)) # nrow(A) vector posterior variance
+      post_var = pmax(0,diag(pvar)) # Q vector posterior variance
       post_mean[p,]= muA
       post_mean2[p,] = muA^2 + post_var #post_var is the posterior variance
 

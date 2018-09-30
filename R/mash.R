@@ -203,16 +203,16 @@ mash = function(data,
 #' @param data a set of data on which to compute the posterior matrices
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @param algorithm.version Indicates whether to use R or Rcpp version
-#' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
+#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
-#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
+#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #' @return A list of posterior matrices
 #' @export
 mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE,
                                            posterior_samples = 0, seed = 123){
   if (!is.null(A) && algorithm.version=='Rcpp'){
-    stop("FIXME: The linear transfermation for the posterior distribution is not implemented Rcpp")
+    stop("FIXME: The linear transfermation for the posterior distribution is not implemented in Rcpp")
   }
 
   if(class(g)=="mash"){
