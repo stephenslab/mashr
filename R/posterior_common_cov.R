@@ -18,6 +18,7 @@
 #' @importFrom stats pnorm
 #' @importFrom plyr aaply
 #' @importFrom MASS mvrnorm
+#' @importFrom abind abind
 compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
                                                  posterior_samples = 0, seed = 123){
   R = n_conditions(data)
@@ -38,9 +39,8 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
 
   if(posterior_samples > 0){
     set.seed(seed)
-    res_post_samples = array(0, dim=c(posterior_samples, Q, J))
-    Z = apply(posterior_weights, 1, function(p) rowSums(rmultinom(posterior_samples, 1, p)))
-    Z_cumsum = apply(Z, 2, cumsum)
+    res_post_samples = vector('list', J)
+    Z = apply(posterior_weights, 1, function(p) rowSums(rmultinom(posterior_samples, 1, p))) # P x J matrix
   }
 
   if((!is_common_cov_Shat(data)) && (!is_common_cov_Shat_alpha(data))){
@@ -86,33 +86,11 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
       }
 
       if(posterior_samples > 0){
-        ind = which(Z[p,] > 0)
-        for(j in ind){
-          if(p == 1){
-            res_post_samples[1:Z_cumsum[p,j],,j] = mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar)
-          }else{
-            res_post_samples[(Z_cumsum[p-1,j]+1):Z_cumsum[p,j],,j] = mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar)
-          }
-        }
-        # Use sapply, instead of for loop
-        # if(p == 1){
-        #   temp = sapply(1:J, function(j){
-        #     if(Z[p,j] > 0){
-        #       rbind(mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar),
-        #             matrix(0, posterior_samples-Z[p, j], Q))
-        #     }else{matrix(0, posterior_samples, Q)}
-        #   }, simplify = 'array')
-        #   res_post_samples = res_post_samples + temp
-        # }else{
-        #   temp = sapply(1:J, function(j){
-        #     if(Z[p,j] > 0){
-        #       rbind(matrix(0, Z_cumsum[p-1,j], Q),
-        #             mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar),
-        #             matrix(0, posterior_samples-Z_cumsum[p, j], Q))
-        #     }else{matrix(0, posterior_samples, Q)}
-        #   }, simplify = 'array')
-        #   res_post_samples = res_post_samples + temp
-        # }
+        samples_p = lapply(1:J, function(j) if(Z[p,j] > 0){
+          mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar)
+        }else{matrix(0,0,Q)})
+
+        res_post_samples = Map(rbind, res_post_samples, samples_p)
       }
   }
 
@@ -145,12 +123,13 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
     muAw_s[] <- apply(res_post_mean, 1, tcrossprod)
     res_post_cov = post_sec_w_sum - muAw_s
 
-    dimnames(res_post_cov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
+    dimnames(res_post_cov) <- list(colnames(data$Bhat), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
 
   if(posterior_samples > 0){
-    dimnames(res_post_samples) <- list(paste0("sample_",(1:posterior_samples)), colnames(data$Bhat), rownames(data$Bhat))
+    res_post_samples = abind(res_post_samples, along = 3)
+    dimnames(res_post_samples) <- list(paste0("sample_",(1:posterior_samples)), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorSamples = res_post_samples
   }
 

@@ -18,6 +18,7 @@
 #' @importFrom stats pnorm
 #' @importFrom plyr aaply
 #' @importFrom MASS mvrnorm
+#' @importFrom abind abind
 compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,output_posterior_cov = FALSE,
                                               posterior_samples = 0, seed = 123){
   R=n_conditions(data)
@@ -44,7 +45,8 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
 
   if(posterior_samples > 0){
     set.seed(seed)
-    res_post_samples = array(NA, dim=c(posterior_samples, Q, J))
+    # length J list
+    res_post_samples = vector("list", J)
   }
 
   # check if rows of Shat are same, if so,
@@ -66,8 +68,8 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
       U1 = lapply(Ulist, function(U){posterior_cov(Vinv, U)}) # compute all the posterior covariances
     }
     if(posterior_samples > 0){
+      samples_j = vector('list', P)
       z = rowSums(rmultinom(posterior_samples, 1, posterior_weights[j,]))
-      z_cumsum = cumsum(z)
     }
     for(p in 1:P){
       mu1 <- as.array(posterior_mean(bhat, Vinv, U1[[p]]))
@@ -91,14 +93,11 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
 
       if(posterior_samples > 0){
         if(z[p] > 0){
-          if(p == 1){
-            res_post_samples[1:z_cumsum[p],,j] = mvrnorm(z[p], mu=muA, Sigma = pvar)
-          }else{
-            res_post_samples[(z_cumsum[p-1]+1):z_cumsum[p],,j] = mvrnorm(z[p], mu=muA, Sigma = pvar)
-          }
+          samples_j[[p]] = mvrnorm(z[p], mu=muA, Sigma = pvar)
+        } else{
+          samples_j[[p]] = matrix(0,0,Q)
         }
       }
-
     }
     res_post_mean[j,] = posterior_weights[j,] %*% post_mean
     res_post_mean2[j,] = posterior_weights[j,] %*% post_mean2
@@ -106,6 +105,9 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
     res_post_neg[j,] = posterior_weights[j,] %*% post_neg
     if(output_posterior_cov){
       res_post_cov[,,j] = aaply(post_cov, c(1,2), function(x,y){crossprod(x,y)}, posterior_weights[j,]) - tcrossprod(res_post_mean[j,])
+    }
+    if(posterior_samples > 0){
+      res_post_samples[[j]] = do.call(rbind, samples_j)
     }
   }
   res_post_sd = sqrt(res_post_mean2 - res_post_mean^2)
@@ -131,11 +133,12 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
                             NegativeProb  = res_post_neg,
                             lfsr          = res_lfsr)
   if(output_posterior_cov){
-    dimnames(res_post_cov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
+    dimnames(res_post_cov) <- list(colnames(data$Bhat), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
   if(posterior_samples > 0){
-    dimnames(res_post_samples) <- list(paste0("sample_",(1:posterior_samples)), colnames(data$Bhat), rownames(data$Bhat))
+    res_post_samples = abind(res_post_samples, along = 3)
+    dimnames(res_post_samples) <- list(paste0("sample_",(1:posterior_samples)), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorSamples = res_post_samples
   }
   return(posterior_matrices)

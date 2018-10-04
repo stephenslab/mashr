@@ -124,7 +124,7 @@ compute_posterior_matrices <-
                                            posterior_samples = posterior_samples, seed=seed)
     }
   } else if (algorithm.version == "Rcpp") {
-    message('FIXME: The sampling method is not implemented in Rcpp.')
+    # message('FIXME: The sampling method is not implemented in Rcpp.')
     if(posterior_samples > 0){
       stop('FIXME: The sampling method is not implemented in Rcpp.')
     }
