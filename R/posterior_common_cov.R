@@ -15,9 +15,9 @@
 #' @return PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
 #' @return PosteriorSamples MxQxJ array of samples, if the \code{posterior_samples = M > 0}
 #' @importFrom ashr compute_lfsr
-#' @importFrom stats pnorm
+#' @importFrom stats pnorm rmultinom
 #' @importFrom plyr aaply
-#' @importFrom MASS mvrnorm
+#' @importFrom mvtnorm rmvnorm
 #' @importFrom abind abind
 compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
                                                  posterior_samples = 0, seed = 123){
@@ -87,7 +87,7 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
 
       if(posterior_samples > 0){
         samples_p = lapply(1:J, function(j) if(Z[p,j] > 0){
-          mvrnorm(n=Z[p, j], mu = muA[j,], Sigma = pvar)
+          rmvnorm(n=Z[p, j], mean = muA[j,], sigma = pvar)
         }else{matrix(0,0,Q)})
 
         res_post_samples = Map(rbind, res_post_samples, samples_p)

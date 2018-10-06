@@ -12,6 +12,8 @@ ed_wrapper(data, Ulist_init, subset = NULL, ...)
 \item{Ulist_init}{a list of covariance matrices to initialize to}
 
 \item{subset}{the indices of the observations to be used (defaults to all of them)}
+
+\item{...}{arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}. Other options see \code{?ExtremeDeconvolution::extreme_deconvolution}}
 }
 \value{
 the fitted mixture: a list of mixture proportions and covariance matrices
