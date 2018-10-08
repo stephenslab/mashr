@@ -1,3 +1,4 @@
+context("test_simple_sims.R")
 test_that("simple simulations look right", {
   set.seed(100)
   test = simple_sims()

@@ -1,3 +1,4 @@
+context("test_likelihood.R")
 test_that("likelihood calculations look right",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))

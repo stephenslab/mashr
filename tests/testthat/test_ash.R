@@ -1,3 +1,4 @@
+context("test_ash.R")
 test_that("get same result as ash, EE model", {
   library(ashr)
   set.seed(100)

@@ -1,3 +1,4 @@
+context("test_cpp_computation.R")
 test_that("compare likelihood computation R vs C++ in provided data of 100 X 5", {
 
 

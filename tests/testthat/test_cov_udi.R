@@ -1,3 +1,4 @@
+context("test_cov_udi.R")
 test_that("udi covariance computations look right", {
   set.seed(1)
   Bhat = matrix(rnorm(100),ncol=5)
