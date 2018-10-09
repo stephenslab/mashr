@@ -1,9 +1,11 @@
+context("test_ash.R")
 test_that("get same result as ash, EE model", {
   library(ashr)
   set.seed(100)
-  sim_data = mashr::simple_sims(nsamp = 100, err_sd = runif(400*5))
+  sim_data <- mashr::simple_sims(nsamp = 100, err_sd = runif(400*5))
   rownames(sim_data$Bhat) = colnames(sim_data$Bhat) = NULL
   rownames(sim_data$Shat) = colnames(sim_data$Shat) = NULL
+  
   # The simulation consists of equal numbers of four different types
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
@@ -12,7 +14,9 @@ test_that("get same result as ash, EE model", {
 
   data = mash_set_data(sim_data$Bhat, sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", usepointmass = F)
+  out <- capture.output(
+    res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
+                usepointmass = FALSE))
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)
@@ -39,7 +43,9 @@ test_that("get same result as ash, EZ model", {
 
   data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased", usepointmass = F)
+  out <- capture.output(
+    res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
+                usepointmass = FALSE))
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)
@@ -53,6 +59,7 @@ test_that("get same result as ash under transformation, EE model", {
   sim_data = mashr::simple_sims(nsamp = 100, err_sd = runif(400*5))
   rownames(sim_data$Bhat) = colnames(sim_data$Bhat) = NULL
   rownames(sim_data$Shat) = colnames(sim_data$Shat) = NULL
+  
   # The simulation consists of equal numbers of four different types
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
@@ -61,8 +68,9 @@ test_that("get same result as ash under transformation, EE model", {
 
   data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
-             usepointmass = F, outputlevel = 1)
+  out <- capture.output(
+    res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
+                usepointmass = FALSE, outputlevel = 1))
   A = rbind(c(1,0,0,0,0))
   res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
   print('FIXME: Rcpp not implemented')
@@ -88,8 +96,9 @@ test_that("get same result as ash under transformation, EZ model", {
 
   data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
-  res = mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
-             usepointmass = F, outputlevel = 1)
+  out <- capture.output(
+    res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
+                usepointmass = FALSE, outputlevel = 1))
   A = rbind(c(1,0,0,0,0))
   res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
   print('FIXME: Rcpp not implemented')

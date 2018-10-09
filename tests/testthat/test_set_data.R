@@ -1,3 +1,4 @@
+context("test_set_data.R")
 test_that("Initialize MASH data properly", {
   Bhat = rbind(c(1,2),c(2,6))
   Shat = rbind(c(1,1),c(2,2))
