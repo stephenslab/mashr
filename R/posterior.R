@@ -45,23 +45,33 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #'
-#' @param A the linear transformation matrix, KxR matrix
+#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
+#'
+#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
+#'
+#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#'
+#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #'
 #' @return The return value is a list containing the following
 #'    components:
 #'
-#'    \item{PosteriorMean}{J x K matrix of posterior means.}
+#'    \item{PosteriorMean}{J x Q matrix of posterior means.}
 #'
-#'    \item{PosteriorSD}{J x K matrix of posterior (marginal) standard
+#'    \item{PosteriorSD}{J x Q matrix of posterior (marginal) standard
 #'    deviations.}
 #'
-#'    \item{NegativeProb}{J x K matrix of posterior (marginal)
+#'    \item{NegativeProb}{J x Q matrix of posterior (marginal)
 #'     probability of being negative.}
 #'
-#'    \item{ZeroProb}{J x K matrix of posterior (marginal) probability
+#'    \item{ZeroProb}{J x Q matrix of posterior (marginal) probability
 #'     of being zero.}
 #'
-#'    \item{lfsr}{J x K matrix of local false sign rates.}
+#'    \item{lfsr}{J x Q matrix of local false sign rates.}
+#'
+#'    \item{PosteriorCov}{Q x Q x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+#'
+#'    \item{PosteriorSamples}{M x Q x J array of samples, if the \code{posterior_samples = M > 0}.}
 #'
 #' @useDynLib mashr
 #'
@@ -71,11 +81,12 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @export
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
-            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE) {
+            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE,
+            posterior_samples = 0, seed = 123) {
   algorithm.version <- match.arg(algorithm.version)
 
   if(!is.null(A) && algorithm.version == 'Rcpp'){
-    stop("FIXME: not implemented")
+    stop("FIXME: The linear transfermation for the posterior distribution is not implemented in Rcpp")
   }
 
   if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){
@@ -104,13 +115,19 @@ compute_posterior_matrices <-
       common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
     }
 
-    message("FIXME: output posterior matrices not implemented in R version")
+    # message("FIXME: output posterior matrices not implemented in R version")
     if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
+      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+                                              posterior_samples = posterior_samples, seed=seed)
     } else {
-      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights)
+      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+                                           posterior_samples = posterior_samples, seed=seed)
     }
   } else if (algorithm.version == "Rcpp") {
+    # message('FIXME: The sampling method is not implemented in Rcpp.')
+    if(posterior_samples > 0){
+      stop('FIXME: The sampling method is not implemented in Rcpp.')
+    }
 
     # Run the C implementation using the Rcpp interface.
     res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,

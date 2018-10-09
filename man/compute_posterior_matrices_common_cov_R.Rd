@@ -4,27 +4,38 @@
 \alias{compute_posterior_matrices_common_cov_R}
 \title{Compute posterior matrices (when error covariance V_j is equal for all observations j)}
 \usage{
-compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights)
+compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights,
+  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
 }
 \arguments{
-\item{data}{a mash data object, eg as created by \code{mash_set_data}}
+\item{data}{a mash data object, eg as created by \code{mash_set_data} or \code{mash_set_data_contrast}}
 
-\item{A}{the linear transformation matrix, KxR matrix}
+\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
 
 \item{Ulist}{a list of P covariance matrices for each mixture component}
 
 \item{posterior_weights}{the JxP posterior probabilities of each mixture component in Ulist for the data}
+
+\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
+
+\item{posterior_samples}{the number of points to be sampled from the posterior distribution of sample j. The default is 0.}
+
+\item{seed}{a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 }
 \value{
-PosteriorMean JxK matrix of posterior means
+PosteriorMean JxQ matrix of posterior means
 
-PosteriorSD JxK matrix of posterior (marginal) standard deviations
+PosteriorSD JxQ matrix of posterior (marginal) standard deviations
 
-NegativeProb JxK matrix of posterior (marginal) probability of being negative
+NegativeProb JxQ matrix of posterior (marginal) probability of being negative
 
-ZeroProb JxK matrix of posterior (marginal) probability of being zero
+ZeroProb JxQ matrix of posterior (marginal) probability of being zero
 
-lfsr JxK matrix of local false sign rates
+lfsr JxQ matrix of local false sign rates
+
+PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
+
+PosteriorSamples MxQxJ array of samples, if the \code{posterior_samples = M > 0}
 }
 \description{
 Computes posterior matrices without allocating huge memory

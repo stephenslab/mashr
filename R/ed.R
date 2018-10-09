@@ -8,6 +8,7 @@
 #' @param data mash data object
 #' @param Ulist_init a list of covariance matrices to initialize to
 #' @param subset the indices of the observations to be used (defaults to all of them)
+#' @param ... arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}. Other options see \code{?ExtremeDeconvolution::extreme_deconvolution}
 #' @return the fitted mixture: a list of mixture proportions and covariance matrices
 #' @details This is a wrapper to ExtremeDeconvolution::extreme_deconvolution
 #' It fixes the projection to be the identity, and the means to be 0

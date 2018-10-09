@@ -6,7 +6,7 @@
 \usage{
 mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
   algorithm.version = c("Rcpp", "R"), A = NULL,
-  output_posterior_cov = FALSE)
+  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
 }
 \arguments{
 \item{g}{a mash object or the fitted_g from a mash object.}
@@ -17,9 +17,13 @@ mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
-\item{A}{the linear transformation matrix}
+\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
 
 \item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
+
+\item{posterior_samples}{the number of points to be sampled from the posterior distribution of sample j. The default is 0.}
+
+\item{seed}{a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 }
 \value{
 A list of posterior matrices

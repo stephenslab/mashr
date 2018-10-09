@@ -26,7 +26,8 @@ Imports:
     plyr,
     rmeta,
     Rcpp (>= 0.12.11),
-    mvtnorm
+    mvtnorm,
+    abind
 LinkingTo:
     Rcpp, 
     RcppArmadillo
