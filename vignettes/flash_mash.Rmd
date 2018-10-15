@@ -58,7 +58,6 @@ data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.sub
 
 ```{r}
 library(flashr)
-library(mixSQP)
 
 my_init_fn <- function(Y, K = 1) {
   ret = flashr:::udv_si(Y, K)
