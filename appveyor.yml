@@ -14,13 +14,13 @@ install:
 
 environment:
   global:
+    WARNINGS_ARE_ERRORS: 
     _R_CHECK_FORCE_SUGGESTS_: false
     NOT_CRAN: true
     R_VERSION: release
     R_ARCH: x64
     R_BUILD_ARGS: --no-build-vignettes 
     R_CHECK_ARGS: --no-manual --as-cran --ignore-vignettes --no-examples --no-tests
-    WARNINGS_ARE_ERRORS:
 
 build_script:
   - travis-tool.sh install_deps
