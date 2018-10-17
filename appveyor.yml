@@ -14,9 +14,9 @@ install:
 
 environment:
   global:
-    WARNINGS_ARE_ERRORS: 
     _R_CHECK_FORCE_SUGGESTS_: false
-    NOT_CRAN: true
+    USE_RTOOLS: true
+    WARNINGS_ARE_ERRORS:
     R_VERSION: release
     R_ARCH: x64
     R_BUILD_ARGS: --no-build-vignettes 
