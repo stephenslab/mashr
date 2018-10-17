@@ -13,12 +13,13 @@ install:
   ps: Bootstrap
 
 environment:
-  _R_CHECK_FORCE_SUGGESTS_: false
-  NOT_CRAN: true
-  R_VERSION: release
-  R_ARCH: x64
-  R_BUILD_ARGS: --no-build-vignettes 
-  R_CHECK_ARGS: --no-manual --as-cran --ignore-vignettes --no-examples
+  global:
+    _R_CHECK_FORCE_SUGGESTS_: false
+    NOT_CRAN: true
+    R_VERSION: release
+    R_ARCH: x64
+    R_BUILD_ARGS: --no-build-vignettes 
+    R_CHECK_ARGS: --no-manual --as-cran --ignore-vignettes --no-examples --no-tests
 
 build_script:
   - travis-tool.sh install_deps
