@@ -20,6 +20,7 @@ environment:
     R_ARCH: x64
     R_BUILD_ARGS: --no-build-vignettes 
     R_CHECK_ARGS: --no-manual --as-cran --ignore-vignettes --no-examples --no-tests
+    WARNINGS_ARE_ERRORS:
 
 build_script:
   - travis-tool.sh install_deps
