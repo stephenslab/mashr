@@ -115,13 +115,9 @@ contrast_matrix = function(R, ref, name){
     if (length(ind) != 1){
       stop('There are more than one groups in the data have the same name as the reference group.')
     }
-    L = diag(R-1)
-    if(ind == R){
-      L = cbind(L[,0:(ind-1)], rep(-1, R-1))
-    }
-    else{
-      L = cbind(L[,0:(ind-1)], rep(-1, R-1), L[,ind : (R-1)])
-    }
+    L = diag(R)
+    L[,ind] = -1
+    L = L[-ind,]
     row.names(L) = paste0(name[-ind],'-', ref)
   }else{
     stop('The ref group is not in the given conditions.')
