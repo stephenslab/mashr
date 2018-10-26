@@ -15,15 +15,15 @@ compute_posterior_matrices(data, Ulist, posterior_weights,
 \item{Ulist}{List containing the prior covariance matrices.}
 
 \item{posterior_weights}{Vector containing the posterior
-probability of each mixture component in Ulist for the data}
+probability of each mixture component in Ulist for the data.}
 
-\item{algorithm.version}{Indicates whether to use R or Rcpp version}
+\item{algorithm.version}{Indicates whether to use R or Rcpp version.}
 
 \item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
 
-\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
+\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects.}
 
-\item{posterior_samples}{the number of points to be sampled from the posterior distribution of sample j. The default is 0.}
+\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
 
 \item{seed}{a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 }

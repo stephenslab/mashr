@@ -21,7 +21,7 @@ mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
 
 \item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
 
-\item{posterior_samples}{the number of points to be sampled from the posterior distribution of sample j. The default is 0.}
+\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
 
 \item{seed}{a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 }

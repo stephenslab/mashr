@@ -4,20 +4,32 @@
 \alias{estimate_null_correlation}
 \title{Estimate null correlations}
 \usage{
-estimate_null_correlation(data, z_thresh = 2,
-  apply_lower_bound = FALSE)
+estimate_null_correlation(data, Ulist, init, max_iter = 50,
+  tol = 0.001, cor = TRUE, track_fit = FALSE,
+  prior = c("nullbiased", "uniform"), ...)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
-\item{z_thresh}{the z score threshold below which to call an effect null}
+\item{Ulist}{a list of covariance matrices to use}
 
-\item{apply_lower_bound}{indicates whether to also apply a lower bound for the
-correlations which can be computed based on all data. See \code{compute_null_correlation_lower_bound}}
+\item{init}{the initial value for the null correlation. If it is not given, we use result from \code{estimate_null_correlation_adhoc}}
+
+\item{max_iter}{maximum number of iterations to perform}
+
+\item{tol}{convergence tolerance}
+
+\item{cor}{whether to estimate correlation matrix. If it is False, we estimate the covairance matrix}
+
+\item{track_fit}{add an attribute \code{trace} to output that saves current values of all iterations}
+
+\item{prior}{indicates what penalty to use on the likelihood, if any}
+
+\item{...}{other parameters pass to \code{mash}}
 }
 \description{
 Estimates a null correlation matrix from data
 }
 \details{
-Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
+Returns the estimated correlation/covariance matrix of the effects
 }

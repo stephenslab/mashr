@@ -40,7 +40,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 
 \item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
 
-\item{posterior_samples}{the number of points to be sampled from the posterior distribution of sample j. The default is 0.}
+\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
 
 \item{seed}{A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 
