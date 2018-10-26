@@ -41,16 +41,15 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @param Ulist List containing the prior covariance matrices.
 #'
 #' @param posterior_weights Vector containing the posterior
-#'     probability of each mixture component in Ulist for the data
+#'     probability of each mixture component in Ulist for the data.
 #'
-#' @param algorithm.version Indicates whether to use R or Rcpp version
+#' @param algorithm.version Indicates whether to use R or Rcpp version.
 #'
 #' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #'
-#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
+#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects.
 #'
-#' @param posterior_samples the number of points to be sampled from
-#'   the posterior distribution of sample j. The default is 0.
+#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
 #'
 #' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #'

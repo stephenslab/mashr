@@ -5,7 +5,7 @@
 #' @param Ulist a list of P covariance matrices for each mixture component
 #' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
-#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
 #' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @return PosteriorMean JxQ matrix of posterior means
 #' @return PosteriorSD JxQ matrix of posterior (marginal) standard deviations

@@ -13,7 +13,7 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
-#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
 #' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights
 #' @return a list with elements result, loglik and fitted_g
@@ -204,7 +204,7 @@ mash = function(data,
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
-#' @param posterior_samples the number of points to be sampled from the posterior distribution of sample j. The default is 0.
+#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
 #' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
 #' @return A list of posterior matrices
