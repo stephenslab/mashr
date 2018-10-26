@@ -95,9 +95,20 @@ mash_update_data = function(mashdata, ref= NULL, V = NULL){
     mashdata$V = V
   }
 
+  if(!is.null(mashdata$L)){
+    mashdata = mash_set_data_contrast(mashdata, L)
+  }
+
   if(!is.null(ref)){
+    if(!is.null(mashdata$L)){
+      stop('The data is ready for the contrast analysis.')
+    }
+    R = n_conditions(mashdata)
     name = colnames(mashdata$Bhat)
-    L = contrast_matrix(R, ref, ifelse(is.null(name), 1:R, name))
+    if(is.null(name)){
+      name = 1:R
+    }
+    L = contrast_matrix(R, ref, name)
     mashdata = mash_set_data_contrast(mashdata, L)
   }
 
@@ -110,6 +121,11 @@ contrast_matrix = function(R, ref, name){
     diag(L) = (R-1)/R
     L = L[1:(R-1),]
     row.names(L) = paste0(name[1:(R-1)],'-','mean')
+  }else if(ref %in% 1:R){
+    L = diag(R)
+    L[,ref] = -1
+    L = L[-ref,]
+    row.names(L) = paste0(name[-ref],'-', name[ref])
   }else if (ref %in% name){
     ind = which(name %in% ref)
     if (length(ind) != 1){
@@ -129,7 +145,6 @@ contrast_matrix = function(R, ref, name){
 #' @param mashdata a mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
 #' @param L the contrast matrix
 #' @return a data object after the contrast transfermation
-#' @export
 mash_set_data_contrast = function(mashdata, L){
   # check data
   if(class(mashdata) != 'mash'){

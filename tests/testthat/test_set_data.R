@@ -10,7 +10,7 @@ test_that("Initialize MASH data properly", {
   expect_equal(dat1$Shat, dat3$Shat)
 })
 
-test_that("Set CONTRAST matrix properly", {
+test_that("Contrast matrix generate L properly", {
   L = rbind(c(-1,1,0), c(-1,0,1))
   row.names(L) = c('2-1', '3-1')
   L.out = contrast_matrix(3, 1, 1:3)
