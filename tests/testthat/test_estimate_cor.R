@@ -14,6 +14,7 @@ test_that("Estimate null correlation properly", {
   expect_equal(V.adhoc, V.est$V)
   expect_equal(mash.adhoc, V.est$mash.model)
 
+  # saved result comes from version 0.2.18.0455
   original.null.cor = readRDS('estimate_null_cor.rds')
   set.seed(1)
   simdata = simple_sims(500,5,1)
