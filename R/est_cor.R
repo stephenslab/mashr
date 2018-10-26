@@ -42,7 +42,7 @@ estimate_null_correlation_adhoc = function(data, z_thresh=2){
 #' @description Estimates a null correlation matrix from data
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param Ulist a list of covariance matrices to use
-#' @param init the initial value for the null correlation
+#' @param init the initial value for the null correlation. If it is not given, we use result from \code{estimate_null_correlation_adhoc}
 #' @param max_iter maximum number of iterations to perform
 #' @param tol convergence tolerance
 #' @param cor whether to estimate correlation matrix. If it is False, we estimate the covairance matrix
@@ -67,6 +67,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
   if(missing(init)){
     init = tryCatch(estimate_null_correlation_adhoc(data), error = function(e) FALSE)
     if(is.logical(init)){
+      warning('Use Identity matrix as the initialize null correlation.')
       init = diag(n_conditions(data))
     }
   }

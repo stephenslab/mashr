@@ -13,4 +13,14 @@ test_that("Estimate null correlation properly", {
 
   expect_equal(V.adhoc, V.est$V)
   expect_equal(mash.adhoc, V.est$mash.model)
+
+  original.null.cor = readRDS('estimate_null_cor.rds')
+  set.seed(1)
+  simdata = simple_sims(500,5,1)
+
+  data = mash_set_data(simdata$Bhat, simdata$Shat)
+  U.c = cov_canonical(data)
+
+  V.est = estimate_null_correlation(data, U.c, max_iter = 3, track_fit = TRUE)
+  expect_equal(V.est, original.null.cor)
 })
