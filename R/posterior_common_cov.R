@@ -13,7 +13,7 @@
 #' @return ZeroProb JxQ matrix of posterior (marginal) probability of being zero
 #' @return lfsr JxQ matrix of local false sign rates
 #' @return PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
-#' @return PosteriorSamples MxQxJ array of samples, if the \code{posterior_samples = M > 0}
+#' @return PosteriorSamples JxQxM array of samples, if the \code{posterior_samples = M > 0}
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm rmultinom
 #' @importFrom plyr aaply
@@ -128,8 +128,11 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
   }
 
   if(posterior_samples > 0){
-    res_post_samples = abind(res_post_samples, along = 3)
-    dimnames(res_post_samples) <- list(paste0("sample_",(1:posterior_samples)), row.names(A), rownames(data$Bhat))
+    # shuffle samples
+    res_post_samples = lapply(res_post_samples, function(l) l[sample(posterior_samples),])
+    res_post_samples = abind(res_post_samples, along = 0) # dim J x M x Q
+    res_post_samples = aperm(res_post_samples, c(1,3,2)) # dim J x Q x M
+    dimnames(res_post_samples) <- list(rownames(data$Bhat), row.names(A), paste0("sample_",(1:posterior_samples)))
     posterior_matrices$PosteriorSamples = res_post_samples
   }
 

@@ -27,10 +27,11 @@ test_that('likelihood calculations on mash contrast set',{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = mash_set_data(Bhat,Shat)
-  L = diag(3); L[,1] = -1; L = L[2:3,]
+  # L = diag(3); L[,1] = -1; L = L[2:3,]
+  L = contrast_matrix(3,1)
   data1 = mash_set_data_contrast(data, L)
   Ulist = cov_canonical(data1)
-  
+
   # For mash contrast data, the algorithm need to be R.
   out <- capture.output(m1 <- mash(data1,Ulist,grid = c(0.5,1,2),
                         algorithm.version = 'R'))

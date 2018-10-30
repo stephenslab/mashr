@@ -93,16 +93,30 @@ compute_posterior_matrices <-
     stop('FIXME: the commonbaseline method is not implemented in Rcpp')
   }
 
-  # If A is NULL, set A be identity matrix
-  R = n_conditions(data)
-  if(is.null(A)){
-    A = diag(R)
-    row.names(A) = colnames(data$Bhat)
-  }
-  if(ncol(A) != R){
-    stop('A is not a proper transformation')
-  }
 
+  R = n_conditions(data)
+  # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
+  if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
+    temp = diag(R)
+    temp = rbind(temp, -1)
+    row.names(temp) = paste0(data$condition_names, '-mean')
+    if(!is.null(A)){
+      if(ncol(A) != R+1){
+        stop('Reference:mean. A is not a proper transformation')
+      }
+      A = A %*% temp
+    }else{
+      A = temp
+    }
+  }else{
+    if(is.null(A)){
+      A = diag(R)
+      row.names(A) = colnames(data$Bhat)
+    }
+    if(ncol(A) != R){
+      stop('A is not a proper transformation')
+    }
+  }
   if (algorithm.version == "R") {
     # check if covariances are same, if so, use more efficient computations
     # if alpha = 0, we check if rows of Shat are same
