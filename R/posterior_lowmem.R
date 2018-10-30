@@ -18,7 +18,7 @@
 #' @importFrom stats pnorm rmultinom
 #' @importFrom plyr aaply
 #' @importFrom mvtnorm rmvnorm
-#' @importFrom abind abind aperm
+#' @importFrom abind abind
 compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,output_posterior_cov = FALSE,
                                               posterior_samples = 0, seed = 123){
   R=n_conditions(data)
