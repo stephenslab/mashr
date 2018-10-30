@@ -35,7 +35,7 @@ lfsr JxQ matrix of local false sign rates
 
 PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
 
-PosteriorSamples MxQxJ array of samples, if the \code{posterior_samples = M > 0}
+PosteriorSamples JxQxM array of samples, if the \code{posterior_samples = M > 0}
 }
 \description{
 Computes posterior matrices without allocating huge memory
