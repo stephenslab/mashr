@@ -110,12 +110,18 @@ mash_update_data = function(mashdata, ref= NULL, V = NULL){
     }
     L = contrast_matrix(R, ref, name)
     mashdata = mash_set_data_contrast(mashdata, L)
+    mashdata$condition_names = name
   }
 
   return(mashdata)
 }
 
-contrast_matrix = function(R, ref, name){
+#' Create contrast matrix
+#' @param R the number of column for the contrast matrix
+#' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
+#' @param name a length R vector contains the name for conditions
+#' @export
+contrast_matrix = function(R, ref, name=1:R){
   if(ref == 'mean'){
     L = matrix(-1/R, R, R)
     diag(L) = (R-1)/R
@@ -138,6 +144,8 @@ contrast_matrix = function(R, ref, name){
   }else{
     stop('The ref group is not in the given conditions.')
   }
+
+  attr(L, "reference") = ref
   return(L)
 }
 
