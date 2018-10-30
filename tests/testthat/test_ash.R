@@ -59,7 +59,7 @@ test_that("get same result as ash under transformation, EE model", {
   sim_data = mashr::simple_sims(nsamp = 100, err_sd = runif(400*5))
   rownames(sim_data$Bhat) = colnames(sim_data$Bhat) = NULL
   rownames(sim_data$Shat) = colnames(sim_data$Shat) = NULL
-  
+
   # The simulation consists of equal numbers of four different types
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
@@ -73,7 +73,7 @@ test_that("get same result as ash under transformation, EE model", {
                 usepointmass = FALSE, outputlevel = 1))
   A = rbind(c(1,0,0,0,0))
   res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
-  print('FIXME: Rcpp not implemented')
+  # print('FIXME: Rcpp not implemented')
 
   expect_equal(dim(ashr::get_pm(res)), c(400,1))
   expect_equal(as.numeric(ashr::get_pm(res)),ashr::get_pm(ashres),tolerance = 1e-5)
@@ -101,7 +101,7 @@ test_that("get same result as ash under transformation, EZ model", {
                 usepointmass = FALSE, outputlevel = 1))
   A = rbind(c(1,0,0,0,0))
   res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
-  print('FIXME: Rcpp not implemented')
+  # print('FIXME: Rcpp not implemented')
 
   expect_equal(dim(ashr::get_pm(res)), c(400,1))
   expect_equal(as.numeric(ashr::get_pm(res)),ashr::get_pm(ashres),tolerance = 1e-5)

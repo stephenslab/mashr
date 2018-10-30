@@ -7,7 +7,7 @@ test_that("Estimate null correlation properly", {
 
   V.adhoc = estimate_null_correlation_adhoc(data)
   data.adhoc = mash_update_data(data, V = V.adhoc)
-  mash.adhoc = mash(data.adhoc, Ulist, outputlevel = 3)
+  out <- capture.output(mash.adhoc <- mash(data.adhoc, Ulist, outputlevel = 3))
 
   V.est = estimate_null_correlation(data, Ulist, max_iter = 0)
 
