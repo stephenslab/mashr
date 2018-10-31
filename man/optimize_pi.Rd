@@ -5,7 +5,8 @@
 \title{Estimate the mixture weights by maximum (penalized) likelihood}
 \usage{
 optimize_pi(matrix_lik, pi_init = NULL, prior = NULL,
-  optmethod = c("mixIP", "mixEM", "cxxMixSquarem"), control = list())
+  optmethod = c("mixIP", "mixEM", "mixSQP", "cxxMixSquarem"),
+  control = list())
 }
 \arguments{
 \item{matrix_lik}{a matrix of likelihoods, where the (i,k)th entry is the probability of observation i given it came from component k of g}

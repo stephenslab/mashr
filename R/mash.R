@@ -13,6 +13,7 @@
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
 #' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
+#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
 #' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights
@@ -33,11 +34,12 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
-                optmethod = c("mixIP","mixEM","cxxMixSquarem"),
+                optmethod = c("mixIP","mixEM","mixSQP","cxxMixSquarem"),
                 verbose = TRUE,
                 add.mem.profile = FALSE,
                 algorithm.version = c("Rcpp","R"),
                 pi_thresh = 1e-10,
+                A = NULL,
                 posterior_samples = 0,
                 seed = 123,
                 outputlevel = 2) {
@@ -143,14 +145,16 @@ mash = function(data,
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
         posterior_matrices <- compute_posterior_matrices(data, xUlist[which.comp],
-                                                         posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2),
+                                                         posterior_weights, algorithm.version, A=A,
+                                                         output_posterior_cov=(outputlevel > 2),
                                                          posterior_samples = posterior_samples, seed = seed)
       },threshold = 1000))
     else
       out.time <-
         system.time(posterior_matrices <-
           compute_posterior_matrices(data,xUlist[which.comp],
-                                     posterior_weights, algorithm.version, output_posterior_cov=(outputlevel > 2),
+                                     posterior_weights, algorithm.version, A=A,
+                                     output_posterior_cov=(outputlevel > 2),
                                      posterior_samples = posterior_samples, seed = seed))
     if (verbose)
       if (add.mem.profile)

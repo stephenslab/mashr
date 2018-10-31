@@ -7,8 +7,8 @@
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
   prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
-  algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10,
+  "mixSQP", "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
+  algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10, A = NULL,
   posterior_samples = 0, seed = 123, outputlevel = 2)
 }
 \arguments{
@@ -39,6 +39,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
 \item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
+
+\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
 
 \item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
 
