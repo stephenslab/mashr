@@ -66,7 +66,7 @@ sim_contrast2 = function(nsamp = 1000, ncond = 5, err_sd=sqrt(0.5)){
 
   D = rbind(D.zero, D.id, D.all, D.one)
 
-  C = C + cbind(rep(0,nsamp),D)
+  C = C + cbind(D, rep(0,nsamp))
 
   Shat = matrix(err_sd, nrow=nrow(C), ncol=ncol(C))
   E = matrix(rnorm(length(Shat), mean=0, sd=Shat), nrow=nrow(C),ncol=ncol(C))
