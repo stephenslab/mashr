@@ -134,7 +134,7 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
                             NegativeProb  = res_post_neg,
                             lfsr          = res_lfsr)
   if(output_posterior_cov){
-    dimnames(res_post_cov) <- list(colnames(data$Bhat), row.names(A), rownames(data$Bhat))
+    dimnames(res_post_cov) <- list(row.names(A), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
   if(posterior_samples > 0){

@@ -110,7 +110,6 @@ mash_update_data = function(mashdata, ref= NULL, V = NULL){
     }
     L = contrast_matrix(R, ref, name)
     mashdata = mash_set_data_contrast(mashdata, L)
-    mashdata$condition_names = name
   }
 
   return(mashdata)
@@ -144,7 +143,7 @@ contrast_matrix = function(R, ref, name=1:R){
   }else{
     stop('The ref group is not in the given conditions.')
   }
-
+  colnames(L) = name
   attr(L, "reference") = ref
   return(L)
 }

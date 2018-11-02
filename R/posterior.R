@@ -99,7 +99,7 @@ compute_posterior_matrices <-
   if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
     temp = diag(R)
     temp = rbind(temp, -1)
-    row.names(temp) = paste0(data$condition_names, '-mean')
+    row.names(temp) = paste0(colnames(data$L), '-mean')
     if(!is.null(A)){
       if(ncol(A) != R+1){
         stop('Reference:mean. A is not a proper transformation')

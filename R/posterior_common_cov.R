@@ -123,7 +123,7 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
     muAw_s[] <- apply(res_post_mean, 1, tcrossprod)
     res_post_cov = post_sec_w_sum - muAw_s
 
-    dimnames(res_post_cov) <- list(colnames(data$Bhat), row.names(A), rownames(data$Bhat))
+    dimnames(res_post_cov) <- list(row.names(A), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
 
