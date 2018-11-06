@@ -133,6 +133,44 @@ get_pairwise_sharing = function(m, factor=0.5, lfsr_thresh=0.05, FUN= identity){
   return(S)
 }
 
+#' Return samples from a mash object
+#' @export
+get_samples = function(m){
+  m$result$PosteriorSamples
+}
+
+#' Compute the proportion of signals shared by magnitude in each pair of conditions
+#' @param m the mash fit with samples from posteriors
+#' @param factor a number in [0,1] the factor within which effects are considered to be shared
+#' @param FUN a function to be applied to the estimated effect sizes before assessing sharing. The most obvious choice beside the default
+#' 'FUN=identity' would be 'FUN=abs' if you want to ignore the sign of the effects when assesing sharing.
+#' @details For each pair of conditions, compute the fraction of effects that are within
+#'  a factor `factor` of one another. The results are returned as an R by R matrix.
+#' @examples
+#' \dontrun{
+#' get_pairwise_sharing_from_samples(m) # sharing by magnitude (same sign)
+#' get_pairwise_sharing_from_samples(m, factor=0) # sharing by sign
+#' get_pairwise_sharing_from_samples(m, FUN=abs) # sharing by magnitude when sign is ignored
+#' }
+#' @export
+get_pairwise_sharing_from_samples = function(m, factor=0.5, FUN= identity){
+  samples = get_samples(m)
+  if(is.null(samples)){
+    stop('There is no sample from posteriors! Please use get_pairwise_sharing.')
+  }
+  M = dim(samples)[3]
+  R = get_ncond(m)
+  S = matrix(NA,nrow = R, ncol=R)
+  for(i in 1:R){
+    for(j in i:R){
+      ratio = FUN(samples[,i,])/FUN(samples[,j,])
+      S[i,j] = mean(apply(ratio, 1, function(x) sum(x > factor & x < (1/factor), na.rm = TRUE)/M))
+    }
+  }
+  S[lower.tri(S, diag = FALSE)] = t(S)[lower.tri(S, diag = FALSE)]
+  return(S)
+}
+
 get_ncond = function(m){
   return(ncol(get_pm(m)))
 }
