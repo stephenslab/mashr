@@ -5,7 +5,7 @@
 \title{Estimate null correlations}
 \usage{
 estimate_null_correlation(data, Ulist, init, max_iter = 50,
-  tol = 0.001, cor = TRUE, track_fit = FALSE,
+  tol = 0.001, est_cor = TRUE, track_fit = FALSE,
   prior = c("nullbiased", "uniform"), ...)
 }
 \arguments{
@@ -19,7 +19,7 @@ estimate_null_correlation(data, Ulist, init, max_iter = 50,
 
 \item{tol}{convergence tolerance}
 
-\item{cor}{whether to estimate correlation matrix. If it is False, we estimate the covairance matrix}
+\item{est_cor}{whether to estimate correlation matrix. If it is False, we estimate the covairance matrix}
 
 \item{track_fit}{add an attribute \code{trace} to output that saves current values of all iterations}
 

@@ -27,7 +27,7 @@ in a `mashr` analysis.
 To deal with these correlations `mashr` allows the user to specify
 a correlation matrix $V$ when setting up the data in `mash_set_data`. 
 The easiest way to specify this correlation
-matrix is to estimate it using `estimate_null_correlation`, which,
+matrix is to estimate it using `estimate_null_correlation_simple`, which,
 as its name suggests, uses the null tests (specifically, tests 
 without a strong $z$ score) to estimate the correlations.
 
@@ -46,8 +46,8 @@ simdata = simple_sims(500,5,1)
 Read in the data, and estimate correlations:
 ```{r}
 data   = mash_set_data(simdata$Bhat, simdata$Shat)
-V = estimate_null_correlation(data)
-data.V = mash_set_data(simdata$Bhat, simdata$Shat, V=V)
+V = estimate_null_correlation_simple(data)
+data.V = mash_update_data(data, V=V)
 ```
 
 Now we have two mash data objects, one (`data.V`) with correlations specified,
