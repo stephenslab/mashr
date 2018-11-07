@@ -120,9 +120,8 @@ get_pairwise_sharing = function(m, factor=0.5, lfsr_thresh=0.05, FUN= identity){
   R = get_ncond(m)
   lfsr = get_lfsr(m)
   S=matrix(NA,nrow = R, ncol=R)
-  #colnames(S)=rownames(S)=colnames(maxz)
   for(i in 1:R){
-    for(j in 1:R){
+    for(j in i:R){
       sig_i=get_significant_results(m,thresh=lfsr_thresh,conditions = i)
       sig_j=get_significant_results(m,thresh=lfsr_thresh,conditions = j)
       a=union(sig_i,sig_j)
@@ -130,6 +129,9 @@ get_pairwise_sharing = function(m, factor=0.5, lfsr_thresh=0.05, FUN= identity){
       S[i,j]=mean(ratio>factor & ratio<(1/factor))
     }
   }
+  S[lower.tri(S, diag = FALSE)] = t(S)[lower.tri(S, diag = FALSE)]
+  colnames(S) = row.names(S) = colnames(m$result$PosteriorMean)
+
   return(S)
 }
 
@@ -168,6 +170,7 @@ get_pairwise_sharing_from_samples = function(m, factor=0.5, FUN= identity){
     }
   }
   S[lower.tri(S, diag = FALSE)] = t(S)[lower.tri(S, diag = FALSE)]
+  colnames(S) = row.names(S) = colnames(m$result$PosteriorMean)
   return(S)
 }
 

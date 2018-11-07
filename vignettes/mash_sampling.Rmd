@@ -57,11 +57,19 @@ $$
 &\approx \frac{1}{2000} \sum_{j=1}^{2000} \frac{1}{100} \sum_{m=1}^{100} \mathbb{I}(b_{jr}^{(m)}, b_{jr'}^{(m)} \text{ have same sign and similar magnitude})
 \end{align*}
 $$
+The last approximation is achieved by sampling.
 
 ```{r}
 library(corrplot)
 x = get_pairwise_sharing_from_samples(m, factor=0.5)
-colnames(x) = colnames(simdata$Bhat)
-rownames(x) = colnames(x)
 corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Sign', mar = c(4,0,4,0))
 ```
+
+There is another function in `mashr` package that compute the proportion of **significant signals** shared by magnitude for the estimated effect sizes, in each pair of conditions, `get_pairwise_sharing`. For each pair of conditions, first identify the effects that are significant in at least one of the two conditions. Then compute what fraction of these have an estimated (posterior mean) effect size within a factor `factor` of one another.
+
+```{r}
+x = get_pairwise_sharing(m, factor=0.5)
+corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Sign', mar = c(4,0,4,0))
+```
+
+The pairwise sharing proportions are higher, since it is computed out of **significant signals** only.
