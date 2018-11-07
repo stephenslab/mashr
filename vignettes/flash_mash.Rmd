@@ -43,7 +43,7 @@ and create `random` and `strong` sets,
 
 ```{r}
 data.temp = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
-Vhat = estimate_null_correlation(data.temp)
+Vhat = estimate_null_correlation_simple(data.temp)
 rm(data.temp)
 data.random = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,],V=Vhat)
 data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.subset,], V=Vhat)

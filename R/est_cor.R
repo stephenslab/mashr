@@ -2,10 +2,11 @@
 #' @description Estimates a null correlation matrix from data using simple z score threshold
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param z_thresh the z score threshold below which to call an effect null
+#' @param est_cor whether to estimate correlation matrix. If it is False, we estimate the covairance matrix
 #' @details Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
 #' @importFrom stats cor
 #' @export
-estimate_null_correlation_adhoc = function(data, z_thresh=2){
+estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)
   nullish = which(max_absz < z_thresh)
@@ -13,7 +14,10 @@ estimate_null_correlation_adhoc = function(data, z_thresh=2){
     stop("not enough null data to estimate null correlation")
   }
   nullish_z = z[nullish,]
-  Vhat = cor(nullish_z)
+  Vhat = cov(nullish_z)
+  if(est_cor){
+    Vhat = cov2cor(Vhat)
+  }
   return(Vhat)
 }
 
@@ -45,7 +49,7 @@ estimate_null_correlation_adhoc = function(data, z_thresh=2){
 #' @param init the initial value for the null correlation. If it is not given, we use result from \code{estimate_null_correlation_adhoc}
 #' @param max_iter maximum number of iterations to perform
 #' @param tol convergence tolerance
-#' @param cor whether to estimate correlation matrix. If it is False, we estimate the covairance matrix
+#' @param est_cor whether to estimate correlation matrix. If it is False, we estimate the covairance matrix
 #' @param track_fit add an attribute \code{trace} to output that saves current values of all iterations
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param ... other parameters pass to \code{mash}
@@ -53,7 +57,7 @@ estimate_null_correlation_adhoc = function(data, z_thresh=2){
 #' @export
 #'
 estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
-                                     cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'),...){
+                                     est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'),...){
   if(class(data) != 'mash'){
     stop('data is not a "mash" object')
   }
@@ -65,7 +69,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
   tracking = list()
 
   if(missing(init)){
-    init = tryCatch(estimate_null_correlation_adhoc(data), error = function(e) FALSE)
+    init = tryCatch(estimate_null_correlation_simple(data, est_cor = est_cor), error = function(e) FALSE)
     if(is.logical(init)){
       warning('Use Identity matrix as the initialize null correlation.')
       init = diag(n_conditions(data))
@@ -91,7 +95,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
     }
     # max_V
     V = E_V(data, m.model)
-    if(cor){
+    if(est_cor){
       V = cov2cor(V)
     }
     m.model = fit_mash_V(data, Ulist, V, prior=prior)
@@ -106,6 +110,9 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
     if(delta.ll<=tol) break;
   }
 
+  log_liks = log_liks[1:(niter+1)] #remove trailing NAs
+  result$loglik = log_liks
+  result$niter = niter + 1
   if(track_fit){
     result$trace = tracking
   }

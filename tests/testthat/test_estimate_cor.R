@@ -23,5 +23,6 @@ test_that("Estimate null correlation properly", {
   U.c = cov_canonical(data)
 
   V.est = estimate_null_correlation(data, U.c, max_iter = 3, track_fit = TRUE)
-  expect_equal(V.est, original.null.cor)
+  expect_equal(V.est$V, original.null.cor$V)
+  expect_equal(V.est$mash.model, original.null.cor$mash.model)
 })
