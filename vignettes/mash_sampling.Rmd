@@ -16,9 +16,16 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 7,
 
 # Introduction
 
-Besides the point estimates from the posteriors of `mashr`, we also provide the option to sampling from the posteriors. Using the samples, we can answer many questions. For example, what proportion of effects have the same sign and similar magnitude for each pair of conditions?
+Besides the point estimates from the posteriors of `mashr`, we also
+provide the option to sampling from the posteriors. Using the samples,
+we can answer many questions. For example, what proportion of effects
+have the same sign and similar magnitude for each pair of conditions?
 
-We use simulated data for illustration. The simulation routine creates a dataset with 5 conditions, and four different types of effect: null, independent among conditions, condition-specific in condition 1, and shared (equal effects in all conditions). It creates 500 effects of each type for a total of 2000 effects.
+We use simulated data for illustration. The simulation routine creates
+a dataset with 5 conditions, and four different types of effect: null,
+independent among conditions, condition-specific in condition 1, and
+shared (equal effects in all conditions). It creates 500 effects of
+each type for a total of 2000 effects.
 
 ```{r}
 library(mashr)
@@ -28,27 +35,37 @@ simdata = simple_sims(500,5,1)
 
 # Fit mash model with samples from the posteriors
 
-Read in the data and set up the covariance matrices 
+Read in the data and set up the covariance matrices:
+
 ```{r}
 data = mash_set_data(simdata$Bhat, simdata$Shat)
 U.c = cov_canonical(data)
 ```
 
-Here, we draw 100 samples from the posteriors of each effect
+Here, we draw 100 samples from the posteriors of each effect.
+
 ```{r}
 m = mash(data, U.c, algorithm.version = 'R', posterior_samples = 100)
 ```
 
-Using `get_samples(m)`, we have a $2000 \times 5 \times 100$ array for samples.
+Using `get_samples(m)`, we have a $2000 \times 5 \times 100$ array for
+samples.
 
-If we fit the mash model without the posterior samples, we could use `mash_compute_posterior_matrices` to sample from the mash object.
+If we fit the mash model without the posterior samples, we could use
+`mash_compute_posterior_matrices` to sample from the mash object.
+
 ```{r}
-m$result = mash_compute_posterior_matrices(m, data, algorithm.version = 'R', posterior_samples = 100)
+m$result = mash_compute_posterior_matrices(m, data, algorithm.version = 'R',
+                                           posterior_samples = 100)
 ```
 
 # Pairwise sharing
 
-To answer 'what proportion of effects have the same sign and similar magnitude for each pair of conditions?', `mash` has a function to summarize the results from samples. Here, we define similar in magnitude to mean both the same sign and within a factor of 2 of one another.
+To answer 'what proportion of effects have the same sign and similar
+magnitude for each pair of conditions?', `mash` has a function to
+summarize the results from samples. Here, we define similar in
+magnitude to mean both the same sign and within a factor of 2 of one
+another.
 
 $$
 \begin{align*}
@@ -63,5 +80,7 @@ library(corrplot)
 x = get_pairwise_sharing_from_samples(m, factor=0.5)
 colnames(x) = colnames(simdata$Bhat)
 rownames(x) = colnames(x)
-corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Sign', mar = c(4,0,4,0))
+corrplot(x, method='color', cl.lim=c(0,1), type='upper',
+         addCoef.col = "black", tl.col="black", tl.srt=45,
+         title = 'Pairwise Sharing by Sign', mar = c(4,0,4,0))
 ```

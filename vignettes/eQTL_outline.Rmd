@@ -85,7 +85,6 @@ random.subset = sample(1:nrow(simdata$Bhat),5000)
 
 ```
 
-
 ## Correlation structure
 
 We estimate the correlation structure in the null tests from the `random` data (not the `strong` data because
