@@ -93,7 +93,7 @@
     <p>Perform "extreme deconvolution" (Bovy et al) on a subset of the data</p>
     
 
-    <pre class="usage"><span class='fu'>cov_ed</span>(<span class='no'>data</span>, <span class='no'>Ulist_init</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>cov_ed</span>(<span class='no'>data</span>, <span class='no'>Ulist_init</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -109,6 +109,10 @@
     <tr>
       <th>subset</th>
       <td><p>a subset of data to be used when ED is run (set to NULL for all the data)</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>arguments to be passed to <code>extreme_deconvolution</code> function, such as <code>tol</code>, <code>maxiter</code>. Other options see <code><a href='http://www.rdocumentation.org/packages/ExtremeDeconvolution/topics/extreme_deconvolution'>?ExtremeDeconvolution::extreme_deconvolution</a></code></p></td>
     </tr>
     </table>
     

@@ -96,8 +96,9 @@
     <pre class="usage"><span class='fu'>mash</span>(<span class='no'>data</span>, <span class='kw'>Ulist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gridmult</span> <span class='kw'>=</span> <span class='fu'>sqrt</span>(<span class='fl'>2</span>), <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>normalizeU</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>usepointmass</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>g</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>fixg</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span>), <span class='kw'>optmethod</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"mixIP"</span>, <span class='st'>"mixEM"</span>,
-  <span class='st'>"cxxMixSquarem"</span>), <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>add.mem.profile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>), <span class='kw'>pi_thresh</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>, <span class='kw'>outputlevel</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+  <span class='st'>"mixSQP"</span>, <span class='st'>"cxxMixSquarem"</span>), <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>add.mem.profile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>), <span class='kw'>pi_thresh</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>, <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>posterior_samples</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>123</span>, <span class='kw'>outputlevel</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -159,8 +160,20 @@
       <td><p>threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)</p></td>
     </tr>
     <tr>
+      <th>A</th>
+      <td><p>the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.</p></td>
+    </tr>
+    <tr>
+      <th>posterior_samples</th>
+      <td><p>the number of samples to be drawn from the posterior distribution of each effect.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>A random number seed to use when sampling from the posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
+    </tr>
+    <tr>
       <th>outputlevel</th>
-      <td><p>controls amount of computation / output; 1: only output estimated mixture component proportions, 2: output complete result, 99: additionally output debugging information</p></td>
+      <td><p>controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights</p></td>
     </tr>
     </table>
     
@@ -177,10 +190,9 @@
 <span class='no'>res.mash</span> <span class='kw'>=</span> <span class='kw pkg'>mashr</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/mashr/topics/mash'>mash</a></span>(<span class='no'>data</span>,<span class='no'>U.c</span>)</div><div class='output co'>#&gt;  - Computing 20 x 131 likelihood matrix.
 #&gt;  - Likelihood calculations took 0.08 seconds.
 #&gt;  - Fitting model with 131 mixture components.
-#&gt;  - Model fitting took 0.16 seconds.
+#&gt;  - Model fitting took 0.07 seconds.
 #&gt;  - Computing posterior matrices.
-#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'>
-</div></pre>
+#&gt;  - Computation allocated took 0.00 seconds.</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

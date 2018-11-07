@@ -50,6 +50,9 @@ estimate_null_correlation_adhoc = function(data, z_thresh=2){
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param ... other parameters pass to \code{mash}
 #' @details Returns the estimated correlation/covariance matrix of the effects
+#'
+#' @importFrom stats cov2cor
+#' 
 #' @export
 #'
 estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,

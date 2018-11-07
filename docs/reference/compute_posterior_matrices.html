@@ -94,7 +94,8 @@
     
 
     <pre class="usage"><span class='fu'>compute_posterior_matrices</span>(<span class='no'>data</span>, <span class='no'>Ulist</span>, <span class='no'>posterior_weights</span>,
-  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>), <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>), <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>output_posterior_cov</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>posterior_samples</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>123</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -111,15 +112,27 @@
     <tr>
       <th>posterior_weights</th>
       <td><p>Vector containing the posterior
-probability of each mixture component in Ulist for the data</p></td>
+probability of each mixture component in Ulist for the data.</p></td>
     </tr>
     <tr>
       <th>algorithm.version</th>
-      <td><p>Indicates whether to use R or Rcpp version</p></td>
+      <td><p>Indicates whether to use R or Rcpp version.</p></td>
     </tr>
     <tr>
       <th>A</th>
-      <td><p>the linear transformation matrix, KxR matrix</p></td>
+      <td><p>the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.</p></td>
+    </tr>
+    <tr>
+      <th>output_posterior_cov</th>
+      <td><p>whether or not to output posterior covariance matrices for all effects.</p></td>
+    </tr>
+    <tr>
+      <th>posterior_samples</th>
+      <td><p>the number of samples to be drawn from the posterior distribution of each effect.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>a random number seed to use when sampling from the posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
     </tr>
     </table>
     
@@ -128,18 +141,22 @@ probability of each mixture component in Ulist for the data</p></td>
     <p>The return value is a list containing the following
    components:</p>
 <p></p>
-<dt>PosteriorMean</dt><dd><p>J x K matrix of posterior means.</p></dd>
+<dt>PosteriorMean</dt><dd><p>J x Q matrix of posterior means.</p></dd>
 
-   <dt>PosteriorSD</dt><dd><p>J x K matrix of posterior (marginal) standard
+   <dt>PosteriorSD</dt><dd><p>J x Q matrix of posterior (marginal) standard
    deviations.</p></dd>
 
-   <dt>NegativeProb</dt><dd><p>J x K matrix of posterior (marginal)
+   <dt>NegativeProb</dt><dd><p>J x Q matrix of posterior (marginal)
     probability of being negative.</p></dd>
 
-   <dt>ZeroProb</dt><dd><p>J x K matrix of posterior (marginal) probability
+   <dt>ZeroProb</dt><dd><p>J x Q matrix of posterior (marginal) probability
     of being zero.</p></dd>
 
-   <dt>lfsr</dt><dd><p>J x K matrix of local false sign rates.</p></dd>
+   <dt>lfsr</dt><dd><p>J x Q matrix of local false sign rates.</p></dd>
+
+   <dt>PosteriorCov</dt><dd><p>Q x Q x J array of posterior covariance matrices, if the <code>output_posterior_cov = TRUE</code>.</p></dd>
+
+   <dt>PosteriorSamples</dt><dd><p>M x Q x J array of samples, if the <code>posterior_samples = M &gt; 0</code>.</p></dd>
 
     
 
