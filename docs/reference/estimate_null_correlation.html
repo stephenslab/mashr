@@ -93,7 +93,9 @@
     <p>Estimates a null correlation matrix from data</p>
     
 
-    <pre class="usage"><span class='fu'>estimate_null_correlation</span>(<span class='no'>data</span>, <span class='kw'>z_thresh</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>apply_lower_bound</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>estimate_null_correlation</span>(<span class='no'>data</span>, <span class='no'>Ulist</span>, <span class='no'>init</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='kw'>cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>track_fit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -103,19 +105,42 @@
       <td><p>a mash data object, eg as created by <code>mash_set_data</code></p></td>
     </tr>
     <tr>
-      <th>z_thresh</th>
-      <td><p>the z score threshold below which to call an effect null</p></td>
+      <th>Ulist</th>
+      <td><p>a list of covariance matrices to use</p></td>
     </tr>
     <tr>
-      <th>apply_lower_bound</th>
-      <td><p>indicates whether to also apply a lower bound for the
-correlations which can be computed based on all data. See <code>compute_null_correlation_lower_bound</code></p></td>
+      <th>init</th>
+      <td><p>the initial value for the null correlation. If it is not given, we use result from <code>estimate_null_correlation_adhoc</code></p></td>
+    </tr>
+    <tr>
+      <th>max_iter</th>
+      <td><p>maximum number of iterations to perform</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>convergence tolerance</p></td>
+    </tr>
+    <tr>
+      <th>cor</th>
+      <td><p>whether to estimate correlation matrix. If it is False, we estimate the covairance matrix</p></td>
+    </tr>
+    <tr>
+      <th>track_fit</th>
+      <td><p>add an attribute <code>trace</code> to output that saves current values of all iterations</p></td>
+    </tr>
+    <tr>
+      <th>prior</th>
+      <td><p>indicates what penalty to use on the likelihood, if any</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>other parameters pass to <code>mash</code></p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold</p>
+    <p>Returns the estimated correlation/covariance matrix of the effects</p>
     
 
   </div>

@@ -93,7 +93,7 @@
     <p>Fit extreme deconvolution to mash data</p>
     
 
-    <pre class="usage"><span class='fu'>ed_wrapper</span>(<span class='no'>data</span>, <span class='no'>Ulist_init</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>ed_wrapper</span>(<span class='no'>data</span>, <span class='no'>Ulist_init</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -109,6 +109,10 @@
     <tr>
       <th>subset</th>
       <td><p>the indices of the observations to be used (defaults to all of them)</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>arguments to be passed to <code>extreme_deconvolution</code> function, such as <code>tol</code>, <code>maxiter</code>. Other options see <code><a href='http://www.rdocumentation.org/packages/ExtremeDeconvolution/topics/extreme_deconvolution'>?ExtremeDeconvolution::extreme_deconvolution</a></code></p></td>
     </tr>
     </table>
     

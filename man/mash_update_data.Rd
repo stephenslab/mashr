@@ -7,11 +7,11 @@
 mash_update_data(mashdata, ref = NULL, V = NULL)
 }
 \arguments{
+\item{mashdata}{mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}}
+
 \item{ref}{the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.}
 
 \item{V}{a correlation matrix for the null effects}
-
-\item{mashdataa}{mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}}
 }
 \value{
 a updated mash data object

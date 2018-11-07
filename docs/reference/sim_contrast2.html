@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Create simulation with signal data used for contrast
-analysis, 10% percent of them are non-null. — sim_contrast2 • mashr</title>
+analysis. — sim_contrast2 • mashr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -29,10 +29,10 @@ analysis, 10% percent of them are non-null. — sim_contrast2 • mashr</title>
   
   
 <meta property="og:title" content="Create simulation with signal data used for contrast
-analysis, 10% percent of them are non-null. — sim_contrast2" />
+analysis. — sim_contrast2" />
 
 <meta property="og:description" content="Create simulation with signal data used for contrast
-analysis, 10% percent of them are non-null." />
+analysis." />
 <meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -90,12 +90,12 @@ analysis, 10% percent of them are non-null." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create simulation with signal data used for contrast
-analysis, 10% percent of them are non-null.</h1>
+analysis.</h1>
     </div>
 
     
     <p>Create simulation with signal data used for contrast
-analysis, 10% percent of them are non-null.</p>
+analysis.</p>
     
 
     <pre class="usage"><span class='fu'>sim_contrast2</span>(<span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>1000</span>, <span class='kw'>ncond</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>err_sd</span> <span class='kw'>=</span> <span class='fu'>sqrt</span>(<span class='fl'>0.5</span>))</pre>
@@ -119,9 +119,12 @@ analysis, 10% percent of them are non-null.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The simulation consists of equal numbers of four different
-  types of deviations: null, equal among conditions, present only in
-  first condition, independent across conditions.</p>
+    <p>The first condition is the reference group. The deviations are the difference
+  between the subsequent conditions with the reference group.
+  The simulation consists of 90<!-- % null deviations, 10% non-nulls. -->
+  The non-nulls consist of equal numbers of three different types of deviations:
+  equal among conditions, present only in the first subsequent condition,
+  independent across conditions.</p>
     
 
   </div>
