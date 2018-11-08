@@ -79,14 +79,14 @@ The last approximation is achieved by sampling.
 ```{r}
 library(corrplot)
 x = get_pairwise_sharing_from_samples(m, factor=0.5)
-corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Sign', mar = c(4,0,4,0))
+corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
 ```
 
-There is another function in `mashr` package that compute the proportion of **significant signals** shared by magnitude for the estimated effect sizes, in each pair of conditions, `get_pairwise_sharing`. For each pair of conditions, first identify the effects that are significant in at least one of the two conditions. Then compute what fraction of these have an estimated (posterior mean) effect size within a factor `factor` of one another.
+There is another function in `mashr` package that compute the proportion of **significant signals** shared by magnitude in the estimated effect sizes, for each pair of conditions, `get_pairwise_sharing`. For each pair of conditions, first identify the effects that are significant in at least one of the two conditions. Then compute what fraction of these have an estimated (posterior mean) effect size within a factor `factor` of one another.
 
 ```{r}
 x = get_pairwise_sharing(m, factor=0.5)
-corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Sign', mar = c(4,0,4,0))
+corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
 ```
 
 The pairwise sharing proportions are higher, since it is computed out of **significant signals** only.
