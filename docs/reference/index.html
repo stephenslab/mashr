@@ -21,13 +21,19 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
 <meta property="og:title" content="Function reference" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -50,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mashr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mashr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -73,6 +83,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -80,380 +91,376 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.2.18.0474</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="calc_lik_matrix_common_cov.html">calc_lik_matrix_common_cov</a></code> </p>
-          </td>
-          <td><p>calc_lik_matrix_common_cov</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="calc_lik_matrix.html">calc_lik_matrix</a></code> </p>
-          </td>
-          <td><p>Compute matrix of conditional likelihoods.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="calc_lik_vector.html">calc_lik_vector</a></code> </p>
-          </td>
-          <td><p>Compute conditional likelihoods for bhat vector.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="calc_relative_lik_matrix.html">calc_relative_lik_matrix</a></code> </p>
-          </td>
-          <td><p>Calculate matrix of relative likelihoods.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_alt_loglik_from_matrix_and_pi.html">compute_alt_loglik_from_matrix_and_pi</a></code> </p>
-          </td>
-          <td><p>Compute vector of alternative loglikelihoods from a matrix of log-likelihoods and fitted pi</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_loglik_from_matrix_and_pi.html">compute_loglik_from_matrix_and_pi</a></code> </p>
-          </td>
-          <td><p>Compute total loglikelihood from a matrix of log-likelihoods and fitted pi</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_null_loglik_from_matrix.html">compute_null_loglik_from_matrix</a></code> </p>
-          </td>
-          <td><p>Compute vector of null loglikelihoods from a matrix of log-likelihoods</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_posterior_matrices_common_cov_R.html">compute_posterior_matrices_common_cov_R</a></code> </p>
-          </td>
-          <td><p>Compute posterior matrices (when error covariance V_j is equal for all observations j)</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_posterior_matrices_general_R.html">compute_posterior_matrices_general_R</a></code> </p>
-          </td>
-          <td><p>Compute posterior matrices (general version)</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_posterior_matrices.html">compute_posterior_matrices</a></code> </p>
-          </td>
-          <td><p>Compute posterior matrices.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_posterior_weights.html">compute_posterior_weights</a></code> </p>
-          </td>
-          <td><p>compute posterior probabilities</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="compute_vloglik_from_matrix_and_pi.html">compute_vloglik_from_matrix_and_pi</a></code> </p>
-          </td>
-          <td><p>Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="contrast_matrix.html">contrast_matrix</a></code> </p>
-          </td>
-          <td><p>Create contrast matrix</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_all_zeros.html">cov_all_zeros</a></code> </p>
-          </td>
-          <td><p>Compute an R by R matrix of all 0s</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_canonical.html">cov_canonical</a></code> </p>
-          </td>
-          <td><p>Compute a list of canonical covariance matrices</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_ed.html">cov_ed</a></code> </p>
-          </td>
-          <td><p>Perform "extreme deconvolution" (Bovy et al) on a subset of the data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_equal_effects.html">cov_equal_effects</a></code> </p>
-          </td>
-          <td><p>Compute an R by R matrix of all 1s</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_first_singleton.html">cov_first_singleton</a></code> </p>
-          </td>
-          <td><p>Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_from_factors.html">cov_from_factors</a></code> </p>
-          </td>
-          <td><p>produce list of rank 1 covariance matrices corresponding to rows of f</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_pca.html">cov_pca</a></code> </p>
-          </td>
-          <td><p>Perform PCA on data and return list of candidate covariance matrices</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_simple_het.html">cov_simple_het</a></code> </p>
-          </td>
-          <td><p>Compute covariance matrices with diagonal element 1 and off-diagonal element corr</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_udi_single.html">cov_udi_single</a></code> </p>
-          </td>
-          <td><p>computes the covariance matrix for a single UDI model</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cov_udi.html">cov_udi</a></code> </p>
-          </td>
-          <td><p>Compute a list of covariance matrices corresponding to the
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="calc_lik_matrix.html">calc_lik_matrix()</a></code> </p>
+        </td>
+        <td><p>Compute matrix of conditional likelihoods.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_lik_matrix_common_cov.html">calc_lik_matrix_common_cov()</a></code> </p>
+        </td>
+        <td><p>calc_lik_matrix_common_cov</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_lik_vector.html">calc_lik_vector()</a></code> </p>
+        </td>
+        <td><p>Compute conditional likelihoods for bhat vector.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_relative_lik_matrix.html">calc_relative_lik_matrix()</a></code> </p>
+        </td>
+        <td><p>Calculate matrix of relative likelihoods.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_alt_loglik_from_matrix_and_pi.html">compute_alt_loglik_from_matrix_and_pi()</a></code> </p>
+        </td>
+        <td><p>Compute vector of alternative loglikelihoods from a matrix of log-likelihoods and fitted pi</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_loglik_from_matrix_and_pi.html">compute_loglik_from_matrix_and_pi()</a></code> </p>
+        </td>
+        <td><p>Compute total loglikelihood from a matrix of log-likelihoods and fitted pi</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_null_loglik_from_matrix.html">compute_null_loglik_from_matrix()</a></code> </p>
+        </td>
+        <td><p>Compute vector of null loglikelihoods from a matrix of log-likelihoods</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_posterior_matrices.html">compute_posterior_matrices()</a></code> </p>
+        </td>
+        <td><p>Compute posterior matrices.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_posterior_matrices_common_cov_R.html">compute_posterior_matrices_common_cov_R()</a></code> </p>
+        </td>
+        <td><p>Compute posterior matrices (when error covariance V_j is equal for all observations j)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_posterior_matrices_general_R.html">compute_posterior_matrices_general_R()</a></code> </p>
+        </td>
+        <td><p>Compute posterior matrices (general version)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_posterior_weights.html">compute_posterior_weights()</a></code> </p>
+        </td>
+        <td><p>compute posterior probabilities</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_vloglik_from_matrix_and_pi.html">compute_vloglik_from_matrix_and_pi()</a></code> </p>
+        </td>
+        <td><p>Compute vector of loglikelihoods from a matrix of log-likelihoods and fitted pi</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="contrast_matrix.html">contrast_matrix()</a></code> </p>
+        </td>
+        <td><p>Create contrast matrix</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_all_zeros.html">cov_all_zeros()</a></code> </p>
+        </td>
+        <td><p>Compute an R by R matrix of all 0s</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_canonical.html">cov_canonical()</a></code> </p>
+        </td>
+        <td><p>Compute a list of canonical covariance matrices</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_ed.html">cov_ed()</a></code> </p>
+        </td>
+        <td><p>Perform "extreme deconvolution" (Bovy et al) on a subset of the data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_equal_effects.html">cov_equal_effects()</a></code> </p>
+        </td>
+        <td><p>Compute an R by R matrix of all 1s</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_first_singleton.html">cov_first_singleton()</a></code> </p>
+        </td>
+        <td><p>Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_from_factors.html">cov_from_factors()</a></code> </p>
+        </td>
+        <td><p>produce list of rank 1 covariance matrices corresponding to rows of f</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_pca.html">cov_pca()</a></code> </p>
+        </td>
+        <td><p>Perform PCA on data and return list of candidate covariance matrices</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_simple_het.html">cov_simple_het()</a></code> </p>
+        </td>
+        <td><p>Compute covariance matrices with diagonal element 1 and off-diagonal element corr</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_udi.html">cov_udi()</a></code> </p>
+        </td>
+        <td><p>Compute a list of covariance matrices corresponding to the
 "Unassociated", "Directly associated" and "Indirectly associated" models</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ed_wrapper.html">ed_wrapper</a></code> </p>
-          </td>
-          <td><p>Fit extreme deconvolution to mash data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="estimate_null_correlation_adhoc.html">estimate_null_correlation_adhoc</a></code> </p>
-          </td>
-          <td><p>Estimate null correlations (ad hoc)</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="estimate_null_correlation.html">estimate_null_correlation</a></code> </p>
-          </td>
-          <td><p>Estimate null correlations</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="expand_cov.html">expand_cov</a></code> </p>
-          </td>
-          <td><p>Create expanded list of covariance matrices expanded by grid, Sigma_lk = omega_l U_k</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_estimated_pi.html">get_estimated_pi</a></code> </p>
-          </td>
-          <td><p>Return the estimated mixture proportions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_log10bf.html">get_log10bf</a></code> </p>
-          </td>
-          <td><p>Return the Bayes Factor for each effect</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_n_significant_conditions.html">get_n_significant_conditions</a></code> </p>
-          </td>
-          <td><p>Count number of conditions each effect is significant in</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_pairwise_sharing_from_samples.html">get_pairwise_sharing_from_samples</a></code> </p>
-          </td>
-          <td><p>Compute the proportion of signals shared by magnitude in each pair of conditions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_pairwise_sharing.html">get_pairwise_sharing</a></code> </p>
-          </td>
-          <td><p>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_samples.html">get_samples</a></code> </p>
-          </td>
-          <td><p>Return samples from a mash object</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="get_significant_results.html">get_significant_results</a></code> </p>
-          </td>
-          <td><p>Find effects that are significant in at least one condition</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="initialize_pi.html">initialize_pi</a></code> </p>
-          </td>
-          <td><p>Initialize mixture proportions - currently by making them all equal</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="is_common_cov_Shat_alpha.html">is_common_cov_Shat_alpha</a></code> </p>
-          </td>
-          <td><p>Check that all rows of Shat_alpha are the same.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="is_common_cov_Shat.html">is_common_cov_Shat</a></code> </p>
-          </td>
-          <td><p>Check that all covariances are equal (Shat).</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="make_names.html">make_names</a></code> </p>
-          </td>
-          <td><p>Create names for covariance matrices</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_1by1.html">mash_1by1</a></code> </p>
-          </td>
-          <td><p>Perform condition-by-condition analyses</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_compute_loglik.html">mash_compute_loglik</a></code> </p>
-          </td>
-          <td><p>Compute loglikelihood for fitted mash object on new data.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_compute_posterior_matrices.html">mash_compute_posterior_matrices</a></code> </p>
-          </td>
-          <td><p>Compute posterior matrices for fitted mash object on new data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_compute_vloglik.html">mash_compute_vloglik</a></code> </p>
-          </td>
-          <td><p>Compute vector of loglikelihood for fitted mash object on new data.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_plot_meta.html">mash_plot_meta</a></code> </p>
-          </td>
-          <td><p>Plot metaplot for an effect based on posterior from mash</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_set_data_contrast.html">mash_set_data_contrast</a></code> </p>
-          </td>
-          <td><p>Create a data object for mash contrast analysis</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_set_data.html">mash_set_data</a></code> </p>
-          </td>
-          <td><p>Create a data object for mash analysis.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash_update_data.html">mash_update_data</a></code> </p>
-          </td>
-          <td><p>Update the data object for mash analysis.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mash.html">mash</a></code> </p>
-          </td>
-          <td><p>Apply mash method to data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="optimize_pi.html">optimize_pi</a></code> </p>
-          </td>
-          <td><p>Estimate the mixture weights by maximum (penalized) likelihood</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="posterior_cov.html">posterior_cov</a></code> </p>
-          </td>
-          <td><p>posterior_cov</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="posterior_mean_matrix.html">posterior_mean_matrix</a></code> </p>
-          </td>
-          <td><p>posterior_mean_matrix</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="posterior_mean.html">posterior_mean</a></code> </p>
-          </td>
-          <td><p>posterior_mean</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="scale_cov.html">scale_cov</a></code> </p>
-          </td>
-          <td><p>Scale each covariance matrix in list Ulist by a scalar in vector grid</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="sim_contrast1.html">sim_contrast1</a></code> </p>
-          </td>
-          <td><p>Create simplest simulation, cj = mu 1
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cov_udi_single.html">cov_udi_single()</a></code> </p>
+        </td>
+        <td><p>computes the covariance matrix for a single UDI model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ed_wrapper.html">ed_wrapper()</a></code> </p>
+        </td>
+        <td><p>Fit extreme deconvolution to mash data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="estimate_null_correlation.html">estimate_null_correlation()</a></code> </p>
+        </td>
+        <td><p>Estimate null correlations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="estimate_null_correlation_simple.html">estimate_null_correlation_simple()</a></code> </p>
+        </td>
+        <td><p>Estimate null correlations (ad hoc)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expand_cov.html">expand_cov()</a></code> </p>
+        </td>
+        <td><p>Create expanded list of covariance matrices expanded by grid, Sigma_lk = omega_l U_k</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_estimated_pi.html">get_estimated_pi()</a></code> </p>
+        </td>
+        <td><p>Return the estimated mixture proportions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_log10bf.html">get_log10bf()</a></code> </p>
+        </td>
+        <td><p>Return the Bayes Factor for each effect</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_n_significant_conditions.html">get_n_significant_conditions()</a></code> </p>
+        </td>
+        <td><p>Count number of conditions each effect is significant in</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_pairwise_sharing.html">get_pairwise_sharing()</a></code> </p>
+        </td>
+        <td><p>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_pairwise_sharing_from_samples.html">get_pairwise_sharing_from_samples()</a></code> </p>
+        </td>
+        <td><p>Compute the proportion of signals shared by magnitude in each pair of conditions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_samples.html">get_samples()</a></code> </p>
+        </td>
+        <td><p>Return samples from a mash object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_significant_results.html">get_significant_results()</a></code> </p>
+        </td>
+        <td><p>Find effects that are significant in at least one condition</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="initialize_pi.html">initialize_pi()</a></code> </p>
+        </td>
+        <td><p>Initialize mixture proportions - currently by making them all equal</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="is_common_cov_Shat.html">is_common_cov_Shat()</a></code> </p>
+        </td>
+        <td><p>Check that all covariances are equal (Shat).</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="is_common_cov_Shat_alpha.html">is_common_cov_Shat_alpha()</a></code> </p>
+        </td>
+        <td><p>Check that all rows of Shat_alpha are the same.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="make_names.html">make_names()</a></code> </p>
+        </td>
+        <td><p>Create names for covariance matrices</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash.html">mash()</a></code> </p>
+        </td>
+        <td><p>Apply mash method to data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_1by1.html">mash_1by1()</a></code> </p>
+        </td>
+        <td><p>Perform condition-by-condition analyses</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_compute_loglik.html">mash_compute_loglik()</a></code> </p>
+        </td>
+        <td><p>Compute loglikelihood for fitted mash object on new data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_compute_posterior_matrices.html">mash_compute_posterior_matrices()</a></code> </p>
+        </td>
+        <td><p>Compute posterior matrices for fitted mash object on new data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_compute_vloglik.html">mash_compute_vloglik()</a></code> </p>
+        </td>
+        <td><p>Compute vector of loglikelihood for fitted mash object on new data.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_plot_meta.html">mash_plot_meta()</a></code> </p>
+        </td>
+        <td><p>Plot metaplot for an effect based on posterior from mash</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_set_data.html">mash_set_data()</a></code> </p>
+        </td>
+        <td><p>Create a data object for mash analysis.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_set_data_contrast.html">mash_set_data_contrast()</a></code> </p>
+        </td>
+        <td><p>Create a data object for mash contrast analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mash_update_data.html">mash_update_data()</a></code> </p>
+        </td>
+        <td><p>Update the data object for mash analysis.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="optimize_pi.html">optimize_pi()</a></code> </p>
+        </td>
+        <td><p>Estimate the mixture weights by maximum (penalized) likelihood</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="posterior_cov.html">posterior_cov()</a></code> </p>
+        </td>
+        <td><p>posterior_cov</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="posterior_mean.html">posterior_mean()</a></code> </p>
+        </td>
+        <td><p>posterior_mean</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="posterior_mean_matrix.html">posterior_mean_matrix()</a></code> </p>
+        </td>
+        <td><p>posterior_mean_matrix</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="scale_cov.html">scale_cov()</a></code> </p>
+        </td>
+        <td><p>Scale each covariance matrix in list Ulist by a scalar in vector grid</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sim_contrast1.html">sim_contrast1()</a></code> </p>
+        </td>
+        <td><p>Create simplest simulation, cj = mu 1
 data used for contrast analysis</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="sim_contrast2.html">sim_contrast2</a></code> </p>
-          </td>
-          <td><p>Create simulation with signal data used for contrast
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sim_contrast2.html">sim_contrast2()</a></code> </p>
+        </td>
+        <td><p>Create simulation with signal data used for contrast
 analysis.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="simple_sims.html">simple_sims</a></code> </p>
-          </td>
-          <td><p>Create some simple simulated data for testing purposes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="simple_sims2.html">simple_sims2</a></code> </p>
-          </td>
-          <td><p>Create some more simple simulated data for testing purposes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="udi_model_matrix.html">udi_model_matrix</a></code> </p>
-          </td>
-          <td><p>Create a matrix whose rows contain all possible
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="simple_sims.html">simple_sims()</a></code> </p>
+        </td>
+        <td><p>Create some simple simulated data for testing purposes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="simple_sims2.html">simple_sims2()</a></code> </p>
+        </td>
+        <td><p>Create some more simple simulated data for testing purposes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="udi_model_matrix.html">udi_model_matrix()</a></code> </p>
+        </td>
+        <td><p>Create a matrix whose rows contain all possible
 combinations of the U,D,I models that are allowed.</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -476,5 +483,8 @@ combinations of the U,D,I models that are allowed.</p></td>
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

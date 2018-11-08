@@ -58,15 +58,17 @@ data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.sub
 
 ```{r}
 library(flashr)
-
+library(mixsqp)
+library(mashr)
+    
 my_init_fn <- function(Y, K = 1) {
   ret = flashr:::udv_si(Y, K)
-  pos_sum = sum(ret$v[ret$v > 0])
-  neg_sum = -sum(ret$v[ret$v < 0])
+  pos_sum = sum(ret$v[ret$v > 0]^2)
+  neg_sum = sum(ret$v[ret$v < 0]^2)
   if (neg_sum > pos_sum) {
     return(list(u = -ret$u, d = ret$d, v = -ret$v))
   } else
-  return(ret)
+    return(ret)
 }
 
 flash_pipeline = function(data, ...) {
@@ -76,35 +78,32 @@ flash_pipeline = function(data, ...) {
   ## https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html
   ebnm_fn = "ebnm_ash"
   ebnm_param = list(l = list(mixcompdist = "normal",
-                           optmethod = "mixSQP"),
+                             optmethod = "mixIP"),
                     f = list(mixcompdist = "+uniform",
-                           optmethod = "mixSQP"))
+                             optmethod = "mixIP"))
   ##
   fl_g <- flashr:::flash_greedy_workhorse(data,
-                var_type = "constant",
-                ebnm_fn = ebnm_fn,
-                ebnm_param = ebnm_param,
-                init_fn = "my_init_fn",
-                stopping_rule = "factors",
-                tol = 1e-3,
-                verbose_output = "odF")
+                                          var_type = "constant",
+                                          ebnm_fn = ebnm_fn,
+                                          ebnm_param = ebnm_param,
+                                          init_fn = "my_init_fn",
+                                          stopping_rule = "factors",
+                                          tol = 1e-3,
+                                          verbose_output = "odF")
   fl_b <- flashr:::flash_backfit_workhorse(data,
-                f_init = fl_g,
-                var_type = "constant",
-                ebnm_fn = ebnm_fn,
-                ebnm_param = ebnm_param,
-                stopping_rule = "factors",
-                tol = 1e-3,
-                verbose_output = "odF")
+                                           f_init = fl_g,
+                                           var_type = "constant",
+                                           ebnm_fn = ebnm_fn,
+                                           ebnm_param = ebnm_param,
+                                           stopping_rule = "factors",
+                                           tol = 1e-3,
+                                           verbose_output = "odF")
   return(fl_b)
 }
 
-cov_flash = function(data, subset = NULL, mode = 'EZ', non_canonical = FALSE, save_model = NULL) {
+cov_flash = function(data, subset = NULL, non_canonical = FALSE, save_model = NULL) {
   if(is.null(subset)) subset = 1:mashr:::n_effects(data)
-  ## FIXME: is this reasonable?
-  if (mode == 'EZ') b = data$Bhat / data$Shat
-  else b = data$Bhat
-  b.center = apply(b, 2, function(x) x - mean(x))
+  b.center = apply(data$Bhat, 2, function(x) x - mean(x))
   ## Only keep factors with at least two values greater than 1 / sqrt(n)
   find_nonunique_effects <- function(fl) {
     thresh <- 1/sqrt(ncol(fl$fitted_values))
@@ -115,19 +114,24 @@ cov_flash = function(data, subset = NULL, mode = 'EZ', non_canonical = FALSE, sa
 
   fmodel = flash_pipeline(b.center)
   if (non_canonical)
-      flash_f = find_nonunique_effects(fmodel)
+    flash_f = find_nonunique_effects(fmodel)
   else 
-      flash_f = fmodel$ldf$f
+    flash_f = fmodel$ldf$f
   ## row.names(flash_f) = colnames(b)
   if (!is.null(save_model)) saveRDS(list(model=fmodel, factors=flash_f), save_model)
-  U.flash = c(cov_from_factors(t(as.matrix(flash_f)), "FLASH"),
-      list("tFLASH" = t(fmodel$fitted_values) %*% fmodel$fitted_values / nrow(b)))
+  if(ncol(flash_f) == 0){
+    U.flash = list("tFLASH" = t(fmodel$fitted_values) %*% fmodel$fitted_values / nrow(fmodel$fitted_values))
+  } else{
+    U.flash = c(cov_from_factors(t(as.matrix(flash_f)), "FLASH"),
+  list("tFLASH" = t(fmodel$fitted_values) %*% fmodel$fitted_values / nrow(fmodel$fitted_values)))
+  }
+  
   return(U.flash)
 }
 ```
 
 ```{r}
-U.f = cov_flash(data.strong)
+U.f = cov_flash(data.strong, non_canonical = TRUE)
 ```
 
 # Finalize covariances
