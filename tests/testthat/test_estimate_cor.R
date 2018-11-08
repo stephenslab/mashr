@@ -5,7 +5,7 @@ test_that("Estimate null correlation properly", {
   data = mash_set_data(Bhat,Shat)
   Ulist = cov_canonical(data)
 
-  V.adhoc = estimate_null_correlation_adhoc(data)
+  V.adhoc = estimate_null_correlation_simple(data)
   data.adhoc = mash_update_data(data, V = V.adhoc)
   out <- capture.output(mash.adhoc <- mash(data.adhoc, Ulist, outputlevel = 3))
 
