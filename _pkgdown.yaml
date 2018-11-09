@@ -20,3 +20,5 @@ articles:
     - eQTL_outline
     - intro_correlations
     - mash_sampling
+    - intro_mashcommonbaseline
+    - intro_mashnobaseline

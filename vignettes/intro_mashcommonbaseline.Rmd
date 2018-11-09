@@ -17,13 +17,19 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
 
 # Introduction
 
-We want to estimate the change in some quantity computed in multiple conditions over a **common** reference level. We must consider the additional burden of comparing all subsequent conditions to the same reference level. Failure to deal with such correlations induces many false positives in a mashr analysis. 
+We want to estimate the change in some quantity computed in multiple conditions over a **common** control condition. Deviation in any condition is defined as a difference in the quantity over a common control condition. We must consider the additional burden of comparing all subsequent conditions to the same reference condition. Failure to deal with such correlations induces many false positives in mashr analysis.
 
-To deal with these correlations, mashr allows the user to specify a contrast matrix L using `mash_set_data_contrast`, after setting up the data in `mash_set_data`. 
+Here is the [write-up](MASH_baseline.pdf) for the details of the model. When there is no control condition in the study, we can compare the quantity in different conditions with the mean. We illustrate an example in the [no baseline vignette](intro_mashnobaseline.html).
+
+To deal with these correlations, mashr allows the user to specify the reference condition using `mash_update_data`, after setting up the data in `mash_set_data`. 
+
+**Note**: In some settings measurements and tests in different conditions may be correlated with one another. For example, in eQTL applications this can occur due to sample overlap among the different conditions. In `common baseline` analysis, we assume the correlation is known.
 
 # Illustration
 
-Here we simulate data for illustration. It has 8 conditions, the first one is the reference level. Our goal is to estimate the deviations in the rest 7 conditions over the reference level.
+Here we simulate data for illustration. This simulation routine creates a dataset with 8 conditions and 12000 samples, the last condition is the control condition. 90% of the samples have no deviations from the control condition. The rest 10% of the samples are 'non-null'. The 'non-null' consists of equal numbers of three different types of deviations: equal among conditions $1, \cdots, 7$, present only in condition 1, independent across conditions $1, \cdots, 7$.
+
+Our goal is to estimate the deviations in condition $1, \cdots, 7$ over the control condition.
 
 ```{r}
 library(mashr)
@@ -31,20 +37,18 @@ set.seed(1)
 simdata = sim_contrast2(nsamp = 12000, ncond = 8)
 ```
 
-Read in the data, and specify the contrast matrix L
+We demonstrate the right way and the wrong to do the analysis
+
+# The right way
+
+Read in the data, and set the control condition
 ```{r}
-orig.data = mash_set_data(simdata$Chat, simdata$Shat)
+data = mash_set_data(simdata$Chat, simdata$Shat)
 
-R = 8
-L = diag(R-1)
-L = cbind(rep(-1, R-1), L)
-row.names(L) = c('2-1','3-1','4-1','5-1','6-1','7-1','8-1')
-
-data.L = mash_set_data_contrast(orig.data, L)
-data = mash_set_data(data.L$Bhat, data.L$Shat)
+data.L = mash_update_data(data, ref = 8)
 ```
 
-Now we have two mash data objects, one (data.L) with the induced correlation, and one without (data). `mash_set_data_contrast` computes the deviations defined by `L` internally, and accounts for the induced correlation.
+The updated mash data object (data.L) includes the induced correlation internally.
 
 We proceed the analysis using just the simple canonical covariances as in the [initial introductory](intro_mash.html) vignette.
 
@@ -64,17 +68,22 @@ length(get_significant_results(mashcontrast.model))
 
 The number of false positive is `r sum(get_significant_results(mashcontrast.model) < 12000-1200)`.
 
-We can also compare the model without the induced correlation.
+# The wrong way
+
+We fit the mash model ignoring the induced correlation.
+
 ```{r}
-m = mash(data, U.c)
+L = contrast_matrix(8, ref=8)
+data.wrong = mash_set_data(Bhat = simdata$Chat %*% t(L), Shat = 1)
+m = mash(data.wrong, U.c)
 ```
 ```{r}
 print(get_loglik(m),digits = 10)
 ```
 
-The model from `data.L` has higher likelihood, since it considers the induced correlation. 
+We can see that the log likelihood is lower, since it does not consider the induced correlation. 
 
-Without considering the induced correlation, there are `r length(get_significant_results(m))` significant effects, `r sum(get_significant_results(m) < 12000-1200)` of them are false positives.
+There are `r length(get_significant_results(m))` significant effects, `r sum(get_significant_results(m) < 12000-1200)` of them are false positives. The number of false positives is much more than the one include the induced correlation.
 
 
 

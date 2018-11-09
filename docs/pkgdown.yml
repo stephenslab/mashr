@@ -8,7 +8,7 @@ articles:
   intro_mash: intro_mash.html
   intro_mash_dd: intro_mash_dd.html
   intro_mashcommonbaseline: intro_mashcommonbaseline.html
-  intro_mashnocommonbaseline: intro_mashnocommonbaseline.html
+  intro_mashnobaseline: intro_mashnobaseline.html
   mash_sampling: mash_sampling.html
   simulate_noncanon: simulate_noncanon.html
 
