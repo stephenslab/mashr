@@ -159,7 +159,10 @@ compute_posterior_matrices <-
     }
     if (output_posterior_cov) {
       posterior_matrices$PosteriorCov <- res$post_cov
-      dimnames(posterior_matrices$PosteriorCov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
+      if (length(dim(posterior_matrices$PosteriorCov)) == 3)
+        dimnames(posterior_matrices$PosteriorCov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
+      else
+        dimnames(posterior_matrices$PosteriorCov) <- list(rownames(data$Bhat), colnames(data$Bhat))
     }
     ## if (length(dim(posterior_matrices$PosteriorCov)) == 3)
     ##   posterior_matrices$PosteriorCov = lapply(1:dim(posterior_matrices$PosteriorCov)[3],
