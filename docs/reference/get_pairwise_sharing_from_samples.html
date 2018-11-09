@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the proportion of signals shared by magnitude in each pair of conditions — get_pairwise_sharing_from_samples • mashr</title>
+<title>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions — get_pairwise_sharing_from_samples • mashr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Compute the proportion of signals shared by magnitude in each pair of conditions — get_pairwise_sharing_from_samples" />
+<meta property="og:title" content="Compute the proportion of (significant) signals shared by magnitude in each pair of conditions — get_pairwise_sharing_from_samples" />
 
-<meta property="og:description" content="Compute the proportion of signals shared by magnitude in each pair of conditions" />
+<meta property="og:description" content="Compute the proportion of (significant) signals shared by magnitude in each pair of conditions" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -97,18 +97,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the proportion of signals shared by magnitude in each pair of conditions</h1>
+    <h1>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions</h1>
     <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
     <div class="hidden name"><code>get_pairwise_sharing_from_samples.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Compute the proportion of signals shared by magnitude in each pair of conditions</p>
+    <p>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_pairwise_sharing_from_samples</span>(<span class='no'>m</span>, <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>identity</span>)</pre>
+    <pre class="usage"><span class='fu'>get_pairwise_sharing_from_samples</span>(<span class='no'>m</span>, <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>lfsr_thresh</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>identity</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -120,6 +121,10 @@
     <tr>
       <th>factor</th>
       <td><p>a number in [0,1] the factor within which effects are considered to be shared</p></td>
+    </tr>
+    <tr>
+      <th>lfsr_thresh</th>
+      <td><p>the lfsr threshold for including an effect in the assessment</p></td>
     </tr>
     <tr>
       <th>FUN</th>

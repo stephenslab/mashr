@@ -133,11 +133,11 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c)</code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.04 seconds.
+#  - Likelihood calculations took 0.03 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.33 seconds.
+#  - Model fitting took 0.28 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.03 seconds.</code></pre>
+#  - Computation allocated took 0.02 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
 <p>Remember the Crucial Rule! This step must be peformed using all the tests (or a large random subset), because this is where <code>mash</code> learns that many tests are null and corrects for it.</p>
 </div>
@@ -252,7 +252,7 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 # [1] mashr_0.2.18.0476 ashr_2.2-23      
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_0.12.19      compiler_3.5.1    plyr_1.8.4       
+#  [1] Rcpp_1.0.0        compiler_3.5.1    plyr_1.8.4       
 #  [4] iterators_1.0.10  tools_3.5.1       digest_0.6.18    
 #  [7] evaluate_0.12     memoise_1.1.0     lattice_0.20-35  
 # [10] rlang_0.3.0.1     Matrix_1.2-14     foreach_1.4.4    

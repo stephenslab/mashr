@@ -210,9 +210,9 @@ U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonic
 <p>Now we fit mash to the random tests using both data-driven and canonical covariances.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>#  - Computing 5000 x 256 likelihood matrix.
-#  - Likelihood calculations took 0.16 seconds.
+#  - Likelihood calculations took 0.18 seconds.
 #  - Fitting model with 256 mixture components.
-#  - Model fitting took 1.36 seconds.</code></pre>
+#  - Model fitting took 1.45 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level1">
 <h1 class="hasAnchor">
@@ -220,7 +220,7 @@ U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonic
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.strong, <span class="dt">g=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_fitted_g</a></span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#  - Computing 1428 x 256 likelihood matrix.
-#  - Likelihood calculations took 0.05 seconds.
+#  - Likelihood calculations took 0.04 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_lfsr</a></span>(m2))</code></pre></div>

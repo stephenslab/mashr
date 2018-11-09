@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_functions.R
 \name{get_pairwise_sharing}
 \alias{get_pairwise_sharing}
-\title{Compute the proportion of (significant) signals shared by magnitude in each pair of conditions}
+\title{Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean}
 \usage{
 get_pairwise_sharing(m, factor = 0.5, lfsr_thresh = 0.05,
   FUN = identity)
@@ -18,7 +18,7 @@ get_pairwise_sharing(m, factor = 0.5, lfsr_thresh = 0.05,
 'FUN=identity' would be 'FUN=abs' if you want to ignore the sign of the effects when assesing sharing.}
 }
 \description{
-Compute the proportion of (significant) signals shared by magnitude in each pair of conditions
+Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean
 }
 \details{
 For each pair of tissues, first identify the effects that are significant (by lfsr<lfsr_thresh)
