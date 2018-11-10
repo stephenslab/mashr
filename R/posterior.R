@@ -85,11 +85,6 @@ compute_posterior_matrices <-
             posterior_samples = 0, seed = 123) {
   algorithm.version <- match.arg(algorithm.version)
 
-  if(!is.null(A) && algorithm.version == 'Rcpp'){
-    stop("FIXME: The linear transfermation for the posterior distribution is not implemented in Rcpp")
-  }
-
-
   R = n_conditions(data)
   # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
   if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
@@ -134,15 +129,15 @@ compute_posterior_matrices <-
     }
   } else if (algorithm.version == "Rcpp") {
     if(posterior_samples > 0){
-      stop('FIXME: The sampling method is not implemented in Rcpp.')
+      stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
     }
     # Run the C implementation using the Rcpp interface.
     if (is.null(data$L))
-      res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,matrix(0,0,0),
+      res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,matrix(0,0,0),A,
                            simplify2array(Ulist),t(posterior_weights),
                            is_common_cov_Shat(data),output_posterior_cov)
     else 
-      res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,data$L,
+      res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,data$L,A,
                            simplify2array(Ulist),t(posterior_weights),
                            is_common_cov_Shat(data),output_posterior_cov)
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
@@ -167,7 +162,6 @@ compute_posterior_matrices <-
     ##                                            function(i) posterior_matrices$PosteriorCov[,,i])
     ## Adjust EZ to EE
     if (!all(data$Shat_alpha == 1)) {
-      ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
       ## Recover the scale of posterior(Bhat)
       posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
       posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
@@ -190,5 +184,3 @@ compute_posterior_weights <- function(pi, lik_mat) {
   norm <- rowSums(d) # normalize probabilities to sum to 1
   return(d/norm)
 }
-
-

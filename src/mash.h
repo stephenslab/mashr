@@ -223,6 +223,7 @@ arma::mat calc_lik(const arma::vec & b_vec,
 // @param s_mat R by J
 // @param v_mat R by R
 // @param l_mat R by R for the common baseline application (@Yuxin Zou)
+// @param a_mat R by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices, for each mixture component P by R by R
 class PosteriorMASH
 {
@@ -231,6 +232,7 @@ public:
 	              const arma::mat & s_mat,
 	              const arma::mat & v_mat,
 	              const arma::mat & l_mat,
+	              const arma::mat & a_mat,
 	              const arma::cube & U_cube) :
 		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), l_mat(l_mat), U_cube(U_cube)
 	{
@@ -246,6 +248,10 @@ public:
 		post_cov.zeros();
 		neg_prob.zeros();
 		zero_prob.zeros();
+		// check diagonal
+		arma::mat eye_mat = arma::eye<arma::mat>(R,R);
+		if (arma::accu(arma::abs(a_mat - eye_mat)) == 0) to_project = false;
+		else to_project = true;
 	}
 
 
@@ -269,7 +275,12 @@ public:
 			arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
-				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
+				if (to_project) {
+					mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv, U1) % s_mat.col(j));
+					U1 = a_mat * ((s_mat.col(j) % (s_mat.col(j) % U1).t()) * a_mat.t());
+				} else {
+					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
+				}
 				if (report_post_cov) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
@@ -317,6 +328,10 @@ public:
 			arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 			// R X J
 			arma::mat mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
+			if (to_project) {
+				mu1_mat = (mu1_mat % s_mat) * a_mat.t();
+				U1 = a_mat * ((s_mat.col(0) % (s_mat.col(0).t() % U1)) * a_mat.t());
+			}
 			// FIXME: better initialization?
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
@@ -370,6 +385,8 @@ private:
 	arma::mat s_mat;
 	arma::mat v_mat;
 	arma::mat l_mat;
+	arma::mat a_mat;
+	bool to_project;
 	arma::cube U_cube;
 	// output
 	// all R X J mat

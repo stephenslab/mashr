@@ -49,6 +49,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
                           Rcpp::NumericMatrix s_mat,
                           Rcpp::NumericMatrix v_mat,
                           Rcpp::NumericMatrix l_mat,
+                          Rcpp::NumericMatrix a_mat,
                           Rcpp::NumericVector U_3d,
                           Rcpp::NumericMatrix posterior_weights,
                           bool common_cov,
@@ -67,6 +68,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 		                 Rcpp::as<arma::mat>(s_mat),
 		                 Rcpp::as<arma::mat>(v_mat),
 		                 Rcpp::as<arma::mat>(l_mat),
+		                 Rcpp::as<arma::mat>(a_mat),
 		                 U_cube);
 		if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
 		else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);

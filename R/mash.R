@@ -206,9 +206,6 @@ mash = function(data,
 #' @export
 mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE,
                                            posterior_samples = 0, seed = 123){
-  if (!is.null(A) && algorithm.version=='Rcpp'){
-    stop("FIXME: The linear transfermation for the posterior distribution is not implemented in Rcpp")
-  }
 
   if(class(g)=="mash"){
     alpha = g$alpha
@@ -229,13 +226,6 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
                                                   posterior_weights,
                                                   algorithm.version, A=A, output_posterior_cov=output_posterior_cov,
                                                   posterior_samples = posterior_samples, seed=seed)
-
-  if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
-    ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
-    ## Recover the scale of posterior(Bhat)
-    posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
-    posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
-  }
   return(posterior_matrices)
 }
 
