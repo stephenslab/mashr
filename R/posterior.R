@@ -86,6 +86,7 @@ compute_posterior_matrices <-
   algorithm.version <- match.arg(algorithm.version)
 
   R = n_conditions(data)
+  is_null_A = is.null(A) # for use with Cpp version
   # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
   if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
     temp = diag(R)
@@ -132,6 +133,7 @@ compute_posterior_matrices <-
       stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
     }
     # Run the C implementation using the Rcpp interface.
+    if (is_null_A) A = matrix(0,0,0)
     if (is.null(data$L))
       res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,matrix(0,0,0),A,
                            simplify2array(Ulist),t(posterior_weights),

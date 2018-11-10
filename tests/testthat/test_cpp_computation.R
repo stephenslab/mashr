@@ -95,7 +95,7 @@ test_that("compare posterior computation R vs C++ in provided data of 100 X 5", 
 }
 )
 
-test_that("compare linear transfermed posterior computation R vs C++ in provided data of 100 X 5", {
+test_that("compare linear transformed posterior computation R vs C++ in provided data of 100 X 5", {
   # Load the data.
   load("compute_posterior_matrices_data.RData")
 
@@ -182,7 +182,7 @@ test_that(paste("compare posterior computation R vs C++ in simulated",
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
-test_that(paste("compare transfermed posterior computation R vs C++ in simulated",
+test_that(paste("compare transformed posterior computation R vs C++ in simulated",
                 "data common cov"),{
   Bhat    <- rbind(c(1,2,3),c(2,4,6))
   Shat    <- rbind(c(1,1,1),c(1,1,1))
@@ -201,7 +201,7 @@ test_that(paste("compare transfermed posterior computation R vs C++ in simulated
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
-test_that(paste("compare transfermed posterior computation R vs C++ in simulated",
+test_that(paste("compare transformed posterior computation R vs C++ in simulated",
                 "data non common cov"),{
   Bhat    <- rbind(c(1,2,3),c(2,4,6))
   Shat    <- rbind(c(1,2,1),c(2,1,1))

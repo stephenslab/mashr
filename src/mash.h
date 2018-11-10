@@ -223,7 +223,7 @@ arma::mat calc_lik(const arma::vec & b_vec,
 // @param s_mat R by J
 // @param v_mat R by R
 // @param l_mat R by R for the common baseline application (@Yuxin Zou)
-// @param a_mat R by R for the common baseline application (@Yuxin Zou)
+// @param a_mat Q by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices, for each mixture component P by R by R
 class PosteriorMASH
 {
@@ -234,10 +234,12 @@ public:
 	              const arma::mat & l_mat,
 	              const arma::mat & a_mat,
 	              const arma::cube & U_cube) :
-		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), l_mat(l_mat), U_cube(U_cube)
+		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), l_mat(l_mat), a_mat(a_mat), U_cube(U_cube)
 	{
 		int J = b_mat.n_cols, R = b_mat.n_rows;
-
+		if (!a_mat.is_empty()) {
+			R = a_mat.n_rows;
+		}
 		post_mean.set_size(R, J);
 		post_var.set_size(R, J);
 		post_cov.set_size(R, R, J);
@@ -248,10 +250,6 @@ public:
 		post_cov.zeros();
 		neg_prob.zeros();
 		zero_prob.zeros();
-		// check diagonal
-		arma::mat eye_mat = arma::eye<arma::mat>(R,R);
-		if (arma::accu(arma::abs(a_mat - eye_mat)) == 0) to_project = false;
-		else to_project = true;
 	}
 
 
@@ -263,21 +261,21 @@ public:
 	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
 	int compute_posterior(const arma::mat & posterior_weights, const bool report_post_cov)
 	{
-		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+		arma::vec mean(post_mean.n_rows, arma::fill::zeros);
 
-		for (arma::uword j = 0; j < b_mat.n_cols; ++j) {
+		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
 			arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(j), v_mat, l_mat));
 			// R X P matrices
-			arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-			arma::mat zero_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-			arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
-				if (to_project) {
+				if (!a_mat.is_empty()) {
 					mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv, U1) % s_mat.col(j));
-					U1 = a_mat * ((s_mat.col(j) % (s_mat.col(j) % U1).t()) * a_mat.t());
+					U1 = a_mat * (((U1.each_col() % s_mat.col(j)).each_row() % s_mat.col(j).t()) * a_mat.t());
 				} else {
 					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
 				}
@@ -316,21 +314,21 @@ public:
 	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
 	int compute_posterior_comcov(const arma::mat & posterior_weights, const bool report_post_cov)
 	{
-		arma::mat mean(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
+		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
 		arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(0), v_mat, l_mat));
-		arma::rowvec ones(b_mat.n_cols, arma::fill::ones);
-		arma::rowvec zeros(b_mat.n_cols, arma::fill::zeros);
-		arma::mat sigma(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
+		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
+		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
+		arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-			arma::mat zero_mat(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
+			arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 			// R X R
 			arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 			// R X J
 			arma::mat mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
-			if (to_project) {
-				mu1_mat = (mu1_mat % s_mat) * a_mat.t();
-				U1 = a_mat * ((s_mat.col(0) % (s_mat.col(0).t() % U1)) * a_mat.t());
+			if (!a_mat.is_empty()) {
+				mu1_mat = a_mat * (mu1_mat % s_mat);
+				U1 = a_mat * (((U1.each_col() % s_mat.col(0)).each_row() % s_mat.col(0).t()) * a_mat.t());
 			}
 			// FIXME: better initialization?
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
@@ -386,7 +384,6 @@ private:
 	arma::mat v_mat;
 	arma::mat l_mat;
 	arma::mat a_mat;
-	bool to_project;
 	arma::cube U_cube;
 	// output
 	// all R X J mat
