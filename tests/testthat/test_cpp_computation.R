@@ -19,6 +19,29 @@ test_that("compare likelihood computation R vs C++ in provided data of 100 X 5",
 }
 )
 
+test_that("compare likelihood computation with contrast matrix R vs C++ in provided data of 100 X 5", {
+
+
+  load("calc_lik_matrix_data.RData")
+  data = mash_set_data(data$Bhat, data$Shat, V = data$V)
+  data = mash_update_data(data, ref = 5)
+  Ulist = lapply(Ulist, function(U) data$L %*% (U %*% t(data$L)))
+  ## Get the number of samples (J) and the number of mixture components (P).
+  J <- nrow(data$Bhat)
+  P <- length(Ulist)
+
+  ## Compute the likelihood matrix using the R implementation.
+  out.time <- system.time(out1 <- calc_lik_matrix(data,Ulist,log = TRUE,
+                                                  algorithm.version = "R"))
+
+  ## Compute the likelihood matrix using the Rcpp implementation.
+  out.time <- system.time(out2 <- calc_lik_matrix(data,Ulist,log = TRUE,
+                                                  algorithm.version = "Rcpp"))
+
+  expect_equal(out1, out2, tolerance=1e-5)
+}
+)
+
 test_that("compare likelihood computation R vs C++ in simulated data R = 1", {
   set.seed(999)
   N = 10
@@ -43,6 +66,18 @@ test_that("compare likelihood computation R vs C++ in simulated data common cov"
 }
 )
 
+test_that("compare likelihood computation with contrast matrix R vs C++ in simulated data common cov", {
+  Bhat = rbind(c(1,2,3),c(2,4,6))
+  Shat = rbind(c(1,1,1),c(1,1,1))
+  data = mash_set_data(Bhat, Shat)
+  data = mash_update_data(data, ref=1)
+  Ulist = cov_singletons(data)
+  out1 = calc_lik_matrix(data, Ulist)
+  out2 = calc_lik_matrix(data, Ulist, algorithm.version = "R")
+  expect_equal(out1, out2, tolerance=1e-5)
+}
+)
+
 test_that("compare posterior computation R vs C++ in provided data of 100 X 5", {
   # Load the data.
   load("compute_posterior_matrices_data.RData")
@@ -56,6 +91,25 @@ test_that("compare posterior computation R vs C++ in provided data of 100 X 5", 
   out.time <- system.time(out2 <-
                 compute_posterior_matrices(data,Ulist,posterior_weights,
                                            algorithm.version = "Rcpp"))
+  expect_equal(out1, out2, tolerance=1e-5)
+}
+)
+
+test_that("compare linear transfermed posterior computation R vs C++ in provided data of 100 X 5", {
+  # Load the data.
+  load("compute_posterior_matrices_data.RData")
+
+  A = rbind(c(1,1,-1,-1,0),
+            c(-1,1,-1,1,0))
+  # Compute the posterior quantities using the R implementation.
+  out.time <- system.time(out1 <-
+                            compute_posterior_matrices(data,Ulist,posterior_weights,
+                                                       algorithm.version = "R", A=A))
+
+  # Compute the posterior quantities using the Rcpp implementation.
+  out.time <- system.time(out2 <-
+                            compute_posterior_matrices(data,Ulist,posterior_weights,
+                                                       algorithm.version = "Rcpp", A=A))
   expect_equal(out1, out2, tolerance=1e-5)
 }
 )
@@ -92,7 +146,7 @@ test_that("compare posterior computation R vs C++ in simulated data R = 1 common
 }
 )
 
-test_that(paste("compare likelihood computation R vs C++ in simulated",
+test_that(paste("compare posterior computation R vs C++ in simulated",
                 "data common cov"),{
   Bhat    <- rbind(c(1,2,3),c(2,4,6))
   Shat    <- rbind(c(1,1,1),c(1,1,1))
@@ -109,7 +163,9 @@ test_that(paste("compare likelihood computation R vs C++ in simulated",
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
-test_that(paste("compare likelihood computation R vs C++ in simulated",
+
+
+test_that(paste("compare posterior computation R vs C++ in simulated",
                 "data non common cov"),{
   Bhat    <- rbind(c(1,2,3),c(2,4,6))
   Shat    <- rbind(c(1,2,1),c(2,1,1))
@@ -123,6 +179,43 @@ test_that(paste("compare likelihood computation R vs C++ in simulated",
                                      algorithm.version = "Rcpp")
   out2 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "R")
+  expect_equal(out1, out2, tolerance = 1e-5)
+})
+
+test_that(paste("compare transfermed posterior computation R vs C++ in simulated",
+                "data common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,1,1),c(1,1,1))
+  data    <- mash_set_data(Bhat, Shat)
+  Ulist   <- cov_canonical(data)
+  Ulist   <- expand_cov(Ulist, 1:50)
+  weights <- matrix(runif(length(Ulist) * 2), 2, length(Ulist))
+  weights <- weights / rowSums(weights)
+
+  A = rbind(c(1,1,1))
+
+  out1 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "Rcpp", A=A)
+  out2 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "R", A=A)
+  expect_equal(out1, out2, tolerance = 1e-5)
+})
+
+test_that(paste("compare transfermed posterior computation R vs C++ in simulated",
+                "data non common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,2,1),c(2,1,1))
+  data    <- mash_set_data(Bhat, Shat)
+  Ulist   <- cov_canonical(data)
+  Ulist   <- expand_cov(Ulist, 1:50)
+  weights <- matrix(runif(length(Ulist) * 2), 2, length(Ulist))
+  weights <- weights / rowSums(weights)
+
+  A = rbind(c(1,1,1))
+  out1 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "Rcpp", A=A)
+  out2 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "R", A=A)
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
