@@ -11,6 +11,7 @@
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,
                          Rcpp::NumericMatrix v_mat,
+                         Rcpp::NumericMatrix l_mat,
                          Rcpp::NumericVector U_3d,
                          bool logd,
                          bool common_cov)
@@ -20,7 +21,6 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 	// std::ostream nullstream(0);
 	// arma::set_stream_err2(nullstream);
 	arma::mat res;
-
 	if (!Rf_isNull(U_3d.attr("dim"))) {
 		// set cube data from R 3D array
 		Rcpp::IntegerVector dimU = U_3d.attr("dim");
@@ -28,6 +28,7 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 		res = calc_lik(Rcpp::as<arma::mat>(b_mat),
 			Rcpp::as<arma::mat>(s_mat),
 			Rcpp::as<arma::mat>(v_mat),
+			Rcpp::as<arma::mat>(l_mat),
 			U_cube,
 			logd,
 			common_cov);
@@ -47,6 +48,7 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
                           Rcpp::NumericMatrix s_mat,
                           Rcpp::NumericMatrix v_mat,
+                          Rcpp::NumericMatrix l_mat,
                           Rcpp::NumericVector U_3d,
                           Rcpp::NumericMatrix posterior_weights,
                           bool common_cov,
@@ -64,6 +66,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 		PosteriorMASH pc(Rcpp::as<arma::mat>(b_mat),
 		                 Rcpp::as<arma::mat>(s_mat),
 		                 Rcpp::as<arma::mat>(v_mat),
+		                 Rcpp::as<arma::mat>(l_mat),
 		                 U_cube);
 		if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
 		else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
@@ -89,4 +92,3 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 			Rcpp::Named("post_neg") = pc.NegativeProb());
 	}
 }
-

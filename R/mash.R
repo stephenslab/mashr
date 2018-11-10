@@ -164,15 +164,6 @@ mash = function(data,
       else
         cat(sprintf(" - Computation allocated took %0.2f seconds.\n",
                     out.time["elapsed"]))
-    if ((!all(data$Shat_alpha == 1)) && (algorithm.version=='Rcpp')) {
-      ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
-      ## Recover the scale of posterior(Bhat)
-      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
-      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
-      if (!is.null(posterior_matrices$PosteriorCov)) {
-        posterior_matrices$PosteriorCov <- lapply(1:length(posterior_matrices$PosteriorCov), function(i) posterior_matrices$PosteriorCov[[i]] * data$Shat_alpha)
-      }
-    }
   } else {
     posterior_matrices = NULL
   }

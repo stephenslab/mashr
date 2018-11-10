@@ -89,10 +89,6 @@ compute_posterior_matrices <-
     stop("FIXME: The linear transfermation for the posterior distribution is not implemented in Rcpp")
   }
 
-  if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){
-    stop('FIXME: the commonbaseline method is not implemented in Rcpp')
-  }
-
 
   R = n_conditions(data)
   # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
@@ -129,7 +125,6 @@ compute_posterior_matrices <-
       common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
     }
 
-    # message("FIXME: output posterior matrices not implemented in R version")
     if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
       compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
                                               posterior_samples = posterior_samples, seed=seed)
@@ -138,13 +133,16 @@ compute_posterior_matrices <-
                                            posterior_samples = posterior_samples, seed=seed)
     }
   } else if (algorithm.version == "Rcpp") {
-    # message('FIXME: The sampling method is not implemented in Rcpp.')
     if(posterior_samples > 0){
       stop('FIXME: The sampling method is not implemented in Rcpp.')
     }
-
     # Run the C implementation using the Rcpp interface.
-    res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
+    if (is.null(data$L))
+      res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,matrix(0,0,0),
+                           simplify2array(Ulist),t(posterior_weights),
+                           is_common_cov_Shat(data),output_posterior_cov)
+    else 
+      res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,data$L,
                            simplify2array(Ulist),t(posterior_weights),
                            is_common_cov_Shat(data),output_posterior_cov)
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
@@ -167,6 +165,16 @@ compute_posterior_matrices <-
     ## if (length(dim(posterior_matrices$PosteriorCov)) == 3)
     ##   posterior_matrices$PosteriorCov = lapply(1:dim(posterior_matrices$PosteriorCov)[3],
     ##                                            function(i) posterior_matrices$PosteriorCov[,,i])
+    ## Adjust EZ to EE
+    if (!all(data$Shat_alpha == 1)) {
+      ## message("FIXME: 'compute_posterior_matrices' in Rcpp does not transfer EZ to EE")
+      ## Recover the scale of posterior(Bhat)
+      posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
+      posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
+      if (!is.null(posterior_matrices$PosteriorCov)) {
+        posterior_matrices$PosteriorCov <- lapply(1:length(posterior_matrices$PosteriorCov), function(i) posterior_matrices$PosteriorCov[[i]] * data$Shat_alpha)
+      }
+    }
     return(posterior_matrices)
   } else
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")

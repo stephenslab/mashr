@@ -105,10 +105,15 @@ inline T pnorm(const U & x, const T & m, const T & s,
 
 
 // a quicker way to compute diag(s) %*% V %*% diag(s)
-inline arma::mat get_cov(const arma::vec & s, const ::arma::mat & V)
+inline arma::mat get_cov(const arma::vec & s, const arma::mat & V, const arma::mat & L)
 {
-	return (V.each_col() % s).each_row() % s.t();
-	/* return arma::diagmat(s) * V * arma::diagmat(s); */
+	if (L.is_empty()) {
+		/* return arma::diagmat(s) * V * arma::diagmat(s); */
+		return (V.each_col() % s).each_row() % s.t();
+	} else {
+		arma::mat svs = (V.each_col() % s).each_row() % s.t();
+		return L * svs * L.t();
+	}
 }
 
 
@@ -152,6 +157,7 @@ inline arma::mat get_posterior_mean_mat(const arma::mat & bhat, const arma::mat 
 // @param b_mat R by J
 // @param s_mat R by J
 // @param v_mat R by R
+// @param l_mat R by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices
 // @param logd if true computes log-likelihood
 // @param common_cov if true use version for common covariance
@@ -159,6 +165,7 @@ inline arma::mat get_posterior_mean_mat(const arma::mat & bhat, const arma::mat 
 arma::mat calc_lik(const arma::mat & b_mat,
                    const arma::mat & s_mat,
                    const arma::mat & v_mat,
+                   const arma::mat & l_mat,
                    const arma::cube & U_cube,
                    bool logd,
                    bool common_cov)
@@ -170,14 +177,14 @@ arma::mat calc_lik(const arma::mat & b_mat,
 
 	if (common_cov) {
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-		arma::mat sigma = get_cov(s_mat.col(0), v_mat);
+		arma::mat sigma = get_cov(s_mat.col(0), v_mat, l_mat);
 		for (arma::uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
 		}
 	} else {
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 		for (arma::uword j = 0; j < lik.n_rows; ++j) {
-			arma::mat sigma = get_cov(s_mat.col(j), v_mat);
+			arma::mat sigma = get_cov(s_mat.col(j), v_mat, l_mat);
 			for (arma::uword p = 0; p < lik.n_cols; ++p) {
 				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
 			}
@@ -215,6 +222,7 @@ arma::mat calc_lik(const arma::vec & b_vec,
 // @param b_mat R by J
 // @param s_mat R by J
 // @param v_mat R by R
+// @param l_mat R by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices, for each mixture component P by R by R
 class PosteriorMASH
 {
@@ -222,8 +230,9 @@ public:
 	PosteriorMASH(const arma::mat & b_mat,
 	              const arma::mat & s_mat,
 	              const arma::mat & v_mat,
+	              const arma::mat & l_mat,
 	              const arma::cube & U_cube) :
-		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), U_cube(U_cube)
+		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), l_mat(l_mat), U_cube(U_cube)
 	{
 		int J = b_mat.n_cols, R = b_mat.n_rows;
 
@@ -252,7 +261,7 @@ public:
 
 		for (arma::uword j = 0; j < b_mat.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(j), v_mat));
+			arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(j), v_mat, l_mat));
 			// R X P matrices
 			arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
@@ -298,7 +307,7 @@ public:
 	{
 		arma::mat mean(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
 		// R X R
-		arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(0), v_mat));
+		arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(0), v_mat, l_mat));
 		arma::rowvec ones(b_mat.n_cols, arma::fill::ones);
 		arma::rowvec zeros(b_mat.n_cols, arma::fill::zeros);
 		arma::mat sigma(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
@@ -360,6 +369,7 @@ private:
 	arma::mat b_mat;
 	arma::mat s_mat;
 	arma::mat v_mat;
+	arma::mat l_mat;
 	arma::cube U_cube;
 	// output
 	// all R X J mat
@@ -400,7 +410,7 @@ public:
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
 	int compute_posterior(const arma::mat & posterior_weights)
 	{
-		arma::vec sv = s_vec % s_vec * v;
+		arma::vec vinv = 1 / (s_vec % s_vec * v);
 		unsigned J = b_vec.n_elem;
 		unsigned P = U_vec.n_elem;
 		arma::vec mean(J, arma::fill::zeros);
@@ -411,8 +421,8 @@ public:
 		arma::mat neg_mat(J, P, arma::fill::zeros);
 
 		for (arma::uword p = 0; p < P; ++p) {
-			arma::vec U1 = U_vec.at(p) / (sv * U_vec.at(p) + 1);
-			mu1_mat.col(p) = U1 / sv % b_vec;
+			arma::vec U1 = U_vec.at(p) / (vinv * U_vec.at(p) + 1.0);
+			mu1_mat.col(p) = U1 % vinv % b_vec;
 			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1;
 			arma::vec sigma = arma::sqrt(U1);
 			neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
