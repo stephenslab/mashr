@@ -1,0 +1,116 @@
+---
+title: "mashr with no common baseline"
+author: "Yuxin Zou"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mashnocommonbaseline intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center",
+                      eval = TRUE)
+```
+
+```{r}
+library(knitr)
+library(kableExtra)
+```
+
+# Introduction
+
+In the previous vignette [mash common baseline](intro_mashcommonbaseline.html), we estimate the change in some quantity computed in multiple conditions over a **common** control condition. However, there might be no **common** control condition in a study. In this case, we define the reference condition as the mean over different conditions. Deviation in any condition is defined as a difference in the quantity over the mean. We want to estimate the change in some quantity computed in multiple conditions over their mean.
+
+For example, we measure the gene expression under multiple conditions. We want to estimate the change in expression in multiple conditions over their mean.
+
+As in the mash common baseline vignette, we include the additional burden of comparing all conditions to the same reference condition. To deal with these additional correlations, mashr allows the user to specify the reference condition using `mash_update_data` with `ref = 'mean'`, after setting up the data in `mash_set_data`. 
+
+# Illustration
+
+```{r}
+generate_data = function(n, p, V, Utrue, err_sd=0.01, pi=NULL){
+  if (is.null(pi)) {
+    pi = rep(1, length(Utrue)) # default to uniform distribution
+  }
+  assertthat::are_equal(length(pi), length(Utrue))
+
+  for (j in 1:length(Utrue)) {
+    assertthat::are_equal(dim(Utrue[j]), c(p, p))
+  }
+
+  pi <- pi / sum(pi) # normalize pi to sum to one
+  which_U <- sample(1:length(pi), n, replace=TRUE, prob=pi)
+
+  Beta = matrix(0, nrow=n, ncol=p)
+  for(i in 1:n){
+    Beta[i,] = MASS::mvrnorm(1, rep(0, p), Utrue[[which_U[i]]])
+  }
+  Shat = matrix(err_sd, nrow=n, ncol=p, byrow = TRUE)
+  E = MASS::mvrnorm(n, rep(0, p), Shat[1,]^2 * V)
+  Bhat = Beta + E
+  return(list(B = Beta, Bhat=Bhat, Shat = Shat, whichU = which_U))
+}
+```
+
+Here we simulate data for illustration. This simulation routine creates a dataset with 5 conditions and 2000 samples. Half of the samples have equal expression among conditions. In the rest samples, half have higher and equal expression in the first 2 conditions, half have higher expression in the last condition.
+
+```{r}
+set.seed(1)
+n = 2000
+R = 5
+V = diag(R)
+U0 = matrix(0, R, R)
+U1 = matrix(1, R, R)
+U2 = U0; U2[1:2,1:2] = 4
+U3 = U0; U3[5,5] = 4
+simdata = generate_data(n, R, V, list(U0=U0, U1=U1, U2=U2, U3 = U3), err_sd = 1)
+```
+
+1. Read in the data, and set the reference condition as mean
+```{r}
+library(mashr)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+
+data.L = mash_update_data(data, ref = 'mean')
+```
+
+The updated mash data object (data.L) includes the induced correlation internally.
+
+2. We proceed the analysis using the simple canonical covariances as in the [initial introductory](intro_mash.html) vignette, and the data driven covariances as in the [Introduction to mash: data-driven covariances](intro_mash_dd.html).
+
+* Canonical covariances
+```{r}
+U.c = cov_canonical(data.L)
+```
+
+* Data-driven covariances
+```{r}
+m.1by1 = mash_1by1(data.L)
+strong = get_significant_results(m.1by1)
+U.pca = cov_pca(data.L,2,subset=strong)
+U.ed = cov_ed(data.L, U.pca, subset=strong)
+```
+
+3. Fit mash model
+```{r}
+m = mash(data.L, c(U.c,U.ed), algorithm.version = 'R')
+```
+
+The log likelihood is
+```{r}
+print(get_loglik(m),digits=10)
+```
+
+Use `get_significant_results` to find the indices of effects that are 'significant':
+```{r}
+length(get_significant_results(m))
+```
+
+```{r, echo=FALSE}
+null.ind = which(simdata$whichU %in% c(1,2))
+```
+The number of false positive is `r sum(get_significant_results(m) %in% null.ind)`.
+

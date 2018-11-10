@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.495</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@
       <h1>mashr with common baseline</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2018-11-08</h4>
+            <h4 class="date">2018-11-09</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mashcommonbaseline.Rmd"><code>vignettes/intro_mashcommonbaseline.Rmd</code></a></small>
       <div class="hidden name"><code>intro_mashcommonbaseline.Rmd</code></div>
@@ -79,15 +79,16 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>We want to estimate the change in some quantity computed in multiple conditions over a <strong>common</strong> reference condition. Deviation in any condition is defined as a difference in the quantity over a common reference condition. We must consider the additional burden of comparing all subsequent conditions to the same reference condition. Failure to deal with such correlations induces many false positives in a mashr analysis.</p>
+<p>We want to estimate the change in some quantity computed in multiple conditions over a <strong>common</strong> control condition. Deviation in any condition is defined as a difference in the quantity over a common control condition. We must consider the additional burden of comparing all subsequent conditions to the same reference condition. Failure to deal with such correlations induces many false positives in mashr analysis.</p>
+<p>Here is the <a href="MASH_baseline.pdf">write-up</a> for the details of the model. When there is no control condition in the study, we can compare the quantity in different conditions with the mean. We illustrate an example in the <a href="intro_mashnobaseline.html">no baseline vignette</a>.</p>
 <p>To deal with these correlations, mashr allows the user to specify the reference condition using <code>mash_update_data</code>, after setting up the data in <code>mash_set_data</code>.</p>
 <p><strong>Note</strong>: In some settings measurements and tests in different conditions may be correlated with one another. For example, in eQTL applications this can occur due to sample overlap among the different conditions. In <code>common baseline</code> analysis, we assume the correlation is known.</p>
 </div>
 <div id="illustration" class="section level1">
 <h1 class="hasAnchor">
 <a href="#illustration" class="anchor"></a>Illustration</h1>
-<p>Here we simulate data for illustration. This simulation routine creates a dataset with 8 conditions and 12000 samples, the last condition is the reference condition. 90% of the samples have no deviations from the reference condition. The rest 10% of the samples are ‘non-null’. The ‘non-null’ consists of equal numbers of three different types of deviations: equal among condition <span class="math inline">\(1, \cdots, 7\)</span>, present only in condition 1, independent across conditions <span class="math inline">\(1, \cdots, 7\)</span>.</p>
-<p>Our goal is to estimate the deviations in condition <span class="math inline">\(1, \cdots, 7\)</span> over the reference condition.</p>
+<p>Here we simulate data for illustration. This simulation routine creates a dataset with 8 conditions and 12000 samples, the last condition is the control condition. 90% of the samples have no deviations from the control condition. The rest 10% of the samples are ‘non-null’. The ‘non-null’ consists of equal numbers of three different types of deviations: equal among conditions <span class="math inline">\(1, \cdots, 7\)</span>, present only in condition 1, independent across conditions <span class="math inline">\(1, \cdots, 7\)</span>.</p>
+<p>Our goal is to estimate the deviations in condition <span class="math inline">\(1, \cdots, 7\)</span> over the control condition.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mashr)</code></pre></div>
 <pre><code># Loading required package: ashr</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
@@ -97,7 +98,7 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/sim_con
 <div id="the-right-way" class="section level1">
 <h1 class="hasAnchor">
 <a href="#the-right-way" class="anchor"></a>The right way</h1>
-<p>Read in the data, and set the reference condition</p>
+<p>Read in the data, and set the control condition</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(simdata<span class="op">$</span>Chat, simdata<span class="op">$</span>Shat)
 
 data.L =<span class="st"> </span><span class="kw"><a href="../reference/mash_update_data.html">mash_update_data</a></span>(data, <span class="dt">ref =</span> <span class="dv">8</span>)</code></pre></div>
@@ -106,11 +107,11 @@ data.L =<span class="st"> </span><span class="kw"><a href="../reference/mash_upd
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.L)
 mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.L, U.c, <span class="dt">algorithm.version =</span> <span class="st">'R'</span>)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 1.04 seconds.
+#  - Likelihood calculations took 0.91 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 2.33 seconds.
+#  - Model fitting took 2.31 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.23 seconds.</code></pre>
+#  - Computation allocated took 0.22 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(mashcontrast.model),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
 <pre><code># [1] -105525.1375</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
@@ -126,9 +127,9 @@ mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../refere
 data.wrong =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="dt">Bhat =</span> simdata<span class="op">$</span>Chat <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(L), <span class="dt">Shat =</span> <span class="dv">1</span>)
 m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.wrong, U.c)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.29 seconds.
+#  - Likelihood calculations took 0.25 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 2.20 seconds.
+#  - Model fitting took 2.33 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.07 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits =</span> <span class="dv">10</span>)</code></pre></div>
