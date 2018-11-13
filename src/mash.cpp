@@ -53,7 +53,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
                           Rcpp::NumericVector U_3d,
                           Rcpp::NumericMatrix posterior_weights,
                           bool common_cov,
-                          bool report_post_cov)
+                          int report_type)
 {
 
 	// hide armadillo warning / error messages
@@ -70,8 +70,8 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 		                 Rcpp::as<arma::mat>(l_mat),
 		                 Rcpp::as<arma::mat>(a_mat),
 		                 U_cube);
-		if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
-		else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_post_cov);
+		if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_type);
+		else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_type);
 		return Rcpp::List::create(
 			Rcpp::Named("post_mean") = pc.PosteriorMean(),
 			Rcpp::Named("post_sd") = pc.PosteriorSD(),

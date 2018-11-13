@@ -87,6 +87,8 @@ compute_posterior_matrices <-
 
   R = n_conditions(data)
   is_null_A = is.null(A) # for use with Cpp version
+  if (output_posterior_cov) output_type = 4
+  else output_type = 3
   # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
   if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
     temp = diag(R)
@@ -132,16 +134,17 @@ compute_posterior_matrices <-
     if(posterior_samples > 0){
       stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
     }
+    if (!is_null_A) stop('common-baseline problem has not been implemented in Rcpp version yet')
     # Run the C implementation using the Rcpp interface.
     if (is_null_A) A = matrix(0,0,0)
     if (is.null(data$L))
       res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,matrix(0,0,0),A,
                            simplify2array(Ulist),t(posterior_weights),
-                           is_common_cov_Shat(data),output_posterior_cov)
+                           is_common_cov_Shat(data),output_type)
     else 
       res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,data$L,A,
                            simplify2array(Ulist),t(posterior_weights),
-                           is_common_cov_Shat(data),output_posterior_cov)
+                           is_common_cov_Shat(data),output_type)
     lfsr <- compute_lfsr(res$post_neg,res$post_zero)
     posterior_matrices <- list(PosteriorMean = res$post_mean,
                               PosteriorSD   = res$post_sd,

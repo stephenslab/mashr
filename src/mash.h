@@ -258,8 +258,8 @@ public:
 	// @title Compute posterior matrices
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
-	int compute_posterior(const arma::mat & posterior_weights, const bool report_post_cov)
+	// @param report_type an integer: 1 for posterior mean only, 2 for posterior second moment, 3 for default mash output, 4 for additionally posterior covariance
+	int compute_posterior(const arma::mat & posterior_weights, const int report_type)
 	{
 		arma::vec mean(post_mean.n_rows, arma::fill::zeros);
 
@@ -279,7 +279,7 @@ public:
 				} else {
 					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
 				}
-				if (report_post_cov) {
+				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
 				}
@@ -299,7 +299,7 @@ public:
 			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
 			zero_prob.col(j) = zero_mat * posterior_weights.col(j);
 			//
-			if (report_post_cov) {
+			if (report_type == 4) {
 				post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 			}
 		}
@@ -307,12 +307,11 @@ public:
 		return 0;
 	}
 
-
 	// @title Compute posterior matrices when covariance SVS is the same for all J conditions
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
-	int compute_posterior_comcov(const arma::mat & posterior_weights, const bool report_post_cov)
+	// @param report_type an integer: 1 for posterior mean only, 2 for posterior second moment, 3 for default mash output, 4 for additionally posterior covariance
+	int compute_posterior_comcov(const arma::mat & posterior_weights, const int report_type)
 	{
 		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
@@ -334,7 +333,7 @@ public:
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
 				sigma.col(j) = Svec;
-				if (report_post_cov) {
+				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
 				}
@@ -358,7 +357,7 @@ public:
 		}
 		post_var -= arma::pow(post_mean, 2.0);
 		//
-		if (report_post_cov) {
+		if (report_type == 4) {
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
 				post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 			}
