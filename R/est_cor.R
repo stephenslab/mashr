@@ -1,4 +1,4 @@
-#' @title Estimate null correlations (ad hoc)
+#' @title Estimate null correlations (simple)
 #' @description Estimates a null correlation matrix from data using simple z score threshold
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param z_thresh the z score threshold below which to call an effect null
@@ -51,17 +51,28 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' @param init the initial value for the null correlation. If it is not given, we use result from \code{estimate_null_correlation_adhoc}
 #' @param max_iter maximum number of iterations to perform
 #' @param tol convergence tolerance
-#' @param est_cor whether to estimate correlation matrix. If it is False, we estimate the covairance matrix
+#' @param est_cor whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE)
 #' @param track_fit add an attribute \code{trace} to output that saves current values of all iterations
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param ... other parameters pass to \code{mash}
-#' @details Returns the estimated correlation/covariance matrix of the effects
+#' @details Returns the estimated correlation matrix (or covariance matrix) among conditions under the null.
+#' The correlation (or covariance) matrix is estimated by maximum likelihood.
+#' Specifically, the unknown correlation/covariance matrix V and the unknown weights are estimated iteratively.
+#' The unknown correlation/covariance matrix V is estimated using M step from the EM algorithm.
+#' The unknown weights pi is estimated by maximum likelihood, which is a convex problem.
 #'
+#' Warning: This method could take some time.
+#' The \code{\link{estimate_null_correlation_simple}} gives a quick approximation for the null correlation (or covariance) matrix.
+#'
+#' @return a list with estimated correlation (or covariance) matrix and the fitted mash model
+#' \cr
+#' \item{V}{estimated correlation (or covariance) matrix}
+#' \item{mash.model}{fitted mash model}
 #' @importFrom stats cov2cor
 #'
 #' @export
 #'
-estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
+estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
                                      est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'),...){
   if(class(data) != 'mash'){
     stop('data is not a "mash" object')
@@ -81,7 +92,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
     }
   }
 
-  m.model = fit_mash_V(data, Ulist, V = init, prior=prior)
+  m.model = fit_mash_V(data, Ulist, V = init, prior=prior,...)
   pi_s = get_estimated_pi(m.model, dimension = 'all')
   prior.v <- set_prior(length(pi_s), prior)
 
@@ -103,7 +114,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
     if(est_cor){
       V = cov2cor(V)
     }
-    m.model = fit_mash_V(data, Ulist, V, prior=prior)
+    m.model = fit_mash_V(data, Ulist, V, prior=prior, ...)
     pi_s = get_estimated_pi(m.model, dimension = 'all')
 
     log_liks[niter+1] <- get_loglik(m.model)+penalty(prior.v, pi_s)
@@ -143,8 +154,8 @@ E_V = function(data, m.model){
   (temp1 - temp2 + temp3)/n
 }
 
-fit_mash_V <- function(data, Ulist, V, prior=c('nullbiased', 'uniform')){
+fit_mash_V <- function(data, Ulist, V, prior=c('nullbiased', 'uniform'), ...){
   data$V = V
-  m.model = mash(data, Ulist, prior=prior, verbose = FALSE, outputlevel = 3)
+  m.model = mash(data, Ulist, prior=prior, verbose = FALSE, outputlevel = 3, ...)
   return(m.model)
 }

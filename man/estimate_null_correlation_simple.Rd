@@ -2,7 +2,7 @@
 % Please edit documentation in R/est_cor.R
 \name{estimate_null_correlation_simple}
 \alias{estimate_null_correlation_simple}
-\title{Estimate null correlations (ad hoc)}
+\title{Estimate null correlations (simple)}
 \usage{
 estimate_null_correlation_simple(data, z_thresh = 2, est_cor = TRUE)
 }
