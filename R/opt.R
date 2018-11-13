@@ -30,6 +30,9 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
   if(optmethod == "mixIP"){control = ashr:::set_control_mixIP(control)
   }else if(optmethod == 'mixEM' || optmethod == 'cxxMixSquarem'){
     control = ashr:::set_control_squarem(control, nrow(matrix_lik))
+  }else if(optmethod == 'mixSQP'){
+    control0 = list(eps = 1e-6, delta = 1e-6)
+    control = modifyList(control0, control, keep.null = TRUE)
   }
 
   K = ncol(matrix_lik)

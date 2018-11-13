@@ -9,6 +9,7 @@
 #' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
 #' @param prior indicates what penalty to use on the likelihood, if any
 #' @param optmethod name of optimization method to use
+#' @param control A list of control parameters passed to optmethod.
 #' @param verbose If \code{TRUE}, print progress to R console.
 #' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
 #' @param algorithm.version Indicates whether to use R or Rcpp version
@@ -35,6 +36,7 @@ mash = function(data,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
                 optmethod = c("mixIP","mixEM","mixSQP","cxxMixSquarem"),
+                control = list(),
                 verbose = TRUE,
                 add.mem.profile = FALSE,
                 algorithm.version = c("Rcpp","R"),
@@ -118,11 +120,11 @@ mash = function(data,
     prior <- set_prior(ncol(lm$loglik_matrix),prior)
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
-        pi_s <- optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod)
+        pi_s <- optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod, control=control)
       },threshold = 1000))
     else
       out.time <- system.time(pi_s <-
-                    optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod))
+                    optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod, control=control))
     if (verbose)
       if (add.mem.profile)
         cat(sprintf(" - Model fitting allocated %0.2f MB and took %0.2f s.\n",

@@ -7,9 +7,10 @@
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
   prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "mixSQP", "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
-  algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10, A = NULL,
-  posterior_samples = 0, seed = 123, outputlevel = 2)
+  "mixSQP", "cxxMixSquarem"), control = list(), verbose = TRUE,
+  add.mem.profile = FALSE, algorithm.version = c("Rcpp", "R"),
+  pi_thresh = 1e-10, A = NULL, posterior_samples = 0, seed = 123,
+  outputlevel = 2)
 }
 \arguments{
 \item{data}{a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data} or \code{mash_set_data_contrast}}
@@ -31,6 +32,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
 \item{optmethod}{name of optimization method to use}
+
+\item{control}{A list of control parameters passed to optmethod.}
 
 \item{verbose}{If \code{TRUE}, print progress to R console.}
 
