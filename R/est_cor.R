@@ -2,8 +2,10 @@
 #' @description Estimates a null correlation matrix from data using simple z score threshold
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' @param z_thresh the z score threshold below which to call an effect null
-#' @param est_cor whether to estimate correlation matrix. If it is False, we estimate the covairance matrix
-#' @details Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
+#' @param est_cor whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE).
+#' @details Returns a simple estimate of the correlation matrix (or covariance matrix) among conditions under the null.
+#' Specifically, the simple estimate is the empirical correlation (or covariance) matrix of the z scores
+#' for those effects that have (absolute) z score < z_thresh in all conditions.
 #' @importFrom stats cor
 #' @export
 estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
@@ -56,7 +58,7 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' @details Returns the estimated correlation/covariance matrix of the effects
 #'
 #' @importFrom stats cov2cor
-#' 
+#'
 #' @export
 #'
 estimate_null_correlation = function(data, Ulist, init, max_iter = 50, tol=1e-3,
