@@ -1,3 +1,13 @@
+GSL_CFLAGS   = $(shell ${R_HOME}/bin/Rscript -e "RcppGSL:::CFlags()")
+GSL_LIBS     = $(shell ${R_HOME}/bin/Rscript -e "RcppGSL:::LdFlags()")
+INCLUDE_FLAG = -I extreme_deconvolution -I .
 CXX_STD      = CXX11
-PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
-PKG_LIBS     = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) $(INCLUDE_FLAG) $(GSL_CFLAGS)
+PKG_CFLAGS = -shared $(SHLIB_OPENMP_CFLAGS) $(INCLUDE_FLAG) $(GSL_CFLAGS)
+PKG_LIBS     = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(LDFLAGS) $(GSL_LIBS)
+
+# Get all files to compile
+
+C_SOURCES   = $(filter-out extreme_deconvolution/main.c extreme_deconvolution/proj_gauss_mixtures_IDL.c, $(wildcard extreme_deconvolution/*.c))
+CXX_SOURCES = $(wildcard *.cpp)
+OBJECTS     = $(C_SOURCES:.c=.o) $(CXX_SOURCES:.cpp=.o)

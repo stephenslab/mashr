@@ -2,10 +2,41 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppGSL.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
 
+// extreme_deconvolution_rcpp
+Rcpp::List extreme_deconvolution_rcpp(RcppGSL::matrix<double>& ydata, RcppGSL::vector<double>& ycovar, RcppGSL::vector<double>& projection, RcppGSL::vector<double>& logweights, RcppGSL::vector<double>& amp, RcppGSL::matrix<double>& xmean, RcppGSL::vector<double>& xcovar, RcppGSL::vector<int>& fixamp_int, RcppGSL::vector<int>& fixmean_int, RcppGSL::vector<int>& fixcovar_int, double tol, int maxiter, int likeonly, double w, RcppGSL::vector<int>& logfilename, int splitnmerge, RcppGSL::vector<int>& convlogfilename, int noprojection, int diagerrors, int noweights);
+RcppExport SEXP _mashr_extreme_deconvolution_rcpp(SEXP ydataSEXP, SEXP ycovarSEXP, SEXP projectionSEXP, SEXP logweightsSEXP, SEXP ampSEXP, SEXP xmeanSEXP, SEXP xcovarSEXP, SEXP fixamp_intSEXP, SEXP fixmean_intSEXP, SEXP fixcovar_intSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP likeonlySEXP, SEXP wSEXP, SEXP logfilenameSEXP, SEXP splitnmergeSEXP, SEXP convlogfilenameSEXP, SEXP noprojectionSEXP, SEXP diagerrorsSEXP, SEXP noweightsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RcppGSL::matrix<double>& >::type ydata(ydataSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<double>& >::type ycovar(ycovarSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<double>& >::type projection(projectionSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<double>& >::type logweights(logweightsSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<double>& >::type amp(ampSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::matrix<double>& >::type xmean(xmeanSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<double>& >::type xcovar(xcovarSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<int>& >::type fixamp_int(fixamp_intSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<int>& >::type fixmean_int(fixmean_intSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<int>& >::type fixcovar_int(fixcovar_intSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< int >::type likeonly(likeonlySEXP);
+    Rcpp::traits::input_parameter< double >::type w(wSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<int>& >::type logfilename(logfilenameSEXP);
+    Rcpp::traits::input_parameter< int >::type splitnmerge(splitnmergeSEXP);
+    Rcpp::traits::input_parameter< RcppGSL::vector<int>& >::type convlogfilename(convlogfilenameSEXP);
+    Rcpp::traits::input_parameter< int >::type noprojection(noprojectionSEXP);
+    Rcpp::traits::input_parameter< int >::type diagerrors(diagerrorsSEXP);
+    Rcpp::traits::input_parameter< int >::type noweights(noweightsSEXP);
+    rcpp_result_gen = Rcpp::wrap(extreme_deconvolution_rcpp(ydata, ycovar, projection, logweights, amp, xmean, xcovar, fixamp_int, fixmean_int, fixcovar_int, tol, maxiter, likeonly, w, logfilename, splitnmerge, convlogfilename, noprojection, diagerrors, noweights));
+    return rcpp_result_gen;
+END_RCPP
+}
 // calc_lik_rcpp
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericMatrix l_mat, Rcpp::NumericVector U_3d, bool logd, bool common_cov);
 RcppExport SEXP _mashr_calc_lik_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP v_matSEXP, SEXP l_matSEXP, SEXP U_3dSEXP, SEXP logdSEXP, SEXP common_covSEXP) {
@@ -44,6 +75,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_mashr_extreme_deconvolution_rcpp", (DL_FUNC) &_mashr_extreme_deconvolution_rcpp, 20},
     {"_mashr_calc_lik_rcpp", (DL_FUNC) &_mashr_calc_lik_rcpp, 7},
     {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 9},
     {NULL, NULL, 0}
