@@ -43,7 +43,7 @@ Rcpp::List extreme_deconvolution_rcpp(
                                       RcppGSL::vector<int> & logfilename,
                                       int splitnmerge,
                                       RcppGSL::vector<int> & convlogfilename,
-                                      int noprojection, int diagerrors, int noweights)
+                                      bool noproj, bool diagerrs, bool noweight)
 {
 	// convert variables from R interface
 	int N = ydata.nrow(), dy = ydata.ncol(), d = xmean.ncol(), K = xmean.nrow(),
@@ -88,9 +88,6 @@ Rcpp::List extreme_deconvolution_rcpp(
 	struct datapoint * data = (struct datapoint *)malloc(N * sizeof(struct datapoint) );
 	struct gaussian * gaussians = (struct gaussian *)malloc(K * sizeof(struct gaussian) );
 
-	bool noproj = (bool)noprojection;
-	bool noweight = (bool)noweights;
-	bool diagerrs = (bool)diagerrors;
 	int ii, jj, dd1, dd2;
 	for (ii = 0; ii != N; ++ii) {
 		data->ww = gsl_vector_alloc(dy);
@@ -110,7 +107,7 @@ Rcpp::List extreme_deconvolution_rcpp(
 		if (!noproj)
 			for (dd1 = 0; dd1 != dy; ++dd1)
 				for (dd2 = 0; dd2 != d; ++dd2)
-					gsl_matrix_set(data->RR, dd1, dd2, projection[ii * dy * dy + dd1 * dy + dd2]);
+					gsl_matrix_set(data->RR, dd1, dd2, projection[ii * dy * d + dd1 * dy + dd2]);
 		else data->RR = NULL;
 		++data;
 	}
@@ -123,7 +120,7 @@ Rcpp::List extreme_deconvolution_rcpp(
 		for (dd1 = 0; dd1 != d; ++dd1)
 			gsl_vector_set(gaussians->mm, dd1, xmean(jj, dd1));
 		for (dd1 = 0; dd1 != d; ++dd1)
-			for (dd2 = 0; dd2 != d; ++dd2) 
+			for (dd2 = 0; dd2 != d; ++dd2)
 				gsl_matrix_set(gaussians->VV, dd1, dd2, xcovar[jj * d * d + dd1 * d + dd2]);
 		++gaussians;
 	}
@@ -132,6 +129,7 @@ Rcpp::List extreme_deconvolution_rcpp(
 	//Print the initial model parameters to the logfile
 	int kk;
 	if (keeplog) {
+		bool debug = true;
 		fprintf(logfile, "#\n#Using %i Gaussians and w = %f\n\n", K, w);
 		fprintf(logfile, "#\n#Initial model parameters used:\n\n");
 		for (kk = 0; kk != K; ++kk) {
@@ -158,6 +156,44 @@ Rcpp::List extreme_deconvolution_rcpp(
 			fprintf(logfile, "\n#\n");
 		}
 		gaussians -= K;
+		if (debug) {
+			fprintf(logfile, "#other quantities\n");
+			fprintf(logfile, "#splitnmerge %d\n", splitnmerge);
+			fprintf(logfile, "#noproj %d\n", noproj);
+			fprintf(logfile, "#diagerrs %d\n", diagerrs);
+			fprintf(logfile, "#noweight %d\n", noweight);
+			fprintf(logfile, "#ydata (%d by %d)\n", N, dy);
+			for (ii = 0; ii != N; ++ii) {
+				for (dd1 = 0; dd1 != dy; ++dd1)
+					fprintf(logfile, "%f\t", gsl_vector_get(data->ww, dd1));
+				++data;
+			}
+			data -= N;
+			fprintf(logfile, "\n#ycovar\n");
+			for (ii = 0; ii != N; ++ii) {
+				if (diagerrs)
+					for (dd1 = 0; dd1 != dy; ++dd1)
+						fprintf(logfile, "%f\t", gsl_matrix_get(data->SS, dd1, 0));
+				else
+					for (dd1 = 0; dd1 != dy; ++dd1)
+						for (dd2 = 0; dd2 != dy; ++dd2)
+							fprintf(logfile, "%f\t", gsl_matrix_get(data->SS, dd1, dd2));
+
+				++data;
+			}
+			data -= N;
+			if (!noproj) {
+				fprintf(logfile, "\n#projection\n");
+				for (ii = 0; ii != N; ++ii) {
+					for (dd1 = 0; dd1 != dy; ++dd1)
+						for (dd2 = 0; dd2 != d; ++dd2)
+							fprintf(logfile, "%f\t", gsl_matrix_get(data->RR, dd1, dd2));
+					++data;
+				}
+				data -= N;
+			}
+			fprintf(logfile, "\n");
+		}
 		fflush(logfile);
 	}
 

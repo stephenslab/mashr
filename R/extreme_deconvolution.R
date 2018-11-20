@@ -212,7 +212,6 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
         diagerrors, 
         noweight)
     # 
-    xmean <- matrix(res$xmean, dim(xmean), byrow = TRUE)
     start <- 1
     end <- 0
     for (i in 1:length(xcovar)) {
@@ -220,5 +219,5 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
         xcovar[[i]] <- matrix(res$xcovar[start:end], dim(xcovar[[i]]), byrow = TRUE)
         start <- end + 1
     }
-    return(list(xmean = xmean, xamp = res$xamp, xcovar = xcovar, avgloglikedata = res$avgloglikedata))
+    return(list(xmean = res$xmean, xamp = res$xamp, xcovar = xcovar, avgloglikedata = res$avgloglikedata))
 } 
