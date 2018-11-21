@@ -8,7 +8,7 @@ extern "C" {
 #include <time.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include "extreme_deconvolution/proj_gauss_mixtures.h"
+#include "proj_gauss_mixtures.h"
 }
 // [[Rcpp::depends(RcppGSL)]]
 

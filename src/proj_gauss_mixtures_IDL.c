@@ -21,7 +21,8 @@
 #include <time.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
+
 bool * int2bool(int * a, int K)
 {
   bool * x = (bool *) malloc(K * sizeof (bool));
