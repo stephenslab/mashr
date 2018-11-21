@@ -57,12 +57,11 @@ void proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
       fprintf(tmplogfile,"%f\n",*avgloglikedata);
       fflush(logfile);
       fflush(tmplogfile);
-      //printf("%f\n",*avgloglikedata);
     }
     if (niter > 0){
       diff = *avgloglikedata - oldavgloglikedata;
       if (diff < 0){
-	//printf("Warning: log likelihood decreased by %g\n",diff);
+	fprintf(logfile,"Warning: log likelihood decreased by %g\n",diff);
 	fprintf(logfile,"oldavgloglike was %g\navgloglike is %g\n",oldavgloglikedata,*avgloglikedata);
       }
     }
