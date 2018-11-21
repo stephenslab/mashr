@@ -2,7 +2,7 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.18.0515
+Version: 0.2.18.0516
 Date: 2018-11-21
 Authors@R: c(person("Matthew","Stephens",role=c("aut","cre"),
                     email="mstephens@uchicago.edu"),
@@ -17,7 +17,7 @@ License: BSD_3_clause + file LICENSE
 LazyData: true
 SystemRequirements: C++11
 Depends: R (>= 3.3.0),
-    ashr (>= 2.1-19)
+    ashr (>= 2.2-22)
 Imports:
     assertthat,
     utils,
