@@ -14,7 +14,7 @@
 */
 #include <stdbool.h>
 #include <string.h>
-#include <proj_gauss_main.h>
+#include "proj_gauss_main.h"
 
 bool parse_option(char line[]){
   //Define the options

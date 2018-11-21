@@ -17,8 +17,8 @@
 #include <math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
-#include <proj_gauss_main.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_main.h"
+#include "proj_gauss_mixtures.h"
 
 bool read_data(char inputfilename[]){
   

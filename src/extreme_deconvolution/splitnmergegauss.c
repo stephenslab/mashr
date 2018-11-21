@@ -21,7 +21,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 void splitnmergegauss(struct gaussian * gaussians,int K, 
 		      gsl_matrix * qij, int j, int k, int l){

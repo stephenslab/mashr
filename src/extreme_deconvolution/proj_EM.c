@@ -38,7 +38,7 @@
 */
 #include <stdio.h>
 #include <math.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 void proj_EM(struct datapoint * data, int N, struct gaussian * gaussians, 
 	     int K,bool * fixamp, bool * fixmean, bool * fixcovar, 

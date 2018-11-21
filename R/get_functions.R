@@ -136,7 +136,11 @@ get_pairwise_sharing = function(m, factor=0.5, lfsr_thresh=0.05, FUN= identity){
 }
 
 #' Return samples from a mash object
+#'
+#' @param m The mash fit.
+#' 
 #' @export
+#' 
 get_samples = function(m){
   m$result$PosteriorSamples
 }

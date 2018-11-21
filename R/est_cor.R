@@ -6,8 +6,12 @@
 #' @details Returns a simple estimate of the correlation matrix (or covariance matrix) among conditions under the null.
 #' Specifically, the simple estimate is the empirical correlation (or covariance) matrix of the z scores
 #' for those effects that have (absolute) z score < z_thresh in all conditions.
-#' @importFrom stats cor
+#' 
+#' @importFrom stats cov2cor
+#' @importFrom stats cov
+#' 
 #' @export
+#' 
 estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)

@@ -17,8 +17,8 @@
 #include <math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
-#include <proj_gauss_mixtures.h>
-#include <proj_gauss_main.h>
+#include "proj_gauss_mixtures.h"
+#include "proj_gauss_main.h"
 
 bool read_IC(char ICfilename[]){
   

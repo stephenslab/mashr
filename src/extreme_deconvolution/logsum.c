@@ -18,7 +18,7 @@
 #include <math.h>
 #include <float.h>
 #include <gsl/gsl_matrix.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 double logsum(gsl_matrix * q, int row, bool isrow){
   double logxmin = log(DBL_MIN);

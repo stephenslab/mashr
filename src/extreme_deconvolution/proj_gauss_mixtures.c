@@ -46,7 +46,7 @@
 #include <stdbool.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 void proj_gauss_mixtures(struct datapoint * data, int N, 
 			 struct gaussian * gaussians, int K,

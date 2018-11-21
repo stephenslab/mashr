@@ -18,7 +18,7 @@
 #include <gsl/gsl_matrix.h>
 #include <float.h>
 #include <stdbool.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 void minmax(gsl_matrix * q, int row, bool isrow, double * min, 
 	    double * max){

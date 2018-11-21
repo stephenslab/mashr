@@ -33,14 +33,12 @@
 #endif
 
 #include <math.h>
-//#include <time.h>
-//#include <sys/time.h>
 #include <float.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 #define CHUNKSIZE 1
 

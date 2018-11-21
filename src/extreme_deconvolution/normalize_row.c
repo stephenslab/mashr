@@ -21,7 +21,7 @@
 */
 #include <math.h>
 #include <gsl/gsl_matrix.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 double normalize_row(gsl_matrix * q, int row, bool isrow,
 		     bool noweight, double weight){

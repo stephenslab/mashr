@@ -15,7 +15,7 @@
 */
 #include <stdbool.h>
 #include <stdio.h>
-#include <proj_gauss_main.h>
+#include "proj_gauss_main.h"
 
 bool read_till_sep(char curr_value[],FILE *file,char sep){
   int vv=0;

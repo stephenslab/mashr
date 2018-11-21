@@ -16,7 +16,7 @@
 #include <math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_rng.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 void bovy_randvec(gsl_vector * eps, int d, double length){
   length /= sqrt((double)d);

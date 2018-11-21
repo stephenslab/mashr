@@ -26,7 +26,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
-#include <proj_gauss_mixtures.h>
+#include "proj_gauss_mixtures.h"
 
 void calc_splitnmerge(struct datapoint * data,int N,
 		      struct gaussian * gaussians, int K, 

@@ -6,6 +6,9 @@
 \usage{
 get_samples(m)
 }
+\arguments{
+\item{m}{The mash fit.}
+}
 \description{
 Return samples from a mash object
 }

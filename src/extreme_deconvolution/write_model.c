@@ -14,8 +14,8 @@
 */
 #include <stdbool.h>
 #include <stdio.h>
-#include <proj_gauss_mixtures.h>
-#include <proj_gauss_main.h>
+#include "proj_gauss_mixtures.h"
+#include "proj_gauss_main.h"
 
 bool write_model(char outputfilename[]){
 
