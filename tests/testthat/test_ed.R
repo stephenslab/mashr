@@ -1,6 +1,6 @@
 context("test_ed.R")
 
-test_that("calculations on test set with fixg match original",{
+test_that("test title goes here.",{
   ydata <- c(2.62434536, 0.38824359, 0.47182825, -0.07296862, 1.86540763,
              -1.30153870, 2.74481176, 0.23879310, 1.31903910, 0.75062962,
              2.46210794, -1.06014071, 0.67758280, 0.61594565, 2.13376944,
@@ -55,5 +55,12 @@ test_that("calculations on test set with fixg match original",{
       projection[[i]] = matrix(c(i%%2,(i+1)%%2),1,2)
   res <- extreme_deconvolution(ydata, ycovar, xamp, xmean, xcovar,
                                projection=projection,logfile = "ExDeconDemo")
-  print(res)
+  expect_equal(res$avgloglikedata,-1.3114744655258121,tolerance = 1e-5)
+  expect_equal(res$xmean[1,1],2.30368235,tolerance = 1e-5)
+  expect_equal(res$xmean[1,2],1.70701517,tolerance = 1e-5)
+  expect_equal(res$xmean[2,1],1.08009397,tolerance = 1e-5)
+  expect_equal(res$xmean[2,2],0.8888667,tolerance = 1e-5)
+  expect_equal(res$xcovar[[1]][1,1],0.445645987259,tolerance = 1e-5)
+  expect_equal(res$xamp[1],0.11968415,tolerance = 1e-5)
+  expect_equal(res$xamp[2],0.880315852981,tolerance = 1e-5)
 })
