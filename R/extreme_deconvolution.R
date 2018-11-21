@@ -148,11 +148,11 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
         tycovar <- unlist(lapply(ycovar, t))
         diagerrors <- FALSE
     } else if (length(dim(ycovar)) == 3) {
-        tycovar <- apply(ycovar, 3, t)
+        tycovar <- as.vector(apply(ycovar, 3, t))
         diagerrors <- FALSE
     } else {
         # a matrix
-        tycovar <- t(ycovar)
+        tycovar <- as.vector(t(ycovar))
         diagerrors <- TRUE
     }
     fixamp <- .fixfix(fixamp, ngauss)
@@ -160,24 +160,21 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
     fixcovar <- .fixfix(fixcovar, ngauss)
     # 
     if (is.null(logfile)) {
-        clog <- 0
-        clog2 <- 0
-        n_clog <- 0
-        n_clog2 <- 0
+        clog <- array(0)
+        clog2 <- array(0)
     } else {
         clog <- charToRaw(paste(logfile, "c.log", sep = "_"))
-        n_clog <- length(clog)
         clog2 <- charToRaw(paste(logfile, "loglike.log", sep = "_"))
-        n_clog2 <- length(clog2)
     }
     # 
     if (maxsnm) 
         splitnmerge <- ngauss * (ngauss - 1) * (ngauss - 2)/2
     if (is.null(projection)) {
         noprojection <- TRUE
-        projection <- list()
+        projection <- array(0)
     } else {
         noprojection <- FALSE
+        projection <- unlist(lapply(projection, t))
     }
     if (is.null(weight)) {
         noweight <- TRUE
@@ -192,8 +189,8 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
     # 
     res <- extreme_deconvolution_rcpp(
         ydata, 
-        as.vector(tycovar),
-        unlist(lapply(projection, t)), 
+        tycovar,
+        projection,
         logweights,
         xamp,
         xmean, 
