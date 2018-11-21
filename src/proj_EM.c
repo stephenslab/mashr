@@ -69,7 +69,6 @@ void proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
     oldavgloglikedata = *avgloglikedata;
     if (likeonly) break;
     ++niter;
-    //write_model("result.dat");
   }
   
  //post-processing: only the upper right of VV was computed, copy this to the lower left of VV
