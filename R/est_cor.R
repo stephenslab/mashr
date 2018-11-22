@@ -6,12 +6,12 @@
 #' @details Returns a simple estimate of the correlation matrix (or covariance matrix) among conditions under the null.
 #' Specifically, the simple estimate is the empirical correlation (or covariance) matrix of the z scores
 #' for those effects that have (absolute) z score < z_thresh in all conditions.
-#' 
+#'
 #' @importFrom stats cov2cor
 #' @importFrom stats cov
-#' 
+#'
 #' @export
-#' 
+#'
 estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)
@@ -149,8 +149,10 @@ penalty <- function(prior, pi_s){
 E_V = function(data, m.model){
   n = n_effects(data)
   Z = data$Bhat/data$Shat
-  post.m.shat = m.model$result$PosteriorMean / data$Shat
-  post.sec.shat = laply(1:n, function(i) (t(m.model$result$PosteriorCov[,,i]/data$Shat[i,])/data$Shat[i,]) + tcrossprod(post.m.shat[i,])) # nx2x2 array
+  Shat = data$Shat * data$Shat_alpha
+  post.m.shat = m.model$result$PosteriorMean / Shat
+  post.sec.shat = laply(1:n, function(i) (t(m.model$result$PosteriorCov[,,i]/Shat[i,])/Shat[i,]) +
+                          tcrossprod(post.m.shat[i,])) # nx2x2 array
   temp1 = crossprod(Z)
   temp2 = crossprod(post.m.shat, Z) + crossprod(Z, post.m.shat)
   temp3 = unname(aaply(post.sec.shat, c(2,3), sum))
