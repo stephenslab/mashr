@@ -171,7 +171,11 @@ compute_posterior_matrices <-
       posterior_matrices$PosteriorMean = posterior_matrices$PosteriorMean * data$Shat_alpha
       posterior_matrices$PosteriorSD = posterior_matrices$PosteriorSD * data$Shat_alpha
       if (!is.null(posterior_matrices$PosteriorCov)) {
-        posterior_matrices$PosteriorCov <- lapply(1:length(posterior_matrices$PosteriorCov), function(i) posterior_matrices$PosteriorCov[[i]] * data$Shat_alpha)
+      if (length(dim(posterior_matrices$PosteriorCov)) == 3)
+        for (i in 1:dim(posterior_matrices$PosteriorCov)[3])
+          posterior_matrices$PosteriorCov[,,i] <- posterior_matrices$PosteriorCov[,,i] * data$Shat_alpha[i,]^2
+      else 
+        posterior_matrices$PosteriorCov = posterior_matrices$PosteriorCov * data$Shat_alpha^2
       }
     }
     return(posterior_matrices)
