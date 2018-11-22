@@ -11,7 +11,7 @@ env:
     - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
 before_install:
-  - sudo apt-get install -y gsl-bin
+  - sudo apt-get install -y libgsl0-dev
       
 r_packages:
   - covr
