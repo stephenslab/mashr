@@ -9,12 +9,15 @@ env:
   global:
     - _R_CHECK_FORCE_SUGGESTS_: false
     - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-    
+
+before_install:
+  - sudo apt-get install -y gsl-bin
+      
 r_packages:
   - covr
 
 r_github_packages: stephens999/ashr
-
+  
 after_success:
   - Rscript -e 'covr::codecov()'
 
