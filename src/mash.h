@@ -218,9 +218,39 @@ arma::mat calc_lik(const arma::vec & b_vec,
 	return lik;
 }
 
+class SE
+{
+public:
+	SE() {}
+	~SE() {}
+	void set(const arma::mat & sbhat, const arma::mat & sbhat_alpha) {
+		s = sbhat;
+		if (sbhat_alpha.is_empty()) s_alpha = sbhat;
+		else s_alpha = sbhat_alpha;
+	}
+	void set_original(const arma::mat & value) {
+		s_orig = value;
+		is_orig_empty = s_orig.is_empty();
+	}
+	arma::mat get_original() {
+		if (is_orig_empty) return(s);
+		else return(s_orig);
+	}
+	arma::mat get() {
+		return(s_alpha);
+	}
+
+private:
+	arma::mat s;
+	arma::mat s_orig;
+	arma::mat s_alpha;
+	bool is_orig_empty;
+};
 
 // @param b_mat R by J
 // @param s_mat R by J
+// @param s_orig_mat R by J
+// @param s_alpha_mat R by J
 // @param v_mat R by R
 // @param l_mat R by R for the common baseline application (@Yuxin Zou)
 // @param a_mat Q by R for the common baseline application (@Yuxin Zou)
@@ -230,12 +260,16 @@ class PosteriorMASH
 public:
 	PosteriorMASH(const arma::mat & b_mat,
 	              const arma::mat & s_mat,
+	              const arma::mat & s_alpha_mat,
+	              const arma::mat & s_orig_mat,
 	              const arma::mat & v_mat,
 	              const arma::mat & l_mat,
 	              const arma::mat & a_mat,
 	              const arma::cube & U_cube) :
-		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), l_mat(l_mat), a_mat(a_mat), U_cube(U_cube)
+		b_mat(b_mat), v_mat(v_mat), l_mat(l_mat), a_mat(a_mat), U_cube(U_cube)
 	{
+		s_obj.set(s_mat, s_alpha_mat);
+		s_obj.set_original(s_orig_mat);
 		int J = b_mat.n_cols, R = b_mat.n_rows;
 		if (!a_mat.is_empty()) {
 			R = a_mat.n_rows;
@@ -265,20 +299,23 @@ public:
 
 		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(j), v_mat, l_mat));
+			arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
 			// R X P matrices
 			arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
-				if (!a_mat.is_empty()) {
-					mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv, U1) % s_mat.col(j));
-					U1 = a_mat * (((U1.each_col() % s_mat.col(j)).each_row() % s_mat.col(j).t()) * a_mat.t());
+				//
+				arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
+				arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+				if (a_mat.is_empty()) {
+					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j);
+					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
 				} else {
-					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
-				}
+					mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j));
+					U1 = a_mat * (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) * a_mat.t());
+				} 
 				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
@@ -315,20 +352,25 @@ public:
 	{
 		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
-		arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(0), v_mat, l_mat));
+		arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
 		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
 		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
 		arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 			arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 			// R X R
-			arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
+			arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
 			// R X J
-			arma::mat mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
-			if (!a_mat.is_empty()) {
-				mu1_mat = a_mat * (mu1_mat % s_mat);
-				U1 = a_mat * (((U1.each_col() % s_mat.col(0)).each_row() % s_mat.col(0).t()) * a_mat.t());
+			arma::mat mu1_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+			arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+			if (a_mat.is_empty()) {
+				mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get();
+				U1 = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
+			} else {
+				mu1_mat = a_mat * (get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get());
+				U1 = a_mat * (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t()) * a_mat.t());
 			}
+
 			// FIXME: better initialization?
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
@@ -379,7 +421,7 @@ public:
 private:
 	// input
 	arma::mat b_mat;
-	arma::mat s_mat;
+	SE s_obj;
 	arma::mat v_mat;
 	arma::mat l_mat;
 	arma::mat a_mat;
@@ -396,6 +438,7 @@ private:
 
 // @param b_vec of J
 // @param s_vec of J
+// @param s_alpha_vec of J
 // @param v double
 // @param U_vec of P
 class PosteriorASH
@@ -403,11 +446,14 @@ class PosteriorASH
 public:
 	PosteriorASH(const arma::vec & b_vec,
 	             const arma::vec & s_vec,
+	             const arma::vec & s_alpha,
 	             double v,
 	             const arma::vec & U_vec) :
 		b_vec(b_vec), s_vec(s_vec), v(v), U_vec(U_vec)
 	{
 		int J = b_vec.n_elem;
+		if (s_alpha.is_empty()) s_alpha_vec = s_vec;
+		else s_alpha_vec = s_alpha;
 
 		post_mean.set_size(J);
 		post_var.set_size(J);
@@ -434,8 +480,9 @@ public:
 		arma::mat neg_mat(J, P, arma::fill::zeros);
 
 		for (arma::uword p = 0; p < P; ++p) {
-			arma::vec U1 = U_vec.at(p) / (vinv * U_vec.at(p) + 1.0);
-			mu1_mat.col(p) = U1 % vinv % b_vec;
+			arma::vec U1 = U_vec.at(p) / (vinv * U_vec.at(p) + 1.0); 
+			mu1_mat.col(p) = U1 % vinv % b_vec % s_alpha_vec;
+			U1 = U1 % (s_alpha_vec % s_alpha_vec);
 			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1;
 			arma::vec sigma = arma::sqrt(U1);
 			neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
@@ -472,6 +519,7 @@ private:
 	// input of J vecs
 	arma::vec b_vec;
 	arma::vec s_vec;
+	arma::vec s_alpha_vec;
 	double v;
 	arma::vec U_vec;
 	// output of J vecs

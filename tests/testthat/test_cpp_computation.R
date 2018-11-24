@@ -107,10 +107,10 @@ test_that("compare linear transformed posterior computation R vs C++ in provided
                                                        algorithm.version = "R", A=A))
 
   # Compute the posterior quantities using the Rcpp implementation.
-  # out.time <- system.time(out2 <-
-  #   compute_posterior_matrices(data,Ulist,posterior_weights,
-  #                              algorithm.version = "Rcpp", A=A))
-  # expect_equal(out1, out2, tolerance=1e-5)
+  out.time <- system.time(out2 <-
+    compute_posterior_matrices(data,Ulist,posterior_weights,
+                               algorithm.version = "Rcpp", A=A))
+  expect_equal(out1, out2, tolerance=1e-5)
 }
 )
 
@@ -194,11 +194,11 @@ test_that(paste("compare transformed posterior computation R vs C++ in simulated
 
   A = rbind(c(1,1,1))
 
-  # out1 <- compute_posterior_matrices(data, Ulist, weights,
-  #                                    algorithm.version = "Rcpp", A=A)
-  # out2 <- compute_posterior_matrices(data, Ulist, weights,
-  #                                    algorithm.version = "R", A=A)
-  # expect_equal(out1, out2, tolerance = 1e-5)
+  out1 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "Rcpp", A=A)
+  out2 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "R", A=A)
+  expect_equal(out1, out2, tolerance = 1e-5)
 })
 
 test_that(paste("compare transformed posterior computation R vs C++ in simulated",
@@ -212,11 +212,11 @@ test_that(paste("compare transformed posterior computation R vs C++ in simulated
   weights <- weights / rowSums(weights)
 
   A = rbind(c(1,1,1))
-  # out1 <- compute_posterior_matrices(data, Ulist, weights,
-  #                                    algorithm.version = "Rcpp", A=A)
-  # out2 <- compute_posterior_matrices(data, Ulist, weights,
-  #                                    algorithm.version = "R", A=A)
-  # expect_equal(out1, out2, tolerance = 1e-5)
+  out1 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "Rcpp", A=A)
+  out2 <- compute_posterior_matrices(data, Ulist, weights,
+                                     algorithm.version = "R", A=A)
+  expect_equal(out1, out2, tolerance = 1e-5)
 })
 
 test_that("Interface agree when R = 1 non common cov", {

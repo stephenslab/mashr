@@ -55,13 +55,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // calc_post_rcpp
-Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericMatrix l_mat, Rcpp::NumericMatrix a_mat, Rcpp::NumericVector U_3d, Rcpp::NumericMatrix posterior_weights, bool common_cov, int report_type);
-RcppExport SEXP _mashr_calc_post_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP v_matSEXP, SEXP l_matSEXP, SEXP a_matSEXP, SEXP U_3dSEXP, SEXP posterior_weightsSEXP, SEXP common_covSEXP, SEXP report_typeSEXP) {
+Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix s_alpha_mat, Rcpp::NumericMatrix s_orig_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericMatrix l_mat, Rcpp::NumericMatrix a_mat, Rcpp::NumericVector U_3d, Rcpp::NumericMatrix posterior_weights, bool common_cov, int report_type);
+RcppExport SEXP _mashr_calc_post_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP s_alpha_matSEXP, SEXP s_orig_matSEXP, SEXP v_matSEXP, SEXP l_matSEXP, SEXP a_matSEXP, SEXP U_3dSEXP, SEXP posterior_weightsSEXP, SEXP common_covSEXP, SEXP report_typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type b_mat(b_matSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type s_mat(s_matSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type s_alpha_mat(s_alpha_matSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type s_orig_mat(s_orig_matSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type v_mat(v_matSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type l_mat(l_matSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type a_mat(a_matSEXP);
@@ -69,7 +71,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type posterior_weights(posterior_weightsSEXP);
     Rcpp::traits::input_parameter< bool >::type common_cov(common_covSEXP);
     Rcpp::traits::input_parameter< int >::type report_type(report_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_post_rcpp(b_mat, s_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type));
+    rcpp_result_gen = Rcpp::wrap(calc_post_rcpp(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -77,7 +79,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_mashr_extreme_deconvolution_rcpp", (DL_FUNC) &_mashr_extreme_deconvolution_rcpp, 20},
     {"_mashr_calc_lik_rcpp", (DL_FUNC) &_mashr_calc_lik_rcpp, 7},
-    {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 9},
+    {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 11},
     {NULL, NULL, 0}
 };
 
