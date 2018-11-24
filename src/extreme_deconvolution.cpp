@@ -237,3 +237,4 @@ Rcpp::List extreme_deconvolution_rcpp(
 		Rcpp::Named("xamp") = amp,
 		Rcpp::Named("avgloglikedata") = avgloglikedata_np);
 }
+

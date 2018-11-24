@@ -218,27 +218,39 @@ arma::mat calc_lik(const arma::vec & b_vec,
 	return lik;
 }
 
+
 class SE
 {
 public:
 	SE() {}
 	~SE() {}
-	void set(const arma::mat & sbhat, const arma::mat & sbhat_alpha) {
+	void set(const arma::mat & sbhat, const arma::mat & sbhat_alpha)
+	{
 		s = sbhat;
 		if (sbhat_alpha.is_empty()) s_alpha = sbhat;
 		else s_alpha = sbhat_alpha;
 	}
-	void set_original(const arma::mat & value) {
+
+
+	void set_original(const arma::mat & value)
+	{
 		s_orig = value;
 		is_orig_empty = s_orig.is_empty();
 	}
-	arma::mat get_original() {
+
+
+	arma::mat get_original()
+	{
 		if (is_orig_empty) return(s);
 		else return(s_orig);
 	}
-	arma::mat get() {
+
+
+	arma::mat get()
+	{
 		return(s_alpha);
 	}
+
 
 private:
 	arma::mat s;
@@ -313,9 +325,12 @@ public:
 					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j);
 					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
 				} else {
-					mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j));
-					U1 = a_mat * (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) * a_mat.t());
-				} 
+					mu1_mat.col(p) = a_mat *
+					                 (get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j));
+					U1 = a_mat *
+					     (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) *
+					      a_mat.t());
+				}
 				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
@@ -344,6 +359,7 @@ public:
 		return 0;
 	}
 
+
 	// @title Compute posterior matrices when covariance SVS is the same for all J conditions
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
@@ -368,7 +384,9 @@ public:
 				U1 = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
 			} else {
 				mu1_mat = a_mat * (get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get());
-				U1 = a_mat * (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t()) * a_mat.t());
+				U1 = a_mat *
+				     (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t()) *
+				      a_mat.t());
 			}
 
 			// FIXME: better initialization?
@@ -452,6 +470,7 @@ public:
 		b_vec(b_vec), s_vec(s_vec), v(v), U_vec(U_vec)
 	{
 		int J = b_vec.n_elem;
+
 		if (s_alpha.is_empty()) s_alpha_vec = s_vec;
 		else s_alpha_vec = s_alpha;
 
@@ -480,7 +499,7 @@ public:
 		arma::mat neg_mat(J, P, arma::fill::zeros);
 
 		for (arma::uword p = 0; p < P; ++p) {
-			arma::vec U1 = U_vec.at(p) / (vinv * U_vec.at(p) + 1.0); 
+			arma::vec U1 = U_vec.at(p) / (vinv * U_vec.at(p) + 1.0);
 			mu1_mat.col(p) = U1 % vinv % b_vec % s_alpha_vec;
 			U1 = U1 % (s_alpha_vec % s_alpha_vec);
 			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1;
