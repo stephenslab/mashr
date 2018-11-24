@@ -219,6 +219,60 @@ test_that(paste("compare transformed posterior computation R vs C++ in simulated
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
+test_that(paste("compare commonbaseline and transformed computation R vs C++ in simulated",
+                "data common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,1,1),c(1,1,1))
+  data    <- mash_set_data(Bhat, Shat)
+  data.L  <- mash_update_data(data, ref=1)
+  Ulist   <- cov_canonical(data.L)
+
+  A = rbind(c(1,1))
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", A = A)
+  out2 <- mash(data.L, Ulist, algorithm.version = "R", A = A)
+  expect_equal(out1, out2, tolerance = 1e-5)
+})
+
+test_that(paste("compare commonbaseline and transformed computation R vs C++ in simulated",
+                "data non common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,2,1),c(2,1,1))
+  data    <- mash_set_data(Bhat, Shat)
+  data.L  <- mash_update_data(data, ref=1)
+  Ulist   <- cov_canonical(data.L)
+
+  A = rbind(c(1,1))
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", A = A)
+  out2 <- mash(data.L, Ulist, algorithm.version = "R", A = A)
+  expect_equal(out1, out2, tolerance = 1e-5)
+})
+
+test_that(paste("compare nobaseline computation R vs C++ in simulated",
+                "data common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,1,1),c(1,1,1))
+  data    <- mash_set_data(Bhat, Shat)
+  data.L  <- mash_update_data(data, ref='mean')
+  Ulist   <- cov_canonical(data.L)
+
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp")
+  out2 <- mash(data.L, Ulist, algorithm.version = "R")
+  expect_equal(out1, out2, tolerance = 1e-5)
+})
+
+test_that(paste("compare nobaseline computation R vs C++ in simulated",
+                "data non common cov"),{
+  Bhat    <- rbind(c(1,2,3),c(2,4,6))
+  Shat    <- rbind(c(1,2,1),c(2,1,1))
+  data    <- mash_set_data(Bhat, Shat)
+  data.L  <- mash_update_data(data, ref='mean')
+  Ulist   <- cov_canonical(data.L)
+
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp")
+  out2 <- mash(data.L, Ulist, algorithm.version = "R")
+  expect_equal(out1, out2, tolerance = 1e-5)
+})
+
 test_that("Interface agree when R = 1 non common cov", {
   N = 20
   r = 1

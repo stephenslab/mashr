@@ -32,8 +32,11 @@ test_that('likelihood calculations on mash contrast set',{
   data1 = mash_set_data_contrast(data, L)
   Ulist = cov_canonical(data1)
 
-  # For mash contrast data, the algorithm need to be R.
   out <- capture.output(m1 <- mash(data1,Ulist,grid = c(0.5,1,2),
                         algorithm.version = 'R'))
   expect_equal(mash_compute_loglik(m1,data1, algorithm.version='R'),m1$loglik)
+
+  out <- capture.output(m2 <- mash(data1,Ulist,grid = c(0.5,1,2),
+                                   algorithm.version = 'Rcpp'))
+  expect_equal(mash_compute_loglik(m2,data1, algorithm.version='Rcpp'),m2$loglik)
 })
