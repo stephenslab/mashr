@@ -54,11 +54,13 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-6):
    [ashr Github repository](https://github.com/stephens999/ashr) for
    details.
 
-4. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution#installation). Note that you will need to link to the
-   [GNU Scientific Library](https://www.gnu.org/software/gsl) to
-   build this package.
+# NO LONGER NECESSARY
+#4. Install the [ExtremeDeconvolution R #package](https://github.com/jobovy/extreme-deconvolution#installation). Note that you will #need to link to the
+#    [GNU Scientific Library](https://www.gnu.org/software/gsl) to
+#    build this package.
 
-5. Once you have installed all these packages, you can install and
+
+4. Once you have installed all these packages, you can install and
    load the [latest
    release](https://github.com/stephenslab/mashr/releases/tag/v0.2-6)
    of the `mashr` package:
