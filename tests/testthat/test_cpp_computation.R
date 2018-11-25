@@ -1,7 +1,6 @@
 context("test_cpp_computation.R")
 test_that("compare likelihood computation R vs C++ in provided data of 100 X 5", {
 
-
   load("calc_lik_matrix_data.RData")
   ## Get the number of samples (J) and the number of mixture components (P).
   J <- nrow(data$Bhat)
@@ -228,8 +227,8 @@ test_that(paste("compare commonbaseline and transformed computation R vs C++ in 
   Ulist   <- cov_canonical(data.L)
 
   A = rbind(c(1,1))
-  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", A = A)
-  out2 <- mash(data.L, Ulist, algorithm.version = "R", A = A)
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", A = A, verbose = F)
+  out2 <- mash(data.L, Ulist, algorithm.version = "R", A = A, verbose = F)
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
@@ -242,8 +241,8 @@ test_that(paste("compare commonbaseline and transformed computation R vs C++ in 
   Ulist   <- cov_canonical(data.L)
 
   A = rbind(c(1,1))
-  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", A = A)
-  out2 <- mash(data.L, Ulist, algorithm.version = "R", A = A)
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", A = A, verbose = F)
+  out2 <- mash(data.L, Ulist, algorithm.version = "R", A = A, verbose = F)
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
@@ -255,8 +254,8 @@ test_that(paste("compare nobaseline computation R vs C++ in simulated",
   data.L  <- mash_update_data(data, ref='mean')
   Ulist   <- cov_canonical(data.L)
 
-  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp")
-  out2 <- mash(data.L, Ulist, algorithm.version = "R")
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", verbose = F)
+  out2 <- mash(data.L, Ulist, algorithm.version = "R", verbose = F)
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 
@@ -268,8 +267,8 @@ test_that(paste("compare nobaseline computation R vs C++ in simulated",
   data.L  <- mash_update_data(data, ref='mean')
   Ulist   <- cov_canonical(data.L)
 
-  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp")
-  out2 <- mash(data.L, Ulist, algorithm.version = "R")
+  out1 <- mash(data.L, Ulist, algorithm.version = "Rcpp", verbose = F)
+  out2 <- mash(data.L, Ulist, algorithm.version = "R", verbose = F)
   expect_equal(out1, out2, tolerance = 1e-5)
 })
 

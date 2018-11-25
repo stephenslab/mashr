@@ -97,21 +97,6 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
   res_post_sd = sqrt(res_post_mean2 - res_post_mean^2)
   res_lfsr = compute_lfsr(res_post_neg,res_post_zero)
 
-  # Add names
-  if(!is.null(row.names(data$Bhat))){
-    row.names(res_post_mean) = row.names(data$Bhat)
-    row.names(res_post_sd) = row.names(data$Bhat)
-    row.names(res_post_zero) = row.names(data$Bhat)
-    row.names(res_post_neg) = row.names(data$Bhat)
-    row.names(res_lfsr) = row.names(data$Bhat)
-  }
-  if(!is.null(row.names(A))){
-    colnames(res_post_mean) = row.names(A)
-    colnames(res_post_sd) = row.names(A)
-    colnames(res_post_zero) = row.names(A)
-    colnames(res_post_neg) = row.names(A)
-    colnames(res_lfsr) = row.names(A)
-  }
   posterior_matrices = list(PosteriorMean = res_post_mean,
                             PosteriorSD   = res_post_sd,
                             lfdr          = res_post_zero,
@@ -122,8 +107,6 @@ compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weight
     muAw_s <- array(0, dim=c(Q,Q,J))
     muAw_s[] <- apply(res_post_mean, 1, tcrossprod)
     res_post_cov = post_sec_w_sum - muAw_s
-
-    dimnames(res_post_cov) <- list(row.names(A), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
 

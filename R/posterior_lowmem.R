@@ -114,27 +114,12 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
   res_post_sd = sqrt(res_post_mean2 - res_post_mean^2)
   res_lfsr = compute_lfsr(res_post_neg,res_post_zero)
 
-  if(!is.null(row.names(data$Bhat))){
-    row.names(res_post_mean) = row.names(data$Bhat)
-    row.names(res_post_sd) = row.names(data$Bhat)
-    row.names(res_post_zero) = row.names(data$Bhat)
-    row.names(res_post_neg) = row.names(data$Bhat)
-    row.names(res_lfsr) = row.names(data$Bhat)
-  }
-  if(!is.null(row.names(A))){
-    colnames(res_post_mean) = row.names(A)
-    colnames(res_post_sd) = row.names(A)
-    colnames(res_post_zero) = row.names(A)
-    colnames(res_post_neg) = row.names(A)
-    colnames(res_lfsr) = row.names(A)
-  }
   posterior_matrices = list(PosteriorMean = res_post_mean,
                             PosteriorSD   = res_post_sd,
                             lfdr          = res_post_zero,
                             NegativeProb  = res_post_neg,
                             lfsr          = res_lfsr)
   if(output_posterior_cov){
-    dimnames(res_post_cov) <- list(row.names(A), row.names(A), rownames(data$Bhat))
     posterior_matrices$PosteriorCov = res_post_cov
   }
   if(posterior_samples > 0){

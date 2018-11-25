@@ -86,9 +86,9 @@ compute_posterior_matrices <-
   algorithm.version <- match.arg(algorithm.version)
 
   R = n_conditions(data)
-  is_null_A = is.null(A) # for use with Cpp version
   if (output_posterior_cov) output_type = 4
   else output_type = 3
+  is_null_A = FALSE # for use with Cpp version
   # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
   if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
     temp = diag(R)
@@ -106,6 +106,7 @@ compute_posterior_matrices <-
     if(is.null(A)){
       A = diag(R)
       row.names(A) = colnames(data$Bhat)
+      is_null_A = TRUE
     }
     if(ncol(A) != R){
       stop('A is not a proper transformation')
@@ -122,12 +123,15 @@ compute_posterior_matrices <-
     common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
   }
   is_common_cov = common_cov_Shat && common_cov_Shat_alpha
+  # keep data dimension names
+  effect_names = rownames(data$Bhat)
+  condition_names = rownames(A)
   if (algorithm.version == "R") {
     if(is_common_cov){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+      posterior_matrices = compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
                                               posterior_samples = posterior_samples, seed=seed)
     } else {
-      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+      posterior_matrices = compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov,
                                            posterior_samples = posterior_samples, seed=seed)
     }
   } else if (algorithm.version == "Rcpp") {
@@ -152,20 +156,23 @@ compute_posterior_matrices <-
                               lfdr          = res$post_zero,
                               NegativeProb  = res$post_neg,
                               lfsr          = lfsr)
-    for (i in names(posterior_matrices)) {
-      if (!is.null(colnames(data$Bhat))) colnames(posterior_matrices[[i]]) <- colnames(data$Bhat)
-      if (!is.null(rownames(data$Bhat))) rownames(posterior_matrices[[i]]) <- rownames(data$Bhat)
-    }
+
     if (output_posterior_cov) {
       posterior_matrices$PosteriorCov <- res$post_cov
-      if (length(dim(posterior_matrices$PosteriorCov)) == 3)
-        dimnames(posterior_matrices$PosteriorCov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
-      else
-        dimnames(posterior_matrices$PosteriorCov) <- list(rownames(data$Bhat), colnames(data$Bhat))
     }
-    return(posterior_matrices)
-  } else
+  } else {
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
+  }
+  # Set dimension names
+  for (i in names(posterior_matrices)) {
+    if (length(dim(posterior_matrices[[i]])) == 2) {
+      colnames(posterior_matrices[[i]]) <- condition_names
+      rownames(posterior_matrices[[i]]) <- effect_names
+    }
+  }
+  if (length(dim(posterior_matrices$PosteriorCov)) == 3)
+    dimnames(posterior_matrices$PosteriorCov) <- list(condition_names, condition_names, effect_names)
+  return(posterior_matrices)
 }
 
 #' @title compute posterior probabilities
