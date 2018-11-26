@@ -227,7 +227,7 @@ public:
 	void set(const arma::mat & sbhat, const arma::mat & sbhat_alpha)
 	{
 		s = sbhat;
-		if (sbhat_alpha.is_empty()) s_alpha = sbhat;
+		if (sbhat_alpha.is_empty()) s_alpha.ones(sbhat.n_rows, sbhat.n_cols);
 		else s_alpha = sbhat_alpha;
 	}
 
@@ -471,7 +471,7 @@ public:
 	{
 		int J = b_vec.n_elem;
 
-		if (s_alpha.is_empty()) s_alpha_vec = s_vec;
+		if (s_alpha.is_empty()) s_alpha_vec.ones(J);
 		else s_alpha_vec = s_alpha;
 
 		post_mean.set_size(J);
