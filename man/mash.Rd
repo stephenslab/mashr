@@ -49,7 +49,7 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 
 \item{seed}{A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 
-\item{outputlevel}{controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights}
+\item{outputlevel}{controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices}
 }
 \value{
 a list with elements result, loglik and fitted_g
