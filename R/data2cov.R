@@ -24,6 +24,7 @@ cov_pca = function(data,npc,subset = NULL){
 #' @param data a mash data object
 #' @param Ulist_init a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs
 #' @param subset a subset of data to be used when ED is run (set to NULL for all the data)
+#' @param ... arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}. Other options see \code{?ExtremeDeconvolution::extreme_deconvolution}
 #' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
 #' The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
 #' @export

@@ -6,10 +6,10 @@
 #' @param control a list of parameters to be passed to optmethod
 #' @return numeric vector specifying the optimal mixture weights
 #' @importFrom assertthat are_equal
-#' @importFrom ashr mixIP mixEM cxxMixSquarem
+#' @importFrom ashr mixIP mixEM cxxMixSquarem mixSQP
 optimize_pi = function(matrix_lik, pi_init = NULL,
                        prior=NULL,
-                       optmethod=c("mixIP","mixEM","cxxMixSquarem"),
+                       optmethod=c("mixIP","mixEM","mixSQP","cxxMixSquarem"),
                        control=list() ){
   optmethod = match.arg(optmethod)
 
@@ -18,10 +18,21 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
      warning(paste("optmethod = \"mixIP\" requires REBayes package;",
                    "switching to optmethod = \"mixEM\""))
      optmethod <- "mixEM"
-  }
+   }
+
+  if (optmethod == "mixSQP")
+    if (!requireNamespace("mixsqp",quietly = TRUE)) {
+      warning(paste("optmethod = \"mixSQP\" requires mixsqp package;",
+                    "switching to optmethod = \"mixEM\""))
+      optmethod <- "mixEM"
+    }
+
   if(optmethod == "mixIP"){control = ashr:::set_control_mixIP(control)
-  } else {
+  }else if(optmethod == 'mixEM' || optmethod == 'cxxMixSquarem'){
     control = ashr:::set_control_squarem(control, nrow(matrix_lik))
+  }else if(optmethod == 'mixSQP'){
+    control0 = list(eps = 1e-6, delta = 1e-6)
+    control = modifyList(control0, control, keep.null = TRUE)
   }
 
   K = ncol(matrix_lik)

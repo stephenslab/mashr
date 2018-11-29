@@ -1,0 +1,7 @@
+GSL_CFLAGS=`${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "RcppGSL:::CFlags()"`
+GSL_LIBS=`${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "RcppGSL:::LdFlags()"`
+
+sed -e "s|@GSL_LIBS@|${GSL_LIBS}|" \
+    -e "s|@GSL_CFLAGS@|${GSL_CFLAGS}|" \
+    src/Makevars.in > src/Makevars.win
+

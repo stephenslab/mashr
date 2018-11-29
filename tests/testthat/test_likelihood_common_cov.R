@@ -1,3 +1,4 @@
+context("test_likelihood_common_cov.R")
 test_that("likelihood calculations with common cov look right",{
   Bhat = rbind(c(1,2,3),c(2,4,6))
   Shat = rbind(c(1,1,1),c(1,1,1))

@@ -1,0 +1,101 @@
+---
+title: "mashr with common baseline"
+author: "Yuxin Zou"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mashcommonbaseline intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
+                      fig.height = 4,fig.align = "center",
+                      eval = TRUE)
+```
+
+# Introduction
+
+This vignette illustrates how to use `mashr` to estimate the change in some quantity measured in multiple conditions compared with a **common** control condition. 
+
+We assume that we have measurements in multiple conditions, and want to
+estimate the deviation in each condition from the control: that is, the difference
+in mean between that condition and the control condition. 
+When we compare every condition to the same control then the observed
+deviations are correlated with one another (even under the null where
+there are no true differences among conditions). These correlations, if 
+not properly accounted
+for, can lead to many false positives in a multivariate analysis. 
+This vignette illustrates how to properly account for such correlations.
+
+Here is the [write-up](MASH_baseline.pdf) for the details of the model. When there is no control condition in the study, we can compare the quantity in different conditions with the mean. We illustrate an example in the [no baseline vignette](intro_mashnobaseline.html).
+
+To deal with these correlations, mashr allows the user to specify the reference condition using `mash_update_data`, after setting up the data in `mash_set_data`. 
+
+**Note**: The correlations in deviations induced by comparing to a common baseline/control occur even if the measurements in different conditions are entirely independent. If the measurements in different conditions are also correlated with one another (eg in eQTL applications this can occur due to sample overlap among the different conditions) then this induces additional correlations into the analysis that should also be taken into account.  In `common baseline` analysis, such additional correlations can be specified by the user (we have not yet implemented methods to estimate this additional correlation from the data). 
+
+# Illustration
+
+Here we simulate data for illustration. This simulation routine creates a dataset with 8 conditions and 12000 samples, the last condition is the control condition. 90% of the samples have no deviations from the control condition. The remaining 10% of the samples are "non-null", and consist of equal numbers of three different types of deviations: equal among conditions $1, \cdots, 7$, present only in condition 1, independent across conditions $1, \cdots, 7$.
+
+Our goal is to estimate the deviations in condition $1, \cdots, 7$ compared with the control condition.
+
+```{r}
+library(mashr)
+set.seed(1)
+simdata = sim_contrast2(nsamp = 12000, ncond = 8)
+```
+
+We demonstrate the right way and the wrong to do the analysis
+
+# The right way
+
+Read in the data, and set the control condition
+```{r}
+data = mash_set_data(simdata$Chat, simdata$Shat)
+
+data.L = mash_update_data(data, ref = 8)
+```
+
+The updated mash data object (`data.L`) includes the induced correlation internally.
+
+We proceed the analysis using just the simple canonical covariances as in the [initial introductory](intro_mash.html) vignette.
+
+```{r}
+U.c = cov_canonical(data.L)
+mashcontrast.model = mash(data.L, U.c, algorithm.version = 'R')
+```
+
+```{r}
+print(get_loglik(mashcontrast.model),digits=10)
+```
+
+Use `get_significant_results` to find the indices of effects that are 'significant':
+```{r}
+length(get_significant_results(mashcontrast.model))
+```
+
+The number of false positive is `r sum(get_significant_results(mashcontrast.model) < 12000-1200)`.
+
+# The wrong way
+
+We fit the mash model ignoring the induced correlation.
+
+```{r}
+L = contrast_matrix(8, ref=8)
+data.wrong = mash_set_data(Bhat = simdata$Chat %*% t(L), Shat = 1)
+m = mash(data.wrong, U.c)
+```
+```{r}
+print(get_loglik(m),digits = 10)
+```
+
+We can see that the log likelihood is lower, since it does not consider the induced correlation. 
+
+There are `r length(get_significant_results(m))` significant effects, `r sum(get_significant_results(m) < 12000-1200)` of them are false positives. The number of false positives is much more than the one include the induced correlation.
+
+
+
+
+

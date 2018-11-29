@@ -7,7 +7,7 @@
 mash_set_data_contrast(mashdata, L)
 }
 \arguments{
-\item{mashdata}{a mash data object containing the Bhat matrix, standard errors, V; created using set_mash_data}
+\item{mashdata}{a mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}}
 
 \item{L}{the contrast matrix}
 }

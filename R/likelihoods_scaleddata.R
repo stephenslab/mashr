@@ -86,10 +86,6 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 
   algorithm.version <- match.arg(algorithm.version)
 
-  if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){
-    stop('FIXME: the commonbaseline method is not implemented in Rcpp')
-  }
-
   if (mc.cores > 1 & algorithm.version != "Rcpp")
     stop("Argument \"mc.cores\" only works for Rcpp version.")
 
@@ -117,9 +113,14 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
   else if (algorithm.version == "Rcpp") {
 
     # Run the C implementation using the Rcpp interface.
-    res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                         simplify2array(Ulist),log,
-                         is_common_cov_Shat(data))
+    if (is.null(data$L)) 
+        res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
+                             matrix(0,0,0), simplify2array(Ulist),log,
+                             is_common_cov_Shat(data))
+    else
+        res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,
+                             data$L, simplify2array(Ulist),log,
+                             is_common_cov_Shat(data))
     res <- res$data
 
     # Get column names for R > 1.
@@ -134,8 +135,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
   if (length(rows) > 0)
     warning(paste("Some mixture components result in non-finite likelihoods,",
                   "either\n","due to numerical underflow/overflow,",
-                  "or due to covariance matrices\n",
-                  "that are not s.p.d.:",
+                  "or due to invalid covariance matrices",
                   paste(rows,collapse=", "),
                   "\n"))
   

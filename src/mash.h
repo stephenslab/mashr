@@ -105,10 +105,15 @@ inline T pnorm(const U & x, const T & m, const T & s,
 
 
 // a quicker way to compute diag(s) %*% V %*% diag(s)
-inline arma::mat get_cov(const arma::vec & s, const ::arma::mat & V)
+inline arma::mat get_cov(const arma::vec & s, const arma::mat & V, const arma::mat & L)
 {
-	return (V.each_col() % s).each_row() % s.t();
-	/* return arma::diagmat(s) * V * arma::diagmat(s); */
+	if (L.is_empty()) {
+		/* return arma::diagmat(s) * V * arma::diagmat(s); */
+		return (V.each_col() % s).each_row() % s.t();
+	} else {
+		arma::mat svs = (V.each_col() % s).each_row() % s.t();
+		return L * svs * L.t();
+	}
 }
 
 
@@ -152,6 +157,7 @@ inline arma::mat get_posterior_mean_mat(const arma::mat & bhat, const arma::mat 
 // @param b_mat R by J
 // @param s_mat R by J
 // @param v_mat R by R
+// @param l_mat R by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices
 // @param logd if true computes log-likelihood
 // @param common_cov if true use version for common covariance
@@ -159,6 +165,7 @@ inline arma::mat get_posterior_mean_mat(const arma::mat & bhat, const arma::mat 
 arma::mat calc_lik(const arma::mat & b_mat,
                    const arma::mat & s_mat,
                    const arma::mat & v_mat,
+                   const arma::mat & l_mat,
                    const arma::cube & U_cube,
                    bool logd,
                    bool common_cov)
@@ -170,14 +177,14 @@ arma::mat calc_lik(const arma::mat & b_mat,
 
 	if (common_cov) {
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-		arma::mat sigma = get_cov(s_mat.col(0), v_mat);
+		arma::mat sigma = get_cov(s_mat.col(0), v_mat, l_mat);
 		for (arma::uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
 		}
 	} else {
 		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 		for (arma::uword j = 0; j < lik.n_rows; ++j) {
-			arma::mat sigma = get_cov(s_mat.col(j), v_mat);
+			arma::mat sigma = get_cov(s_mat.col(j), v_mat, l_mat);
 			for (arma::uword p = 0; p < lik.n_cols; ++p) {
 				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
 			}
@@ -212,21 +219,73 @@ arma::mat calc_lik(const arma::vec & b_vec,
 }
 
 
+class SE
+{
+public:
+	SE() {}
+	~SE() {}
+	void set(const arma::mat & sbhat, const arma::mat & sbhat_alpha)
+	{
+		s = sbhat;
+		if (sbhat_alpha.is_empty()) s_alpha.ones(sbhat.n_rows, sbhat.n_cols);
+		else s_alpha = sbhat_alpha;
+	}
+
+
+	void set_original(const arma::mat & value)
+	{
+		s_orig = value;
+		is_orig_empty = s_orig.is_empty();
+	}
+
+
+	arma::mat get_original()
+	{
+		if (is_orig_empty) return(s);
+		else return(s_orig);
+	}
+
+
+	arma::mat get()
+	{
+		return(s_alpha);
+	}
+
+
+private:
+	arma::mat s;
+	arma::mat s_orig;
+	arma::mat s_alpha;
+	bool is_orig_empty;
+};
+
 // @param b_mat R by J
 // @param s_mat R by J
+// @param s_orig_mat R by J
+// @param s_alpha_mat R by J
 // @param v_mat R by R
+// @param l_mat R by R for the common baseline application (@Yuxin Zou)
+// @param a_mat Q by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices, for each mixture component P by R by R
 class PosteriorMASH
 {
 public:
 	PosteriorMASH(const arma::mat & b_mat,
 	              const arma::mat & s_mat,
+	              const arma::mat & s_alpha_mat,
+	              const arma::mat & s_orig_mat,
 	              const arma::mat & v_mat,
+	              const arma::mat & l_mat,
+	              const arma::mat & a_mat,
 	              const arma::cube & U_cube) :
-		b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), U_cube(U_cube)
+		b_mat(b_mat), v_mat(v_mat), l_mat(l_mat), a_mat(a_mat), U_cube(U_cube)
 	{
+		s_obj.set(s_mat, s_alpha_mat);
+		s_obj.set_original(s_orig_mat);
 		int J = b_mat.n_cols, R = b_mat.n_rows;
-
+		if (!a_mat.is_empty()) {
+			R = a_mat.n_rows;
+		}
 		post_mean.set_size(R, J);
 		post_var.set_size(R, J);
 		post_cov.set_size(R, R, J);
@@ -245,23 +304,34 @@ public:
 	// @title Compute posterior matrices
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
-	int compute_posterior(const arma::mat & posterior_weights, const bool report_post_cov)
+	// @param report_type an integer: 1 for posterior mean only, 2 for posterior second moment, 3 for default mash output, 4 for additionally posterior covariance
+	int compute_posterior(const arma::mat & posterior_weights, const int report_type)
 	{
-		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+		arma::vec mean(post_mean.n_rows, arma::fill::zeros);
 
-		for (arma::uword j = 0; j < b_mat.n_cols; ++j) {
+		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(j), v_mat));
+			arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
 			// R X P matrices
-			arma::mat mu1_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-			arma::mat mu2_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-			arma::mat zero_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
-			arma::mat neg_mat(b_mat.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+			arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-				arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
-				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U1);
-				if (report_post_cov) {
+				//
+				arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
+				arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+				if (a_mat.is_empty()) {
+					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j);
+					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
+				} else {
+					mu1_mat.col(p) = a_mat *
+					                 (get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j));
+					U1 = a_mat *
+					     (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) *
+					      a_mat.t());
+				}
+				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
 				}
@@ -281,7 +351,7 @@ public:
 			neg_prob.col(j) = neg_mat * posterior_weights.col(j);
 			zero_prob.col(j) = zero_mat * posterior_weights.col(j);
 			//
-			if (report_post_cov) {
+			if (report_type == 4) {
 				post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 			}
 		}
@@ -293,26 +363,37 @@ public:
 	// @title Compute posterior matrices when covariance SVS is the same for all J conditions
 	// @description More detailed description of function goes here.
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
-	// @param report_post_cov Boolean variable that decides whether or not posterior covariance should be computed
-	int compute_posterior_comcov(const arma::mat & posterior_weights, const bool report_post_cov)
+	// @param report_type an integer: 1 for posterior mean only, 2 for posterior second moment, 3 for default mash output, 4 for additionally posterior covariance
+	int compute_posterior_comcov(const arma::mat & posterior_weights, const int report_type)
 	{
-		arma::mat mean(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
+		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
-		arma::mat Vinv = arma::inv_sympd(get_cov(s_mat.col(0), v_mat));
-		arma::rowvec ones(b_mat.n_cols, arma::fill::ones);
-		arma::rowvec zeros(b_mat.n_cols, arma::fill::zeros);
-		arma::mat sigma(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
+		arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
+		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
+		arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-			arma::mat zero_mat(b_mat.n_rows, b_mat.n_cols, arma::fill::zeros);
+			arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 			// R X R
-			arma::mat U1 = get_posterior_cov(Vinv, U_cube.slice(p));
+			arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
 			// R X J
-			arma::mat mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
+			arma::mat mu1_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+			arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+			if (a_mat.is_empty()) {
+				mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get();
+				U1 = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
+			} else {
+				mu1_mat = a_mat * (get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get());
+				U1 = a_mat *
+				     (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t()) *
+				      a_mat.t());
+			}
+
 			// FIXME: better initialization?
 			arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
 				sigma.col(j) = Svec;
-				if (report_post_cov) {
+				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
 				}
@@ -336,7 +417,7 @@ public:
 		}
 		post_var -= arma::pow(post_mean, 2.0);
 		//
-		if (report_post_cov) {
+		if (report_type == 4) {
 			for (arma::uword j = 0; j < sigma.n_cols; ++j) {
 				post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 			}
@@ -358,8 +439,10 @@ public:
 private:
 	// input
 	arma::mat b_mat;
-	arma::mat s_mat;
+	SE s_obj;
 	arma::mat v_mat;
+	arma::mat l_mat;
+	arma::mat a_mat;
 	arma::cube U_cube;
 	// output
 	// all R X J mat
@@ -373,6 +456,7 @@ private:
 
 // @param b_vec of J
 // @param s_vec of J
+// @param s_alpha_vec of J
 // @param v double
 // @param U_vec of P
 class PosteriorASH
@@ -380,11 +464,15 @@ class PosteriorASH
 public:
 	PosteriorASH(const arma::vec & b_vec,
 	             const arma::vec & s_vec,
+	             const arma::vec & s_alpha,
 	             double v,
 	             const arma::vec & U_vec) :
 		b_vec(b_vec), s_vec(s_vec), v(v), U_vec(U_vec)
 	{
 		int J = b_vec.n_elem;
+
+		if (s_alpha.is_empty()) s_alpha_vec.ones(J);
+		else s_alpha_vec = s_alpha;
 
 		post_mean.set_size(J);
 		post_var.set_size(J);
@@ -400,7 +488,7 @@ public:
 	// @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
 	int compute_posterior(const arma::mat & posterior_weights)
 	{
-		arma::vec sv = s_vec % s_vec * v;
+		arma::vec vinv = 1 / (s_vec % s_vec * v);
 		unsigned J = b_vec.n_elem;
 		unsigned P = U_vec.n_elem;
 		arma::vec mean(J, arma::fill::zeros);
@@ -411,8 +499,9 @@ public:
 		arma::mat neg_mat(J, P, arma::fill::zeros);
 
 		for (arma::uword p = 0; p < P; ++p) {
-			arma::vec U1 = U_vec.at(p) / (sv * U_vec.at(p) + 1);
-			mu1_mat.col(p) = U1 / sv % b_vec;
+			arma::vec U1 = U_vec.at(p) / (vinv * U_vec.at(p) + 1.0);
+			mu1_mat.col(p) = U1 % vinv % b_vec % s_alpha_vec;
+			U1 = U1 % (s_alpha_vec % s_alpha_vec);
 			mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1;
 			arma::vec sigma = arma::sqrt(U1);
 			neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
@@ -449,6 +538,7 @@ private:
 	// input of J vecs
 	arma::vec b_vec;
 	arma::vec s_vec;
+	arma::vec s_alpha_vec;
 	double v;
 	arma::vec U_vec;
 	// output of J vecs

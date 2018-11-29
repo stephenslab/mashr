@@ -4,20 +4,45 @@
 \alias{estimate_null_correlation}
 \title{Estimate null correlations}
 \usage{
-estimate_null_correlation(data, z_thresh = 2,
-  apply_lower_bound = FALSE)
+estimate_null_correlation(data, Ulist, init, max_iter = 30, tol = 1,
+  est_cor = TRUE, track_fit = FALSE, prior = c("nullbiased",
+  "uniform"), ...)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
-\item{z_thresh}{the z score threshold below which to call an effect null}
+\item{Ulist}{a list of covariance matrices to use}
 
-\item{apply_lower_bound}{indicates whether to also apply a lower bound for the
-correlations which can be computed based on all data. See \code{compute_null_correlation_lower_bound}}
+\item{init}{the initial value for the null correlation. If it is not given, we use result from \code{estimate_null_correlation_adhoc}}
+
+\item{max_iter}{maximum number of iterations to perform}
+
+\item{tol}{convergence tolerance}
+
+\item{est_cor}{whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE)}
+
+\item{track_fit}{add an attribute \code{trace} to output that saves current values of all iterations}
+
+\item{prior}{indicates what penalty to use on the likelihood, if any}
+
+\item{...}{other parameters pass to \code{mash}}
+}
+\value{
+a list with estimated correlation (or covariance) matrix and the fitted mash model
+\cr
+\item{V}{estimated correlation (or covariance) matrix}
+\item{mash.model}{fitted mash model}
 }
 \description{
 Estimates a null correlation matrix from data
 }
 \details{
-Returns the empirical correlation matrix of the effects that are "null" based on simple z score threshold
+Returns the estimated correlation matrix (or covariance matrix) among conditions under the null.
+The correlation (or covariance) matrix is estimated by maximum likelihood.
+Specifically, the unknown correlation/covariance matrix V and the unknown weights are estimated iteratively.
+The unknown correlation/covariance matrix V is estimated using M step from the EM algorithm.
+The unknown weights pi is estimated by maximum likelihood, which is a convex problem.
+
+Warning: This method could take some time.
+The \code{\link{estimate_null_correlation_simple}} gives a quick approximation for the null correlation (or covariance) matrix.
 }

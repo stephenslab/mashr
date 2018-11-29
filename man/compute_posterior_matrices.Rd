@@ -6,7 +6,7 @@
 \usage{
 compute_posterior_matrices(data, Ulist, posterior_weights,
   algorithm.version = c("Rcpp", "R"), A = NULL,
-  output_posterior_cov = FALSE)
+  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by
@@ -15,32 +15,38 @@ compute_posterior_matrices(data, Ulist, posterior_weights,
 \item{Ulist}{List containing the prior covariance matrices.}
 
 \item{posterior_weights}{Vector containing the posterior
-probability of each mixture component in Ulist for the data}
+probability of each mixture component in Ulist for the data.}
 
-\item{algorithm.version}{Indicates whether to use R or Rcpp version}
+\item{algorithm.version}{Indicates whether to use R or Rcpp version.}
 
-\item{A}{the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.}
+\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
 
-\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
+\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects.}
+
+\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
+
+\item{seed}{a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
 }
 \value{
 The return value is a list containing the following
    components:
 
-   \item{PosteriorMean}{J x K matrix of posterior means.}
+   \item{PosteriorMean}{J x Q matrix of posterior means.}
 
-   \item{PosteriorSD}{J x K matrix of posterior (marginal) standard
+   \item{PosteriorSD}{J x Q matrix of posterior (marginal) standard
    deviations.}
 
-   \item{NegativeProb}{J x K matrix of posterior (marginal)
+   \item{NegativeProb}{J x Q matrix of posterior (marginal)
     probability of being negative.}
 
-   \item{ZeroProb}{J x K matrix of posterior (marginal) probability
+   \item{ZeroProb}{J x Q matrix of posterior (marginal) probability
     of being zero.}
 
-   \item{lfsr}{J x K matrix of local false sign rates.}
+   \item{lfsr}{J x Q matrix of local false sign rates.}
 
-   \item{PosteriorCov}{K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+   \item{PosteriorCov}{Q x Q x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+
+   \item{PosteriorSamples}{M x Q x J array of samples, if the \code{posterior_samples = M > 0}.}
 }
 \description{
 More detailed description of function goes here.

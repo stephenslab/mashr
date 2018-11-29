@@ -7,8 +7,9 @@
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
   prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "cxxMixSquarem"), verbose = TRUE, add.mem.profile = FALSE,
-  algorithm.version = c("Rcpp", "R"), pi_thresh = 1e-10,
+  "mixSQP", "cxxMixSquarem"), control = list(), verbose = TRUE,
+  add.mem.profile = FALSE, algorithm.version = c("Rcpp", "R"),
+  pi_thresh = 1e-10, A = NULL, posterior_samples = 0, seed = 123,
   outputlevel = 2)
 }
 \arguments{
@@ -32,6 +33,8 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 
 \item{optmethod}{name of optimization method to use}
 
+\item{control}{A list of control parameters passed to optmethod.}
+
 \item{verbose}{If \code{TRUE}, print progress to R console.}
 
 \item{add.mem.profile}{If \code{TRUE}, print memory usage to R console (requires R library `profmem`).}
@@ -40,7 +43,13 @@ mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
 
 \item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
 
-\item{outputlevel}{controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights}
+\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
+
+\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
+
+\item{seed}{A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
+
+\item{outputlevel}{controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices}
 }
 \value{
 a list with elements result, loglik and fitted_g

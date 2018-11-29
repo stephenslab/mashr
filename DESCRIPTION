@@ -2,8 +2,8 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2-15
-Date: 2018-09-24
+Version: 0.2.19.0547
+Date: 2018-11-27
 Authors@R: c(person("Matthew","Stephens",role=c("aut","cre"),
                     email="mstephens@uchicago.edu"),
              person("Sarah","Urbut",role="aut"),
@@ -17,7 +17,7 @@ License: BSD_3_clause + file LICENSE
 LazyData: true
 SystemRequirements: C++11
 Depends: R (>= 3.3.0),
-    ashr (>= 2.1-19)
+    ashr (>= 2.2-22)
 Imports:
     assertthat,
     utils,
@@ -26,18 +26,23 @@ Imports:
     plyr,
     rmeta,
     Rcpp (>= 0.12.11),
-    mvtnorm
+    mvtnorm,
+    abind
 LinkingTo:
     Rcpp, 
-    RcppArmadillo
+    RcppArmadillo,
+    RcppGSL
 Suggests:
-    ExtremeDeconvolution (>= 1.3),
     REBayes,
+    Rmosek,
+    mixsqp,
+    flashr,
+    corrplot,
     testthat,
     knitr,
     rmarkdown,
     profmem
 VignetteBuilder: knitr
 NeedsCompilation: yes
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1
 Remotes: stephens999/ashr

@@ -1,3 +1,4 @@
+context("test_cov.R")
 test_that("prior covariance computations look right", {
   Bhat = rbind(c(1,2),c(2,4))
   Shat = rbind(c(1,1),c(1,1))

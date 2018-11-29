@@ -74,11 +74,86 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   return(data)
 }
 
+#' @title Update the data object for mash analysis.
+#' @description This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
+#' can be used for commonbaseline analysis. The other one is update the null correlation matrix.
+#' @param mashdata mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
+#' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
+#' @param V a correlation matrix for the null effects
+#' @return a updated mash data object
+#' @export
+mash_update_data = function(mashdata, ref= NULL, V = NULL){
+  if(class(mashdata) != 'mash'){
+    stop('data is not a "mash" object')
+  }
+
+  R = n_conditions(mashdata)
+
+  if(!is.null(V)){
+    check_positive_definite(V)
+    if(R != nrow(V)){
+      stop('The dimension of correlation matrix does not match the data.')
+    }
+    mashdata$V = V
+  }
+
+  if(!is.null(mashdata$L)){
+    mashdata = mash_set_data_contrast(mashdata, L)
+  }
+
+  if(!is.null(ref)){
+    if(!is.null(mashdata$L)){
+      stop('The data is ready for the contrast analysis.')
+    }
+    R = n_conditions(mashdata)
+    name = colnames(mashdata$Bhat)
+    if(is.null(name)){
+      name = 1:R
+    }
+    L = contrast_matrix(R, ref, name)
+    mashdata = mash_set_data_contrast(mashdata, L)
+  }
+
+  return(mashdata)
+}
+
+#' Create contrast matrix
+#' @param R the number of column for the contrast matrix
+#' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
+#' @param name a length R vector contains the name for conditions
+#' @export
+contrast_matrix = function(R, ref, name=1:R){
+  if(ref == 'mean'){
+    L = matrix(-1/R, R, R)
+    diag(L) = (R-1)/R
+    L = L[1:(R-1),]
+    row.names(L) = paste0(name[1:(R-1)],'-','mean')
+  }else if(ref %in% 1:R){
+    L = diag(R)
+    L[,ref] = -1
+    L = L[-ref,]
+    row.names(L) = paste0(name[-ref],'-', name[ref])
+  }else if (ref %in% name){
+    ind = which(name %in% ref)
+    if (length(ind) != 1){
+      stop('There are more than one groups in the data have the same name as the reference group.')
+    }
+    L = diag(R)
+    L[,ind] = -1
+    L = L[-ind,]
+    row.names(L) = paste0(name[-ind],'-', ref)
+  }else{
+    stop('The ref group is not in the given conditions.')
+  }
+  colnames(L) = name
+  attr(L, "reference") = ref
+  return(L)
+}
+
 #' Create a data object for mash contrast analysis
-#' @param mashdata a mash data object containing the Bhat matrix, standard errors, V; created using set_mash_data
+#' @param mashdata a mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
 #' @param L the contrast matrix
 #' @return a data object after the contrast transfermation
-#' @export
 mash_set_data_contrast = function(mashdata, L){
   # check data
   if(class(mashdata) != 'mash'){

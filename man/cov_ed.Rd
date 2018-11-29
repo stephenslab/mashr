@@ -12,6 +12,8 @@ cov_ed(data, Ulist_init, subset = NULL, ...)
 \item{Ulist_init}{a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs}
 
 \item{subset}{a subset of data to be used when ED is run (set to NULL for all the data)}
+
+\item{...}{arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}. Other options see \code{?ExtremeDeconvolution::extreme_deconvolution}}
 }
 \description{
 Perform "extreme deconvolution" (Bovy et al) on a subset of the data

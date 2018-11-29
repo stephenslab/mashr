@@ -3,7 +3,7 @@
 \name{sim_contrast2}
 \alias{sim_contrast2}
 \title{Create simulation with signal data used for contrast
-analysis, 10\% percent of them are non-null.}
+analysis.}
 \usage{
 sim_contrast2(nsamp = 1000, ncond = 5, err_sd = sqrt(0.5))
 }
@@ -16,10 +16,13 @@ sim_contrast2(nsamp = 1000, ncond = 5, err_sd = sqrt(0.5))
 }
 \description{
 Create simulation with signal data used for contrast
-analysis, 10\% percent of them are non-null.
+analysis.
 }
 \details{
-The simulation consists of equal numbers of four different
-  types of deviations: null, equal among conditions, present only in
-  first condition, independent across conditions.
+The first condition is the reference group. The deviations are the difference
+  between the subsequent conditions with the reference group.
+  The simulation consists of 90% null deviations, 10% non-nulls.
+  The non-nulls consist of equal numbers of three different types of deviations:
+  equal among conditions, present only in the first subsequent condition,
+  independent across conditions.
 }

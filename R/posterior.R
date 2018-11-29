@@ -41,31 +41,37 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @param Ulist List containing the prior covariance matrices.
 #'
 #' @param posterior_weights Vector containing the posterior
-#'     probability of each mixture component in Ulist for the data
+#'     probability of each mixture component in Ulist for the data.
 #'
-#' @param algorithm.version Indicates whether to use R or Rcpp version
+#' @param algorithm.version Indicates whether to use R or Rcpp version.
 #'
-#' @param A the linear transformation matrix, K x R matrix. This is used to compute the posterior for Ab.
+#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #'
-#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
+#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects.
+#'
+#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
+#'
+#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
 #'
 #' @return The return value is a list containing the following
 #'    components:
 #'
-#'    \item{PosteriorMean}{J x K matrix of posterior means.}
+#'    \item{PosteriorMean}{J x Q matrix of posterior means.}
 #'
-#'    \item{PosteriorSD}{J x K matrix of posterior (marginal) standard
+#'    \item{PosteriorSD}{J x Q matrix of posterior (marginal) standard
 #'    deviations.}
 #'
-#'    \item{NegativeProb}{J x K matrix of posterior (marginal)
+#'    \item{NegativeProb}{J x Q matrix of posterior (marginal)
 #'     probability of being negative.}
 #'
-#'    \item{ZeroProb}{J x K matrix of posterior (marginal) probability
+#'    \item{ZeroProb}{J x Q matrix of posterior (marginal) probability
 #'     of being zero.}
 #'
-#'    \item{lfsr}{J x K matrix of local false sign rates.}
+#'    \item{lfsr}{J x Q matrix of local false sign rates.}
 #'
-#'    \item{PosteriorCov}{K x K x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+#'    \item{PosteriorCov}{Q x Q x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+#'
+#'    \item{PosteriorSamples}{M x Q x J array of samples, if the \code{posterior_samples = M > 0}.}
 #'
 #' @useDynLib mashr
 #'
@@ -75,71 +81,98 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @export
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
-            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE) {
+            algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE,
+            posterior_samples = 0, seed = 123) {
   algorithm.version <- match.arg(algorithm.version)
 
-  if(!is.null(A) && algorithm.version == 'Rcpp'){
-    stop("FIXME: The linear transfermation for the posterior distribution is not implemented Rcpp")
-  }
-
-  if((!is.null(data$L)) && (algorithm.version == 'Rcpp')){
-    stop('FIXME: the commonbaseline method is not implemented in Rcpp')
-  }
-
-  # If A is NULL, set A be identity matrix
   R = n_conditions(data)
-  if(is.null(A)){
-    A = diag(R)
-    row.names(A) = colnames(data$Bhat)
-  }
-  if(ncol(A) != R){
-    stop('A is not a proper transformation')
-  }
-
-  if (algorithm.version == "R") {
-    # check if covariances are same, if so, use more efficient computations
-    # if alpha = 0, we check if rows of Shat are same
-    # if alpha neq 0, we check if rows of Shat_alpha are same,
-    # the rows of Shat_alpha are same could imply the rows of Shat are same
-    common_cov_Shat = is_common_cov_Shat(data)
-    if(data$alpha == 0){
-      common_cov_Shat_alpha = TRUE
-    } else{
-      common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
+  if (output_posterior_cov) output_type = 4
+  else output_type = 3
+  is_null_A = FALSE # for use with Cpp version
+  # In the commonbaseline model, if the reference condition is mean, we recover the deleted column.
+  if(!is.null(data$L) && attr(data$L, "reference") == 'mean'){
+    temp = diag(R)
+    temp = rbind(temp, -1)
+    row.names(temp) = paste0(colnames(data$L), '-mean')
+    if(!is.null(A)){
+      if(ncol(A) != R+1){
+        stop('Reference:mean. A is not a proper transformation')
+      }
+      A = A %*% temp
+    }else{
+      A = temp
     }
-
-    # message("FIXME: output posterior matrices not implemented in R version")
-    if(common_cov_Shat && common_cov_Shat_alpha){ # use more efficient computations for commmon covariance case
-      compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov)
+  }else{
+    if(is.null(A)){
+      A = diag(R)
+      row.names(A) = colnames(data$Bhat)
+      is_null_A = TRUE
+    }
+    if(ncol(A) != R){
+      stop('A is not a proper transformation')
+    }
+  }
+  # check if covariances are same, if so, use more efficient computations
+  # if alpha = 0, we check if rows of Shat are same
+  # if alpha neq 0, we check if rows of Shat_alpha are same,
+  # the rows of Shat_alpha are same could imply the rows of Shat are same
+  common_cov_Shat = is_common_cov_Shat(data)
+  if(data$alpha == 0){
+    common_cov_Shat_alpha = TRUE
+  } else{
+    common_cov_Shat_alpha = is_common_cov_Shat_alpha(data)
+  }
+  is_common_cov = common_cov_Shat && common_cov_Shat_alpha
+  # keep data dimension names
+  effect_names = rownames(data$Bhat)
+  condition_names = rownames(A)
+  if (algorithm.version == "R") {
+    if(is_common_cov){ # use more efficient computations for commmon covariance case
+      posterior_matrices = compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+                                              posterior_samples = posterior_samples, seed=seed)
     } else {
-      compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov)
+      posterior_matrices = compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov,
+                                           posterior_samples = posterior_samples, seed=seed)
     }
   } else if (algorithm.version == "Rcpp") {
-
+    if(posterior_samples > 0){
+      stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
+    }
     # Run the C implementation using the Rcpp interface.
-    res  <- calc_post_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                           simplify2array(Ulist),t(posterior_weights),
-                           is_common_cov_Shat(data),output_posterior_cov)
-    lfsr <- compute_lfsr(res$post_neg,res$post_zero)
+    if (is_null_A) A = matrix(0,0,0)
+    if (is.null(data$L))
+      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), matrix(0,0,0), 
+                           data$V, matrix(0,0,0), A,
+                           simplify2array(Ulist), t(posterior_weights),
+                           is_common_cov, output_type)
+    else 
+      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), t(data$Shat_orig), 
+                           data$V, data$L, A,
+                           simplify2array(Ulist), t(posterior_weights),
+                           is_common_cov, output_type)
+    lfsr <- compute_lfsr(res$post_neg, res$post_zero)
     posterior_matrices <- list(PosteriorMean = res$post_mean,
                               PosteriorSD   = res$post_sd,
                               lfdr          = res$post_zero,
                               NegativeProb  = res$post_neg,
                               lfsr          = lfsr)
-    for (i in names(posterior_matrices)) {
-      if (!is.null(colnames(data$Bhat))) colnames(posterior_matrices[[i]]) <- colnames(data$Bhat)
-      if (!is.null(rownames(data$Bhat))) rownames(posterior_matrices[[i]]) <- rownames(data$Bhat)
-    }
+
     if (output_posterior_cov) {
       posterior_matrices$PosteriorCov <- res$post_cov
-      dimnames(posterior_matrices$PosteriorCov) <- list(colnames(data$Bhat), colnames(data$Bhat), rownames(data$Bhat))
     }
-    ## if (length(dim(posterior_matrices$PosteriorCov)) == 3)
-    ##   posterior_matrices$PosteriorCov = lapply(1:dim(posterior_matrices$PosteriorCov)[3],
-    ##                                            function(i) posterior_matrices$PosteriorCov[,,i])
-    return(posterior_matrices)
-  } else
+  } else {
     stop("Algorithm version should be either \"R\" or \"Rcpp\"")
+  }
+  # Set dimension names
+  for (i in names(posterior_matrices)) {
+    if (length(dim(posterior_matrices[[i]])) == 2) {
+      colnames(posterior_matrices[[i]]) <- condition_names
+      rownames(posterior_matrices[[i]]) <- effect_names
+    }
+  }
+  if (length(dim(posterior_matrices$PosteriorCov)) == 3)
+    dimnames(posterior_matrices$PosteriorCov) <- list(condition_names, condition_names, effect_names)
+  return(posterior_matrices)
 }
 
 #' @title compute posterior probabilities
@@ -152,5 +185,3 @@ compute_posterior_weights <- function(pi, lik_mat) {
   norm <- rowSums(d) # normalize probabilities to sum to 1
   return(d/norm)
 }
-
-

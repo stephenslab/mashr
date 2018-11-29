@@ -8,8 +8,8 @@
 <title>Introduction to mashr • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to mashr">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to mashr">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mashr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mashr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -58,17 +62,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Introduction to mashr</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2018-05-29</h4>
-          </div>
+            <h4 class="date">2018-11-08</h4>
+      
+      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mash.Rmd"><code>vignettes/intro_mash.Rmd</code></a></small>
+      <div class="hidden name"><code>intro_mash.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="goal" class="section level1">
 <h1 class="hasAnchor">
 <a href="#goal" class="anchor"></a>Goal</h1>
@@ -126,9 +133,9 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c)</code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.05 seconds.
+#  - Likelihood calculations took 0.03 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.38 seconds.
+#  - Model fitting took 0.28 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.02 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
@@ -178,20 +185,20 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <a href="#sharing" class="anchor"></a>Sharing</h2>
 <p>Use <code>get_pairwise_sharing</code> to assess sharing of significant signals among each pair of conditions. Here the default definition of shared is “the same sign and within a factor 0.5 of each other”.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(m.c)) </code></pre></div>
-<pre><code>#           [,1]      [,2]      [,3]      [,4]      [,5]
-# [1,] 1.0000000 0.7761194 0.8015267 0.7727273 0.7777778
-# [2,] 0.7761194 1.0000000 0.9142857 0.8971963 0.8611111
-# [3,] 0.8015267 0.9142857 1.0000000 0.9108911 0.8962264
-# [4,] 0.7727273 0.8971963 0.9108911 1.0000000 0.8679245
-# [5,] 0.7777778 0.8611111 0.8962264 0.8679245 1.0000000</code></pre>
+<pre><code>#             condition_1 condition_2 condition_3 condition_4 condition_5
+# condition_1   1.0000000   0.7761194   0.8015267   0.7727273   0.7777778
+# condition_2   0.7761194   1.0000000   0.9142857   0.8971963   0.8611111
+# condition_3   0.8015267   0.9142857   1.0000000   0.9108911   0.8962264
+# condition_4   0.7727273   0.8971963   0.9108911   1.0000000   0.8679245
+# condition_5   0.7777778   0.8611111   0.8962264   0.8679245   1.0000000</code></pre>
 <p>You can change the factor if you like. For example, here by setting the factor to be 0 you assess only if they are the same sign:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(m.c, <span class="dt">factor=</span><span class="dv">0</span>))</code></pre></div>
-<pre><code>#           [,1]      [,2]      [,3]      [,4]      [,5]
-# [1,] 1.0000000 0.8880597 0.9236641 0.8863636 0.9111111
-# [2,] 0.8880597 1.0000000 0.9333333 0.9252336 0.9444444
-# [3,] 0.9236641 0.9333333 1.0000000 0.9207921 0.9716981
-# [4,] 0.8863636 0.9252336 0.9207921 1.0000000 0.9339623
-# [5,] 0.9111111 0.9444444 0.9716981 0.9339623 1.0000000</code></pre>
+<pre><code>#             condition_1 condition_2 condition_3 condition_4 condition_5
+# condition_1   1.0000000   0.8880597   0.9236641   0.8863636   0.9111111
+# condition_2   0.8880597   1.0000000   0.9333333   0.9252336   0.9444444
+# condition_3   0.9236641   0.9333333   1.0000000   0.9207921   0.9716981
+# condition_4   0.8863636   0.9252336   0.9207921   1.0000000   0.9339623
+# condition_5   0.9111111   0.9444444   0.9716981   0.9339623   1.0000000</code></pre>
 </div>
 <div id="measure-of-fit-log-likelihood" class="section level2">
 <h2 class="hasAnchor">
@@ -227,13 +234,13 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <h1 class="hasAnchor">
 <a href="#session-information-" class="anchor"></a>Session information.</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">sessionInfo</span>())</code></pre></div>
-<pre><code># R version 3.4.3 (2017-11-30)
+<pre><code># R version 3.5.1 (2018-07-02)
 # Platform: x86_64-apple-darwin15.6.0 (64-bit)
-# Running under: macOS High Sierra 10.13.4
+# Running under: macOS  10.14.1
 # 
 # Matrix products: default
-# BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
-# LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
+# BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+# LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
 # 
 # locale:
 # [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -242,21 +249,24 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.2-10 ashr_2.2-7  
+# [1] mashr_0.2.18.0476 ashr_2.2-23      
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_0.12.16      knitr_1.20        magrittr_1.5     
-#  [4] REBayes_1.3       MASS_7.3-48       doParallel_1.0.11
-#  [7] pscl_1.5.2        SQUAREM_2017.10-1 lattice_0.20-35  
-# [10] foreach_1.4.4     plyr_1.8.4        stringr_1.3.0    
-# [13] tools_3.4.3       parallel_3.4.3    grid_3.4.3       
-# [16] rmeta_2.16        htmltools_0.3.6   iterators_1.0.9  
-# [19] assertthat_0.2.0  yaml_2.1.18       rprojroot_1.3-2  
-# [22] digest_0.6.15     Matrix_1.2-12     codetools_0.2-15 
-# [25] evaluate_0.10.1   rmarkdown_1.9     stringi_1.1.7    
-# [28] compiler_3.4.3    Rmosek_8.0.69     backports_1.1.2  
-# [31] mvtnorm_1.0-7     truncnorm_1.0-8</code></pre>
-</div>
+#  [1] Rcpp_1.0.0        compiler_3.5.1    plyr_1.8.4       
+#  [4] iterators_1.0.10  tools_3.5.1       digest_0.6.18    
+#  [7] evaluate_0.12     memoise_1.1.0     lattice_0.20-35  
+# [10] rlang_0.3.0.1     Matrix_1.2-14     foreach_1.4.4    
+# [13] rstudioapi_0.8    commonmark_1.6    yaml_2.2.0       
+# [16] parallel_3.5.1    mvtnorm_1.0-8     pkgdown_1.1.0    
+# [19] stringr_1.3.1     roxygen2_6.1.0    xml2_1.2.0       
+# [22] knitr_1.20        desc_1.2.0        fs_1.2.6         
+# [25] REBayes_1.3       rprojroot_1.3-2   grid_3.5.1       
+# [28] R6_2.3.0          rmarkdown_1.10    rmeta_3.0        
+# [31] magrittr_1.5      backports_1.1.2   codetools_0.2-15 
+# [34] htmltools_0.3.6   MASS_7.3-50       assertthat_0.2.0 
+# [37] abind_1.4-5       stringi_1.2.4     Rmosek_8.0.69    
+# [40] doParallel_1.0.14 pscl_1.5.2        truncnorm_1.0-8  
+# [43] SQUAREM_2017.10-1 crayon_1.3.4</code></pre>
 </div>
   </div>
 
@@ -297,6 +307,8 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

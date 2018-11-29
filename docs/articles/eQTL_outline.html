@@ -8,8 +8,8 @@
 <title>eQTL analysis outline • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="eQTL analysis outline">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><meta property="og:title" content="eQTL analysis outline">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mashr</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mashr</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -58,17 +62,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>eQTL analysis outline</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2018-05-29</h4>
-          </div>
+            <h4 class="date">2018-11-08</h4>
+      
+      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/eQTL_outline.Rmd"><code>vignettes/eQTL_outline.Rmd</code></a></small>
+      <div class="hidden name"><code>eQTL_outline.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -112,9 +119,9 @@ random.subset =<span class="st"> </span><span class="kw">sample</span>(<span cla
 <h2 class="hasAnchor">
 <a href="#correlation-structure" class="anchor"></a>Correlation structure</h2>
 <p>We estimate the correlation structure in the null tests from the <code>random</code> data (not the <code>strong</code> data because they will not necessarily contain any null tests).</p>
-<p>To do this we set up a temporary data object <code>data.temp</code> from the random tests and use <code>estimate_null_correlation</code> as in <a href="intro_correlations">this vignette</a>.</p>
+<p>To do this we set up a temporary data object <code>data.temp</code> from the random tests and use <code>estimate_null_correlation_simple</code> as in <a href="intro_correlations">this vignette</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data.temp =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,])
-Vhat =<span class="st"> </span><span class="kw"><a href="../reference/estimate_null_correlation.html">estimate_null_correlation</a></span>(data.temp)
+Vhat =<span class="st"> </span><span class="kw"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span>(data.temp)
 <span class="kw">rm</span>(data.temp)</code></pre></div>
 <p>Now we can set up our main data objects with this correlation structure in place:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data.random =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(simdata<span class="op">$</span>Bhat[random.subset,],simdata<span class="op">$</span>Shat[random.subset,],<span class="dt">V=</span>Vhat)
@@ -134,9 +141,9 @@ U.ed =<span class="st"> </span><span class="kw"><a href="../reference/cov_ed.htm
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.random)
 m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>#  - Computing 5000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.12 seconds.
+#  - Likelihood calculations took 0.16 seconds.
 #  - Fitting model with 241 mixture components.
-#  - Model fitting took 1.33 seconds.</code></pre>
+#  - Model fitting took 1.30 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level2">
 <h2 class="hasAnchor">
@@ -144,7 +151,7 @@ m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">ma
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests. We do this using the same <code>mash</code> function as above, but we specify to use the fit from the previous run of mash by specifying<br><code>g=get_fitted_g(m), fixg=TRUE</code>. (In <code>mash</code> the parameter <code>g</code> is used to denote the mixture model which we learned above.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.strong, <span class="dt">g=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_fitted_g</a></span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#  - Computing 1428 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.03 seconds.
+#  - Likelihood calculations took 0.04 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_lfsr</a></span>(m2))</code></pre></div>
@@ -154,15 +161,14 @@ m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">ma
 # effect_14042 5.669400e-02 1.529967e-02 1.311803e-02 4.596554e-02
 # effect_12524 5.386482e-01 6.905166e-01 4.978431e-01 2.552465e-05
 # effect_15456 8.662398e-05 5.733642e-01 4.369942e-01 6.176371e-01
-# effect_35844 3.413394e-10 2.143975e-10 9.175308e-09 6.573919e-11
+# effect_35844 3.413396e-10 2.143976e-10 9.175308e-09 6.573930e-11
 #               condition_5
 # effect_13096 8.183524e-01
 # effect_29826 6.874560e-01
 # effect_14042 6.019355e-06
 # effect_12524 5.360416e-01
 # effect_15456 5.033481e-01
-# effect_35844 3.296585e-12</code></pre>
-</div>
+# effect_35844 3.296696e-12</code></pre>
 </div>
 </div>
   </div>
@@ -202,6 +208,8 @@ m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">ma
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>
