@@ -76,7 +76,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 
 #' @title Update the data object for mash analysis.
 #' @description This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
-#' can be used for commonbaseline analysis. The other one is update the null correlation matrix.
+#' can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
 #' @param mashdata mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
 #' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
 #' @param V a correlation matrix for the null effects

@@ -1,6 +1,13 @@
 .Rhistory
 .Rproj.user
+config.log
+config.status
+src/Makevars
+src/Makevars.win
 src/*.o
 src/*.so
+src/extreme_deconvolution/*.o
 vignette/*.html
 tests/testthat/Rplots.pdf
+tests/testthat/ExDeconDemo_c.log
+tests/testthat/ExDeconDemo_loglike.log

@@ -18,5 +18,5 @@ a updated mash data object
 }
 \description{
 This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
-can be used for commonbaseline analysis. The other one is update the null correlation matrix.
+can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
 }

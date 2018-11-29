@@ -1,48 +1,26 @@
-# See http://docs.travis-ci.com/user/languages/r
-
 language: r
-sudo: false
 cache: packages
 latex: false
 warnings_are_errors: false
 r_build_args: --no-build-vignettes
+r_check_args: --as-cran --ignore-vignettes
 
 env:
   global:
-    - _R_CHECK_FORCE_SUGGESTS_=FALSE
-    
+    - _R_CHECK_FORCE_SUGGESTS_: false
+    - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+before_install:
+  - sudo apt-get install -y libgsl0-dev
+      
 r_packages:
   - covr
 
 r_github_packages: stephens999/ashr
-
+  
 after_success:
   - Rscript -e 'covr::codecov()'
-
-before_install:
-  - mkdir -p ~/.R
-  - echo "CC=gcc-4.9 -std=c11" >> ~/.R/Makevars
-  - echo "CXX=g++-4.9" >> ~/.R/Makevars
-  - echo "CXX11=g++-4.9" >> ~/.R/Makevars
-  - echo "F77=gfortran-4.9" >> ~/.R/Makevars
-  - echo "FC=gfortran-4.9" >> ~/.R/Makevars
-  - cat ~/.R/Makevars
 
 branches:
   only:
   - master
-
-matrix:
-  include:
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['gcc-4.9', 'g++-4.9', 'gfortran-4.9']
-      env:
-        - COMPILER="g++-4.9 -std=c11"
-        - CC="gcc-4.9 -std=c11"
-        - CXX="g++-4.9"
-        - F77="gfortran-4.9"
-        - FC="gfortran-4.9"

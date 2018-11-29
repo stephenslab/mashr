@@ -1,7 +1,0 @@
-CXX_STD      = CXX11
-GSL_CFLAGS   = -I/usr/local/Cellar/gsl/2.4/include
-GSL_LIBS     = -L/usr/local/Cellar/gsl/2.4/lib -lgsl -lgslcblas
-PKG_CPPFLAGS = $(SHLIB_OPENMP_CPPFLAGS) $(GSL_CFLAGS)
-PKG_LIBS     = $(SHLIB_OPENMP_CPPFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) \
-               $(FLIBS) $(LDFLAGS) $(GSL_LIBS)
-
