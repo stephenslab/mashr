@@ -1,3 +1,4 @@
+#' @export
 estimate_null_correlation_mle = function(data, Ulist, init, max_iter = 10, tol=1e-4,
                                          track_fit=FALSE, prior = c('nullbiased', 'uniform')){
   if(class(data) != 'mash'){
