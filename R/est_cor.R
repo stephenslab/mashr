@@ -158,7 +158,9 @@ E_V = function(data, m.model){
   temp2 = crossprod(post.m.shat, Z) + crossprod(Z, post.m.shat)
   temp3 = unname(aaply(post.sec.shat, c(2,3), sum))
 
-  (temp1 - temp2 + temp3)
+  V = (temp1 - temp2 + temp3)
+  # avoid numerical unsymmetry
+  V = (V+t(V))/2
 }
 
 fit_mash_V <- function(data, Ulist, V, prior=c('nullbiased', 'uniform'), ...){
