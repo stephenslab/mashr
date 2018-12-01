@@ -122,13 +122,20 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
     m.model = fit_mash_V(data, Ulist, V, prior=prior, ...)
     pi_s = get_estimated_pi(m.model, dimension = 'all')
 
-    log_liks[niter+1] <- get_loglik(m.model)+penalty(prior.v, pi_s)
+    log_liks[niter+1] <- get_loglik(m.model) # +penalty(prior.v, pi_s)
+
+    delta.ll <- log_liks[niter+1] - log_liks[niter]
+
+    if(delta.ll < 0){
+      break
+    }
 
     result = list(V = V, mash.model = m.model)
 
-    # Update delta
-    delta.ll <- log_liks[niter+1] - log_liks[niter]
-    if(abs(delta.ll)<=tol) break;
+    if (delta.ll <= tol){
+      break
+    }
+
   }
 
   log_liks = log_liks[1:(niter+1)] #remove trailing NAs
