@@ -231,7 +231,7 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
                                                   algorithm.version, A=A, output_posterior_cov=output_posterior_cov,
                                                   posterior_samples = posterior_samples, seed=seed)
   names(posterior_weights) = which(which.comp)
-  return(list(result=posterior_matrices, posterior_weights = posterior_weights))
+  return(posterior_matrices)
 }
 
 
