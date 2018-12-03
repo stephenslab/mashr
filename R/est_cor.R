@@ -96,6 +96,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
     }
   }
 
+  J = n_effects(data)
   m.model = fit_mash_V(data, Ulist, V = init, prior=prior,...)
   pi_s = get_estimated_pi(m.model, dimension = 'all')
   prior.v <- set_prior(length(pi_s), prior)
@@ -114,7 +115,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
       tracking[[niter]] = result
     }
     # max_V
-    V = E_V(data, m.model)
+    V = E_V(data, m.model)/J
     if(est_cor){
       V = cov2cor(V)
     }
@@ -127,7 +128,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
 
     # Update delta
     delta.ll <- log_liks[niter+1] - log_liks[niter]
-    if(delta.ll<=tol) break;
+    if(abs(delta.ll)<=tol) break;
   }
 
   log_liks = log_liks[1:(niter+1)] #remove trailing NAs
@@ -147,17 +148,19 @@ penalty <- function(prior, pi_s){
 
 #' @importFrom plyr aaply laply
 E_V = function(data, m.model){
-  n = n_effects(data)
+  J = n_effects(data)
   Z = data$Bhat/data$Shat
   Shat = data$Shat * data$Shat_alpha
   post.m.shat = m.model$result$PosteriorMean / Shat
-  post.sec.shat = laply(1:n, function(i) (t(m.model$result$PosteriorCov[,,i]/Shat[i,])/Shat[i,]) +
-                          tcrossprod(post.m.shat[i,])) # nx2x2 array
+  post.sec.shat = laply(1:J, function(i) (t(m.model$result$PosteriorCov[,,i]/Shat[i,])/Shat[i,]) +
+                          tcrossprod(post.m.shat[i,])) # Jx2x2 array
   temp1 = crossprod(Z)
   temp2 = crossprod(post.m.shat, Z) + crossprod(Z, post.m.shat)
   temp3 = unname(aaply(post.sec.shat, c(2,3), sum))
 
-  (temp1 - temp2 + temp3)/n
+  V = (temp1 - temp2 + temp3)
+  # avoid numerical unsymmetry
+  V = (V+t(V))/2
 }
 
 fit_mash_V <- function(data, Ulist, V, prior=c('nullbiased', 'uniform'), ...){

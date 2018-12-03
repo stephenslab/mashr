@@ -17,5 +17,6 @@ mash_update_data(mashdata, ref = NULL, V = NULL)
 a updated mash data object
 }
 \description{
-Update the data object for mash analysis.
+This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
+can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
 }
