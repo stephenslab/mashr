@@ -20,9 +20,9 @@
 #'   Bhat/Shat. Shat and df should not be specified when pval is
 #'   provided.
 #'
-#' @param V an R by R correlation matrix of error correlations; must
+#' @param V an R by R / 3D array [R x R x J] of correlation matrix of error correlations; must
 #'   be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
-#'   V diag(Shat_j)) where _j denotes the jth row of a matrix].
+#'   V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
 #'   Defaults to identity.
 #'
 #' @return A data object for passing into mash functions.
@@ -48,9 +48,27 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   }
   if(length(Shat)==1){Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))}
   if(!identical(dim(Bhat),dim(Shat))){stop("dimensions of Bhat and Shat must match")}
-  R <- tryCatch(chol(V),error = function (e) FALSE)
-  if (!is.matrix(R))
-    stop("V must be positive definite")
+
+  commonV = TRUE
+  if(length(dim(V)) == 3){
+    commonV = FALSE
+  }
+
+  if(commonV){
+    check_positive_definite(V)
+  }else{
+    if(dim(V)[3] != nrow(Bhat)){
+      stop('The number of correlation matrices does not match the number of effects')
+    }
+    for(i in 1:dim(V)[3]){
+      check_positive_definite(V[,,i])
+    }
+  }
+
+  if(dim(V)[1] != ncol(Bhat)){
+    stop('dimension of correlation matrix does not match the number of conditions')
+  }
+
   if(!is.infinite(df)){
     if(length(df)==1){df = matrix(df,nrow=nrow(Bhat),ncol=ncol(Bhat))}
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
@@ -69,7 +87,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
   Bhat[which(is.nan(Bhat))] = 0
-  data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, alpha=alpha)
+  data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, commonV = commonV, alpha=alpha)
   class(data) = 'mash'
   return(data)
 }
@@ -79,7 +97,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 #' can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
 #' @param mashdata mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
 #' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
-#' @param V a correlation matrix for the null effects
+#' @param V an R by R / 3D array [R x R x J] of correlation matrix of error correlations
 #' @return a updated mash data object
 #' @export
 mash_update_data = function(mashdata, ref= NULL, V = NULL){
@@ -90,11 +108,18 @@ mash_update_data = function(mashdata, ref= NULL, V = NULL){
   R = n_conditions(mashdata)
 
   if(!is.null(V)){
-    check_positive_definite(V)
-    if(R != nrow(V)){
-      stop('The dimension of correlation matrix does not match the data.')
+    if(length(dim(V)) == 3){
+      for(i in 1:dim(V)[3]){
+        check_positive_definite(V[,,i])
+        if(R != nrow(V[,,i])){
+          stop('The dimension of correlation matrix does not match the data.')
+        }
+      }
+    }else{
+      check_positive_definite(V)
     }
     mashdata$V = V
+    mashdata$commonV = length(dim(V)) != 3
   }
 
   if(!is.null(mashdata$L)){
@@ -185,18 +210,27 @@ mash_set_data_contrast = function(mashdata, L){
   data = list(Bhat = Bhat, Shat=Shat,
               Shat_orig = mashdata$Shat_orig,
               Shat_alpha = matrix(1, nrow(Shat), ncol(Shat)),
-              V = mashdata$V, alpha = 0, L = L)
+              V = mashdata$V, commonV = mashdata$commonV, alpha = 0, L = L)
   class(data) = 'mash'
   return(data)
 }
 
 # Return the covariance matrix for jth data point from mash data object.
 get_cov = function(data,j){
-  if(is.null(data$L)){
-    data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
-  } else{
-    Sigma = data$Shat_orig[j,] * t(data$V * data$Shat_orig[j,])
-    data$L %*% (Sigma %*% t(data$L))
+  if(data$commonV){
+    if(is.null(data$L)){
+      data$Shat[j,] * t(data$V * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
+    } else{
+      Sigma = data$Shat_orig[j,] * t(data$V * data$Shat_orig[j,])
+      data$L %*% (Sigma %*% t(data$L))
+    }
+  }else{
+    if(is.null(data$L)){
+      data$Shat[j,] * t(data$V[,,j] * data$Shat[j,]) # quicker than diag(Shat[j,]) %*% V %*% diag(Shat[j,])
+    } else{
+      Sigma = data$Shat_orig[j,] * t(data$V[,,j] * data$Shat_orig[j,])
+      data$L %*% (Sigma %*% t(data$L))
+    }
   }
 }
 

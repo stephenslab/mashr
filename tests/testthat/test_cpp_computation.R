@@ -2,6 +2,7 @@ context("test_cpp_computation.R")
 test_that("compare likelihood computation R vs C++ in provided data of 100 X 5", {
 
   load("calc_lik_matrix_data.RData")
+  data$commonV = TRUE
   ## Get the number of samples (J) and the number of mixture components (P).
   J <- nrow(data$Bhat)
   P <- length(Ulist)
@@ -80,7 +81,7 @@ test_that("compare likelihood computation with contrast matrix R vs C++ in simul
 test_that("compare posterior computation R vs C++ in provided data of 100 X 5", {
   # Load the data.
   load("compute_posterior_matrices_data.RData")
-
+  data$commonV = TRUE
   # Compute the posterior quantities using the R implementation.
   out.time <- system.time(out1 <-
                 compute_posterior_matrices(data,Ulist,posterior_weights,
@@ -97,7 +98,7 @@ test_that("compare posterior computation R vs C++ in provided data of 100 X 5", 
 test_that("compare linear transformed posterior computation R vs C++ in provided data of 100 X 5", {
   # Load the data.
   load("compute_posterior_matrices_data.RData")
-
+  data$commonV = TRUE
   A = rbind(c(1,1,-1,-1,0),
             c(-1,1,-1,1,0))
   # Compute the posterior quantities using the R implementation.

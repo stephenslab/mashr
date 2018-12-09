@@ -127,10 +127,10 @@ compute_posterior_matrices <-
   effect_names = rownames(data$Bhat)
   condition_names = rownames(A)
   if (algorithm.version == "R") {
-    if(is_common_cov){ # use more efficient computations for commmon covariance case
+    if(data$commonV && is_common_cov){ # use more efficient computations for commmon covariance case
       posterior_matrices = compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights, output_posterior_cov,
                                               posterior_samples = posterior_samples, seed=seed)
-    } else {
+    }else {
       posterior_matrices = compute_posterior_matrices_general_R(data, A, Ulist, posterior_weights, output_posterior_cov,
                                            posterior_samples = posterior_samples, seed=seed)
     }
@@ -138,15 +138,18 @@ compute_posterior_matrices <-
     if(posterior_samples > 0){
       stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
     }
+    if(!data$commonV){
+      stop('3D V has not implemented in Rcpp')
+    }
     # Run the C implementation using the Rcpp interface.
     if (is_null_A) A = matrix(0,0,0)
     if (is.null(data$L))
-      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), matrix(0,0,0), 
+      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), matrix(0,0,0),
                            data$V, matrix(0,0,0), A,
                            simplify2array(Ulist), t(posterior_weights),
                            is_common_cov, output_type)
-    else 
-      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), t(data$Shat_orig), 
+    else
+      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), t(data$Shat_orig),
                            data$V, data$L, A,
                            simplify2array(Ulist), t(posterior_weights),
                            is_common_cov, output_type)

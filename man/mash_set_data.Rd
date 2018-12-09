@@ -28,9 +28,9 @@ freedom are equal. Default is inf (for large samples).}
 Bhat/Shat. Shat and df should not be specified when pval is
 provided.}
 
-\item{V}{an R by R correlation matrix of error correlations; must
+\item{V}{an R by R / 3D array [R x R x J] of correlation matrix of error correlations; must
 be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
-V diag(Shat_j)) where _j denotes the jth row of a matrix].
+V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
 Defaults to identity.}
 }
 \value{

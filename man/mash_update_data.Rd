@@ -11,7 +11,7 @@ mash_update_data(mashdata, ref = NULL, V = NULL)
 
 \item{ref}{the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.}
 
-\item{V}{a correlation matrix for the null effects}
+\item{V}{an R by R / 3D array [R x R x J] of correlation matrix of error correlations}
 }
 \value{
 a updated mash data object
