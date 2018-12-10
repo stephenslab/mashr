@@ -103,7 +103,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
 
   # compute loglikelihood
   log_liks <- numeric(max_iter+1)
-  log_liks[1] <- get_loglik(m.model)+penalty(prior.v, pi_s)
+  log_liks[1] <- get_loglik(m.model)
   V = init
 
   result = list(V = V, mash.model = m.model)
@@ -122,16 +122,20 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
     m.model = fit_mash_V(data, Ulist, V, prior=prior, ...)
     pi_s = get_estimated_pi(m.model, dimension = 'all')
 
-    log_liks[niter+1] <- get_loglik(m.model)+penalty(prior.v, pi_s)
+    log_liks[niter+1] <- get_loglik(m.model)
+    delta.ll <- log_liks[niter+1] - log_liks[niter]
+    if(delta.ll < 0){
+      break
+    }
 
     result = list(V = V, mash.model = m.model)
-
-    # Update delta
-    delta.ll <- log_liks[niter+1] - log_liks[niter]
-    if(abs(delta.ll)<=tol) break;
+    if (delta.ll <= tol){
+      niter = niter + 1
+      break
+    }
   }
 
-  log_liks = log_liks[1:(niter+1)] #remove trailing NAs
+  log_liks = log_liks[1:niter] #remove tailing NAs
   result$loglik = log_liks
   result$niter = niter + 1
   if(track_fit){
@@ -139,11 +143,6 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
   }
 
   return(result)
-}
-
-penalty <- function(prior, pi_s){
-  subset <- (prior != 1.0)
-  sum((prior-1)[subset]*log(pi_s[subset]))
 }
 
 #' @importFrom plyr aaply laply
@@ -164,7 +163,7 @@ E_V = function(data, m.model){
 }
 
 fit_mash_V <- function(data, Ulist, V, prior=c('nullbiased', 'uniform'), ...){
-  data$V = V
-  m.model = mash(data, Ulist, prior=prior, verbose = FALSE, outputlevel = 3, ...)
+  data.V = mash_update_data(data, V=V)
+  m.model = mash(data.V, Ulist, prior=prior, verbose = FALSE, outputlevel = 3, ...)
   return(m.model)
 }
