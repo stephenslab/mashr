@@ -40,7 +40,7 @@ Estimates a null correlation matrix from data
 Returns the estimated correlation matrix (or covariance matrix) among conditions under the null.
 The correlation (or covariance) matrix is estimated by maximum likelihood.
 Specifically, the unknown correlation/covariance matrix V and the unknown weights are estimated iteratively.
-The unknown correlation/covariance matrix V is estimated using M step from the EM algorithm.
+The unknown correlation/covariance matrix V is estimated using the posterior second moment of the noise.
 The unknown weights pi is estimated by maximum likelihood, which is a convex problem.
 
 Warning: This method could take some time.
