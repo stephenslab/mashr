@@ -137,7 +137,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
 
   log_liks = log_liks[1:niter] #remove tailing NAs
   result$loglik = log_liks
-  result$niter = niter + 1
+  result$niter = niter
   if(track_fit){
     result$trace = tracking
   }
