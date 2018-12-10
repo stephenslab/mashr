@@ -103,7 +103,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
 
   # compute loglikelihood
   log_liks <- numeric(max_iter+1)
-  log_liks[1] <- get_loglik(m.model)
+  log_liks[1] <- get_loglik(m.model) #+penalty(prior.v, pi_s)
   V = init
 
   result = list(V = V, mash.model = m.model)
@@ -122,7 +122,7 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
     m.model = fit_mash_V(data, Ulist, V, prior=prior, ...)
     pi_s = get_estimated_pi(m.model, dimension = 'all')
 
-    log_liks[niter+1] <- get_loglik(m.model)
+    log_liks[niter+1] <- get_loglik(m.model)  #+penalty(prior.v, pi_s)
     delta.ll <- log_liks[niter+1] - log_liks[niter]
     if(delta.ll < 0){
       break
@@ -144,6 +144,11 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
 
   return(result)
 }
+
+# penalty <- function(prior, pi_s){
+#   subset <- (prior != 1.0)
+#   sum((prior-1)[subset]*log(pi_s[subset]))
+# }
 
 #' @importFrom plyr aaply laply
 E_V = function(data, m.model){
