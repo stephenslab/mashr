@@ -19,7 +19,8 @@ ed_wrapper = function(data, Ulist_init, subset=NULL, ...){
   K = length(Ulist_init)
   R = n_conditions(data)
   pi_init = rep(1/K, K) # initial mix proportions
-  if(all(data$V==diag(R))){
+  D = ncol(data$V)
+  if(all(data$V==diag(D))){
     ed.res = extreme_deconvolution(data$Bhat[subset,],
                                    data$Shat[subset,]^2,
                                    xamp = pi_init,
