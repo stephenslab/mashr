@@ -6,8 +6,8 @@
 \usage{
 mash(data, Ulist = NULL, gridmult = sqrt(2), grid = NULL,
   normalizeU = TRUE, usepointmass = TRUE, g = NULL, fixg = FALSE,
-  prior = c("nullbiased", "uniform"), optmethod = c("mixIP", "mixEM",
-  "mixSQP", "cxxMixSquarem"), control = list(), verbose = TRUE,
+  prior = c("nullbiased", "uniform"), optmethod = c("mixSQP", "mixIP",
+  "mixEM", "cxxMixSquarem"), control = list(), verbose = TRUE,
   add.mem.profile = FALSE, algorithm.version = c("Rcpp", "R"),
   pi_thresh = 1e-10, A = NULL, posterior_samples = 0, seed = 123,
   outputlevel = 2)
