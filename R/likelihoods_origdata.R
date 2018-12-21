@@ -66,6 +66,10 @@ mash_compute_loglik = function(g,data, algorithm.version=c("Rcpp", "R")){
 #' whose first column corresponds to null
 #' @param Shat_alpha matrix of Shat^alpha
 compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
+  if(pi_s[1] == 1){
+    pi_s[1] = 0
+    pi_s[-1] = 1/(length(pi_s)-1)
+  }
   return(log(exp(lm$loglik_matrix[,-1,drop=FALSE]) %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
