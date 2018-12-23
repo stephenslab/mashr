@@ -23,7 +23,6 @@ test_that("Estimate null correlation properly: alpha = 0", {
   U.c = cov_canonical(data)
 
   V.est <- estimate_null_correlation(data, U.c, max_iter = 3)
-  V.est$mash.model$posterior_weights = NULL
   expect_equal(V.est$V, original.null.cor$V, tolerance = 5e-4)
   expect_equal(V.est$mash.model, original.null.cor$mash.model, tolerance = 5e-4)
 })
@@ -52,7 +51,6 @@ test_that("Estimate null correlation properly: alpha = 1", {
   U.c = cov_canonical(data)
 
   V.est <- estimate_null_correlation(data, U.c, max_iter = 3)
-  V.est$mash.model$posterior_weights = NULL
   expect_equal(V.est$V, original.null.cor$V, tolerance = 5e-4)
   expect_equal(V.est$mash.model, original.null.cor$mash.model, tolerance = 5e-4)
 })
