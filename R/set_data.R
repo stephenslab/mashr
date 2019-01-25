@@ -20,7 +20,7 @@
 #'   Bhat/Shat. Shat and df should not be specified when pval is
 #'   provided.
 #'
-#' @param V an R by R / 3D array [R x R x J] of correlation matrix of error correlations; must
+#' @param V an R by R matrix / [R x R x J] array of effect specific correlation matrix of error correlations; must
 #'   be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
 #'   V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
 #'   Defaults to identity.
@@ -97,7 +97,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 #' can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
 #' @param mashdata mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
 #' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
-#' @param V an R by R / 3D array [R x R x J] of correlation matrix of error correlations
+#' @param V an R by R matrix / [R x R x J] array of correlation matrix of error correlations
 #' @return a updated mash data object
 #' @export
 mash_update_data = function(mashdata, ref= NULL, V = NULL){

@@ -139,7 +139,7 @@ compute_posterior_matrices <-
       stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
     }
     if(!data$commonV){
-      stop('3D V has not implemented in Rcpp')
+      stop('effect specific V has not implemented in Rcpp')
     }
     # Run the C implementation using the Rcpp interface.
     if (is_null_A) A = matrix(0,0,0)

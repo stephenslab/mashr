@@ -111,7 +111,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
   }
   else if (algorithm.version == "Rcpp") {
     if(!data$commonV){
-      stop('3D V has not implemented in Rcpp')
+      stop('effect specific V has not implemented in Rcpp')
     }
     # Run the C implementation using the Rcpp interface.
     if (is.null(data$L))
