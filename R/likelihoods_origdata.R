@@ -67,10 +67,13 @@ mash_compute_loglik = function(g,data, algorithm.version=c("Rcpp", "R")){
 #' @param Shat_alpha matrix of Shat^alpha
 compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
   if(pi_s[1] == 1){
-    pi_s[1] = 0
-    pi_s[-1] = 1/(length(pi_s)-1)
+    # 1-pi_s[1] = 0 --> NaN
+    # so we use weight 1/(P-1), where P is the length of pi_s
+    tmp = rep(1/(length(pi_s)-1), (length(pi_s)-1))
+    return(log(exp(lm$loglik_matrix[,-1,drop=FALSE]) %*% (tmp))+lm$lfactors-rowSums(log(Shat_alpha)))
+  }else{
+    return(log(exp(lm$loglik_matrix[,-1,drop=FALSE]) %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors-rowSums(log(Shat_alpha)))
   }
-  return(log(exp(lm$loglik_matrix[,-1,drop=FALSE]) %*% (pi_s[-1]/(1-pi_s[1])))+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
 #' Compute vector of null loglikelihoods from a matrix of log-likelihoods
