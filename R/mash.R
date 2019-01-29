@@ -333,8 +333,9 @@ grid_max = function(Bhat,Shat){
 
 # Automatically select grid.
 autoselect_grid = function(data,mult){
-  gmax = grid_max(data$Bhat, data$Shat)
-  gmin = grid_min(data$Bhat, data$Shat)
+  include = !(data$Shat==0 | data$Shat == Inf | is.na(data$Bhat) | is.na(data$Shat))
+  gmax = grid_max(data$Bhat[include], data$Shat[include])
+  gmin = grid_min(data$Bhat[include], data$Shat[include])
   if (mult == 0) {
     return(c(0, gmax/2))
   }
