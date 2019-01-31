@@ -28,6 +28,7 @@ environment:
 # the package.
 build_script:
   - R -e install.packages(c('assertthat','abind','mvtnorm','Rcpp','RcppArmadillo','RcppGSL','rmeta','plyr','testthat'),head(.libPaths(),1),'http://cran.wustl.edu')
+  - R -e devtools::install_github('stephens999/ashr')
   
 test_script:
   - travis-tool.sh run_tests
