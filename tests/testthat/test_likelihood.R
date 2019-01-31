@@ -39,4 +39,5 @@ test_that('likelihood calculations on mash contrast set',{
   out <- capture.output(m2 <- mash(data1,Ulist,grid = c(0.5,1,2),
                                    algorithm.version = 'Rcpp'))
   expect_equal(mash_compute_loglik(m2,data1, algorithm.version='Rcpp'),m2$loglik)
+  expect_equal(m1$loglik, m2$loglik)
 })

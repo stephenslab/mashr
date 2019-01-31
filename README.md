@@ -35,7 +35,7 @@ matrices](https://stephenslab.github.io/mashr/articles/simulate_noncanon.html).
 ## Setup
 
 Please follow these steps to install the [latest version of the
-mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-6):
+mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2.20):
 
 1. In R, install these three R packages from CRAN:
 
@@ -60,12 +60,12 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-6):
 
 5. Once you have installed all these packages, you can install and
    load the [latest
-   release](https://github.com/stephenslab/mashr/releases/tag/v0.2-6)
+   release](https://github.com/stephenslab/mashr/releases/tag/v0.2.20)
    of the `mashr` package:
 
    ```R
    library(devtools)
-   install_github("stephenslab/mashr@v0.2-6")
+   install_github("stephenslab/mashr@v0.2.20")
    library(mashr)
    ```
 
@@ -83,7 +83,7 @@ mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2-6):
 
    ```
    R CMD build mashr
-   R CMD INSTALL mashr_0.2-6.tar.gz
+   R CMD INSTALL mashr_0.2.20.tar.gz
    ```
 
 ## Developer notes
@@ -110,5 +110,3 @@ project, please cite our preprint:
 S M Urbut, G Wang, M Stephens. Flexible statistical methods for
 estimating and testing effects in genomic studies with multiple
 conditions. *bioRxiv* doi:10.1101/096552.
-
-

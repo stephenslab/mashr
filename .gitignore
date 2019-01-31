@@ -9,5 +9,4 @@ src/*.so
 src/extreme_deconvolution/*.o
 vignette/*.html
 tests/testthat/Rplots.pdf
-tests/testthat/ExDeconDemo_c.log
-tests/testthat/ExDeconDemo_loglike.log
+tests/testthat/ExDeconDemo_*

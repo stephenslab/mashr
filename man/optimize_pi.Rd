@@ -5,7 +5,7 @@
 \title{Estimate the mixture weights by maximum (penalized) likelihood}
 \usage{
 optimize_pi(matrix_lik, pi_init = NULL, prior = NULL,
-  optmethod = c("mixIP", "mixEM", "mixSQP", "cxxMixSquarem"),
+  optmethod = c("mixSQP", "mixIP", "mixEM", "cxxMixSquarem"),
   control = list())
 }
 \arguments{

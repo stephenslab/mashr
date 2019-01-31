@@ -72,7 +72,7 @@ test_that("get same result as ash under transformation, EE model", {
     res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
                 usepointmass = FALSE, outputlevel = 1))
   A = rbind(c(1,0,0,0,0))
-  res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
+  res$result = mash_compute_posterior_matrices(res, data, A=A)
   # print('FIXME: Rcpp not implemented')
 
   expect_equal(dim(ashr::get_pm(res)), c(400,1))
@@ -100,7 +100,7 @@ test_that("get same result as ash under transformation, EZ model", {
     res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
                 usepointmass = FALSE, outputlevel = 1))
   A = rbind(c(1,0,0,0,0))
-  res$result = mash_compute_posterior_matrices(res, data, A=A, algorithm.version = 'R')
+  res$result = mash_compute_posterior_matrices(res, data, A=A)
   # print('FIXME: Rcpp not implemented')
 
   expect_equal(dim(ashr::get_pm(res)), c(400,1))

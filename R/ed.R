@@ -19,12 +19,24 @@ ed_wrapper = function(data, Ulist_init, subset=NULL, ...){
   K = length(Ulist_init)
   R = n_conditions(data)
   pi_init = rep(1/K, K) # initial mix proportions
-  ed.res = extreme_deconvolution(data$Bhat[subset,],
-                                 data$Shat[subset,]^2,
-                                 xamp = pi_init,
-                                 xmean = matrix(0,nrow=K,ncol=R),
-                                 xcovar = Ulist_init,
-                                 fixmean = TRUE,
-                                 ...)
+  D = ncol(data$V)
+  if(all(data$V==diag(D))){
+    ed.res = extreme_deconvolution(data$Bhat[subset,],
+                                   data$Shat[subset,]^2,
+                                   xamp = pi_init,
+                                   xmean = matrix(0,nrow=K,ncol=R),
+                                   xcovar = Ulist_init,
+                                   fixmean = TRUE,
+                                   ...)
+  }else{
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V * data$Shat[i,]) )
+    ed.res = extreme_deconvolution(data$Bhat[subset,],
+                                   ycovar,
+                                   xamp = pi_init,
+                                   xmean = matrix(0,nrow=K,ncol=R),
+                                   xcovar = Ulist_init,
+                                   fixmean = TRUE,
+                                   ...)
+  }
   return(list(pi = ed.res$xamp, Ulist = ed.res$xcovar, av_loglik = ed.res$avgloglikedata))
 }

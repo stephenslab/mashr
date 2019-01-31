@@ -17,7 +17,7 @@
 #' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
 #' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
-#' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices and posterior weights
+#' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices
 #' @return a list with elements result, loglik and fitted_g
 #' @examples
 #' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
@@ -35,7 +35,7 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
-                optmethod = c("mixIP","mixEM","mixSQP","cxxMixSquarem"),
+                optmethod = c("mixSQP","mixIP","mixEM","cxxMixSquarem"),
                 control = list(),
                 verbose = TRUE,
                 add.mem.profile = FALSE,
@@ -181,14 +181,16 @@ mash = function(data,
   }
   # results
   fitted_g = list(pi=pi_s, Ulist=Ulist, grid=grid, usepointmass=usepointmass)
+  names(posterior_weights) = which(which.comp)
   m=list(result = posterior_matrices,
          loglik = loglik, vloglik = vloglik,
          null_loglik = null_loglik,
          alt_loglik = alt_loglik,
-         fitted_g = fitted_g, alpha=data$alpha)
+         fitted_g = fitted_g,
+         posterior_weights = posterior_weights,
+         alpha=data$alpha)
   #for debugging
-  names(posterior_weights) = which(which.comp)
-  if(outputlevel==4){m = c(m,list(lm=lm,posterior_weights=posterior_weights))}
+  if(outputlevel==4){m = c(m,list(lm=lm))}
   class(m) = "mash"
   return(m)
 }
@@ -228,6 +230,7 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
                                                   posterior_weights,
                                                   algorithm.version, A=A, output_posterior_cov=output_posterior_cov,
                                                   posterior_samples = posterior_samples, seed=seed)
+  names(posterior_weights) = which(which.comp)
   return(posterior_matrices)
 }
 
@@ -330,8 +333,9 @@ grid_max = function(Bhat,Shat){
 
 # Automatically select grid.
 autoselect_grid = function(data,mult){
-  gmax = grid_max(data$Bhat, data$Shat)
-  gmin = grid_min(data$Bhat, data$Shat)
+  include = !(data$Shat==0 | !is.finite(data$Shat) | is.na(data$Bhat))
+  gmax = grid_max(data$Bhat[include], data$Shat[include])
+  gmin = grid_min(data$Bhat[include], data$Shat[include])
   if (mult == 0) {
     return(c(0, gmax/2))
   }
