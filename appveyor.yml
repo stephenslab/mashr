@@ -24,9 +24,11 @@ environment:
     R_BUILD_ARGS: --no-build-vignettes 
     R_CHECK_ARGS: --no-manual --as-cran --ignore-vignettes
 
+# This is the minimal set of R packages needed to run "R CMD check" on
+# the package.
 build_script:
-  - travis-tool.sh install_deps
-
+  - R -e install.packages(c('assertthat','abind','mvtnorm','Rcpp','RcppArmadillo','RcppGSL','rmeta','plyr','testthat'),head(.libPaths(),1),'http://cran.wustl.edu')
+  
 test_script:
   - travis-tool.sh run_tests
 
