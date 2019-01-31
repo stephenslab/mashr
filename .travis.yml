@@ -10,6 +10,11 @@ env:
     - _R_CHECK_FORCE_SUGGESTS_: false
     - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
+# This is the minimal set of R packages needed to run "R CMD check" on
+# the package.
+install:
+  - R -e 'install.packages(c("assertthat","abind","mvtnorm","Rcpp","RcppArmadillo","RcppGSL","rmeta","plyr","testthat"))'
+
 before_install:
   - sudo apt-get install -y libgsl0-dev
       
