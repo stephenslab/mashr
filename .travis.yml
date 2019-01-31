@@ -13,7 +13,7 @@ env:
 # This is the minimal set of R packages needed to run "R CMD check" on
 # the package.
 install:
-  - R -e 'install.packages(c("assertthat","abind","mvtnorm","Rcpp","RcppArmadillo","RcppGSL","rmeta","plyr","testthat"))'
+  - R -e 'install.packages(c("assertthat","abind","mvtnorm","Rcpp","RcppArmadillo","RcppGSL","rmeta","plyr","testthat","devtools"))'
   - R -e 'devtools::install_github("stephens999/ashr")'
 
 before_install:
