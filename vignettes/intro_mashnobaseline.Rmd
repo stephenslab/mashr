@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
 ```
 
 ```{r}
-library(knitr)
+library(MASS)
 library(kableExtra)
 ```
 
@@ -46,10 +46,10 @@ generate_data = function(n, p, V, Utrue, err_sd=0.01, pi=NULL){
 
   Beta = matrix(0, nrow=n, ncol=p)
   for(i in 1:n){
-    Beta[i,] = MASS::mvrnorm(1, rep(0, p), Utrue[[which_U[i]]])
+    Beta[i,] = mvrnorm(1, rep(0, p), Utrue[[which_U[i]]])
   }
   Shat = matrix(err_sd, nrow=n, ncol=p, byrow = TRUE)
-  E = MASS::mvrnorm(n, rep(0, p), Shat[1,]^2 * V)
+  E = mvrnorm(n, rep(0, p), Shat[1,]^2 * V)
   Bhat = Beta + E
   return(list(B = Beta, Bhat=Bhat, Shat = Shat, whichU = which_U))
 }

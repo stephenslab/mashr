@@ -2,7 +2,7 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.20.0581
+Version: 0.2.20.0582
 Date: 2019-02-08
 Authors@R: c(person("Matthew","Stephens",role=c("aut","cre"),
                     email="mstephens@uchicago.edu"),
@@ -33,11 +33,13 @@ LinkingTo:
     RcppArmadillo,
     RcppGSL
 Suggests:
+    MASS,
     REBayes,
     mixsqp,
     flashr,
     corrplot,
     testthat,
+    kableExtra,
     knitr,
     rmarkdown,
     profmem
