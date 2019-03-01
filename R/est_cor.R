@@ -58,6 +58,7 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' @param est_cor whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE)
 #' @param track_fit add an attribute \code{trace} to output that saves current values of all iterations
 #' @param prior indicates what penalty to use on the likelihood, if any
+#' @param details whether to return details of the model, if it is TRUE, the number of iterations and the value of objective functions will be returned
 #' @param ... other parameters pass to \code{mash}
 #' @details Returns the estimated correlation matrix (or covariance matrix) among conditions under the null.
 #' The correlation (or covariance) matrix is estimated by maximum likelihood.
@@ -68,7 +69,7 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' Warning: This method could take some time.
 #' The \code{\link{estimate_null_correlation_simple}} gives a quick approximation for the null correlation (or covariance) matrix.
 #'
-#' @return a list with estimated correlation (or covariance) matrix and the fitted mash model
+#' @return the estimated correlation (or covariance) matrix and the fitted mash model
 #' \cr
 #' \item{V}{estimated correlation (or covariance) matrix}
 #' \item{mash.model}{fitted mash model}
@@ -77,7 +78,7 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' @export
 #'
 estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
-                                     est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'),...){
+                                     est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'), details = FALSE, ...){
   if(class(data) != 'mash'){
     stop('data is not a "mash" object')
   }
@@ -142,7 +143,11 @@ estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
     result$trace = tracking
   }
 
-  return(result)
+  if(details){
+    return(result)
+  }else{
+    return(result$V)
+  }
 }
 
 # penalty <- function(prior, pi_s){

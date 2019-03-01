@@ -6,7 +6,7 @@
 \usage{
 estimate_null_correlation(data, Ulist, init, max_iter = 30, tol = 1,
   est_cor = TRUE, track_fit = FALSE, prior = c("nullbiased",
-  "uniform"), ...)
+  "uniform"), details = FALSE, ...)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}
@@ -25,10 +25,12 @@ estimate_null_correlation(data, Ulist, init, max_iter = 30, tol = 1,
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
+\item{details}{whether to return details of the model, if it is TRUE, the number of iterations and the value of objective functions will be returned}
+
 \item{...}{other parameters pass to \code{mash}}
 }
 \value{
-a list with estimated correlation (or covariance) matrix and the fitted mash model
+the estimated correlation (or covariance) matrix and the fitted mash model
 \cr
 \item{V}{estimated correlation (or covariance) matrix}
 \item{mash.model}{fitted mash model}
