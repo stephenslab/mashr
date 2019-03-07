@@ -69,7 +69,7 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-  check_positive_definite(data$V)
+  # check_positive_definite(data$V)
 
   # Get the number of samples (J), the number of mixture components
   # (i.e., prior covariances).

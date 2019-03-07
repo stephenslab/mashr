@@ -90,16 +90,15 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     stop("Argument \"mc.cores\" only works for Rcpp version.")
 
   if (algorithm.version == "R") {
-      
+
     # check if the rows of Shat are same
-    if(is_common_cov_Shat(data)){
+    if(data$commonV && is_common_cov_Shat(data)){
       res <- calc_lik_matrix_common_cov(data,Ulist,log)
       if (nrow(res) == 1)
         res <- matrix(res)
       if (ncol(res) > 1)
         colnames(res) <- names(Ulist)
-    } else {
-
+    }else {
       # Run the (considerably slower) version that is completely
       # implemented using existing R functions.
       res <- t(sapply(1:n_effects(data),
@@ -111,9 +110,11 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 
   }
   else if (algorithm.version == "Rcpp") {
-
+    if(!data$commonV){
+      stop('effect specific V has not implemented in Rcpp')
+    }
     # Run the C implementation using the Rcpp interface.
-    if (is.null(data$L)) 
+    if (is.null(data$L))
         res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
                              matrix(0,0,0), simplify2array(Ulist),log,
                              is_common_cov_Shat(data))
@@ -138,7 +139,7 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
                   "or due to invalid covariance matrices",
                   paste(rows,collapse=", "),
                   "\n"))
-  
+
   return(res)
 
 }

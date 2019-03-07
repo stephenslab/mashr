@@ -53,7 +53,7 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
   # the covariances are same
   common_cov = is_common_cov_Shat(data)
 
-  if(common_cov){
+  if(data$commonV && common_cov){
     V = get_cov(data,1)
     Vinv <- solve(V)
     U1 = lapply(Ulist,
@@ -62,7 +62,7 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
 
   for(j in 1:J){
     bhat=as.vector(t(data$Bhat[j,]))##turn j into a R x 1 vector
-    if(!common_cov){
+    if(!common_cov || !data$commonV){
       V=get_cov(data,j)
       Vinv <- solve(V)
       U1 = lapply(Ulist, function(U){posterior_cov(Vinv, U)}) # compute all the posterior covariances
