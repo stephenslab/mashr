@@ -3,18 +3,16 @@
 [![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr)
 [![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://codecov.io/gh/stephenslab/mashr)
 
-*Welcome to mashr!* This package implements methods to estimate and
-test many effects in many conditions (or many effects on many
-outcomes).
+This package implements methods to estimate and test many effects in
+many conditions (or many effects on many outcomes).
 
 The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of
 similarity among conditions to improve accuracy of effect estimates.
-See [Urbut et al](http://biorxiv.org/content/early/2017/05/09/096552)
-for details of the model and methods. 
+See [Urbut et al][mashr-paper] for details of the model and methods.
 
 Note that this R package is a refactoring of the code originally used
-to create results for the paper. The original package code is
+to generate the results for the manuscript. The original package code is
 [here](http://github.com/stephenslab/mashr-paper).
 
 ## Quick Start
@@ -33,57 +31,32 @@ matrices](https://stephenslab.github.io/mashr/articles/simulate_noncanon.html).
 
 ## Setup
 
-Please follow these steps to install the [latest version of the
-mashr package](https://github.com/stephenslab/mashr/releases/tag/v0.2.20):
+Please follow these steps to install mashr.
 
-1. In R, install these three R packages from CRAN:
+1. Add note here about having to compile C++ code.
 
-   ```R
-   install.packages(c("assertthat","mvtnorm","rmeta"))
-   ```
+2. Install the [latest release][mashr-release-latest] of the mashr
+   package using [devtools][devtools]:
 
-2. Optionally, install the package used for memory profiling:
-
-   ```R
-   install.packages("profmem")
-   ```
-
-3. Optionally, install MOSEK and the Rmosek package, for faster
-   optimization in the `ashr` package. See the
-   [ashr Github repository](https://github.com/stephens999/ashr) for
-   details.
-
-4. Install the [ExtremeDeconvolution R package](https://github.com/jobovy/extreme-deconvolution#installation). Note that you will need to link to the
-   [GNU Scientific Library](https://www.gnu.org/software/gsl) to
-   build this package.
-
-5. Once you have installed all these packages, you can install and
-   load the [latest
-   release](https://github.com/stephenslab/mashr/releases/tag/v0.2.20)
-   of the `mashr` package:
-
-   ```R
-   library(devtools)
-   install_github("stephenslab/mashr@v0.2.20")
-   library(mashr)
-   ```
-
-   This command should automatically retrieve and install the `ashr`
-   package from Github. If it does not, install ashr separately using
-   devtools:
+    ```R
+    install.packages("devtools")
+    library(devtools)
+    devtools::install_github("stephenslab/mashr")
+    ```
+   
+   This command should have automatically retrieved and installed the
+   latest version of the ashr package from Github. If it does not,
+   you can install ashr separately using devtools:
 
    ```R
    library(devtools)
    install_github("stephens999/ashr")
    ```
 
-   Alternatively, if you have cloned the repository locally, you can
-   install the package by following these steps:
-
-   ```
-   R CMD build mashr
-   R CMD INSTALL mashr_0.2.20.tar.gz
-   ```
+3. Optionally, install MOSEK and the Rmosek package, for faster
+   optimization in the `ashr` package. See the
+   [ashr Github repository](https://github.com/stephens999/ashr) for
+   details.
 
 ## Developer notes
 
@@ -109,3 +82,7 @@ project, please cite our preprint:
 S M Urbut, G Wang, M Stephens. Flexible statistical methods for
 estimating and testing effects in genomic studies with multiple
 conditions. *bioRxiv* doi:10.1101/096552.
+
+[mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
+[mashr-release-latest]: https://github.com/stephenslab/mashr/releases/tag/v0.2-9
+[devtools]: https://github.com/r-lib/devtools
