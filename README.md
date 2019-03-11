@@ -42,13 +42,14 @@ repository useful for your work, please cite:
 
 Please follow these steps to install mashr.
 
-1. Unlike most packages available on CRAN, mashr is not precompiled;
-   therefore, you will need to make sure that your R installation is
-   properly set up to compile packages with C++ source; in particular,
-   the C++ compiler programs supported by your version of R should be
-   installed on your computer, and R should be correctly configured to
-   call these compilers. See the [CRAN documentation][cran-docs]
-   for more information.
+1. Unlike most packages available on CRAN, mashr is not precompiled,
+   and therefore to install mashr you will need to make sure that your
+   R installation is properly set up to compile packages with C++
+   source; in particular, the C++ compiler programs supported by your
+   version of R should be installed on your computer, and R should be
+   correctly configured to call these compilers when installing
+   packages from source. For more information, see the
+   [CRAN documentation][cran-docs].
    
 2. Install the [latest release][mashr-release-latest] of the mashr
    package using [devtools][devtools]:
@@ -58,15 +59,20 @@ Please follow these steps to install mashr.
     devtools::install_github("stephenslab/mashr")
     ```
    
-   This command should have automatically retrieved and installed the
-   latest version of the ashr package from Github. If it did not, you
-   can install the ashr package separately using devtools:
+   This command should automatically install any missing dependencies
+   that are available from CRAN. This command should also
+   automatically retrieve and install the latest version of the ashr
+   package from Github. If it does not, you can install the ashr
+   package separately using devtools:
 
    ```R
    devtools::install_github("stephens999/ashr")
    ```
 
-3. Several additional packages are needed to build vignettes:
+3. By default, the `devtools::install_github` function does not build
+   the vignettes. If you would like to build the vignettes, you will
+   need to several additional packages, including [flashr][flashr],
+   that are used only in the vignettes:
 
    ```R
    install.packages(c("kableExtra","corrplot"))

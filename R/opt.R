@@ -16,16 +16,9 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
   if (optmethod == "mixIP")
    if (!requireNamespace("REBayes",quietly = TRUE)) {
      warning(paste("optmethod = \"mixIP\" requires REBayes package;",
-                   "switching to optmethod = \"mixEM\""))
-     optmethod <- "mixEM"
+                   "switching to optmethod = \"mixSQP\""))
+     optmethod <- "mixSQP"
    }
-
-  if (optmethod == "mixSQP")
-    if (!requireNamespace("mixsqp",quietly = TRUE)) {
-      warning(paste("optmethod = \"mixSQP\" requires mixsqp package;",
-                    "switching to optmethod = \"mixEM\""))
-      optmethod <- "mixEM"
-    }
 
   if(optmethod == "mixIP"){control = ashr:::set_control_mixIP(control)
   }else if(optmethod == 'mixEM' || optmethod == 'cxxMixSquarem'){
