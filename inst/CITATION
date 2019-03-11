@@ -1,0 +1,19 @@
+citHeader("To cite the mashr package in publications use:")
+
+citEntry(entry   = "Article",
+         title   = 
+	 paste("Flexible statistical methods for estimating and testing",
+               "effects in genomic studies with multiple conditions"),
+         author  = paste("Sarah Urbut, Gao Wang, Peter Carbonetto and",
+                         "Matthew Stephens"),
+         journal = "Nature Genetics",
+         volume  = 51,
+         number  = 1,
+         pages   = "187--195",
+         year    = "2019",
+
+         textVersion = 
+         paste("Sarah Urbut, Gao Wang, Peter Carbonetto and Matthew",
+               "Stephens (2019). Flexible statistical methods for",
+               "estimating and testing effects in genomic studies with",
+               "multiple conditions. Nature Genetics 51(1), 187-195."))

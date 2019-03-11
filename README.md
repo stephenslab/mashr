@@ -29,6 +29,15 @@ covariances](https://stephenslab.github.io/mashr/articles/intro_mash_dd.html)
 and [Simulation with non-canonical
 matrices](https://stephenslab.github.io/mashr/articles/simulate_noncanon.html).
 
+## Citing this work
+
+If you find the masr package or any of the source code in this
+repository useful for your work, please cite:
+
+> Sarah Urbut, Gao Wang, Peter Carbonetto and Matthew Stephens
+> (2019). [Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions.][mash-paper]
+> *Nature Genetics* **51**, 187-195.
+
 ## Setup
 
 Please follow these steps to install mashr.
@@ -38,7 +47,7 @@ Please follow these steps to install mashr.
    properly set up to compile packages with C++ source; in particular,
    the C++ compiler programs supported by your version of R should be
    installed on your computer, and R should be correctly configured to
-   call these compilers. See the [documentation on CRAN][cran-docs]
+   call these compilers. See the [CRAN documentation][cran-docs]
    for more information.
    
 2. Install the [latest release][mashr-release-latest] of the mashr
@@ -57,10 +66,10 @@ Please follow these steps to install mashr.
    devtools::install_github("stephens999/ashr")
    ```
 
-3. Additional packages needed to build vignettes:
+3. Several additional packages are needed to build vignettes:
 
    ```R
-   install.packages("kableExtra")
+   install.packages(c("kableExtra","corrplot"))
    devtools::install_github("stephenslab/flashr")
    devtools::install_github("stephenslab/mashr",build_vignettes = TRUE)
    ```
@@ -80,20 +89,6 @@ connected to Internet while running these commands):
 library(pkgdown)
 build_site(mathjax = FALSE)
 ```
-
-## Citing this work
-
-If you find the masr package or any of the source code in this
-repository useful for your work, please cite:
-
-> Sarah Urbut, Gao Wang, Peter Carbonetto and Matthew Stephens
-> (2019). [Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions.][mash-paper]
-> *Nature Genetics* **51**, 187-195.
-
-## Citation
-
-If the data or code in this repository are useful for your research
-project, please cite our preprint:
 
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
