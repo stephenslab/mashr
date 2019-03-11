@@ -51,12 +51,12 @@ Please follow these steps to install mashr.
    packages from source. For more information, see the
    [CRAN documentation][cran-docs].
    
-2. Install the [latest release][mashr-release-latest] of the mashr
-   package using [devtools][devtools]:
+2. Install the [latest release][mashr-release] of the mashr package
+   using [devtools][devtools]:
 
     ```R
     install.packages("devtools")
-    devtools::install_github("stephenslab/mashr")
+    devtools::install_github("stephenslab/mashr@v0.2-11")
     ```
    
    This command should automatically install any missing dependencies
@@ -77,7 +77,7 @@ Please follow these steps to install mashr.
    ```R
    install.packages(c("kableExtra","corrplot"))
    devtools::install_github("stephenslab/flashr")
-   devtools::install_github("stephenslab/mashr",build_vignettes = TRUE)
+   devtools::install_github("stephenslab/mashr@v0.2-11",build_vignettes = TRUE)
    ```
 
 ## Developer notes
@@ -98,6 +98,6 @@ connected to Internet while running these commands):
 
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
-[mashr-release-latest]: https://github.com/stephenslab/mashr/releases/tag/v0.2-9
+[mashr-release]: https://github.com/stephenslab/mashr/releases/tag/v0.2-11
 [devtools]: https://github.com/r-lib/devtools
 [flashr]: https://github.com/stephenslab/flashr
