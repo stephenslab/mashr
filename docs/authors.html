@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Authors • mashr</title>
+<title>Citation and Authors • mashr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -21,19 +21,13 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
-
 <!-- pkgdown -->
 <link href="pkgdown.css" rel="stylesheet">
+<script src="jquery.sticky-kit.min.js"></script>
 <script src="pkgdown.js"></script>
-
-
-
-<meta property="og:title" content="Authors" />
-
-
-
+  
+  
+<meta property="og:title" content="Citation and Authors" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -46,7 +40,7 @@
   </head>
 
   <body>
-    <div class="container template-authors">
+    <div class="container template-citation-authors">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -56,12 +50,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.495</span>
-      </span>
+      <a class="navbar-brand" href="index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -83,7 +73,6 @@
   </a>
 </li>
       </ul>
-      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -91,8 +80,26 @@
       
       </header>
 
-<div class="row">
+      <div class="row">
   <div class="contents col-md-9">
+
+    <div class="page-header">
+      <h1>Citation</h1>
+    </div>
+
+    <p>Urbut S, Wang G, Carbonetto P and Stephens M (2019).
+&ldquo;Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions.&rdquo;
+<em>Nature Genetics</em>, <b>51</b>(1), pp. 187&ndash;195. 
+</p>
+    <pre>@Article{,
+  title = {Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions},
+  author = {Sarah Urbut and Gao Wang and Peter Carbonetto and Matthew Stephens},
+  journal = {Nature Genetics},
+  volume = {51},
+  number = {1},
+  pages = {187--195},
+  year = {2019},
+}</pre>
     <div class="page-header">
       <h1>Authors</h1>
     </div>
@@ -137,8 +144,5 @@
       </footer>
    </div>
 
-  
-
   </body>
 </html>
-

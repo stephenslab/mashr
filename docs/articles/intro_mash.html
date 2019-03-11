@@ -8,8 +8,8 @@
 <title>Introduction to mashr • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to mashr">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to mashr">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,12 +27,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
-      </span>
+      <a class="navbar-brand" href="../index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -62,20 +58,17 @@
 
       
       </header><div class="row">
-  <div class="col-md-9 contents">
+  <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Introduction to mashr</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2018-11-08</h4>
-      
-      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mash.Rmd"><code>vignettes/intro_mash.Rmd</code></a></small>
-      <div class="hidden name"><code>intro_mash.Rmd</code></div>
-
-    </div>
+            <h4 class="date">2019-03-11</h4>
+          </div>
 
     
     
+<div class="contents">
 <div id="goal" class="section level1">
 <h1 class="hasAnchor">
 <a href="#goal" class="anchor"></a>Goal</h1>
@@ -133,11 +126,11 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c)</code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.03 seconds.
+#  - Likelihood calculations took 0.04 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.28 seconds.
+#  - Model fitting took 0.41 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.02 seconds.</code></pre>
+#  - Computation allocated took 0.01 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
 <p>Remember the Crucial Rule! This step must be peformed using all the tests (or a large random subset), because this is where <code>mash</code> learns that many tests are null and corrects for it.</p>
 </div>
@@ -147,28 +140,28 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>You can extract estimates (posterior means and posterior standard deviations) and measures of significance (local false sign rates) using functions like <code>get_pm</code> (posterior mean), <code>get_psd</code> (posteriore standard deviation) and <code>get_lfsr</code> (local false sign rate):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_lfsr</a></span>(m.c))</code></pre></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.7561485   0.7705861   0.8052827   0.8111157   0.8189465
-# effect_2   0.7245458   0.6905897   0.7760443   0.6922721   0.7012676
-# effect_3   0.7387366   0.7514411   0.8104817   0.8390483   0.8501608
-# effect_4   0.7855697   0.8454482   0.8360483   0.8660092   0.8503405
-# effect_5   0.8044543   0.8371045   0.8808436   0.8785908   0.8758300
-# effect_6   0.7207011   0.6833614   0.7894066   0.7002700   0.7569387</code></pre>
+# effect_1   0.7561456   0.7705826   0.8052788   0.8111108   0.8189434
+# effect_2   0.7245451   0.6905870   0.7760437   0.6922681   0.7012644
+# effect_3   0.7387334   0.7514373   0.8104771   0.8390450   0.8501580
+# effect_4   0.7855678   0.8454469   0.8360456   0.8660080   0.8503389
+# effect_5   0.8044529   0.8371028   0.8808424   0.8785894   0.8758287
+# effect_6   0.7206969   0.6833571   0.7894009   0.7002643   0.7569353</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_pm</a></span>(m.c))</code></pre></div>
 <pre><code>#          condition_1 condition_2   condition_3  condition_4  condition_5
-# effect_1  0.07387834 -0.12489759 -0.0763244886  0.092632369 -0.045367788
-# effect_2 -0.02353831 -0.17604807 -0.0324369466 -0.201653402 -0.170552895
-# effect_3 -0.10218266  0.18092162 -0.0846330445  0.022524410 -0.002684844
-# effect_4 -0.06238567  0.02794216  0.0654480304  0.008114002  0.032179504
-# effect_5  0.03341379 -0.06059760  0.0001468816 -0.003887884 -0.004665950
-# effect_6 -0.09934657  0.21556659 -0.0791493932  0.213026594  0.079063145</code></pre>
+# effect_1  0.07387961 -0.12490000 -0.0763267542  0.092636351 -0.045368803
+# effect_2 -0.02353673 -0.17604965 -0.0324344285 -0.201657010 -0.170555034
+# effect_3 -0.10218412  0.18092463 -0.0846362908  0.022525129 -0.002685045
+# effect_4 -0.06238666  0.02794230  0.0654500317  0.008113439  0.032179933
+# effect_5  0.03341429 -0.06059869  0.0001472689 -0.003887683 -0.004665803
+# effect_6 -0.09934878  0.21556970 -0.0791533646  0.213031571  0.079063932</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_psd</a></span>(m.c))</code></pre></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.4592843   0.4210491   0.3544632   0.4062381   0.3365901
-# effect_2   0.4861855   0.4277957   0.4046967   0.4447866   0.4149872
-# effect_3   0.4679437   0.5082161   0.3799417   0.3269355   0.3283886
-# effect_4   0.4389144   0.2963991   0.3082056   0.2749155   0.2809661
-# effect_5   0.4033371   0.3286541   0.2608030   0.2597925   0.2656081
-# effect_6   0.5226677   0.4981608   0.4482759   0.4906756   0.3899237</code></pre>
+# effect_1   0.4592864   0.4210518   0.3544677   0.4062430   0.3365941
+# effect_2   0.4861874   0.4277981   0.4047003   0.4447904   0.4149903
+# effect_3   0.4679459   0.5082177   0.3799465   0.3269399   0.3283928
+# effect_4   0.4389159   0.2964015   0.3082097   0.2749191   0.2809693
+# effect_5   0.4033387   0.3286560   0.2608065   0.2597959   0.2656111
+# effect_6   0.5226697   0.4981630   0.4482802   0.4906797   0.3899275</code></pre>
 <p>Each of these are <span class="math inline">\(J \times R\)</span> matrices.</p>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are “significant”, which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is ordered from most significant to least significant.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(m.c))</code></pre></div>
@@ -213,11 +206,11 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>Use <code>get_estimated_pi</code> to extract the estimates of the mixture proportions for different types of covariance matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(m.c))</code></pre></div>
 <pre><code>#          null      identity   condition_1   condition_2   condition_3 
-#  3.711952e-01  2.208546e-01  1.365276e-01  2.098059e-02  1.302892e-08 
+#  3.711932e-01  2.208664e-01  1.365264e-01  2.097969e-02  0.000000e+00 
 #   condition_4   condition_5 equal_effects  simple_het_1  simple_het_2 
-#  6.212090e-10  4.961779e-03  2.264413e-01  1.000873e-04  2.719204e-09 
+#  0.000000e+00  4.961490e-03  2.264380e-01  9.035503e-05  0.000000e+00 
 #  simple_het_3 
-#  1.893879e-02</code></pre>
+#  1.894453e-02</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">barplot</span>(<span class="kw"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(m.c),<span class="dt">las =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="intro_mash_files/figure-html/unnamed-chunk-11-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>Here we can see most of the mass is on the null, identity, <code>singletons_1</code> (which corresponds to effects that are specific to condition 1) and <code>equal_effects</code>. This reassuringly matches the way that these data were generated.</p>
@@ -234,13 +227,13 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <h1 class="hasAnchor">
 <a href="#session-information-" class="anchor"></a>Session information.</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">sessionInfo</span>())</code></pre></div>
-<pre><code># R version 3.5.1 (2018-07-02)
+<pre><code># R version 3.4.3 (2017-11-30)
 # Platform: x86_64-apple-darwin15.6.0 (64-bit)
-# Running under: macOS  10.14.1
+# Running under: macOS High Sierra 10.13.6
 # 
 # Matrix products: default
-# BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-# LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+# BLAS: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRblas.0.dylib
+# LAPACK: /Library/Frameworks/R.framework/Versions/3.4/Resources/lib/libRlapack.dylib
 # 
 # locale:
 # [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -249,24 +242,21 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.2.18.0476 ashr_2.2-23      
+# [1] mashr_0.2.20.0583 ashr_2.2-32      
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_1.0.0        compiler_3.5.1    plyr_1.8.4       
-#  [4] iterators_1.0.10  tools_3.5.1       digest_0.6.18    
-#  [7] evaluate_0.12     memoise_1.1.0     lattice_0.20-35  
-# [10] rlang_0.3.0.1     Matrix_1.2-14     foreach_1.4.4    
-# [13] rstudioapi_0.8    commonmark_1.6    yaml_2.2.0       
-# [16] parallel_3.5.1    mvtnorm_1.0-8     pkgdown_1.1.0    
-# [19] stringr_1.3.1     roxygen2_6.1.0    xml2_1.2.0       
-# [22] knitr_1.20        desc_1.2.0        fs_1.2.6         
-# [25] REBayes_1.3       rprojroot_1.3-2   grid_3.5.1       
-# [28] R6_2.3.0          rmarkdown_1.10    rmeta_3.0        
-# [31] magrittr_1.5      backports_1.1.2   codetools_0.2-15 
-# [34] htmltools_0.3.6   MASS_7.3-50       assertthat_0.2.0 
-# [37] abind_1.4-5       stringi_1.2.4     Rmosek_8.0.69    
-# [40] doParallel_1.0.14 pscl_1.5.2        truncnorm_1.0-8  
-# [43] SQUAREM_2017.10-1 crayon_1.3.4</code></pre>
+#  [1] Rcpp_1.0.0        knitr_1.20        magrittr_1.5     
+#  [4] MASS_7.3-48       doParallel_1.0.11 pscl_1.5.2       
+#  [7] SQUAREM_2017.10-1 lattice_0.20-35   foreach_1.4.4    
+# [10] plyr_1.8.4        stringr_1.3.1     tools_3.4.3      
+# [13] parallel_3.4.3    grid_3.4.3        rmeta_3.0        
+# [16] htmltools_0.3.6   iterators_1.0.9   assertthat_0.2.0 
+# [19] abind_1.4-5       yaml_2.2.0        rprojroot_1.3-2  
+# [22] digest_0.6.17     mixsqp_0.1-97     Matrix_1.2-12    
+# [25] codetools_0.2-15  evaluate_0.11     rmarkdown_1.10   
+# [28] stringi_1.2.4     compiler_3.4.3    backports_1.1.2  
+# [31] mvtnorm_1.0-8     truncnorm_1.0-8</code></pre>
+</div>
 </div>
   </div>
 
@@ -307,8 +297,6 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 
       </footer>
 </div>
-
-  
 
   </body>
 </html>

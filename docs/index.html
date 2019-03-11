@@ -8,8 +8,8 @@
 <title>Multivariate Adaptive Shrinkage  • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Multivariate Adaptive Shrinkage ">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Multivariate Adaptive Shrinkage ">
 <meta property="og:description" content="Empirical Bayes shrinkage of multivariate effects.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -27,12 +27,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.495</span>
-      </span>
+      <a class="navbar-brand" href="index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -67,9 +63,9 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mashr-multivariate-adaptive-shrinkage-in-r" class="anchor"></a>mashr: Multivariate Adaptive Shrinkage in R</h1></div>
 
-<p><em>Welcome to mashr!</em> This package implements methods to estimate and test many effects in many conditions (or many effects on many outcomes).</p>
-<p>The methods use Empirical Bayes methods to estimate patterns of similarity among conditions, and then exploit those patterns of similarity among conditions to improve accuracy of effect estimates. See <a href="http://biorxiv.org/content/early/2017/05/09/096552">Urbut et al</a> for details of the model and methods.</p>
-<p>Note that this R package is a refactoring of the code originally used to create results for the paper. The original package code is <a href="http://github.com/stephenslab/mashr-paper">here</a>.</p>
+<p>This package implements methods to estimate and test many effects in many conditions (or many effects on many outcomes).</p>
+<p>The methods use Empirical Bayes methods to estimate patterns of similarity among conditions, and then exploit those patterns of similarity among conditions to improve accuracy of effect estimates. See [Urbut et al][mashr-paper] for details of the model and methods.</p>
+<p>Note that this R package is a refactoring of the code originally used to generate the results for the manuscript. The original package code is <a href="http://github.com/stephenslab/mashr-paper">here</a>.</p>
 <div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quick-start" class="anchor"></a>Quick Start</h2>
@@ -79,28 +75,32 @@
 <li><p>Then work through the other vignettes to learn more about mashr: <a href="https://stephenslab.github.io/mashr/articles/intro_mash_dd.html">Introduction to mash: data-driven covariances</a> and <a href="https://stephenslab.github.io/mashr/articles/simulate_noncanon.html">Simulation with non-canonical matrices</a>.</p></li>
 </ol>
 </div>
+<div id="citing-this-work" class="section level2">
+<h2 class="hasAnchor">
+<a href="#citing-this-work" class="anchor"></a>Citing this work</h2>
+<p>If you find the masr package or any of the source code in this repository useful for your work, please cite:</p>
+<blockquote>
+<p>Sarah Urbut, Gao Wang, Peter Carbonetto and Matthew Stephens (2019). <a href="https://doi.org/10.1038/s41588-018-0268-8">Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions.</a> <em>Nature Genetics</em> <strong>51</strong>, 187-195.</p>
+</blockquote>
+</div>
 <div id="setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h2>
-<p>Please follow these steps to install the <a href="https://github.com/stephenslab/mashr/releases/tag/v0.2-6">latest version of the mashr package</a>:</p>
+<p>Please follow these steps to install mashr.</p>
 <ol>
-<li>In R, install these three R packages from CRAN:</li>
+<li><p>Unlike most packages available on CRAN, mashr is not precompiled; therefore, you will need to make sure that your R installation is properly set up to compile packages with C++ source; in particular, the C++ compiler programs supported by your version of R should be installed on your computer, and R should be correctly configured to call these compilers. See the <a href="https://cran.r-project.org/manuals.html">CRAN documentation</a> for more information.</p></li>
+<li>
+<p>Install the <a href="https://github.com/stephenslab/mashr/releases/tag/v0.2-9">latest release</a> of the mashr package using <a href="https://github.com/r-lib/devtools">devtools</a>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"devtools"</span>)
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"stephenslab/mashr"</span>)</code></pre></div>
+</li>
 </ol>
-<p><code>R    install.packages(c("assertthat","mvtnorm","rmeta"))</code></p>
+<p>This command should have automatically retrieved and installed the latest version of the ashr package from Github. If it did not, you can install the ashr package separately using devtools:</p>
+<p><code>R    devtools::install_github("stephens999/ashr")</code></p>
 <ol>
-<li>Optionally, install the package used for memory profiling:</li>
+<li>Several additional packages are needed to build vignettes:</li>
 </ol>
-<p><code>R    install.packages("profmem")</code></p>
-<ol>
-<li><p>Optionally, install MOSEK and the Rmosek package, for faster optimization in the <code>ashr</code> package. See the <a href="https://github.com/stephens999/ashr">ashr Github repository</a> for details.</p></li>
-<li><p>Install the <a href="https://github.com/jobovy/extreme-deconvolution#installation">ExtremeDeconvolution R package</a>. Note that you will need to link to the <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a> to build this package.</p></li>
-<li><p>Once you have installed all these packages, you can install and load the <a href="https://github.com/stephenslab/mashr/releases/tag/v0.2-6">latest release</a> of the <code>mashr</code> package:</p></li>
-</ol>
-<p><code>R    library(devtools)    install_github("stephenslab/mashr@v0.2-6")    library(mashr)</code></p>
-<p>This command should automatically retrieve and install the <code>ashr</code> package from Github. If it does not, install ashr separately using devtools:</p>
-<p><code>R    library(devtools)    install_github("stephens999/ashr")</code></p>
-<p>Alternatively, if you have cloned the repository locally, you can install the package by following these steps:</p>
-<p><code>R CMD build mashr    R CMD INSTALL mashr_0.2-6.tar.gz</code></p>
+<p><code>R    install.packages(c("kableExtra","corrplot"))    devtools::install_github("stephenslab/flashr")    devtools::install_github("stephenslab/mashr",build_vignettes = TRUE)</code></p>
 </div>
 <div id="developer-notes" class="section level2">
 <h2 class="hasAnchor">
@@ -112,34 +112,23 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pkgdown)
 <span class="kw"><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site</a></span>(<span class="dt">mathjax =</span> <span class="ot">FALSE</span>)</code></pre></div>
 </div>
-<div id="citation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h2>
-<p>If the data or code in this repository are useful for your research project, please cite our preprint:</p>
-<p>S M Urbut, G Wang, M Stephens. Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions. <em>bioRxiv</em> <a href="doi:10.1101/096552" class="uri">doi:10.1101/096552</a>.</p>
-</div>
 </div>
   </div>
 
   <div class="col-md-3" id="sidebar">
-    <div class="links">
-<h2>Links</h2>
+    <h2>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="http://github.com/stephenslab/mashr">http://​github.com/​stephenslab/​mashr</a>
 </li>
 <li>Report a bug at <br><a href="http://github.com/stephenslab/mashr/issues">http://​github.com/​stephenslab/​mashr/​issues</a>
 </li>
 </ul>
-</div>
-<div class="license">
 <h2>License</h2>
+<p><a href="https://opensource.org/licenses/BSD-3-Clause">BSD_3_clause</a> + file <a href="LICENSE.html">LICENSE</a></p>
+<h2>Citation</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/BSD-3-Clause">BSD_3_clause</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li><a href="authors.html">Citing mashr</a></li>
 </ul>
-</div>
-<div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Matthew Stephens <br><small class="roles"> Author, maintainer </small>  </li>
@@ -148,16 +137,11 @@
 <li>Yuxin Zou <br><small class="roles"> Author </small>  </li>
 <li>Peter Carbonetto <br><small class="roles"> Author </small>  </li>
 </ul>
-</div>
-
-  <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://travis-ci.org/stephenslab/mashr"><img src="https://travis-ci.org/stephenslab/mashr.svg?branch=master" alt="Travis Build Status"></a></li>
-<li><a href="https://ci.appveyor.com/project/pcarbo/mashr"><img src="https://ci.appveyor.com/api/projects/status/6xpn7vfe6tslm9wn?svg=true" alt="Appveyor Build status"></a></li>
 <li><a href="https://codecov.io/gh/stephenslab/mashr"><img src="https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>
-</div>
 </div>
 </div>
 
@@ -172,8 +156,6 @@
 
       </footer>
 </div>
-
-  
 
   </body>
 </html>

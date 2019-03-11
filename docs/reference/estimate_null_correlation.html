@@ -21,22 +21,16 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
-
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
-
-
+  
+  
 <meta property="og:title" content="Estimate null correlations — estimate_null_correlation" />
 
 <meta property="og:description" content="Estimates a null correlation matrix from data" />
 <meta name="twitter:card" content="summary" />
-
-
-
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -59,12 +53,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
-      </span>
+      <a class="navbar-brand" href="../index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -86,7 +76,6 @@
   </a>
 </li>
       </ul>
-      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -94,25 +83,21 @@
       
       </header>
 
-<div class="row">
+      <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate null correlations</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/est_cor.R'><code>R/est_cor.R</code></a></small>
-    <div class="hidden name"><code>estimate_null_correlation.Rd</code></div>
     </div>
 
-    <div class="ref-description">
     
     <p>Estimates a null correlation matrix from data</p>
     
-    </div>
 
-    <pre class="usage"><span class='fu'>estimate_null_correlation</span>(<span class='no'>data</span>, <span class='no'>Ulist</span>, <span class='no'>init</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>0.001</span>, <span class='kw'>est_cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>track_fit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span>), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>estimate_null_correlation</span>(<span class='no'>data</span>, <span class='no'>Ulist</span>, <span class='no'>init</span>, <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>est_cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>track_fit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"nullbiased"</span>,
+  <span class='st'>"uniform"</span>), <span class='kw'>details</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -137,7 +122,7 @@
     </tr>
     <tr>
       <th>est_cor</th>
-      <td><p>whether to estimate correlation matrix. If it is False, we estimate the covairance matrix</p></td>
+      <td><p>whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE)</p></td>
     </tr>
     <tr>
       <th>track_fit</th>
@@ -148,14 +133,31 @@
       <td><p>indicates what penalty to use on the likelihood, if any</p></td>
     </tr>
     <tr>
+      <th>details</th>
+      <td><p>whether to return details of the model, if it is TRUE, the number of iterations and the value of objective functions will be returned</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>other parameters pass to <code>mash</code></p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>the estimated correlation (or covariance) matrix and the fitted mash model</p>
+<dt>V</dt><dd><p>estimated correlation (or covariance) matrix</p></dd>
+<dt>mash.model</dt><dd><p>fitted mash model</p></dd>
+
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Returns the estimated correlation/covariance matrix of the effects</p>
+    <p>Returns the estimated correlation matrix (or covariance matrix) among conditions under the null.
+The correlation (or covariance) matrix is estimated by maximum likelihood.
+Specifically, the unknown correlation/covariance matrix V and the unknown weights are estimated iteratively.
+The unknown correlation/covariance matrix V is estimated using the posterior second moment of the noise.
+The unknown weights pi is estimated by maximum likelihood, which is a convex problem.</p>
+<p>Warning: This method could take some time.
+The <code><a href='estimate_null_correlation_simple.html'>estimate_null_correlation_simple</a></code> gives a quick approximation for the null correlation (or covariance) matrix.</p>
     
 
   </div>
@@ -164,6 +166,8 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#details">Details</a></li>
           </ul>
 
@@ -182,8 +186,5 @@
       </footer>
    </div>
 
-  
-
   </body>
 </html>
-

@@ -8,8 +8,8 @@
 <title>Using flashr for mashr prior specification • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using flashr for mashr prior specification">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Using flashr for mashr prior specification">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,12 +27,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
-      </span>
+      <a class="navbar-brand" href="../index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -62,20 +58,17 @@
 
       
       </header><div class="row">
-  <div class="col-md-9 contents">
+  <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Using flashr for mashr prior specification</h1>
                         <h4 class="author">Gao Wang and others</h4>
             
-            <h4 class="date">2018-11-08</h4>
-      
-      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/flash_mash.Rmd"><code>vignettes/flash_mash.Rmd</code></a></small>
-      <div class="hidden name"><code>flash_mash.Rmd</code></div>
-
-    </div>
+            <h4 class="date">2019-03-11</h4>
+          </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -112,7 +105,6 @@ data.strong =<span class="st"> </span><span class="kw"><a href="../reference/mas
 <li>(For the time being we remove the additional decomposition on FLASH loading because there are issues needs to be figured out. <span class="citation">@yuxin</span>)</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(flashr)
-<span class="kw">library</span>(mixsqp)
 <span class="kw">library</span>(mashr)
     
 my_init_fn &lt;-<span class="st"> </span><span class="cf">function</span>(Y, <span class="dt">K =</span> <span class="dv">1</span>) {
@@ -185,16 +177,39 @@ cov_flash =<span class="st"> </span><span class="cf">function</span>(data, <span
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.f =<span class="st"> </span><span class="kw">cov_flash</span>(data.strong, <span class="dt">non_canonical =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code># Fitting factor/loading 1 (stop when max factor change is &lt; 1.00e-03):</code></pre>
 <pre><code>#   Iteration  Max Chg (f)      Objective   Obj Diff</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
 <pre><code>#           1     8.48e-03      -15489.36        Inf</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
 <pre><code>#           2     4.90e-03      -15415.40   7.40e+01</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
 <pre><code>#           3     2.24e-03      -15412.98   2.42e+00</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
 <pre><code>#           4     9.51e-04      -15412.93   5.18e-02</code></pre>
 <pre><code># Fitting factor/loading 2 (stop when max factor change is &lt; 1.00e-03):</code></pre>
 <pre><code>#   Iteration  Max Chg (f)      Objective   Obj Diff</code></pre>
-<pre><code>#           1     3.33e-01      -15716.96        Inf</code></pre>
-<pre><code>#           2     7.23e-04      -15429.56   2.87e+02</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<pre><code>#           1     3.32e-01      -15716.96        Inf</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<pre><code>#           2     1.48e-03      -15429.70   2.87e+02</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<pre><code>#           3     1.20e-03      -15416.64   1.31e+01</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<pre><code>#           4     1.72e-03      -15416.04   6.06e-01</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
+<pre><code>#           5     4.01e-05      -15415.92   1.15e-01</code></pre>
 <pre><code># Backfitting 1 factor/loading(s) (stop when max factor change is &lt; 1.00e-03):</code></pre>
 <pre><code>#   Iteration  Max Chg (f)      Objective   Obj Diff</code></pre>
+<pre><code># Due to absence of package REBayes, switching to EM algorithm
+# Due to absence of package REBayes, switching to EM algorithm</code></pre>
 <pre><code>#           1     3.91e-04      -15412.95        Inf</code></pre>
 </div>
 <div id="finalize-covariances" class="section level1">
@@ -210,9 +225,9 @@ U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonic
 <p>Now we fit mash to the random tests using both data-driven and canonical covariances.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>#  - Computing 5000 x 256 likelihood matrix.
-#  - Likelihood calculations took 0.18 seconds.
+#  - Likelihood calculations took 0.16 seconds.
 #  - Fitting model with 256 mixture components.
-#  - Model fitting took 1.45 seconds.</code></pre>
+#  - Model fitting took 2.34 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level1">
 <h1 class="hasAnchor">
@@ -220,24 +235,25 @@ U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonic
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.strong, <span class="dt">g=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_fitted_g</a></span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#  - Computing 1428 x 256 likelihood matrix.
-#  - Likelihood calculations took 0.04 seconds.
+#  - Likelihood calculations took 0.06 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_lfsr</a></span>(m2))</code></pre></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4
-# effect_13096 1.370473e-05 7.437300e-01 6.793988e-01 6.592581e-01
-# effect_29826 5.040489e-05 7.150092e-01 6.719218e-01 7.521132e-01
-# effect_14042 5.807916e-02 1.537341e-02 1.320160e-02 4.592088e-02
-# effect_12524 5.434980e-01 6.936128e-01 5.029747e-01 2.573779e-05
-# effect_15456 8.611973e-05 5.712820e-01 4.327731e-01 6.141828e-01
-# effect_35844 4.435606e-10 2.638274e-10 1.157848e-08 8.065726e-11
+# effect_13096 1.337460e-05 7.226243e-01 6.539333e-01 6.318229e-01
+# effect_29826 4.626489e-05 6.555198e-01 6.100098e-01 7.208470e-01
+# effect_14042 6.267154e-02 1.562942e-02 1.349911e-02 4.592698e-02
+# effect_12524 5.612236e-01 7.049402e-01 5.217429e-01 2.651821e-05
+# effect_15456 8.418593e-05 5.634123e-01 4.175647e-01 6.012912e-01
+# effect_35844 7.394985e-10 4.355099e-10 2.080568e-08 1.387775e-10
 #               condition_5
-# effect_13096 8.130021e-01
-# effect_29826 6.669676e-01
-# effect_14042 6.026087e-06
-# effect_12524 5.408984e-01
-# effect_15456 4.989776e-01
-# effect_35844 3.936074e-12</code></pre>
+# effect_13096 7.963808e-01
+# effect_29826 6.048723e-01
+# effect_14042 6.050289e-06
+# effect_12524 5.586740e-01
+# effect_15456 4.831697e-01
+# effect_35844 6.112666e-12</code></pre>
+</div>
 </div>
   </div>
 
@@ -269,8 +285,6 @@ U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonic
 
       </footer>
 </div>
-
-  
 
   </body>
 </html>

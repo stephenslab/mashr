@@ -8,8 +8,8 @@
 <title>mashr with common baseline • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="mashr with common baseline">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="mashr with common baseline">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,12 +27,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.495</span>
-      </span>
+      <a class="navbar-brand" href="../index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -62,33 +58,31 @@
 
       
       </header><div class="row">
-  <div class="col-md-9 contents">
+  <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>mashr with common baseline</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2018-11-09</h4>
-      
-      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mashcommonbaseline.Rmd"><code>vignettes/intro_mashcommonbaseline.Rmd</code></a></small>
-      <div class="hidden name"><code>intro_mashcommonbaseline.Rmd</code></div>
-
-    </div>
+            <h4 class="date">2019-03-11</h4>
+          </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>We want to estimate the change in some quantity computed in multiple conditions over a <strong>common</strong> control condition. Deviation in any condition is defined as a difference in the quantity over a common control condition. We must consider the additional burden of comparing all subsequent conditions to the same reference condition. Failure to deal with such correlations induces many false positives in mashr analysis.</p>
+<p>This vignette illustrates how to use <code>mashr</code> to estimate the change in some quantity measured in multiple conditions compared with a <strong>common</strong> control condition.</p>
+<p>We assume that we have measurements in multiple conditions, and want to estimate the deviation in each condition from the control: that is, the difference in mean between that condition and the control condition. When we compare every condition to the same control then the observed deviations are correlated with one another (even under the null where there are no true differences among conditions). These correlations, if not properly accounted for, can lead to many false positives in a multivariate analysis. This vignette illustrates how to properly account for such correlations.</p>
 <p>Here is the <a href="MASH_baseline.pdf">write-up</a> for the details of the model. When there is no control condition in the study, we can compare the quantity in different conditions with the mean. We illustrate an example in the <a href="intro_mashnobaseline.html">no baseline vignette</a>.</p>
 <p>To deal with these correlations, mashr allows the user to specify the reference condition using <code>mash_update_data</code>, after setting up the data in <code>mash_set_data</code>.</p>
-<p><strong>Note</strong>: In some settings measurements and tests in different conditions may be correlated with one another. For example, in eQTL applications this can occur due to sample overlap among the different conditions. In <code>common baseline</code> analysis, we assume the correlation is known.</p>
+<p><strong>Note</strong>: The correlations in deviations induced by comparing to a common baseline/control occur even if the measurements in different conditions are entirely independent. If the measurements in different conditions are also correlated with one another (eg in eQTL applications this can occur due to sample overlap among the different conditions) then this induces additional correlations into the analysis that should also be taken into account. In <code>common baseline</code> analysis, such additional correlations can be specified by the user (we have not yet implemented methods to estimate this additional correlation from the data).</p>
 </div>
 <div id="illustration" class="section level1">
 <h1 class="hasAnchor">
 <a href="#illustration" class="anchor"></a>Illustration</h1>
-<p>Here we simulate data for illustration. This simulation routine creates a dataset with 8 conditions and 12000 samples, the last condition is the control condition. 90% of the samples have no deviations from the control condition. The rest 10% of the samples are ‘non-null’. The ‘non-null’ consists of equal numbers of three different types of deviations: equal among conditions <span class="math inline">\(1, \cdots, 7\)</span>, present only in condition 1, independent across conditions <span class="math inline">\(1, \cdots, 7\)</span>.</p>
-<p>Our goal is to estimate the deviations in condition <span class="math inline">\(1, \cdots, 7\)</span> over the control condition.</p>
+<p>Here we simulate data for illustration. This simulation routine creates a dataset with 8 conditions and 12000 samples, the last condition is the control condition. 90% of the samples have no deviations from the control condition. The remaining 10% of the samples are “non-null”, and consist of equal numbers of three different types of deviations: equal among conditions <span class="math inline">\(1, \cdots, 7\)</span>, present only in condition 1, independent across conditions <span class="math inline">\(1, \cdots, 7\)</span>.</p>
+<p>Our goal is to estimate the deviations in condition <span class="math inline">\(1, \cdots, 7\)</span> compared with the control condition.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mashr)</code></pre></div>
 <pre><code># Loading required package: ashr</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
@@ -102,16 +96,16 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/sim_con
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(simdata<span class="op">$</span>Chat, simdata<span class="op">$</span>Shat)
 
 data.L =<span class="st"> </span><span class="kw"><a href="../reference/mash_update_data.html">mash_update_data</a></span>(data, <span class="dt">ref =</span> <span class="dv">8</span>)</code></pre></div>
-<p>The updated mash data object (data.L) includes the induced correlation internally.</p>
+<p>The updated mash data object (<code>data.L</code>) includes the induced correlation internally.</p>
 <p>We proceed the analysis using just the simple canonical covariances as in the <a href="intro_mash.html">initial introductory</a> vignette.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.L)
 mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.L, U.c, <span class="dt">algorithm.version =</span> <span class="st">'R'</span>)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.91 seconds.
+#  - Likelihood calculations took 0.97 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 2.31 seconds.
+#  - Model fitting took 4.21 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.22 seconds.</code></pre>
+#  - Computation allocated took 0.14 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(mashcontrast.model),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
 <pre><code># [1] -105525.1375</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
@@ -127,15 +121,16 @@ mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../refere
 data.wrong =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="dt">Bhat =</span> simdata<span class="op">$</span>Chat <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(L), <span class="dt">Shat =</span> <span class="dv">1</span>)
 m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.wrong, U.c)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.25 seconds.
+#  - Likelihood calculations took 0.29 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 2.33 seconds.
+#  - Model fitting took 2.26 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.07 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits =</span> <span class="dv">10</span>)</code></pre></div>
 <pre><code># [1] -111355.1971</code></pre>
 <p>We can see that the log likelihood is lower, since it does not consider the induced correlation.</p>
 <p>There are 3358 significant effects, 2932 of them are false positives. The number of false positives is much more than the one include the induced correlation.</p>
+</div>
 </div>
   </div>
 
@@ -165,8 +160,6 @@ m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">ma
 
       </footer>
 </div>
-
-  
 
   </body>
 </html>

@@ -8,8 +8,8 @@
 <title>Accounting for correlations among measurements • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Accounting for correlations among measurements">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="Accounting for correlations among measurements">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,12 +27,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.476</span>
-      </span>
+      <a class="navbar-brand" href="../index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -62,20 +58,17 @@
 
       
       </header><div class="row">
-  <div class="col-md-9 contents">
+  <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>Accounting for correlations among measurements</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2018-11-08</h4>
-      
-      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_correlations.Rmd"><code>vignettes/intro_correlations.Rmd</code></a></small>
-      <div class="hidden name"><code>intro_correlations.Rmd</code></div>
-
-    </div>
+            <h4 class="date">2019-03-11</h4>
+          </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -100,24 +93,25 @@ data.V =<span class="st"> </span><span class="kw"><a href="../reference/mash_upd
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.V) 
 m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.V, U.c) <span class="co"># fits with correlations because data.V includes correlation information </span></code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.03 seconds.
+#  - Likelihood calculations took 0.05 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.31 seconds.
+#  - Model fitting took 0.43 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.04 seconds.</code></pre>
+#  - Computation allocated took 0.01 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_loglik</a></span>(m.c),<span class="dt">digits=</span><span class="dv">10</span>) <span class="co"># log-likelihood of the fit with correlations set to V</span></code></pre></div>
 <pre><code># [1] -16121.1117</code></pre>
 <p>We can also compare with the original analysis. (Note that the canonical covariances do not depend on the correlations, so we can use the same <code>U.c</code> here for both analyses. If we used data-driven covariances we might prefer to estimate these separately for each analysis as the correlations would affect them.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c.orig =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c) <span class="co"># fits without correlations because data object was set up without correlations</span></code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.04 seconds.
+#  - Likelihood calculations took 0.05 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.25 seconds.
+#  - Model fitting took 0.41 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.02 seconds.</code></pre>
+#  - Computation allocated took 0.04 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_loglik</a></span>(m.c.orig),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
-<pre><code># [1] -16120.3214</code></pre>
+<pre><code># [1] -16120.32135</code></pre>
 <p>The log-likelihoods with and without correlations are similar here, which is expected since there are no actual correlations in the data.</p>
+</div>
 </div>
   </div>
 
@@ -145,8 +139,6 @@ m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">
 
       </footer>
 </div>
-
-  
 
   </body>
 </html>

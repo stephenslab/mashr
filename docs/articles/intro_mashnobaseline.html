@@ -8,8 +8,8 @@
 <title>mashr with no common baseline • mashr</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="mashr with no common baseline">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><meta property="og:title" content="mashr with no common baseline">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-article">
+    <div class="container template-vignette">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -27,12 +27,8 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.18.495</span>
-      </span>
+      <a class="navbar-brand" href="../index.html">mashr</a>
     </div>
-
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -62,22 +58,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9 contents">
+  <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>mashr with no common baseline</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2018-11-09</h4>
-      
-      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mashnobaseline.Rmd"><code>vignettes/intro_mashnobaseline.Rmd</code></a></small>
-      <div class="hidden name"><code>intro_mashnobaseline.Rmd</code></div>
-
-    </div>
+            <h4 class="date">2019-03-11</h4>
+          </div>
 
     
     
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
+<div class="contents">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(MASS)
 <span class="kw">library</span>(kableExtra)</code></pre></div>
+<pre><code># Warning: package 'kableExtra' was built under R version 3.4.4</code></pre>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -103,10 +97,10 @@
 
   Beta =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow=</span>n, <span class="dt">ncol=</span>p)
   <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n){
-    Beta[i,] =<span class="st"> </span>MASS<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/MASS/topics/mvrnorm">mvrnorm</a></span>(<span class="dv">1</span>, <span class="kw">rep</span>(<span class="dv">0</span>, p), Utrue[[which_U[i]]])
+    Beta[i,] =<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/MASS/topics/mvrnorm">mvrnorm</a></span>(<span class="dv">1</span>, <span class="kw">rep</span>(<span class="dv">0</span>, p), Utrue[[which_U[i]]])
   }
   Shat =<span class="st"> </span><span class="kw">matrix</span>(err_sd, <span class="dt">nrow=</span>n, <span class="dt">ncol=</span>p, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-  E =<span class="st"> </span>MASS<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/MASS/topics/mvrnorm">mvrnorm</a></span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), Shat[<span class="dv">1</span>,]<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>V)
+  E =<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/MASS/topics/mvrnorm">mvrnorm</a></span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), Shat[<span class="dv">1</span>,]<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>V)
   Bhat =<span class="st"> </span>Beta <span class="op">+</span><span class="st"> </span>E
   <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">B =</span> Beta, <span class="dt">Bhat=</span>Bhat, <span class="dt">Shat =</span> Shat, <span class="dt">whichU =</span> which_U))
 }</code></pre></div>
@@ -148,18 +142,19 @@ U.ed =<span class="st"> </span><span class="kw"><a href="../reference/cov_ed.htm
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.L, <span class="kw">c</span>(U.c,U.ed), <span class="dt">algorithm.version =</span> <span class="st">'R'</span>)</code></pre></div>
 <pre><code>#  - Computing 2000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.12 seconds.
+#  - Likelihood calculations took 0.36 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 0.29 seconds.
+#  - Model fitting took 0.51 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.</code></pre>
 <p>The log likelihood is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
-<pre><code># [1] -10891.72235</code></pre>
+<pre><code># [1] -10891.72215</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(m))</code></pre></div>
 <pre><code># [1] 141</code></pre>
 <p>The number of false positive is 1.</p>
+</div>
 </div>
   </div>
 
@@ -187,8 +182,6 @@ U.ed =<span class="st"> </span><span class="kw"><a href="../reference/cov_ed.htm
 
       </footer>
 </div>
-
-  
 
   </body>
 </html>
