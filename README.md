@@ -68,11 +68,11 @@ Please follow these steps to install mashr.
    ```R
    devtools::install_github("stephens999/ashr")
    ```
-
+   
 3. By default, the `devtools::install_github` function does not build
-   the vignettes. If you would like to build the vignettes, you will
-   need to several additional packages, including [flashr][flashr],
-   that are used only in the vignettes:
+   the vignettes. If you would like to build the vignettes as well,
+   you will need to several additional packages, including
+   [flashr][flashr], that are used only in the vignettes:
 
    ```R
    install.packages(c("kableExtra","corrplot"))
@@ -100,3 +100,4 @@ connected to Internet while running these commands):
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
 [mashr-release-latest]: https://github.com/stephenslab/mashr/releases/tag/v0.2-9
 [devtools]: https://github.com/r-lib/devtools
+[flashr]: https://github.com/stephenslab/flashr
