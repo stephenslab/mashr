@@ -64,7 +64,7 @@
 <a href="#mashr-multivariate-adaptive-shrinkage-in-r" class="anchor"></a>mashr: Multivariate Adaptive Shrinkage in R</h1></div>
 
 <p>This package implements methods to estimate and test many effects in many conditions (or many effects on many outcomes).</p>
-<p>The methods use Empirical Bayes methods to estimate patterns of similarity among conditions, and then exploit those patterns of similarity among conditions to improve accuracy of effect estimates. See [Urbut et al][mashr-paper] for details of the model and methods.</p>
+<p>The methods use Empirical Bayes methods to estimate patterns of similarity among conditions, and then exploit those patterns of similarity among conditions to improve accuracy of effect estimates. See <a href="https://doi.org/10.1038/s41588-018-0268-8">Urbut et al</a> for details of the model and methods.</p>
 <p>Note that this R package is a refactoring of the code originally used to generate the results for the manuscript. The original package code is <a href="http://github.com/stephenslab/mashr-paper">here</a>.</p>
 <div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
@@ -109,8 +109,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <li><p>When any changes are made to <code>roxygen2</code> markup or the C++ code in the src directory, simply run <code><a href="http://www.rdocumentation.org/packages/devtools/topics/document">devtools::document()</a></code> to update the <a href="src/RcppExports.cpp">RcppExports.cpp</a>, the package namespaces (see <a href="NAMESPACE" class="uri">NAMESPACE</a>), and the package documentation files (in the man directory),</p></li>
 <li><p>These are the R commands to build the website (make sure you are connected to Internet while running these commands):</p></li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(pkgdown)
-<span class="kw"><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site</a></span>(<span class="dt">mathjax =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p><code>R    library(pkgdown)    pkgdown::build_site(mathjax = FALSE)</code></p>
 </div>
 </div>
   </div>

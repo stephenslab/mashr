@@ -101,11 +101,11 @@ data.L =<span class="st"> </span><span class="kw"><a href="../reference/mash_upd
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.L)
 mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.L, U.c, <span class="dt">algorithm.version =</span> <span class="st">'R'</span>)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.97 seconds.
+#  - Likelihood calculations took 1.18 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 4.21 seconds.
+#  - Model fitting took 4.23 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.14 seconds.</code></pre>
+#  - Computation allocated took 0.15 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(mashcontrast.model),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
 <pre><code># [1] -105525.1375</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
@@ -121,11 +121,11 @@ mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../refere
 data.wrong =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="dt">Bhat =</span> simdata<span class="op">$</span>Chat <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(L), <span class="dt">Shat =</span> <span class="dv">1</span>)
 m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.wrong, U.c)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.29 seconds.
+#  - Likelihood calculations took 0.30 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 2.26 seconds.
+#  - Model fitting took 2.35 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.07 seconds.</code></pre>
+#  - Computation allocated took 0.09 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits =</span> <span class="dv">10</span>)</code></pre></div>
 <pre><code># [1] -111355.1971</code></pre>
 <p>We can see that the log likelihood is lower, since it does not consider the induced correlation.</p>

@@ -9,7 +9,7 @@ many conditions (or many effects on many outcomes).
 The methods use Empirical Bayes methods to estimate patterns of
 similarity among conditions, and then exploit those patterns of
 similarity among conditions to improve accuracy of effect estimates.
-See [Urbut et al][mashr-paper] for details of the model and methods.
+See [Urbut et al][mash-paper] for details of the model and methods.
 
 Note that this R package is a refactoring of the code originally used
 to generate the results for the manuscript. The original package code is
@@ -85,10 +85,10 @@ the man directory),
 + These are the R commands to build the website (make sure you are
 connected to Internet while running these commands):
 
-```R
-library(pkgdown)
-build_site(mathjax = FALSE)
-```
+   ```R
+   library(pkgdown)
+   pkgdown::build_site(mathjax = FALSE)
+   ```
 
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
