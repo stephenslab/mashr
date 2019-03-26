@@ -19,7 +19,7 @@
 #' @importFrom plyr aaply
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom abind abind
-compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
+compute_posterior_matrices_common_cov_R = function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
                                                  posterior_samples = 0, seed = 123){
   R = n_conditions(data)
   J = n_effects(data)

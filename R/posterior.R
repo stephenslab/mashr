@@ -29,8 +29,6 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
   return(Bhat %*% (Vinv %*% U1))
 }
 
-
-
 #' @title Compute posterior matrices.
 #'
 #' @description More detailed description of function goes here.
