@@ -194,6 +194,48 @@ arma::mat calc_lik(const arma::mat & b_mat,
 }
 
 
+// @title calc_lik multivariate, given Sigma as a matrix (common Sigma)
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param sigma R by R
+// @param U_cube list of prior covariance matrices
+// @param logd if true computes log-likelihood
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat calc_lik(const arma::mat & b_mat,
+                   const arma::mat & sigma,
+                   const arma::cube & U_cube,
+                   bool logd)
+{
+	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+	for (arma::uword p = 0; p < lik.n_cols; ++p) {
+		lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
+	}
+	return lik;
+}
+
+// @title calc_lik multivariate, given Sigma as an array
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param sigma_cube J by R by R
+// @param U_cube list of prior covariance matrices
+// @param logd if true computes log-likelihood
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat calc_lik(const arma::mat & b_mat,
+                   const arma::cube & sigma_cube,
+                   const arma::cube & U_cube,
+                   bool logd)
+{
+	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+	for (arma::uword j = 0; j < lik.n_rows; ++j) {
+		for (arma::uword p = 0; p < lik.n_cols; ++p) {
+			lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma_cube.slice(j) + U_cube.slice(p), logd);
+		}
+	}
+	return lik;
+}
+
 // @title calc_lik univariate version
 // @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior sigma
 // @param b_vec of J
