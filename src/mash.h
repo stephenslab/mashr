@@ -25,21 +25,27 @@ inline arma::vec dnorm(const arma::vec & x,
 inline arma::vec dmvnorm_mat(const arma::mat & x,
                              const arma::vec & mean,
                              const arma::mat & sigma,
-                             bool logd = false)
+                             bool logd = false,
+                             bool inversed = false)
 {
 	double xdim = static_cast<double>(x.n_rows);
 
 	arma::vec out(x.n_cols);
 	arma::mat rooti;
 
-	try {
-		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
-	} catch (const std::runtime_error & error) {
-		if (logd) out.fill(-arma::datum::inf);
-		else out.fill(0.0);
-		for (arma::uword i = 0; i < x.n_cols; ++i)
-			if (arma::accu(arma::abs(x.col(i) - mean)) < 1e-6) out.at(i) = arma::datum::inf;
-		return out;
+	// we have previously computed rooti
+	// in R eg rooti <- backsolve(chol(sigma), diag(ncol(x)))
+	if (inversed) rooti = sigma;
+	else {
+		try {
+			rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
+		} catch (const std::runtime_error & error) {
+			if (logd) out.fill(-arma::datum::inf);
+			else out.fill(0.0);
+			for (arma::uword i = 0; i < x.n_cols; ++i)
+				if (arma::accu(arma::abs(x.col(i) - mean)) < 1e-6) out.at(i) = arma::datum::inf;
+			return out;
+		}
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(xdim / 2.0) * LOG_2PI;
@@ -59,16 +65,19 @@ inline arma::vec dmvnorm_mat(const arma::mat & x,
 inline double dmvnorm(const arma::vec & x,
                       const arma::vec & mean,
                       const arma::mat & sigma,
-                      bool logd = false)
+                      bool logd = false,
+                      bool inversed = false)
 {
 	arma::mat rooti;
-
-	try {
-		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
-	} catch (const std::runtime_error & error) {
-		double diff = arma::accu(arma::abs(x - mean));
-		if (logd) return (diff < 1e-6) ? arma::datum::inf : -arma::datum::inf;
-		else return (diff < 1e-6) ? arma::datum::inf : 0.0;
+	if (inversed) rooti = sigma;
+	else {
+		try {
+			rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
+		} catch (const std::runtime_error & error) {
+			double diff = arma::accu(arma::abs(x - mean));
+			if (logd) return (diff < 1e-6) ? arma::datum::inf : -arma::datum::inf;
+			else return (diff < 1e-6) ? arma::datum::inf : 0.0;
+		}
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(static_cast<double>(x.n_elem) / 2.0) * LOG_2PI;
@@ -189,6 +198,30 @@ arma::mat calc_lik(const arma::mat & b_mat,
 				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
 			}
 		}
+	}
+	return lik;
+}
+
+
+// @title calc_lik multivariate common cov version with sigma inverse precomputed
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param Vinv_cube R by R by J
+// @param U_cube list of prior covariance matrices
+// @param logd if true computes log-likelihood
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat calc_lik(const arma::mat & b_mat,
+                   const arma::cube & Vinv_cube,
+                   const arma::cube & U_cube,
+                   bool logd)
+{
+	// In armadillo data are stored with column-major ordering
+	// slicing columns are therefore faster than rows
+	// lik is a J by P matrix
+	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+	for (arma::uword p = 0; p < lik.n_cols; ++p) {
+		lik.col(p) = dmvnorm_mat(b_mat, mean, Vinv_cube.slice(p), logd);
 	}
 	return lik;
 }
