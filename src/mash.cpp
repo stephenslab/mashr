@@ -43,6 +43,29 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 		Rcpp::Named("status") = 0);
 }
 
+// [[Rcpp::export]]
+Rcpp::List calc_lik_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
+                         Rcpp::NumericVector V_3d,
+                         Rcpp::NumericVector U_3d,
+                         bool logd)
+{
+
+	// hide armadillo warning / error messages
+	// std::ostream nullstream(0);
+	// arma::set_stream_err2(nullstream);
+	arma::mat res;
+	// set cube data from R 3D array
+	Rcpp::IntegerVector dimU = U_3d.attr("dim");
+	arma::cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+	Rcpp::IntegerVector dimV = V_3d.attr("dim");
+	arma::cube Vinv_cube(V_3d.begin(), dimV[0], dimV[1], dimV[2]);
+	res = calc_lik(Rcpp::as<arma::mat>(b_mat),
+		Vinv_cube,
+		U_cube,
+		logd);
+	return Rcpp::List::create(Rcpp::Named("data") = res,
+		Rcpp::Named("status") = 0);
+}
 
 // [[Rcpp::export]]
 Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
