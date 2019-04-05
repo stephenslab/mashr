@@ -344,7 +344,7 @@ public:
 
 		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
+			arma::mat Vinv_j = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
 			// R X P matrices
 			arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
@@ -353,13 +353,13 @@ public:
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				//
 				arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
-				arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+				arma::mat U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
 				if (a_mat.is_empty()) {
-					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j);
+					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
 					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
 				} else {
 					mu1_mat.col(p) = a_mat *
-					                 (get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j));
+					                 (get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j));
 					U1 = a_mat *
 					     (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) *
 					      a_mat.t());
@@ -401,7 +401,8 @@ public:
 	{
 		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
-		arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+		if (Vinv.is_empty()) Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+
 		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
 		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
 		arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
@@ -459,6 +460,13 @@ public:
 	}
 
 
+	int set_vinv(const arma::mat & value)
+	{
+		Vinv = value;
+		return 0;
+	}
+
+
 	// @return PosteriorMean JxR matrix of posterior means
 	// @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
 	// @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
@@ -477,6 +485,7 @@ private:
 	arma::mat l_mat;
 	arma::mat a_mat;
 	arma::cube U_cube;
+	arma::mat Vinv;
 	// output
 	// all R X J mat
 	arma::mat post_mean;
