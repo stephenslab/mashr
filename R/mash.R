@@ -55,6 +55,7 @@ mash = function(data,
     if(!missing(usepointmass)){stop("cannot supply both g and usepointmass")}
     Ulist = g$Ulist
     grid = g$grid
+    usepointmass = g$usepointmass
   } else { #g not supplied
     if(missing(Ulist)){stop("must supply Ulist (or g from previous mash fit)")}
     if(missing(grid)){grid = autoselect_grid(data,gridmult)}
