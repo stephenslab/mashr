@@ -221,7 +221,7 @@ arma::mat calc_lik(const arma::mat & b_mat,
 	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
 	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 	for (arma::uword p = 0; p < lik.n_cols; ++p) {
-		lik.col(p) = dmvnorm_mat(b_mat, mean, Vinv_cube.slice(p), logd);
+		lik.col(p) = dmvnorm_mat(b_mat, mean, Vinv_cube.slice(p), logd, true);
 	}
 	return lik;
 }
