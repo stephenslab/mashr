@@ -45,9 +45,8 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 
 
 // [[Rcpp::export]]
-Rcpp::List calc_lik_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
-                                     Rcpp::NumericVector V_3d,
-                                     Rcpp::NumericVector U_3d,
+Rcpp::List calc_lik_common_rcpp(Rcpp::NumericMatrix b_mat,
+                                     Rcpp::NumericVector rooti_3d,
                                      bool logd)
 {
 	// hide armadillo warning / error messages
@@ -55,13 +54,10 @@ Rcpp::List calc_lik_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
 	// arma::set_stream_err2(nullstream);
 	arma::mat res;
 	// set cube data from R 3D array
-	Rcpp::IntegerVector dimU = U_3d.attr("dim");
-	arma::cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
-	Rcpp::IntegerVector dimV = V_3d.attr("dim");
-	arma::cube Vinv_cube(V_3d.begin(), dimV[0], dimV[1], dimV[2]);
+	Rcpp::IntegerVector dimR = rooti_3d.attr("dim");
+	arma::cube rooti_cube(rooti_3d.begin(), dimR[0], dimR[1], dimR[2]);
 	res = calc_lik(Rcpp::as<arma::mat>(b_mat),
-		Vinv_cube,
-		U_cube,
+		rooti_cube,
 		logd);
 	return Rcpp::List::create(Rcpp::Named("data") = res,
 		Rcpp::Named("status") = 0);
@@ -126,7 +122,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 
 // [[Rcpp::export]]
-Rcpp::List calc_post_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
+Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
                                       Rcpp::NumericMatrix s_mat,
                                       Rcpp::NumericMatrix s_alpha_mat,
                                       Rcpp::NumericMatrix s_orig_mat,
@@ -134,7 +130,7 @@ Rcpp::List calc_post_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
                                       Rcpp::NumericMatrix l_mat,
                                       Rcpp::NumericMatrix a_mat,
                                       Rcpp::NumericMatrix vinv_mat,
-                                      Rcpp::NumericVector U_3d,
+                                      Rcpp::NumericVector U0_3d,
                                       Rcpp::NumericMatrix posterior_weights,
                                       int report_type)
 {
@@ -143,8 +139,11 @@ Rcpp::List calc_post_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
 	// arma::set_stream_err2(nullstream);
 
 	// set cube data from R 3D array
-	Rcpp::IntegerVector dimU = U_3d.attr("dim");
-	arma::cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+	Rcpp::IntegerVector dimU = U0_3d.attr("dim");
+	arma::cube U0_cube(U0_3d.begin(), dimU[0], dimU[1], dimU[2]);
+	arma::cube U_cube = U0_cube;
+	// here we do not need U_cube values if we have U0_cube, but we need it to fill up the class.
+	U_cube.zeros();
 	PosteriorMASH pc(Rcpp::as<arma::mat>(b_mat),
 	                 Rcpp::as<arma::mat>(s_mat),
 	                 Rcpp::as<arma::mat>(s_alpha_mat),
@@ -154,6 +153,7 @@ Rcpp::List calc_post_preinversed_rcpp(Rcpp::NumericMatrix b_mat,
 	                 Rcpp::as<arma::mat>(a_mat),
 	                 U_cube);
 	pc.set_vinv(Rcpp::as<arma::mat>(vinv_mat));
+	pc.set_U0(U0_cube);
 	pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_type);
 	return Rcpp::List::create(
 		Rcpp::Named("post_mean") = pc.PosteriorMean(),

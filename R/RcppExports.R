@@ -9,7 +9,15 @@ calc_lik_rcpp <- function(b_mat, s_mat, v_mat, l_mat, U_3d, logd, common_cov) {
     .Call('_mashr_calc_lik_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, l_mat, U_3d, logd, common_cov)
 }
 
+calc_lik_common_rcpp <- function(b_mat, rooti_3d, logd) {
+    .Call('_mashr_calc_lik_common_rcpp', PACKAGE = 'mashr', b_mat, rooti_3d, logd)
+}
+
 calc_post_rcpp <- function(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type) {
     .Call('_mashr_calc_post_rcpp', PACKAGE = 'mashr', b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type)
+}
+
+calc_post_precision_rcpp <- function(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, vinv_mat, U0_3d, posterior_weights, report_type) {
+    .Call('_mashr_calc_post_precision_rcpp', PACKAGE = 'mashr', b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, vinv_mat, U0_3d, posterior_weights, report_type)
 }
 
