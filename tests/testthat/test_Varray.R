@@ -11,9 +11,9 @@ test_that("Input null correlation as 3 dim array in R version, alpha=0", {
 
   U.c = cov_canonical(data)
 
-  m = mash(data, U.c, algorithm.version = 'R')
+  m = mash(data, U.c, algorithm.version = 'R', verbose = F)
 
-  m3D = mash(data.3D, U.c, algorithm.version = 'R')
+  m3D = mash(data.3D, U.c, algorithm.version = 'R', verbose = F)
 
   expect_equal(m, m3D)
 }
@@ -31,9 +31,9 @@ test_that("Input null correlation as 3 dim array in R version, alpha=1", {
 
   U.c = cov_canonical(data)
 
-  m = mash(data, U.c, algorithm.version = 'R')
+  m = mash(data, U.c, algorithm.version = 'R', verbose = F)
 
-  m3D = mash(data.3D, U.c, algorithm.version = 'R')
+  m3D = mash(data.3D, U.c, algorithm.version = 'R', verbose = F)
 
   expect_equal(m, m3D)
 }
