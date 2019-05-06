@@ -5,6 +5,10 @@ extreme_deconvolution_rcpp <- function(ydata, ycovar, projection, logweights, am
     .Call('_mashr_extreme_deconvolution_rcpp', PACKAGE = 'mashr', ydata, ycovar, projection, logweights, amp, xmean, xcovar, fixamp_int, fixmean_int, fixcovar_int, tol, maxiter, likeonly, w, logfilename, splitnmerge, convlogfilename, noproj, diagerrs, noweight)
 }
 
+calc_rooti_rcpp <- function(x_mat) {
+    .Call('_mashr_calc_rooti_rcpp', PACKAGE = 'mashr', x_mat)
+}
+
 calc_lik_rcpp <- function(b_mat, s_mat, v_mat, l_mat, U_3d, logd, common_cov) {
     .Call('_mashr_calc_lik_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, l_mat, U_3d, logd, common_cov)
 }
