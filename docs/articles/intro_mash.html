@@ -63,7 +63,7 @@
       <h1>Introduction to mashr</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2019-03-11</h4>
+            <h4 class="date">2019-05-06</h4>
           </div>
 
     
@@ -126,11 +126,11 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m.c =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c)</code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.04 seconds.
+#  - Likelihood calculations took 0.05 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.43 seconds.
+#  - Model fitting took 163.73 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.01 seconds.</code></pre>
+#  - Computation allocated took 0.10 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
 <p>Remember the Crucial Rule! This step must be peformed using all the tests (or a large random subset), because this is where <code>mash</code> learns that many tests are null and corrects for it.</p>
 </div>
@@ -140,65 +140,65 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>You can extract estimates (posterior means and posterior standard deviations) and measures of significance (local false sign rates) using functions like <code>get_pm</code> (posterior mean), <code>get_psd</code> (posteriore standard deviation) and <code>get_lfsr</code> (local false sign rate):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_lfsr</a></span>(m.c))</code></pre></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.7561456   0.7705826   0.8052788   0.8111108   0.8189434
-# effect_2   0.7245451   0.6905870   0.7760437   0.6922681   0.7012644
-# effect_3   0.7387334   0.7514373   0.8104771   0.8390450   0.8501580
-# effect_4   0.7855678   0.8454469   0.8360456   0.8660080   0.8503389
-# effect_5   0.8044529   0.8371028   0.8808424   0.8785894   0.8758287
-# effect_6   0.7206969   0.6833571   0.7894009   0.7002643   0.7569353</code></pre>
+# effect_1   0.7058731   0.6550167   0.6823369   0.6702674   0.7028355
+# effect_2   0.6741736   0.6068573   0.6918971   0.5786526   0.6047107
+# effect_3   0.6937052   0.6234818   0.6818834   0.7244426   0.7367592
+# effect_4   0.7098717   0.7123390   0.6704936   0.7315070   0.7077594
+# effect_5   0.7176814   0.6829167   0.7368497   0.7359613   0.7333636
+# effect_6   0.7051578   0.6050047   0.6984023   0.5944263   0.6731436</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_pm</a></span>(m.c))</code></pre></div>
-<pre><code>#          condition_1 condition_2   condition_3  condition_4  condition_5
-# effect_1  0.07387961 -0.12490000 -0.0763267542  0.092636351 -0.045368803
-# effect_2 -0.02353673 -0.17604965 -0.0324344285 -0.201657010 -0.170555034
-# effect_3 -0.10218412  0.18092463 -0.0846362908  0.022525129 -0.002685045
-# effect_4 -0.06238666  0.02794230  0.0654500317  0.008113439  0.032179933
-# effect_5  0.03341429 -0.06059869  0.0001472689 -0.003887683 -0.004665803
-# effect_6 -0.09934878  0.21556970 -0.0791533646  0.213031571  0.079063932</code></pre>
+<pre><code>#          condition_1 condition_2  condition_3   condition_4  condition_5
+# effect_1  0.03167247 -0.09682315 -0.063257585  0.0880400766 -0.036108241
+# effect_2 -0.02754472 -0.13133115 -0.015955629 -0.1754886124 -0.135294626
+# effect_3 -0.04826380  0.15185915 -0.072980287  0.0176872821 -0.001938137
+# effect_4 -0.02804483  0.02248847  0.074639681  0.0015987191  0.028993822
+# effect_5  0.01592609 -0.06100623  0.004101135 -0.0009937698 -0.002082982
+# effect_6 -0.03349555  0.15579085 -0.052166453  0.1758214687  0.059850874</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_psd</a></span>(m.c))</code></pre></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.4592864   0.4210518   0.3544677   0.4062430   0.3365941
-# effect_2   0.4861874   0.4277981   0.4047003   0.4447904   0.4149903
-# effect_3   0.4679459   0.5082177   0.3799465   0.3269399   0.3283928
-# effect_4   0.4389159   0.2964015   0.3082097   0.2749191   0.2809693
-# effect_5   0.4033387   0.3286560   0.2608065   0.2597959   0.2656111
-# effect_6   0.5226697   0.4981630   0.4482802   0.4906797   0.3899275</code></pre>
+# effect_1   0.3275706   0.3646973   0.3190687   0.3747228   0.2995326
+# effect_2   0.3481994   0.3731738   0.3353865   0.4250630   0.3764221
+# effect_3   0.3344089   0.4561742   0.3425730   0.2900998   0.2905154
+# effect_4   0.3170211   0.2775196   0.3203516   0.2721282   0.2780047
+# effect_5   0.2975991   0.3142275   0.2666648   0.2655621   0.2691009
+# effect_6   0.3662871   0.4250229   0.3664854   0.4497329   0.3278061</code></pre>
 <p>Each of these are <span class="math inline">\(J \times R\)</span> matrices.</p>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are “significant”, which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is ordered from most significant to least significant.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(m.c))</code></pre></div>
-<pre><code># effect_1800 effect_1812 effect_1857 effect_1953 effect_1915 effect_1950 
-#        1800        1812        1857        1953        1915        1950</code></pre>
+<pre><code># effect_1800 effect_1812 effect_1857 effect_1953 effect_1915 effect_1713 
+#        1800        1812        1857        1953        1915        1713</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">length</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(m.c)))</code></pre></div>
-<pre><code># [1] 150</code></pre>
+<pre><code># [1] 138</code></pre>
 <p>You can also get the significant results in just a subset of conditions. For example</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">head</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(m.c, <span class="dt">conditions=</span><span class="dv">1</span>)))</code></pre></div>
-<pre><code># effect_1812 effect_1726 effect_1800 effect_1501 effect_1953 effect_1993 
-#        1812        1726        1800        1501        1953        1993</code></pre>
+<pre><code># effect_1812 effect_1726 effect_1501 effect_1993 effect_1800 effect_1953 
+#        1812        1726        1501        1993        1800        1953</code></pre>
 <div id="sharing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sharing" class="anchor"></a>Sharing</h2>
 <p>Use <code>get_pairwise_sharing</code> to assess sharing of significant signals among each pair of conditions. Here the default definition of shared is “the same sign and within a factor 0.5 of each other”.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(m.c)) </code></pre></div>
 <pre><code>#             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1   1.0000000   0.7761194   0.8015267   0.7727273   0.7777778
-# condition_2   0.7761194   1.0000000   0.9142857   0.8971963   0.8611111
-# condition_3   0.8015267   0.9142857   1.0000000   0.9108911   0.8962264
-# condition_4   0.7727273   0.8971963   0.9108911   1.0000000   0.8679245
-# condition_5   0.7777778   0.8611111   0.8962264   0.8679245   1.0000000</code></pre>
+# condition_1   1.0000000   0.7297297   0.7981651   0.7747748   0.7727273
+# condition_2   0.7297297   1.0000000   0.8958333   0.8775510   0.8265306
+# condition_3   0.7981651   0.8958333   1.0000000   0.8913043   0.8936170
+# condition_4   0.7747748   0.8775510   0.8913043   1.0000000   0.8817204
+# condition_5   0.7727273   0.8265306   0.8936170   0.8817204   1.0000000</code></pre>
 <p>You can change the factor if you like. For example, here by setting the factor to be 0 you assess only if they are the same sign:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(m.c, <span class="dt">factor=</span><span class="dv">0</span>))</code></pre></div>
 <pre><code>#             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1   1.0000000   0.8880597   0.9236641   0.8863636   0.9111111
-# condition_2   0.8880597   1.0000000   0.9333333   0.9252336   0.9444444
-# condition_3   0.9236641   0.9333333   1.0000000   0.9207921   0.9716981
-# condition_4   0.8863636   0.9252336   0.9207921   1.0000000   0.9339623
-# condition_5   0.9111111   0.9444444   0.9716981   0.9339623   1.0000000</code></pre>
+# condition_1   1.0000000   0.9099099   0.9357798   0.9189189   0.9454545
+# condition_2   0.9099099   1.0000000   0.9479167   0.9387755   0.9183673
+# condition_3   0.9357798   0.9479167   1.0000000   0.9456522   0.9893617
+# condition_4   0.9189189   0.9387755   0.9456522   1.0000000   0.9784946
+# condition_5   0.9454545   0.9183673   0.9893617   0.9784946   1.0000000</code></pre>
 </div>
 <div id="measure-of-fit-log-likelihood" class="section level2">
 <h2 class="hasAnchor">
 <a href="#measure-of-fit-log-likelihood" class="anchor"></a>Measure of fit (log-likelihood)</h2>
 <p>Use <code>get_loglik</code> to find the log-likelihood of the fit (this will only be useful when you have other fits to compare it with!)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_loglik</a></span>(m.c))</code></pre></div>
-<pre><code># [1] -16120.32</code></pre>
+<pre><code># [1] -16192.62</code></pre>
 </div>
 <div id="estimated-mixture-proportions" class="section level2">
 <h2 class="hasAnchor">
@@ -206,11 +206,11 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 <p>Use <code>get_estimated_pi</code> to extract the estimates of the mixture proportions for different types of covariance matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(m.c))</code></pre></div>
 <pre><code>#          null      identity   condition_1   condition_2   condition_3 
-#  3.711932e-01  2.208664e-01  1.365264e-01  2.097969e-02  0.000000e+00 
+#    0.02557146    0.08721613    0.11577348    0.09028063    0.08347747 
 #   condition_4   condition_5 equal_effects  simple_het_1  simple_het_2 
-#  0.000000e+00  4.961490e-03  2.264380e-01  9.035503e-05  0.000000e+00 
+#    0.08349696    0.08789045    0.12852902    0.09153850    0.09801499 
 #  simple_het_3 
-#  1.894453e-02</code></pre>
+#    0.10821026</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">barplot</span>(<span class="kw"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(m.c),<span class="dt">las =</span> <span class="dv">2</span>)</code></pre></div>
 <p><img src="intro_mash_files/figure-html/unnamed-chunk-11-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>Here we can see most of the mass is on the null, identity, <code>singletons_1</code> (which corresponds to effects that are specific to condition 1) and <code>equal_effects</code>. This reassuringly matches the way that these data were generated.</p>
@@ -242,17 +242,17 @@ simdata =<span class="st"> </span><span class="kw"><a href="../reference/simple_
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.2.20.0583 ashr_2.2-32      
+# [1] mashr_0.2.21.0631 ashr_2.2-35      
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_1.0.0        knitr_1.20        magrittr_1.5     
+#  [1] Rcpp_1.0.1        knitr_1.20        magrittr_1.5     
 #  [4] MASS_7.3-48       doParallel_1.0.11 pscl_1.5.2       
 #  [7] SQUAREM_2017.10-1 lattice_0.20-35   foreach_1.4.4    
 # [10] plyr_1.8.4        stringr_1.3.1     tools_3.4.3      
 # [13] parallel_3.4.3    grid_3.4.3        rmeta_3.0        
 # [16] htmltools_0.3.6   iterators_1.0.9   assertthat_0.2.0 
 # [19] abind_1.4-5       yaml_2.2.0        rprojroot_1.3-2  
-# [22] digest_0.6.17     mixsqp_0.1-97     Matrix_1.2-12    
+# [22] digest_0.6.17     mixsqp_0.1-116    Matrix_1.2-12    
 # [25] codetools_0.2-15  evaluate_0.11     rmarkdown_1.10   
 # [28] stringi_1.2.4     compiler_3.4.3    backports_1.1.2  
 # [31] mvtnorm_1.0-8     truncnorm_1.0-8</code></pre>

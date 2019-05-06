@@ -88,19 +88,19 @@
 <a href="#setup" class="anchor"></a>Setup</h2>
 <p>Please follow these steps to install mashr.</p>
 <ol>
-<li><p>Unlike most packages available on CRAN, mashr is not precompiled; therefore, you will need to make sure that your R installation is properly set up to compile packages with C++ source; in particular, the C++ compiler programs supported by your version of R should be installed on your computer, and R should be correctly configured to call these compilers. See the <a href="https://cran.r-project.org/manuals.html">CRAN documentation</a> for more information.</p></li>
+<li><p>Unlike most packages available on CRAN, mashr is not precompiled, and therefore to install mashr you will need to make sure that your R installation is properly set up to compile packages with C++ source; in particular, the C++ compiler programs supported by your version of R should be installed on your computer, and R should be correctly configured to call these compilers when installing packages from source. For more information, see the <a href="https://cran.r-project.org/manuals.html">CRAN documentation</a>.</p></li>
 <li>
-<p>Install the <a href="https://github.com/stephenslab/mashr/releases/tag/v0.2-9">latest release</a> of the mashr package using <a href="https://github.com/r-lib/devtools">devtools</a>:</p>
+<p>Install the <a href="https://github.com/stephenslab/mashr/releases/tag/v0.2-11">latest release</a> of the mashr package using <a href="https://github.com/r-lib/devtools">devtools</a>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"devtools"</span>)
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"stephenslab/mashr"</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"stephenslab/mashr@v0.2-11"</span>)</code></pre></div>
 </li>
 </ol>
-<p>This command should have automatically retrieved and installed the latest version of the ashr package from Github. If it did not, you can install the ashr package separately using devtools:</p>
+<p>This command should automatically install any missing dependencies that are available from CRAN. This command should also automatically retrieve and install the latest version of the ashr package from Github. If it does not, you can install the ashr package separately using devtools:</p>
 <p><code>R    devtools::install_github("stephens999/ashr")</code></p>
 <ol>
-<li>Several additional packages are needed to build vignettes:</li>
+<li>By default, the <code><a href="http://www.rdocumentation.org/packages/devtools/topics/reexports">devtools::install_github</a></code> function does not build the vignettes. If you would like to build the vignettes as well, you will need to several additional packages, including <a href="https://github.com/stephenslab/flashr">flashr</a>, that are used only in the vignettes:</li>
 </ol>
-<p><code>R    install.packages(c("kableExtra","corrplot"))    devtools::install_github("stephenslab/flashr")    devtools::install_github("stephenslab/mashr",build_vignettes = TRUE)</code></p>
+<p><code>R    install.packages(c("kableExtra","corrplot"))    devtools::install_github("stephenslab/flashr")    devtools::install_github("stephenslab/mashr@v0.2-11",build_vignettes = TRUE)</code></p>
 </div>
 <div id="developer-notes" class="section level2">
 <h2 class="hasAnchor">
@@ -109,7 +109,7 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <li><p>When any changes are made to <code>roxygen2</code> markup or the C++ code in the src directory, simply run <code><a href="http://www.rdocumentation.org/packages/devtools/topics/document">devtools::document()</a></code> to update the <a href="src/RcppExports.cpp">RcppExports.cpp</a>, the package namespaces (see <a href="NAMESPACE" class="uri">NAMESPACE</a>), and the package documentation files (in the man directory),</p></li>
 <li><p>These are the R commands to build the website (make sure you are connected to Internet while running these commands):</p></li>
 </ul>
-<p><code>R    library(pkgdown)    pkgdown::build_site(mathjax = FALSE)</code></p>
+<p><code>R    library(pkgdown)    build_site(mathjax = FALSE)</code></p>
 </div>
 </div>
   </div>

@@ -63,7 +63,7 @@
       <h1>mashr with common baseline</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2019-03-11</h4>
+            <h4 class="date">2019-05-06</h4>
           </div>
 
     
@@ -101,17 +101,17 @@ data.L =<span class="st"> </span><span class="kw"><a href="../reference/mash_upd
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.L)
 mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.L, U.c, <span class="dt">algorithm.version =</span> <span class="st">'R'</span>)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 1.18 seconds.
+#  - Likelihood calculations took 1.28 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 4.23 seconds.
+#  - Model fitting took 797.26 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.15 seconds.</code></pre>
+#  - Computation allocated took 1.48 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(mashcontrast.model),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
-<pre><code># [1] -105525.1375</code></pre>
+<pre><code># [1] -105727.2259</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(mashcontrast.model))</code></pre></div>
 <pre><code># [1] 58</code></pre>
-<p>The number of false positive is 1.</p>
+<p>The number of false positive is 3.</p>
 </div>
 <div id="the-wrong-way" class="section level1">
 <h1 class="hasAnchor">
@@ -121,15 +121,15 @@ mashcontrast.model =<span class="st"> </span><span class="kw"><a href="../refere
 data.wrong =<span class="st"> </span><span class="kw"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="dt">Bhat =</span> simdata<span class="op">$</span>Chat <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(L), <span class="dt">Shat =</span> <span class="dv">1</span>)
 m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.wrong, U.c)</code></pre></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.30 seconds.
+#  - Likelihood calculations took 0.36 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 2.35 seconds.
+#  - Model fitting took 577.91 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.09 seconds.</code></pre>
+#  - Computation allocated took 0.81 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits =</span> <span class="dv">10</span>)</code></pre></div>
-<pre><code># [1] -111355.1971</code></pre>
+<pre><code># [1] -113111.4118</code></pre>
 <p>We can see that the log likelihood is lower, since it does not consider the induced correlation.</p>
-<p>There are 3358 significant effects, 2932 of them are false positives. The number of false positives is much more than the one include the induced correlation.</p>
+<p>There are 1572 significant effects, 1320 of them are false positives. The number of false positives is much more than the one include the induced correlation.</p>
 </div>
 </div>
   </div>

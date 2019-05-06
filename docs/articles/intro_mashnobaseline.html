@@ -63,7 +63,7 @@
       <h1>mashr with no common baseline</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2019-03-11</h4>
+            <h4 class="date">2019-05-06</h4>
           </div>
 
     
@@ -142,17 +142,17 @@ U.ed =<span class="st"> </span><span class="kw"><a href="../reference/cov_ed.htm
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.L, <span class="kw">c</span>(U.c,U.ed), <span class="dt">algorithm.version =</span> <span class="st">'R'</span>)</code></pre></div>
 <pre><code>#  - Computing 2000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.39 seconds.
+#  - Likelihood calculations took 0.34 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 0.51 seconds.
+#  - Model fitting took 280.95 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.01 seconds.</code></pre>
+#  - Computation allocated took 0.18 seconds.</code></pre>
 <p>The log likelihood is</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">get_loglik</span>(m),<span class="dt">digits=</span><span class="dv">10</span>)</code></pre></div>
-<pre><code># [1] -10891.72215</code></pre>
+<pre><code># [1] -10957.37234</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">length</span>(<span class="kw"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(m))</code></pre></div>
-<pre><code># [1] 141</code></pre>
+<pre><code># [1] 156</code></pre>
 <p>The number of false positive is 1.</p>
 </div>
 </div>

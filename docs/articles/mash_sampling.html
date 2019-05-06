@@ -63,7 +63,7 @@
       <h1>Sample from mash posteriors</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2019-03-11</h4>
+            <h4 class="date">2019-05-06</h4>
           </div>
 
     
@@ -88,11 +88,11 @@ U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonic
 <p>Here, we draw 100 samples from the posteriors of each effect.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data, U.c, <span class="dt">algorithm.version =</span> <span class="st">'R'</span>, <span class="dt">posterior_samples =</span> <span class="dv">100</span>)</code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.28 seconds.
+#  - Likelihood calculations took 0.29 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.42 seconds.
+#  - Model fitting took 157.86 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 3.01 seconds.</code></pre>
+#  - Computation allocated took 28.70 seconds.</code></pre>
 <p>Using <code><a href="../reference/get_samples.html">get_samples(m)</a></code>, we have a <span class="math inline">\(2000 \times 5 \times 100\)</span> array for samples.</p>
 <p>If we fit the mash model without the posterior samples, we could use <code>mash_compute_posterior_matrices</code> to sample from the mash object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m<span class="op">$</span>result =<span class="st"> </span><span class="kw"><a href="../reference/mash_compute_posterior_matrices.html">mash_compute_posterior_matrices</a></span>(m, data, <span class="dt">algorithm.version =</span> <span class="st">'R'</span>,

@@ -63,7 +63,7 @@
       <h1>eQTL analysis outline</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2019-03-11</h4>
+            <h4 class="date">2019-05-06</h4>
           </div>
 
     
@@ -134,9 +134,9 @@ U.ed =<span class="st"> </span><span class="kw"><a href="../reference/cov_ed.htm
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">U.c =<span class="st"> </span><span class="kw"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(data.random)
 m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.random, <span class="dt">Ulist =</span> <span class="kw">c</span>(U.ed,U.c), <span class="dt">outputlevel =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>#  - Computing 5000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.13 seconds.
+#  - Likelihood calculations took 0.16 seconds.
 #  - Fitting model with 241 mixture components.
-#  - Model fitting took 2.14 seconds.</code></pre>
+#  - Model fitting took 888.72 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level2">
 <h2 class="hasAnchor">
@@ -144,24 +144,24 @@ m =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">ma
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests. We do this using the same <code>mash</code> function as above, but we specify to use the fit from the previous run of mash by specifying<br><code>g=get_fitted_g(m), fixg=TRUE</code>. (In <code>mash</code> the parameter <code>g</code> is used to denote the mixture model which we learned above.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m2 =<span class="st"> </span><span class="kw"><a href="../reference/mash.html">mash</a></span>(data.strong, <span class="dt">g=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_fitted_g</a></span>(m), <span class="dt">fixg=</span><span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>#  - Computing 1428 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.06 seconds.
+#  - Likelihood calculations took 0.07 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.01 seconds.</code></pre>
+#  - Computation allocated took 0.11 seconds.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ashr/topics/get_lfdr">get_lfsr</a></span>(m2))</code></pre></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4
-# effect_13096 1.351029e-05 7.304550e-01 6.633768e-01 6.419718e-01
-# effect_29826 4.749262e-05 6.730004e-01 6.283735e-01 7.309554e-01
-# effect_14042 6.116539e-02 1.556075e-02 1.341717e-02 4.594320e-02
-# effect_12524 5.552693e-01 7.011304e-01 5.154365e-01 2.625457e-05
-# effect_15456 8.487950e-05 5.662427e-01 4.228120e-01 6.055155e-01
-# effect_35844 6.452969e-10 3.804030e-10 1.797445e-08 1.206916e-10
+# effect_13096 7.827683e-07 4.445904e-01 4.269113e-01 4.219194e-01
+# effect_29826 8.058844e-06 6.659669e-01 6.346211e-01 7.684488e-01
+# effect_14042 1.046313e-01 1.415929e-02 1.243030e-02 7.026350e-02
+# effect_12524 1.486131e-01 1.958528e-01 1.428624e-01 1.119056e-06
+# effect_15456 1.543916e-05 6.713363e-01 5.502629e-01 6.753834e-01
+# effect_35844 5.643556e-09 7.689403e-09 7.902065e-07 1.554177e-09
 #               condition_5
-# effect_13096 8.025795e-01
-# effect_29826 6.232960e-01
-# effect_14042 6.049099e-06
-# effect_12524 5.527004e-01
-# effect_15456 4.885029e-01
-# effect_35844 5.432876e-12</code></pre>
+# effect_13096 4.644556e-01
+# effect_29826 6.316816e-01
+# effect_14042 4.986650e-07
+# effect_12524 1.517283e-01
+# effect_15456 5.862622e-01
+# effect_35844 3.312828e-11</code></pre>
 </div>
 </div>
 </div>
