@@ -93,7 +93,7 @@ connected to Internet while running these commands):
 
    ```R
    library(pkgdown)
-   pkgdown::build_site(mathjax = FALSE)
+   build_site(mathjax = FALSE)
    ```
 
 [cran-docs]: https://cran.r-project.org/manuals.html
