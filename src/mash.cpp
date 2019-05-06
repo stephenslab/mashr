@@ -8,6 +8,14 @@
 // [[Rcpp::plugins(cpp11)]]
 
 // [[Rcpp::export]]
+Rcpp::List calc_rooti_rcpp(Rcpp::NumericMatrix x_mat)
+{
+	arma::mat res = arma::trans(arma::inv(arma::trimatu(arma::chol(Rcpp::as<arma::mat>(x_mat)))));
+	return Rcpp::List::create(Rcpp::Named("data") = res,
+		Rcpp::Named("status") = 0);
+}
+
+// [[Rcpp::export]]
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,
                          Rcpp::NumericMatrix v_mat,
@@ -16,7 +24,6 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          bool logd,
                          bool common_cov)
 {
-
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);
 	// arma::set_stream_err2(nullstream);
