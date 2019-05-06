@@ -70,7 +70,6 @@ mash = function(data,
     optmethod = match.arg(optmethod)
     prior = match.arg(prior)
   }
-  # check_positive_definite(data$V)
 
   # Get the number of samples (J), the number of mixture components
   # (i.e., prior covariances).
@@ -344,6 +343,4 @@ autoselect_grid = function(data,mult){
     npoint = ceiling(log2(gmax/gmin)/log2(mult))
     return(mult^((-npoint):0) * gmax)
   }
-  #message("autoselect_grid is a place-holder\n")
-  #return(c(0.5,1,2))
 }
