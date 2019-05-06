@@ -25,21 +25,27 @@ inline arma::vec dnorm(const arma::vec & x,
 inline arma::vec dmvnorm_mat(const arma::mat & x,
                              const arma::vec & mean,
                              const arma::mat & sigma,
-                             bool logd = false)
+                             bool logd = false,
+                             bool inversed = false)
 {
 	double xdim = static_cast<double>(x.n_rows);
 
 	arma::vec out(x.n_cols);
 	arma::mat rooti;
 
-	try {
-		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
-	} catch (const std::runtime_error & error) {
-		if (logd) out.fill(-arma::datum::inf);
-		else out.fill(0.0);
-		for (arma::uword i = 0; i < x.n_cols; ++i)
-			if (arma::accu(arma::abs(x.col(i) - mean)) < 1e-6) out.at(i) = arma::datum::inf;
-		return out;
+	// we have previously computed rooti
+	// in R eg rooti <- backsolve(chol(sigma), diag(ncol(x)))
+	if (inversed) rooti = sigma;
+	else {
+		try {
+			rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
+		} catch (const std::runtime_error & error) {
+			if (logd) out.fill(-arma::datum::inf);
+			else out.fill(0.0);
+			for (arma::uword i = 0; i < x.n_cols; ++i)
+				if (arma::accu(arma::abs(x.col(i) - mean)) < 1e-6) out.at(i) = arma::datum::inf;
+			return out;
+		}
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(xdim / 2.0) * LOG_2PI;
@@ -59,16 +65,19 @@ inline arma::vec dmvnorm_mat(const arma::mat & x,
 inline double dmvnorm(const arma::vec & x,
                       const arma::vec & mean,
                       const arma::mat & sigma,
-                      bool logd = false)
+                      bool logd = false,
+                      bool inversed = false)
 {
 	arma::mat rooti;
-
-	try {
-		rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
-	} catch (const std::runtime_error & error) {
-		double diff = arma::accu(arma::abs(x - mean));
-		if (logd) return (diff < 1e-6) ? arma::datum::inf : -arma::datum::inf;
-		else return (diff < 1e-6) ? arma::datum::inf : 0.0;
+	if (inversed) rooti = sigma;
+	else {
+		try {
+			rooti = arma::trans(arma::inv(arma::trimatu(arma::chol(sigma))));
+		} catch (const std::runtime_error & error) {
+			double diff = arma::accu(arma::abs(x - mean));
+			if (logd) return (diff < 1e-6) ? arma::datum::inf : -arma::datum::inf;
+			else return (diff < 1e-6) ? arma::datum::inf : 0.0;
+		}
 	}
 	double rootisum = arma::sum(arma::log(rooti.diag()));
 	double constants = -(static_cast<double>(x.n_elem) / 2.0) * LOG_2PI;
@@ -194,6 +203,28 @@ arma::mat calc_lik(const arma::mat & b_mat,
 }
 
 
+// @title calc_lik multivariate common cov version with sigma inverse precomputed
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param rooti_cube R by R by P
+// @param logd if true computes log-likelihood
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat calc_lik(const arma::mat & b_mat,
+                   const arma::cube & rooti_cube,
+                   bool logd)
+{
+	// In armadillo data are stored with column-major ordering
+	// slicing columns are therefore faster than rows
+	// lik is a J by P matrix
+	arma::mat lik(b_mat.n_cols, rooti_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+	for (arma::uword p = 0; p < lik.n_cols; ++p) {
+		lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
+	}
+	return lik;
+}
+
+
 // @title calc_lik univariate version
 // @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior sigma
 // @param b_vec of J
@@ -311,7 +342,7 @@ public:
 
 		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
+			arma::mat Vinv_j = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
 			// R X P matrices
 			arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
@@ -320,13 +351,13 @@ public:
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				//
 				arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
-				arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+				arma::mat U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
 				if (a_mat.is_empty()) {
-					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j);
+					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
 					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
 				} else {
 					mu1_mat.col(p) = a_mat *
-					                 (get_posterior_mean(b_mat.col(j), Vinv, U0) % s_obj.get().col(j));
+					                 (get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j));
 					U1 = a_mat *
 					     (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) *
 					      a_mat.t());
@@ -368,7 +399,8 @@ public:
 	{
 		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
-		arma::mat Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+		if (Vinv.is_empty()) Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+
 		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
 		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
 		arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
@@ -378,7 +410,9 @@ public:
 			arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
 			// R X J
 			arma::mat mu1_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-			arma::mat U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+			arma::mat U0;
+			if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+			else U0 = U0_cube.slice(p);
 			if (a_mat.is_empty()) {
 				mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get();
 				U1 = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
@@ -426,6 +460,18 @@ public:
 	}
 
 
+	int set_vinv(const arma::mat & value)
+	{
+		Vinv = value;
+		return 0;
+	}
+
+	int set_U0(const arma::cube & value)
+	{
+		U0_cube = value;
+		return 0;
+	}
+
 	// @return PosteriorMean JxR matrix of posterior means
 	// @return PosteriorSD JxR matrix of posterior (marginal) standard deviations
 	// @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
@@ -444,6 +490,8 @@ private:
 	arma::mat l_mat;
 	arma::mat a_mat;
 	arma::cube U_cube;
+	arma::mat Vinv;
+	arma::cube U0_cube;
 	// output
 	// all R X J mat
 	arma::mat post_mean;

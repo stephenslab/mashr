@@ -242,9 +242,9 @@ get_cov = function(data,j){
 #' @param data A mash data object.
 is_common_cov_Shat = function(data){
   if(is.null(data$L)){
-    all((t(data$Shat) - data$Shat[1,]) == 0)
+    sum(1-duplicated(data$Shat, MARGIN=1)) == 1
   } else{
-    all((t(data$Shat_orig) - data$Shat_orig[1,]) == 0)
+    sum(1-duplicated(data$Shat_orig, MARGIN=1)) == 1
   }
 }
 
@@ -254,7 +254,7 @@ is_common_cov_Shat = function(data){
 #'
 #' @param data A mash data object.
 is_common_cov_Shat_alpha = function(data){
-  all((t(data$Shat_alpha) - data$Shat_alpha[1, ]) == 0)
+  sum(1-duplicated(data$Shat_alpha, MARGIN=1)) == 1
 }
 
 n_conditions = function(data){ncol(data$Bhat)}
