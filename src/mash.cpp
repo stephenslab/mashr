@@ -138,9 +138,10 @@ Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
                                     Rcpp::NumericMatrix v_mat,
                                     Rcpp::NumericMatrix l_mat,
                                     Rcpp::NumericMatrix a_mat,
-                                    Rcpp::NumericMatrix vinv_mat,
+                                    Rcpp::NumericVector vinv_3d,
                                     Rcpp::NumericVector U0_3d,
                                     Rcpp::NumericMatrix posterior_weights,
+                                    bool common_cov,
                                     int report_type)
 {
 	// hide armadillo warning / error messages
@@ -153,6 +154,9 @@ Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
 	arma::cube U_cube = U0_cube;
 	// here we do not need U_cube values if we have U0_cube, but we need it to fill up the class.
 	U_cube.zeros();
+
+	Rcpp::IntegerVector dimV = vinv_3d.attr("dim");
+	arma::cube vinv_cube(vinv_3d.begin(), dimV[0], dimV[1], dimV[2]);
 	PosteriorMASH pc(Rcpp::as<arma::mat>(b_mat),
 	                 Rcpp::as<arma::mat>(s_mat),
 	                 Rcpp::as<arma::mat>(s_alpha_mat),
@@ -161,9 +165,10 @@ Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
 	                 Rcpp::as<arma::mat>(l_mat),
 	                 Rcpp::as<arma::mat>(a_mat),
 	                 U_cube);
-	pc.set_vinv(Rcpp::as<arma::mat>(vinv_mat));
+	pc.set_vinv(vinv_cube);
 	pc.set_U0(U0_cube);
-	pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_type);
+	if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_type);
+	else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_type);
 	return Rcpp::List::create(
 		Rcpp::Named("post_mean") = pc.PosteriorMean(),
 		Rcpp::Named("post_sd") = pc.PosteriorSD(),

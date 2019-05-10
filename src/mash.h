@@ -222,7 +222,7 @@ arma::mat calc_lik(const arma::mat & b_mat,
 		for (arma::uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
 		}
-	} else{
+	} else {
 		for (arma::uword j = 0; j < lik.n_rows; ++j) {
 			for (arma::uword p = 0; p < lik.n_cols; ++p) {
 				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * p), logd, true);
@@ -350,7 +350,10 @@ public:
 
 		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
-			arma::mat Vinv_j = arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
+			arma::mat Vinv_j;
+			if (Vinv_cube.is_empty()) Vinv_j =
+					arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat, l_mat));
+			else Vinv_j = Vinv_cube.slice(j);
 			// R X P matrices
 			arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 			arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
@@ -359,7 +362,9 @@ public:
 			for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
 				//
 				arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
-				arma::mat U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+				arma::mat U0;
+				if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+				else U0 = U0_cube.slice(j * p);
 				if (a_mat.is_empty()) {
 					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
 					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
@@ -407,8 +412,10 @@ public:
 	{
 		arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 		// R X R
-		if (Vinv.is_empty()) Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
-
+		arma::mat Vinv;
+		if (Vinv_cube.is_empty()) Vinv =
+				arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+		else Vinv = Vinv_cube.slice(0);
 
 		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
 		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
@@ -469,9 +476,9 @@ public:
 	}
 
 
-	int set_vinv(const arma::mat & value)
+	int set_vinv(const arma::cube & value)
 	{
-		Vinv = value;
+		Vinv_cube = value;
 		return 0;
 	}
 
@@ -501,7 +508,7 @@ private:
 	arma::mat l_mat;
 	arma::mat a_mat;
 	arma::cube U_cube;
-	arma::mat Vinv;
+	arma::cube Vinv_cube;
 	arma::cube U0_cube;
 	// output
 	// all R X J mat
