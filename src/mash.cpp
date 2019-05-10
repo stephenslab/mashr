@@ -15,6 +15,7 @@ Rcpp::List calc_rooti_rcpp(Rcpp::NumericMatrix x_mat)
 		Rcpp::Named("status") = 0);
 }
 
+
 // [[Rcpp::export]]
 Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
                          Rcpp::NumericMatrix s_mat,
@@ -52,9 +53,10 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 
 
 // [[Rcpp::export]]
-Rcpp::List calc_lik_common_rcpp(Rcpp::NumericMatrix b_mat,
-                                     Rcpp::NumericVector rooti_3d,
-                                     bool logd)
+Rcpp::List calc_lik_rooti_rcpp(Rcpp::NumericMatrix b_mat,
+                               Rcpp::NumericVector rooti_3d,
+                               bool logd,
+                               bool common_cov)
 {
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);
@@ -65,7 +67,7 @@ Rcpp::List calc_lik_common_rcpp(Rcpp::NumericMatrix b_mat,
 	arma::cube rooti_cube(rooti_3d.begin(), dimR[0], dimR[1], dimR[2]);
 	res = calc_lik(Rcpp::as<arma::mat>(b_mat),
 		rooti_cube,
-		logd);
+		logd, common_cov);
 	return Rcpp::List::create(Rcpp::Named("data") = res,
 		Rcpp::Named("status") = 0);
 }
@@ -130,16 +132,16 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 // [[Rcpp::export]]
 Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
-                                      Rcpp::NumericMatrix s_mat,
-                                      Rcpp::NumericMatrix s_alpha_mat,
-                                      Rcpp::NumericMatrix s_orig_mat,
-                                      Rcpp::NumericMatrix v_mat,
-                                      Rcpp::NumericMatrix l_mat,
-                                      Rcpp::NumericMatrix a_mat,
-                                      Rcpp::NumericMatrix vinv_mat,
-                                      Rcpp::NumericVector U0_3d,
-                                      Rcpp::NumericMatrix posterior_weights,
-                                      int report_type)
+                                    Rcpp::NumericMatrix s_mat,
+                                    Rcpp::NumericMatrix s_alpha_mat,
+                                    Rcpp::NumericMatrix s_orig_mat,
+                                    Rcpp::NumericMatrix v_mat,
+                                    Rcpp::NumericMatrix l_mat,
+                                    Rcpp::NumericMatrix a_mat,
+                                    Rcpp::NumericMatrix vinv_mat,
+                                    Rcpp::NumericVector U0_3d,
+                                    Rcpp::NumericMatrix posterior_weights,
+                                    int report_type)
 {
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);

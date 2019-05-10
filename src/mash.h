@@ -183,15 +183,14 @@ arma::mat calc_lik(const arma::mat & b_mat,
 	// slicing columns are therefore faster than rows
 	// lik is a J by P matrix
 	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 
 	if (common_cov) {
-		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 		arma::mat sigma = get_cov(s_mat.col(0), v_mat, l_mat);
 		for (arma::uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
 		}
 	} else {
-		arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 		for (arma::uword j = 0; j < lik.n_rows; ++j) {
 			arma::mat sigma = get_cov(s_mat.col(j), v_mat, l_mat);
 			for (arma::uword p = 0; p < lik.n_cols; ++p) {
@@ -206,20 +205,29 @@ arma::mat calc_lik(const arma::mat & b_mat,
 // @title calc_lik multivariate common cov version with sigma inverse precomputed
 // @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
 // @param b_mat R by J
-// @param rooti_cube R by R by P
+// @param rooti_cube R by R by P, or R by R by J by P, if common_cov is False
 // @param logd if true computes log-likelihood
+// @param common_cov if true use version for common covariance
 // @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
 arma::mat calc_lik(const arma::mat & b_mat,
                    const arma::cube & rooti_cube,
-                   bool logd)
+                   bool logd, bool common_cov)
 {
 	// In armadillo data are stored with column-major ordering
 	// slicing columns are therefore faster than rows
 	// lik is a J by P matrix
 	arma::mat lik(b_mat.n_cols, rooti_cube.n_slices, arma::fill::zeros);
 	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-	for (arma::uword p = 0; p < lik.n_cols; ++p) {
-		lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
+	if (common_cov) {
+		for (arma::uword p = 0; p < lik.n_cols; ++p) {
+			lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
+		}
+	} else{
+		for (arma::uword j = 0; j < lik.n_rows; ++j) {
+			for (arma::uword p = 0; p < lik.n_cols; ++p) {
+				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * p), logd, true);
+			}
+		}
 	}
 	return lik;
 }
@@ -401,6 +409,7 @@ public:
 		// R X R
 		if (Vinv.is_empty()) Vinv = arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
 
+
 		arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
 		arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
 		arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
@@ -466,11 +475,13 @@ public:
 		return 0;
 	}
 
+
 	int set_U0(const arma::cube & value)
 	{
 		U0_cube = value;
 		return 0;
 	}
+
 
 	// @return PosteriorMean JxR matrix of posterior means
 	// @return PosteriorSD JxR matrix of posterior (marginal) standard deviations

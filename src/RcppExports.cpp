@@ -65,16 +65,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// calc_lik_common_rcpp
-Rcpp::List calc_lik_common_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericVector rooti_3d, bool logd);
-RcppExport SEXP _mashr_calc_lik_common_rcpp(SEXP b_matSEXP, SEXP rooti_3dSEXP, SEXP logdSEXP) {
+// calc_lik_rooti_rcpp
+Rcpp::List calc_lik_rooti_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericVector rooti_3d, bool logd, bool common_cov);
+RcppExport SEXP _mashr_calc_lik_rooti_rcpp(SEXP b_matSEXP, SEXP rooti_3dSEXP, SEXP logdSEXP, SEXP common_covSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type b_mat(b_matSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type rooti_3d(rooti_3dSEXP);
     Rcpp::traits::input_parameter< bool >::type logd(logdSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_lik_common_rcpp(b_mat, rooti_3d, logd));
+    Rcpp::traits::input_parameter< bool >::type common_cov(common_covSEXP);
+    rcpp_result_gen = Rcpp::wrap(calc_lik_rooti_rcpp(b_mat, rooti_3d, logd, common_cov));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -125,7 +126,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mashr_extreme_deconvolution_rcpp", (DL_FUNC) &_mashr_extreme_deconvolution_rcpp, 20},
     {"_mashr_calc_rooti_rcpp", (DL_FUNC) &_mashr_calc_rooti_rcpp, 1},
     {"_mashr_calc_lik_rcpp", (DL_FUNC) &_mashr_calc_lik_rcpp, 7},
-    {"_mashr_calc_lik_common_rcpp", (DL_FUNC) &_mashr_calc_lik_common_rcpp, 3},
+    {"_mashr_calc_lik_rooti_rcpp", (DL_FUNC) &_mashr_calc_lik_rooti_rcpp, 4},
     {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 11},
     {"_mashr_calc_post_precision_rcpp", (DL_FUNC) &_mashr_calc_post_precision_rcpp, 11},
     {NULL, NULL, 0}
