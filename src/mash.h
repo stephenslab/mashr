@@ -3,6 +3,7 @@
 #define _MASH_H
 #include <cmath>
 #include <armadillo>
+#include <iostream>
 
 const double LOG_2PI = std::log(2.0 * M_PI);
 static const double INV_SQRT_2PI = 1.0 / std::sqrt(2.0 * M_PI);
@@ -216,16 +217,21 @@ arma::mat calc_lik(const arma::mat & b_mat,
 	// In armadillo data are stored with column-major ordering
 	// slicing columns are therefore faster than rows
 	// lik is a J by P matrix
-	arma::mat lik(b_mat.n_cols, rooti_cube.n_slices, arma::fill::zeros);
+	int P;
+	if (common_cov) P = rooti_cube.n_slices;
+	else P = rooti_cube.n_slices / b_mat.n_cols;
+	arma::mat lik(b_mat.n_cols, P, arma::fill::zeros);
 	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
 	if (common_cov) {
 		for (arma::uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
 		}
 	} else {
+		arma::uword k = 0;
 		for (arma::uword j = 0; j < lik.n_rows; ++j) {
 			for (arma::uword p = 0; p < lik.n_cols; ++p) {
-				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * p), logd, true);
+				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(k), logd, true);
+				k += 1;
 			}
 		}
 	}
@@ -347,7 +353,7 @@ public:
 	int compute_posterior(const arma::mat & posterior_weights, const int report_type)
 	{
 		arma::vec mean(post_mean.n_rows, arma::fill::zeros);
-
+		arma::uword k = 0;
 		for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
 			// FIXME: improved math may help here
 			arma::mat Vinv_j;
@@ -363,8 +369,12 @@ public:
 				//
 				arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
 				arma::mat U0;
-				if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
-				else U0 = U0_cube.slice(j * p);
+				if (U0_cube.is_empty()) {
+					U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+				} else {
+					U0 = U0_cube.slice(k);
+					k += 1;
+				}
 				if (a_mat.is_empty()) {
 					mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
 					U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
@@ -375,6 +385,7 @@ public:
 					     (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) *
 					      a_mat.t());
 				}
+
 				if (report_type == 2 || report_type == 4) {
 					post_cov.slice(j) +=
 						posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());

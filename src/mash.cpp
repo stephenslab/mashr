@@ -151,9 +151,9 @@ Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
 	// set cube data from R 3D array
 	Rcpp::IntegerVector dimU = U0_3d.attr("dim");
 	arma::cube U0_cube(U0_3d.begin(), dimU[0], dimU[1], dimU[2]);
-	arma::cube U_cube = U0_cube;
-	// here we do not need U_cube values if we have U0_cube, but we need it to fill up the class.
-	U_cube.zeros();
+	arma::cube U_cube;
+	if (!common_cov) U_cube.resize(dimU[0], dimU[1], dimU[2]/b_mat.ncol());
+	else U_cube.resize(dimU[0], dimU[1], dimU[2]);
 
 	Rcpp::IntegerVector dimV = vinv_3d.attr("dim");
 	arma::cube vinv_cube(vinv_3d.begin(), dimV[0], dimV[1], dimV[2]);
