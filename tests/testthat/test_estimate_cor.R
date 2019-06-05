@@ -14,10 +14,10 @@ test_that("Estimate null correlation properly: alpha = 0", {
   expect_equal(V.adhoc, V.est$V)
   expect_equal(mash.adhoc, V.est$mash.model)
 
-  # saved result comes from version 0.2.18.0455
-  original.null.cor = readRDS('estimate_null_cor.rds')
+  # saved result comes from version 0.2.21.0641
+  original.null.cor = readRDS('tests/testthat/estimate_null_cor.rds')
   set.seed(1)
-  simdata = simple_sims(500,5,1)
+  simdata = simple_sims(500,5,0.5)
 
   data = mash_set_data(simdata$Bhat, simdata$Shat, alpha = 0)
   U.c = cov_canonical(data)
@@ -43,7 +43,7 @@ test_that("Estimate null correlation properly: alpha = 1", {
   expect_equal(mash.adhoc, V.est$mash.model)
 
   # saved result comes from version 0.2.18.0532
-  original.null.cor = readRDS('estimate_null_cor_alpha.rds')
+  original.null.cor = readRDS('tests/testthat/estimate_null_cor_alpha.rds')
   set.seed(1)
   simdata = simple_sims(500,5,0.5)
 
