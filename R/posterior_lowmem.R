@@ -123,13 +123,10 @@ compute_posterior_matrices_general_R=function(data,A,Ulist,posterior_weights,out
     posterior_matrices$PosteriorCov = res_post_cov
   }
   if(posterior_samples > 0){
-    res_post_samples = abind(res_post_samples, along = 0) # dim J x M x Q; dim is J x M if Q = 1
-    if(length(dim(res_post_samples)) == 3){
-      res_post_samples = aperm(res_post_samples, c(1,3,2)) # dim J x Q x M
-      dimnames(res_post_samples) <- list(rownames(data$Bhat), row.names(A), paste0("sample_",(1:posterior_samples)))
-    }else{
-      dimnames(res_post_samples) <- list(rownames(data$Bhat), paste0("sample_",(1:posterior_samples)))
-    }
+    res_post_samples = abind(res_post_samples, along = 0,force.array=TRUE) # dim J x M x Q; dim is J x M if Q = 1
+    res_post_samples = array(res_post_samples, dim=c(J,posterior_samples,Q))
+    res_post_samples = aperm(res_post_samples, c(1,3,2)) # dim J x Q x M
+    dimnames(res_post_samples) <- list(rownames(data$Bhat), row.names(A), paste0("sample_",(1:posterior_samples)))
 
     posterior_matrices$PosteriorSamples = res_post_samples
   }
