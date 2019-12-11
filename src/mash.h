@@ -276,6 +276,11 @@ public:
 		else s_alpha = sbhat_alpha;
 	}
 
+	void set(int J, int R)
+	{
+		s.ones(J,R);
+		s_alpha.ones(J,R);
+	}
 
 	void set_original(const arma::mat & value)
 	{
@@ -325,9 +330,10 @@ public:
 	              const arma::cube & U_cube) :
 		b_mat(b_mat), v_mat(v_mat), l_mat(l_mat), a_mat(a_mat), U_cube(U_cube)
 	{
-		s_obj.set(s_mat, s_alpha_mat);
-		s_obj.set_original(s_orig_mat);
 		int J = b_mat.n_cols, R = b_mat.n_rows;
+		if (s_mat.is_empty()) s_obj.set(R, J);
+		else s_obj.set(s_mat, s_alpha_mat);
+		s_obj.set_original(s_orig_mat);
 		if (!a_mat.is_empty()) {
 			R = a_mat.n_rows;
 		}
