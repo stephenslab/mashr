@@ -18,7 +18,7 @@ check_covmat_basics = function(x) {
     labelled_stop(label, "cannot contain NaN values")
   if (nrow(x) != ncol(x))
     labelled_stop(label, "is not a square matrix")
-  if (!isSymmetric(x))
+  if (!isSymmetric(x, check.attributes = FALSE))
     labelled_stop(label, "is not a symmetric matrix")
   return(TRUE)
 }
