@@ -48,7 +48,9 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   }
   if(length(Shat)==1){Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))}
   if(!identical(dim(Bhat),dim(Shat))){stop("dimensions of Bhat and Shat must match")}
-
+  if (length(which(is.nan(Bhat) | is.infinite(Bhat) | is.na(Bhat)))>0) {
+    stop("Bhat cannot contain NaN/NA/Inf values")
+  }
   commonV = TRUE
   if(length(dim(V)) == 3){
     commonV = FALSE
@@ -86,7 +88,6 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
-  Bhat[which(is.nan(Bhat))] = 0
   data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, commonV = commonV, alpha=alpha)
   class(data) = 'mash'
   return(data)
