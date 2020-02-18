@@ -48,8 +48,8 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   }
   if(length(Shat)==1){Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))}
   if(!identical(dim(Bhat),dim(Shat))){stop("dimensions of Bhat and Shat must match")}
-  if (length(which(is.nan(Bhat) | is.infinite(Bhat) | is.na(Bhat)))>0) {
-    stop("Bhat cannot contain NaN/NA/Inf values")
+  if (length(which(is.nan(Bhat) | is.infinite(Bhat)))>0) {
+    stop("Bhat cannot contain NaN/Inf values")
   }
   commonV = TRUE
   if(length(dim(V)) == 3){
@@ -76,7 +76,8 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-  Shat[which(is.nan(Shat) | is.infinite(Shat))] = 1E9
+  Shat[which(is.nan(Shat) | is.infinite(Shat) | is.na(Bhat) | is.na(Shat))] = 1E9
+  Bhat[which(is.na(Bhat))] = 0
   # transform data according to alpha
   if (alpha != 0 && !all(Shat == 1)) {
     ## alpha models dependence of effect size on standard error
