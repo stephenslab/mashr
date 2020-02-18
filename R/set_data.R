@@ -44,12 +44,22 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   }
   if (!is.null(pval)) {
     ## Shat and df have to be NULL
+    if (length(which(pval == 0))>0) {
+      stop("p-values cannot contain zero values (implying infinite z-scores)")
+    }
     Shat = Bhat / p2z(pval, Bhat)
   }
-  if(length(Shat)==1){Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))}
-  if(!identical(dim(Bhat),dim(Shat))){stop("dimensions of Bhat and Shat must match")}
+  if(length(Shat)==1) {
+    Shat = matrix(Shat,nrow=nrow(Bhat),ncol=ncol(Bhat))
+  }
+  if(!identical(dim(Bhat),dim(Shat))){
+    stop("dimensions of Bhat and Shat must match")
+  }
   if (length(which(is.nan(Bhat) | is.infinite(Bhat)))>0) {
     stop("Bhat cannot contain NaN/Inf values")
+  }
+  if (length(which(is.nan(Shat) | is.infinite(Shat) | Shat == 0))>0) {
+    stop("Shat cannot contain NaN/Inf/0 values")
   }
   commonV = TRUE
   if(length(dim(V)) == 3){
@@ -58,26 +68,27 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 
   if(commonV){
     check_positive_definite(V)
-  }else{
-    if(dim(V)[3] != nrow(Bhat)){
+  } else {
+    if(dim(V)[3] != nrow(Bhat)) {
       stop('The number of correlation matrices does not match the number of effects')
     }
-    for(i in 1:dim(V)[3]){
+    for(i in 1:dim(V)[3]) {
       check_positive_definite(V[,,i])
     }
   }
 
-  if(dim(V)[1] != ncol(Bhat)){
+  if(dim(V)[1] != ncol(Bhat)) {
     stop('dimension of correlation matrix does not match the number of conditions')
   }
 
-  if(!is.infinite(df)){
-    if(length(df)==1){df = matrix(df,nrow=nrow(Bhat),ncol=ncol(Bhat))}
+  if(!is.infinite(df)) {
+    if (length(df)==1) {
+      df = matrix(df,nrow=nrow(Bhat),ncol=ncol(Bhat))
+    }
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-  Shat[which(is.nan(Shat) | is.infinite(Shat) | is.na(Bhat) | is.na(Shat))] = 1E9
-  Bhat[which(is.na(Bhat))] = 0
+
   # transform data according to alpha
   if (alpha != 0 && !all(Shat == 1)) {
     ## alpha models dependence of effect size on standard error
@@ -89,6 +100,10 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
+  na_idx = which(is.na(Bhat) | is.na(Shat)
+  Shat_alpha[na_idx] = 1E9
+  Shat[na_idx] = 1E9
+  Bhat[na_idx] = 0
   data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, commonV = commonV, alpha=alpha)
   class(data) = 'mash'
   return(data)
