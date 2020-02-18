@@ -62,9 +62,10 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     stop("Shat cannot contain NaN/Inf values")
   }
   if (length(which(Shat == 0))>0) {
-    if (alpha == 0 && length(which(Shat == 0 & Bhat == 0)) == 0)
-      warning("Shat contains zero values ....")
-    else stop("Shat cannot contains zero values ...")
+    msg = "If it is expected please set Shat to a small positive number to avoid numerical issues."
+    if (length(which(Shat == 0 & Bhat == 0)) == 0)
+      stop(paste("Both Bhat and Shat are zero for some input data. Please check your input.", msg))
+    else stop(paste("Shat contains zero values.", msg))
   }
   commonV = TRUE
   if(length(dim(V)) == 3){
