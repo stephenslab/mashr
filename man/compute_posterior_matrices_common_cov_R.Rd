@@ -4,8 +4,15 @@
 \alias{compute_posterior_matrices_common_cov_R}
 \title{Compute posterior matrices (when error covariance V_j is equal for all observations j)}
 \usage{
-compute_posterior_matrices_common_cov_R(data, A, Ulist, posterior_weights,
-  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
+compute_posterior_matrices_common_cov_R(
+  data,
+  A,
+  Ulist,
+  posterior_weights,
+  output_posterior_cov = FALSE,
+  posterior_samples = 0,
+  seed = 123
+)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data} or \code{mash_set_data_contrast}}

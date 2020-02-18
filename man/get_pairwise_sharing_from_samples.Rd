@@ -4,8 +4,12 @@
 \alias{get_pairwise_sharing_from_samples}
 \title{Compute the proportion of (significant) signals shared by magnitude in each pair of conditions}
 \usage{
-get_pairwise_sharing_from_samples(m, factor = 0.5, lfsr_thresh = 0.05,
-  FUN = identity)
+get_pairwise_sharing_from_samples(
+  m,
+  factor = 0.5,
+  lfsr_thresh = 0.05,
+  FUN = identity
+)
 }
 \arguments{
 \item{m}{the mash fit with samples from posteriors}

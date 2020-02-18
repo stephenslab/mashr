@@ -58,8 +58,13 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   if (length(which(is.nan(Bhat) | is.infinite(Bhat)))>0) {
     stop("Bhat cannot contain NaN/Inf values")
   }
-  if (length(which(is.nan(Shat) | is.infinite(Shat) | Shat == 0))>0) {
-    stop("Shat cannot contain NaN/Inf/0 values")
+  if (length(which(is.nan(Shat) | is.infinite(Shat)))>0) {
+    stop("Shat cannot contain NaN/Inf values")
+  }
+  if (length(which(Shat == 0))>0) {
+    if (alpha == 0 && length(which(Shat == 0 & Bhat == 0)) == 0)
+      warning("Shat contains zero values ....")
+    else stop("Shat cannot contains zero values ...")
   }
   commonV = TRUE
   if(length(dim(V)) == 3){
@@ -88,7 +93,10 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-
+  if (!all.equal(is.na(Bhat), is.na(Shat))) {
+    stop("Missing data pattern is inconsistent between Bhat and Shat")
+  }
+  na_idx = which(is.na(Bhat))
   # transform data according to alpha
   if (alpha != 0 && !all(Shat == 1)) {
     ## alpha models dependence of effect size on standard error
@@ -100,10 +108,9 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   } else {
     Shat_alpha = matrix(1, nrow(Shat), ncol(Shat))
   }
-  na_idx = which(is.na(Bhat) | is.na(Shat)
-  Shat_alpha[na_idx] = 1E9
-  Shat[na_idx] = 1E9
   Bhat[na_idx] = 0
+  Shat[na_idx] = 1E6
+  Shat_alpha[na_idx] = 1
   data = list(Bhat=Bhat, Shat=Shat, Shat_alpha=Shat_alpha, V=V, commonV = commonV, alpha=alpha)
   class(data) = 'mash'
   return(data)
@@ -112,7 +119,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 #' @title Update the data object for mash analysis.
 #' @description This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
 #' can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
-#' @param mashdata mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
+#' @param mashdata mash data object ontaining the Bhat matrix, standard errors, V; created using \code{mash_set_data}
 #' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
 #' @param V an R by R matrix / [R x R x J] array of correlation matrix of error correlations
 #' @return a updated mash data object

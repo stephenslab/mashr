@@ -4,9 +4,16 @@
 \alias{compute_posterior_matrices}
 \title{Compute posterior matrices.}
 \usage{
-compute_posterior_matrices(data, Ulist, posterior_weights,
-  algorithm.version = c("Rcpp", "R"), A = NULL,
-  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
+compute_posterior_matrices(
+  data,
+  Ulist,
+  posterior_weights,
+  algorithm.version = c("Rcpp", "R"),
+  A = NULL,
+  output_posterior_cov = FALSE,
+  posterior_samples = 0,
+  seed = 123
+)
 }
 \arguments{
 \item{data}{A \code{mash} data object; e.g., created by

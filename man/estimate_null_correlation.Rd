@@ -4,9 +4,18 @@
 \alias{estimate_null_correlation}
 \title{Estimate null correlations}
 \usage{
-estimate_null_correlation(data, Ulist, init, max_iter = 30, tol = 1,
-  est_cor = TRUE, track_fit = FALSE, prior = c("nullbiased",
-  "uniform"), details = FALSE, ...)
+estimate_null_correlation(
+  data,
+  Ulist,
+  init,
+  max_iter = 30,
+  tol = 1,
+  est_cor = TRUE,
+  track_fit = FALSE,
+  prior = c("nullbiased", "uniform"),
+  details = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}

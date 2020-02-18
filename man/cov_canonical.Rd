@@ -4,8 +4,10 @@
 \alias{cov_canonical}
 \title{Compute a list of canonical covariance matrices}
 \usage{
-cov_canonical(data, cov_methods = c("identity", "singletons",
-  "equal_effects", "simple_het"))
+cov_canonical(
+  data,
+  cov_methods = c("identity", "singletons", "equal_effects", "simple_het")
+)
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}

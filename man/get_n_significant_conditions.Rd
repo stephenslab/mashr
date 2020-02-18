@@ -4,8 +4,12 @@
 \alias{get_n_significant_conditions}
 \title{Count number of conditions each effect is significant in}
 \usage{
-get_n_significant_conditions(m, thresh = 0.05, conditions = NULL,
-  sig_fn = get_lfsr)
+get_n_significant_conditions(
+  m,
+  thresh = 0.05,
+  conditions = NULL,
+  sig_fn = get_lfsr
+)
 }
 \arguments{
 \item{m}{the mash result (from joint or 1by1 analysis)}

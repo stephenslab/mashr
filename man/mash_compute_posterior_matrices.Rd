@@ -4,9 +4,16 @@
 \alias{mash_compute_posterior_matrices}
 \title{Compute posterior matrices for fitted mash object on new data}
 \usage{
-mash_compute_posterior_matrices(g, data, pi_thresh = 1e-10,
-  algorithm.version = c("Rcpp", "R"), A = NULL,
-  output_posterior_cov = FALSE, posterior_samples = 0, seed = 123)
+mash_compute_posterior_matrices(
+  g,
+  data,
+  pi_thresh = 1e-10,
+  algorithm.version = c("Rcpp", "R"),
+  A = NULL,
+  output_posterior_cov = FALSE,
+  posterior_samples = 0,
+  seed = 123
+)
 }
 \arguments{
 \item{g}{a mash object or the fitted_g from a mash object.}

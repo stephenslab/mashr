@@ -4,8 +4,14 @@
 \alias{mash_set_data}
 \title{Create a data object for mash analysis.}
 \usage{
-mash_set_data(Bhat, Shat = NULL, alpha = 0, df = Inf, pval = NULL,
-  V = diag(ncol(Bhat)))
+mash_set_data(
+  Bhat,
+  Shat = NULL,
+  alpha = 0,
+  df = Inf,
+  pval = NULL,
+  V = diag(ncol(Bhat))
+)
 }
 \arguments{
 \item{Bhat}{An N by R matrix of observed estimates.}
