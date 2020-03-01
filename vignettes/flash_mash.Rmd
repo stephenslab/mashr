@@ -76,10 +76,8 @@ flash_pipeline = function(data, ...) {
   ## cf: discussion section of
   ## https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html
   ebnm_fn = "ebnm_ash"
-  ebnm_param = list(l = list(mixcompdist = "normal",
-                             optmethod = "mixIP"),
-                    f = list(mixcompdist = "+uniform",
-                             optmethod = "mixIP"))
+  ebnm_param = list(l = list(mixcompdist = "normal"),
+                    f = list(mixcompdist = "+uniform"))
   ##
   fl_g <- flashr:::flash_greedy_workhorse(data,
                                           var_type = "constant",

@@ -94,7 +94,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-  if (!identical(is.na(Bhat), is.na(Shat))) {
+  if (!isTRUE(all.equal(is.na(Bhat), is.na(Shat), check.attributes=FALSE))) {
     stop("Missing data pattern is inconsistent between Bhat and Shat")
   }
   na_idx = which(is.na(Bhat))

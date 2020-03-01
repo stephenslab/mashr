@@ -276,6 +276,8 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #'
 #' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).
 #'
+#' @param ... optionally, other parameters to be passed to ash
+#'
 #' @description Performs simple "condition-by-condition" analysis by
 #' running \code{ash} from package \code{ashr} on data from each
 #' condition, one at a time. May be a useful first step to identify
@@ -286,17 +288,17 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #'
 #' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
 #' @export
-mash_1by1 = function(data, alpha=0){
+mash_1by1 = function(data, alpha=0, ...){
   Bhat = data$Bhat
   Shat = data$Shat
   post_mean = post_sd = lfsr = matrix(nrow = nrow(Bhat), ncol= ncol(Bhat))
   loglik = 0
   for(i in 1:ncol(Bhat)){
-    ashres = ash(Bhat[,i],Shat[,i],mixcompdist="normal", alpha=alpha) # get ash results for first condition
+    ashres = ash(Bhat[,i],Shat[,i],mixcompdist="normal", alpha=alpha, ...)
     post_mean[,i] = get_pm(ashres)
     post_sd[,i] = get_psd(ashres)
     lfsr[,i] = get_lfsr(ashres)
-    loglik = loglik + get_loglik(ashres) #return the sum of loglikelihoods
+    loglik = loglik + get_loglik(ashres) #return the sum of loglikelihoods across conditions
   }
   posterior_matrices = list(PosteriorMean = post_mean,
                             PosteriorSD = post_sd,
