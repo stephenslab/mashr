@@ -9,8 +9,8 @@ test_that("get same result as ash, EE model", {
   # The simulation consists of equal numbers of four different types
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
-  ashres = ash(sim_data$Bhat[,1],sim_data$Shat[,1],
-      mixcompdist="normal",outputlevel=3) # get ash results for first condition
+  ashres = suppressWarnings(ash(sim_data$Bhat[,1],sim_data$Shat[,1],
+      mixcompdist="normal",outputlevel=3)) # get ash results for first condition
 
   data = mash_set_data(sim_data$Bhat, sim_data$Shat, alpha=0)
   U  = list(first_singleton = cov_first_singleton(data))
@@ -38,8 +38,7 @@ test_that("get same result as ash, EZ model", {
   # The simulation consists of equal numbers of four different types
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
-  ashres = expect_warning(ash(sim_data$Bhat[,1],sim_data$Shat[,1],
-      mixcompdist="normal",outputlevel=3, alpha = 1)) # get ash results for first condition
+  ashres = suppressWarnings(ash(sim_data$Bhat[,1],sim_data$Shat[,1],mixcompdist="normal",outputlevel=3, alpha = 1)) # get ash results for first condition
 
   data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
   U  = list(first_singleton = cov_first_singleton(data))
@@ -91,7 +90,7 @@ test_that("get same result as ash under transformation, EZ model", {
   # The simulation consists of equal numbers of four different types
   # of effects: null, equal among conditions, present only in first
   # condition, independent across conditions
-  ashres = expect_warning(ash(sim_data$Bhat[,1],sim_data$Shat[,1],
+  ashres = suppressWarnings(ash(sim_data$Bhat[,1],sim_data$Shat[,1],
                mixcompdist="normal",outputlevel=3, alpha = 1)) # get ash results for first condition
 
   data = mash_set_data(Bhat = sim_data$Bhat, Shat = sim_data$Shat, alpha=1)
