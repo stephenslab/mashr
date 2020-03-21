@@ -37,14 +37,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// calc_rooti_rcpp
-Rcpp::List calc_rooti_rcpp(Rcpp::NumericMatrix x_mat);
-RcppExport SEXP _mashr_calc_rooti_rcpp(SEXP x_matSEXP) {
+// inv_chol_tri_rcpp
+Rcpp::List inv_chol_tri_rcpp(Rcpp::NumericMatrix x_mat);
+RcppExport SEXP _mashr_inv_chol_tri_rcpp(SEXP x_matSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x_mat(x_matSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_rooti_rcpp(x_mat));
+    rcpp_result_gen = Rcpp::wrap(inv_chol_tri_rcpp(x_mat));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -65,9 +65,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// calc_lik_rooti_rcpp
-Rcpp::List calc_lik_rooti_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericVector rooti_3d, bool logd, bool common_cov);
-RcppExport SEXP _mashr_calc_lik_rooti_rcpp(SEXP b_matSEXP, SEXP rooti_3dSEXP, SEXP logdSEXP, SEXP common_covSEXP) {
+// calc_lik_precomputed_rcpp
+Rcpp::List calc_lik_precomputed_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericVector rooti_3d, bool logd, bool common_cov);
+RcppExport SEXP _mashr_calc_lik_precomputed_rcpp(SEXP b_matSEXP, SEXP rooti_3dSEXP, SEXP logdSEXP, SEXP common_covSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -75,7 +75,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type rooti_3d(rooti_3dSEXP);
     Rcpp::traits::input_parameter< bool >::type logd(logdSEXP);
     Rcpp::traits::input_parameter< bool >::type common_cov(common_covSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_lik_rooti_rcpp(b_mat, rooti_3d, logd, common_cov));
+    rcpp_result_gen = Rcpp::wrap(calc_lik_precomputed_rcpp(b_mat, rooti_3d, logd, common_cov));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -100,9 +100,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// calc_post_precision_rcpp
-Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix s_alpha_mat, Rcpp::NumericMatrix s_orig_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericMatrix l_mat, Rcpp::NumericMatrix a_mat, Rcpp::NumericVector vinv_3d, Rcpp::NumericVector U0_3d, Rcpp::NumericMatrix posterior_weights, bool common_cov, int report_type);
-RcppExport SEXP _mashr_calc_post_precision_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP s_alpha_matSEXP, SEXP s_orig_matSEXP, SEXP v_matSEXP, SEXP l_matSEXP, SEXP a_matSEXP, SEXP vinv_3dSEXP, SEXP U0_3dSEXP, SEXP posterior_weightsSEXP, SEXP common_covSEXP, SEXP report_typeSEXP) {
+// calc_post_precomputed_rcpp
+Rcpp::List calc_post_precomputed_rcpp(Rcpp::NumericMatrix b_mat, Rcpp::NumericMatrix s_mat, Rcpp::NumericMatrix s_alpha_mat, Rcpp::NumericMatrix s_orig_mat, Rcpp::NumericMatrix v_mat, Rcpp::NumericMatrix l_mat, Rcpp::NumericMatrix a_mat, Rcpp::NumericVector vinv_3d, Rcpp::NumericVector U0_3d, Rcpp::NumericMatrix posterior_weights, bool common_cov, int report_type);
+RcppExport SEXP _mashr_calc_post_precomputed_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP s_alpha_matSEXP, SEXP s_orig_matSEXP, SEXP v_matSEXP, SEXP l_matSEXP, SEXP a_matSEXP, SEXP vinv_3dSEXP, SEXP U0_3dSEXP, SEXP posterior_weightsSEXP, SEXP common_covSEXP, SEXP report_typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -118,18 +118,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type posterior_weights(posterior_weightsSEXP);
     Rcpp::traits::input_parameter< bool >::type common_cov(common_covSEXP);
     Rcpp::traits::input_parameter< int >::type report_type(report_typeSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_post_precision_rcpp(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, vinv_3d, U0_3d, posterior_weights, common_cov, report_type));
+    rcpp_result_gen = Rcpp::wrap(calc_post_precomputed_rcpp(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, vinv_3d, U0_3d, posterior_weights, common_cov, report_type));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mashr_extreme_deconvolution_rcpp", (DL_FUNC) &_mashr_extreme_deconvolution_rcpp, 20},
-    {"_mashr_calc_rooti_rcpp", (DL_FUNC) &_mashr_calc_rooti_rcpp, 1},
+    {"_mashr_inv_chol_tri_rcpp", (DL_FUNC) &_mashr_inv_chol_tri_rcpp, 1},
     {"_mashr_calc_lik_rcpp", (DL_FUNC) &_mashr_calc_lik_rcpp, 7},
-    {"_mashr_calc_lik_rooti_rcpp", (DL_FUNC) &_mashr_calc_lik_rooti_rcpp, 4},
+    {"_mashr_calc_lik_precomputed_rcpp", (DL_FUNC) &_mashr_calc_lik_precomputed_rcpp, 4},
     {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 11},
-    {"_mashr_calc_post_precision_rcpp", (DL_FUNC) &_mashr_calc_post_precision_rcpp, 12},
+    {"_mashr_calc_post_precomputed_rcpp", (DL_FUNC) &_mashr_calc_post_precomputed_rcpp, 12},
     {NULL, NULL, 0}
 };
 

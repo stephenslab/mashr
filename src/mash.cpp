@@ -8,7 +8,7 @@
 // [[Rcpp::plugins(cpp11)]]
 
 // [[Rcpp::export]]
-Rcpp::List calc_rooti_rcpp(Rcpp::NumericMatrix x_mat)
+Rcpp::List inv_chol_tri_rcpp(Rcpp::NumericMatrix x_mat)
 {
 	arma::mat res = arma::trans(arma::inv(arma::trimatu(arma::chol(Rcpp::as<arma::mat>(x_mat)))));
 	return Rcpp::List::create(Rcpp::Named("data") = res,
@@ -53,7 +53,7 @@ Rcpp::List calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
 
 
 // [[Rcpp::export]]
-Rcpp::List calc_lik_rooti_rcpp(Rcpp::NumericMatrix b_mat,
+Rcpp::List calc_lik_precomputed_rcpp(Rcpp::NumericMatrix b_mat,
                                Rcpp::NumericVector rooti_3d,
                                bool logd,
                                bool common_cov)
@@ -131,7 +131,7 @@ Rcpp::List calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 
 
 // [[Rcpp::export]]
-Rcpp::List calc_post_precision_rcpp(Rcpp::NumericMatrix b_mat,
+Rcpp::List calc_post_precomputed_rcpp(Rcpp::NumericMatrix b_mat,
                                     Rcpp::NumericMatrix s_mat,
                                     Rcpp::NumericMatrix s_alpha_mat,
                                     Rcpp::NumericMatrix s_orig_mat,
