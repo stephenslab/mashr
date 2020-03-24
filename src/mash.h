@@ -380,7 +380,7 @@ public:
             else Vinv_j = Vinv_cube.slice(j);
             // R X P matrices
             arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-            arma::mat mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+            arma::mat diag_mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
             arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
             arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
             for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
@@ -408,7 +408,7 @@ public:
                       posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
                 }
                 arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-                mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
+                diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
                 neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
                 for (arma::uword r = 0; r < sigma.n_elem; ++r) {
                     if (sigma.at(r) == 0) {
@@ -419,7 +419,7 @@ public:
             }
             // compute weighted means of posterior arrays
             post_mean.col(j) = mu1_mat * posterior_weights.col(j);
-            post_var.col(j)  = mu2_mat * posterior_weights.col(j);
+            post_var.col(j)  = diag_mu2_mat * posterior_weights.col(j);
             neg_prob.col(j)  = neg_mat * posterior_weights.col(j);
             zero_prob.col(j) = zero_mat * posterior_weights.col(j);
             //
@@ -478,8 +478,8 @@ public:
                 }
             }
             // R X J
-            arma::mat mu2_mat = arma::pow(mu1_mat, 2.0);
-            mu2_mat.each_col() += U1.diag();
+            arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
+            diag_mu2_mat.each_col() += U1.diag();
             // R X J
             arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
             for (arma::uword r = 0; r < Svec.n_elem; ++r) {
@@ -490,7 +490,7 @@ public:
             }
             // compute weighted means of posterior arrays
             post_mean += mu1_mat.each_row() % posterior_weights.row(p);
-            post_var  += mu2_mat.each_row() % posterior_weights.row(p);
+            post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
             neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
             zero_prob += zero_mat.each_row() % posterior_weights.row(p);
         }
@@ -742,7 +742,7 @@ public:
                 // this is posterior 2nd moment for the j-th variable and the p-th prior
                 arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
                 // add to posterior 2nd moment contribution of the p-th component
-                post_cov.slice(j) += posterior_weights.at(p, j) * mu2_mat;
+                post_cov.slice(j) += (posterior_weights.at(p, j) * mu2_mat);
                 if (!Uinv_cube.is_empty()) {
                     // when input inverse prior matrices are not empty
                     // we will compute the EM update for prior scalar here
@@ -750,7 +750,7 @@ public:
                     // the M-step update is:
                     // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
                     // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
-                    mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                    mu2_cube.slice(p) += (posterior_variable_weights.at(p, j) * mu2_mat);
                 }
                 arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
                 diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
@@ -820,9 +820,9 @@ public:
                 sigma.col(j) = Svec;
                 arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
                 post_cov.slice(j) +=
-                  posterior_weights.at(p, j) * mu2_mat;
+                  (posterior_weights.at(p, j) * mu2_mat);
                 if (!Uinv_cube.is_empty()) {
-                    mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                    mu2_cube.slice(p) += (posterior_variable_weights.at(p, j) * mu2_mat);
                 }
             }
             // R X J
