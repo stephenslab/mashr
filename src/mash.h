@@ -742,7 +742,7 @@ public:
                 // this is posterior 2nd moment for the j-th variable and the p-th prior
                 arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
                 // add to posterior 2nd moment contribution of the p-th component
-                post_cov.slice(j) += (posterior_weights.at(p, j) * mu2_mat);
+                post_cov.slice(j) += posterior_weights.at(p, j) * mu2_mat;
                 if (!Uinv_cube.is_empty()) {
                     // when input inverse prior matrices are not empty
                     // we will compute the EM update for prior scalar here
@@ -750,7 +750,7 @@ public:
                     // the M-step update is:
                     // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
                     // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
-                    mu2_cube.slice(p) += (posterior_variable_weights.at(p, j) * mu2_mat);
+                    mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
                 }
                 arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
                 diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
@@ -818,11 +818,11 @@ public:
             arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
             for (arma::uword j = 0; j < sigma.n_cols; ++j) {
                 sigma.col(j) = Svec;
-                arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
+                arma::mat mu2_mat = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
                 post_cov.slice(j) +=
-                  (posterior_weights.at(p, j) * mu2_mat);
+                  posterior_weights.at(p, j) * mu2_mat;
                 if (!Uinv_cube.is_empty()) {
-                    mu2_cube.slice(p) += (posterior_variable_weights.at(p, j) * mu2_mat);
+                    mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
                 }
             }
             // R X J
