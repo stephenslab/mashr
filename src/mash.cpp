@@ -197,6 +197,6 @@ calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
         Rcpp::Named("post_cov")  = pc.PosteriorCov(),
         Rcpp::Named("post_zero") = pc.ZeroProb(),
         Rcpp::Named("post_neg")  = pc.NegativeProb());
-    if (!Rf_isNull(Uinv_3d.attr("dim"))) res.push_back("prior_scalar_em_update", "pc.PriorScalar()");
+    if (!Rf_isNull(Uinv_3d.attr("dim"))) res.push_back(pc.PriorScalar(), "prior_scale_em_update");
     return res;
 } // calc_sermix_rcpp
