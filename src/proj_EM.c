@@ -60,7 +60,7 @@ void proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
     }
     if (niter > 0){
       diff = *avgloglikedata - oldavgloglikedata;
-      if (diff < 0){
+      if (diff < 0 && keeplog){
 	fprintf(logfile,"Warning: log likelihood decreased by %g\n",diff);
 	fprintf(logfile,"oldavgloglike was %g\navgloglike is %g\n",oldavgloglikedata,*avgloglikedata);
       }
