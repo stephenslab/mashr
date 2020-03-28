@@ -122,6 +122,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// fit_teem_rcpp
+Rcpp::List fit_teem_rcpp(Rcpp::NumericMatrix X_mat, Rcpp::NumericVector w_vec, Rcpp::NumericVector U_3d, int maxiter, double tol, bool verbose);
+RcppExport SEXP _mashr_fit_teem_rcpp(SEXP X_matSEXP, SEXP w_vecSEXP, SEXP U_3dSEXP, SEXP maxiterSEXP, SEXP tolSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type X_mat(X_matSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type w_vec(w_vecSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type U_3d(U_3dSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(fit_teem_rcpp(X_mat, w_vec, U_3d, maxiter, tol, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_mashr_extreme_deconvolution_rcpp", (DL_FUNC) &_mashr_extreme_deconvolution_rcpp, 20},
@@ -130,6 +146,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_mashr_calc_lik_precomputed_rcpp", (DL_FUNC) &_mashr_calc_lik_precomputed_rcpp, 4},
     {"_mashr_calc_post_rcpp", (DL_FUNC) &_mashr_calc_post_rcpp, 11},
     {"_mashr_calc_sermix_rcpp", (DL_FUNC) &_mashr_calc_sermix_rcpp, 12},
+    {"_mashr_fit_teem_rcpp", (DL_FUNC) &_mashr_fit_teem_rcpp, 6},
     {NULL, NULL, 0}
 };
 

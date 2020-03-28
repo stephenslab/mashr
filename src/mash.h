@@ -5,6 +5,7 @@
 #include <armadillo>
 #include <iostream>
 
+// some utility functions
 const double LOG_2PI = std::log(2.0 * M_PI);
 static const double INV_SQRT_2PI     = 1.0 / std::sqrt(2.0 * M_PI);
 static const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
@@ -409,7 +410,7 @@ public:
                 }
                 arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
                 diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
-                neg_mat.col(p) = pnorm(mu1_mat.col(p), mean, sigma);
+                neg_mat.col(p)      = pnorm(mu1_mat.col(p), mean, sigma);
                 for (arma::uword r = 0; r < sigma.n_elem; ++r) {
                     if (sigma.at(r) == 0) {
                         zero_mat.at(r, p) = 1.0;
@@ -917,5 +918,89 @@ private:
     arma::cube post_cov;
     // P vector of scalars
     arma::vec prior_scalar;
+};
+
+// Softmax functions: yi = exp(xi) / sum(exp(xj))
+inline arma::vec
+softmax(const arma::vec & x)
+{
+    // Calculate exp()
+    // Subtract the max - this prevents overflow, which happens for x ~ 1000
+    arma::vec y = arma::exp(x - arma::max(x));
+    // Renormalise
+    y /= arma::sum(y);
+    return y;
+}
+
+// function for "shrinking" the covariance matrix, to get $\hat U_k$.
+inline arma::mat
+shrink_cov(const arma::mat & V)
+{
+    return V;
+}
+
+// @title Truncated Eigenvalue Extreme deconvolution
+// @description ...
+// @param X
+// @param w
+// @param U
+// @param maxiter
+// @param tol
+// @param verbose
+class TEEM
+{
+public:
+    TEEM(const arma::mat & X_mat,
+      const arma::vec    & w_vec,
+      const arma::cube   & U_cube) :
+        X_mat(X_mat), w_vec(w_vec), U_cube(U_cube)
+    {
+        // initialize other private quantities if necessary
+    }
+
+    ~TEEM(){ }
+
+    arma::vec
+    get_objective(){ return objective; }
+
+    arma::vec
+    get_maxd(){ return maxd; }
+
+    arma::vec
+    get_w(){ return w_vec; }
+
+    arma::cube
+    get_U(){ return U_cube; }
+
+    int
+    fit(const int & maxiter, const double & tol, const bool & verbose)
+    {
+        objective.zeros(maxiter);
+        maxd.zeros(maxiter);
+        compute_loglik();
+        w_vec = softmax(w_vec);
+        w_vec.print("w_vec after softmax");
+        objective.at(0) = 100;
+        arma::mat scov = shrink_cov(X_mat);
+        scov.print("output of shrink_cov");
+        return 0;
+    }
+
+private:
+    arma::mat X_mat;
+    arma::vec w_vec;
+    arma::cube U_cube;
+    arma::vec objective;
+    arma::vec maxd;
+    int
+    compute_loglik()
+    {
+        // you can fill in this function
+        // here I just print something out
+        X_mat.col(0).print("first column of X");
+        std::cout << "first element of w " << w_vec.at(0) << std::endl;
+        U_cube.slice(0).print("first slice of U");
+        return 0;
+    }
 };
 #endif // ifndef _MASH_H

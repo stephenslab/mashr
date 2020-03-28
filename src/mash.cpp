@@ -1,3 +1,4 @@
+// Wrapper to various C++ functions/objects for inference in MASH
 // Gao Wang (c) 2017-2019 wang.gao@columbia.edu
 #include <iostream>
 #include <stdexcept>
@@ -200,3 +201,32 @@ calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
     if (!Rf_isNull(Uinv_3d.attr("dim"))) res.push_back(pc.PriorScalar(), "prior_scale_em_update");
     return res;
 } // calc_sermix_rcpp
+
+// [[Rcpp::export]]
+Rcpp::List
+fit_teem_rcpp(Rcpp::NumericMatrix X_mat,
+  Rcpp::NumericVector             w_vec,
+  Rcpp::NumericVector             U_3d,
+  int                             maxiter,
+  double                          tol,
+  bool                            verbose)
+{
+    // Convert R 3d array to Rcpp cube
+    if (Rf_isNull(U_3d.attr("dim"))) {
+        throw std::invalid_argument(
+                  "U_3d has to be a 3D array");
+    }
+    Rcpp::IntegerVector dimU = U_3d.attr("dim");
+    arma::cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+    //
+    TEEM teem(Rcpp::as<arma::mat>(X_mat),
+      Rcpp::as<arma::vec>(w_vec),
+      U_cube);
+    teem.fit(maxiter, tol, verbose);
+    Rcpp::List res = Rcpp::List::create(
+        Rcpp::Named("w")         = teem.get_w(),
+        Rcpp::Named("U")         = teem.get_U(),
+        Rcpp::Named("objective") = teem.get_objective(),
+        Rcpp::Named("maxd")      = teem.get_maxd());
+    return res;
+}
