@@ -936,7 +936,13 @@ softmax(const arma::vec & x)
 inline arma::mat
 shrink_cov(const arma::mat & V)
 {
-    return V;
+    arma::vec eigval;
+    arma::mat eigvec;
+    eig_sym(eigval, eigvec, V);
+    for (arma::uword i = 0; i < eigval.n_elem; ++i) {
+        eigval(i) = (eigval(i) > 1.0) ? eigval(i) : 1.0;
+    }
+    return eigvec * diagmat(eigval) * trans(eigvec);
 }
 
 // @title Truncated Eigenvalue Extreme deconvolution
@@ -975,16 +981,63 @@ public:
     int
     fit(const int & maxiter, const double & tol, const bool & verbose)
     {
+        // initialize to store progress
         objective.zeros(maxiter);
         maxd.zeros(maxiter);
-        compute_loglik();
-        w_vec = softmax(w_vec);
-        w_vec.print("w_vec after softmax");
-        objective.at(0) = 100;
-        arma::mat scov = shrink_cov(X_mat);
-        scov.print("output of shrink_cov");
+        int iter_out;
+
+        // Get the number of samples (n) and the number of mixture components (k)
+        int n = X_mat.n_rows;
+        // int m = X_mat.n_cols;
+        int k = w_vec.size();
+
+        for (unsigned iter = 0; iter < maxiter; ++iter) {
+            // store parameters and likelihood in the previous step
+            arma::vec w0_vec   = w_vec;
+            arma::cube U0_cube = U_cube;
+
+            // E-step: calculate posterior probabilities using the current mu and sigmas
+            // arma::mat logP = mat(n, k, arma::fill::zeros); // n by k matrix;
+            arma::mat logP = arma::zeros<arma::mat>(n, k); // n by k matrix
+            for (unsigned j = 0; j < k; ++j) {
+                logP.col(j) = log(w_vec(j)) + dmvnorm_mat(trans(X_mat), arma::zeros<arma::vec>(
+                        X_mat.n_cols), U_cube.slice(j), true); // ??
+            }
+            // softmax for renormalization
+            // arma::mat P_mat = mat(k, n, arma::fill::zeros); // k by n matrix. because of row/col vec converting
+            arma::mat P_mat = arma::zeros<arma::mat>(k, n); // k by n matrix. because of row/col vec converting
+
+            for (arma::uword i = 0; i < n; ++i) {
+                arma::colvec y = arma::conv_to<arma::colvec>::from(logP.row(i));
+                P_mat.col(i) = softmax(y);
+            }
+            P_mat = trans(P_mat); // n by k matrix
+
+            // M-step:
+            for (unsigned j = 0; j < k; ++j) {
+                U_cube.slice(j) = trans(X_mat) * (P_mat.col(j) % X_mat.each_col()) / accu(P_mat.col(j));
+                U_cube.slice(j) = shrink_cov(U_cube.slice(j));
+            }
+            // update mixture weights
+            w_vec = arma::conv_to<arma::colvec>::from(sum(P_mat, 0)) / n; // 0:sum by column;
+
+            // Compute log-likelihood at the current estimates
+            double f = compute_loglik(X_mat, U_cube, w_vec);
+
+            // Check stopping criterion
+            double d = max(abs(w_vec - w0_vec));
+            maxd(iter)      = d;
+            objective(iter) = f;
+            iter_out        = iter;
+
+            if (d < tol) {
+                break;
+            }
+        }
+        objective.resize(iter_out + 1);
+        maxd.resize(iter_out + 1);
         return 0;
-    }
+    } // fit
 
 private:
     arma::mat X_mat;
@@ -992,15 +1045,18 @@ private:
     arma::cube U_cube;
     arma::vec objective;
     arma::vec maxd;
-    int
-    compute_loglik()
+    double
+    compute_loglik(arma::mat& X_mat, arma::cube& U_cube, // X_mat n by p;
+      arma::vec& w_vec)
     {
-        // you can fill in this function
-        // here I just print something out
-        X_mat.col(0).print("first column of X");
-        std::cout << "first element of w " << w_vec.at(0) << std::endl;
-        U_cube.slice(0).print("first slice of U");
-        return 0;
+        int n = X_mat.n_rows;
+        int k = w_vec.size();
+
+        arma::vec y = arma::zeros<arma::vec>(n);
+        for (unsigned j = 0; j < k; ++j) {
+            y = y + w_vec(j) * dmvnorm_mat(trans(X_mat), arma::zeros<arma::vec>(X_mat.n_cols), U_cube.slice(j));
+        }
+        return (sum(log(y)));
     }
 };
 #endif // ifndef _MASH_H
