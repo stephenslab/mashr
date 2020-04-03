@@ -1,0 +1,159 @@
+---
+title: 'TEEM Rcpp: Accuracy & Speed Comparison'
+author: "Yunqi Yang"
+date: "4/1/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+source("/Users/nicholeyang/Desktop/ed/code/EM.R")
+load("/Users/nicholeyang/Desktop/ed/data/zstrong.RData")
+library(mvtnorm)
+```
+
+# Result comparison (A simulate data example)
+```{r}
+
+# function for simulate data
+sim.data <- function(n, w, U) {
+   # w: the true weight
+   # mu: a k*m matrix 
+   # dimension of an obs. 
+   m = nrow(U[[1]])
+   # k: number of classes
+   k = length(w)
+   
+   # generate true class variable  
+   Z = sample(1:k, n, prob = w, replace = T)  
+    
+   # store simulated data
+   X = matrix(NA, ncol = m, nrow = n)
+   
+   for (i in 1:n){
+     # true class for obs. i 
+     j = Z[i]
+     X[i, ] = rmvnorm(1,mean = rep(0,m), sigma = U[[j]])
+   }
+   res = list(X = X, Z = Z)
+   return(res)
+}
+
+```
+
+```{r  }
+
+# simulate data 
+set.seed(215)
+n <- 1e4
+w <- c(0.6,0.3,0.1)
+I <- diag(c(1,1,1))
+U <- list(U1 = matrix(1,3,3)+I,
+          U2 = crossprod(rbind(c(1,1,0),
+                               c(0,1,1)))+I,
+          U3 = rbind(2*diag(3))+I)
+dt <- sim.data(n, w, U)
+X  <- dt$X
+```
+
+```{r  }
+
+# initialization
+w.init <- c(0.3, 0.4, 0.3)
+U.init <-
+  list(U1 = matrix(c(1, 0.1, 0.3, 0.1, 1, 0, 0.3, 0 ,1), ncol = 3, nrow =3), 
+      U2 = matrix(c(1, 0.1, 0.9, 0.1, 1, 0, 0.9, 0 ,1), ncol = 3, nrow =3),
+      U3 = diag(3))
+
+
+
+# R version
+res.R <- EM.fit(X, w.init, U.init, maxiter = 5000, tol = 1e-7, verbose = FALSE)
+## Rcpp version
+res.cpp = mashr:::fit_teem_rcpp(X,w.init,simplify2array(U.init), 5000, 1e-7, FALSE)
+
+
+```
+
+
+```{r  }
+
+# R version result
+res.R$w
+res.R$U
+tail(res.R$progress$obj)
+length(res.R$progress$obj)
+
+# Rcpp result
+res.cpp$w
+res.cpp$U
+tail(res.cpp$objective)
+length(res.cpp$objective)
+```
+
+
+# Speed comparison (A real data example)
+```{r  }
+
+# The previous Gtex 5 tissue data 
+set.seed(215)
+test_index = sample(1:nrow(zstrong), 3000, replace = FALSE)
+test = zstrong[test_index, ]
+train = zstrong[-test_index,]
+dim(test)
+dim(train)
+
+# Choose components = 5 to fit; Use random initialization
+s = 5
+w.true = rep(1/s, s)
+indx = sample(1:s, nrow(train), replace = TRUE, prob = w.true)
+U.init = c()
+w.init = rep(NA, s)
+
+# Calculate the empirical covariance matrix. The initialization for U = empirical Sigma + I
+for (i in 1:s){
+  w.init[i] = sum(indx ==i)/nrow(train)
+  dt = train[indx ==i, ]
+  Sigma = matrix(t(dt) %*% dt/nrow(dt), nrow = 5, ncol = 5)
+  U.init[[i]] = Sigma + diag(5)
+}
+
+```
+
+
+```{r  }
+
+# ED in mashr
+train.mash = mashr:::mash_set_data(train, Shat = 1)
+U.pca = mashr:::cov_pca(train.mash, 4)
+
+start= proc.time()
+res.mashr = mashr:::cov_ed(train.mash, U.pca)
+end = proc.time()
+runtime.mashr = end - start
+
+
+# newEM R version
+start= proc.time()
+res.R = EM.fit(train, w.init, U.init, maxiter = 5000, tol = 1e-7, verbose = FALSE)
+end = proc.time()
+runtime.R = end - start
+
+# newEM CPP 
+start= proc.time()
+res.cpp = mashr:::fit_teem_rcpp(train , w.init,simplify2array(U.init), 5000, 1e-7, FALSE)
+end = proc.time()
+runtime.cpp = end - start
+
+```
+
+
+```{r  }
+
+runtime.mashr
+runtime.R
+runtime.cpp
+```
+
+
