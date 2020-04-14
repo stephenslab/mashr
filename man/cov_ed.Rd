@@ -4,7 +4,7 @@
 \alias{cov_ed}
 \title{Perform "extreme deconvolution" (Bovy et al) on a subset of the data}
 \usage{
-cov_ed(data, Ulist_init, subset = NULL, ...)
+cov_ed(data, Ulist_init, subset = NULL, algorithm = c("bovy", "teem"), ...)
 }
 \arguments{
 \item{data}{a mash data object}
@@ -13,7 +13,9 @@ cov_ed(data, Ulist_init, subset = NULL, ...)
 
 \item{subset}{a subset of data to be used when ED is run (set to NULL for all the data)}
 
-\item{...}{arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}. Other options see \code{?ExtremeDeconvolution::extreme_deconvolution}}
+\item{algorithm}{algorithm to run ED}
+
+\item{...}{other arguments to be passed to ED algorith, see \code{?mashr::extreme_deconvolution} for algorithm 'bovy', or \code{?mashr::teem_wrapper} for algorithm 'teem'}
 }
 \description{
 Perform "extreme deconvolution" (Bovy et al) on a subset of the data

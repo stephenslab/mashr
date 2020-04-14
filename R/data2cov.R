@@ -24,12 +24,18 @@ cov_pca = function(data,npc,subset = NULL){
 #' @param data a mash data object
 #' @param Ulist_init a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs
 #' @param subset a subset of data to be used when ED is run (set to NULL for all the data)
-#' @param ... arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}. Other options see \code{?ExtremeDeconvolution::extreme_deconvolution}
+#' @param algorithm algorithm to run ED
+#' @param ... other arguments to be passed to ED algorith, see \code{?mashr::extreme_deconvolution} for algorithm 'bovy', or \code{?mashr::teem_wrapper} for algorithm 'teem'
 #' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
 #' The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
 #' @export
-cov_ed = function(data, Ulist_init, subset = NULL, ...){
-  Ulist_ed = ed_wrapper(data, Ulist_init, subset, ...)$Ulist
+cov_ed = function(data, Ulist_init, subset = NULL, algorithm=c('bovy', 'teem'), ...) {
+  algorithm = match.arg(algorithm)
+  if (algorithm=='bovy') {
+    Ulist_ed = bovy_wrapper(data, Ulist_init, subset, ...)$Ulist
+  } else {
+    Ulist_ed = teem_wrapper(data, Ulist_init, subset, ...)$U
+  }
   names(Ulist_ed) = make_names("ED", if(is.null(names(Ulist_init))) 1:length(Ulist_ed) else names(Ulist_init))
   Ulist_ed
 }
