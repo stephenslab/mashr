@@ -55,6 +55,6 @@ teem_wrapper = function(data, Ulist_init, subset=NULL, w_init=NULL, maxiter=5000
   for (i in 1:length(Ulist_init)) Ulist_init[[i]] = Ulist_init[[i]] + diag(nrow(Ulist_init[[i]]))
   res = fit_teem_rcpp(zscore, w_init, simplify2array(Ulist_init), maxiter, tol, verbose)
   # format result to list
-  res$U = lapply(seq(dim(res$U)[3]), function(x) res$U[ , , x])
+  res$U = lapply(seq(dim(res$U)[3]), function(x) res$U[ , , x] - diag(nrow(res$U[ , , x])))
   return(res)
 }
