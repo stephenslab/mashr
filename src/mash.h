@@ -98,10 +98,19 @@ inline T
 pnorm(const U & x, const T & m, const T & s,
   bool logd = false, bool lower_tail = true)
 {
-    // FIXME: not sure if erfc approximation is accurate enough compared to R's pnorm()
     // see `normalCDF` function at:
     // http://en.cppreference.com/w/cpp/numeric/math/erfc
+
     T res = 0.5 * arma::erfc((x - m) / s * M_SQRT1_2);
+
+    // FIXME: unlike R::pnorm(0,0,0) = 1 and R::pnorm(-1,0,0) = 0, here it generates NaN
+    // I manually fix it below.
+    // "s == 0" check is not good enough to ensure that res doesn't have NaN due to division by zero
+    arma::uvec nan = arma::find_nonfinite(0 / s);
+    if (nan.n_elem > 0) {
+        res.elem(arma::intersect(arma::find(x >= m), nan)).ones();
+        res.elem(arma::intersect(arma::find(x < m), nan)).zeros();
+    }
 
     if (!lower_tail & !logd) {
         return 1.0 - res;
