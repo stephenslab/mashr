@@ -48,13 +48,11 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
 #' @return the fitted mixture: a list of mixture proportions and covariance matrices
 #'
 #' @export
-teem_wrapper = function(data, Ulist_init, subset=NULL, w_init=NULL, maxiter=5000, tol=1e-7, verbose=FALSE) {
+teem_wrapper = function(data, Ulist_init, subset=NULL, w_init=NULL, maxiter=5000, converge_tol=1e-7, eigen_tol = 1e-7, verbose=FALSE) {
   if(is.null(subset)){subset = 1:n_effects(data)}
   zscore = data$Bhat[subset,]/data$Shat[subset,]
   if(is.null(w_init)) w_init = rep(1/length(Ulist_init), length(Ulist_init))
-  for (i in 1:length(Ulist_init)) Ulist_init[[i]] = Ulist_init[[i]] + diag(nrow(Ulist_init[[i]]))
-  res = fit_teem_rcpp(zscore, w_init, simplify2array(Ulist_init), maxiter, tol, verbose)
+  res = fit_teem_rcpp(zscore, w_init, simplify2array(Ulist_init), maxiter, converge_tol, eigen_tol, verbose)
   # format result to list
-  res$U = lapply(seq(dim(res$U)[3]), function(x) res$U[ , , x] - diag(nrow(res$U[ , , x])))
   return(res)
 }

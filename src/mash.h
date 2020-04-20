@@ -754,9 +754,8 @@ public:
                 // add to posterior 2nd moment contribution of the p-th component
                 post_cov.slice(j) += posterior_weights.at(p, j) * mu2_mat;
                 if (!Uinv_cube.is_empty()) {
-                    // when input inverse prior matrices are not empty
-                    // we will compute the EM update for prior scalar here
-                    // for use with mmbr package
+                    // we will compute some quantity to provide for
+                    // EM update for prior scalar in mmbr package
                     // the M-step update is:
                     // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
                     // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
@@ -943,13 +942,13 @@ softmax(const arma::vec & x)
 
 // function for "shrinking" the covariance matrix, to get $\hat U_k$.
 inline arma::mat
-shrink_cov(const arma::mat & V)
+shrink_cov(const arma::mat & V, const double & eps)
 {
     arma::vec eigval;
     arma::mat eigvec;
     eig_sym(eigval, eigvec, V);
     for (arma::uword i = 0; i < eigval.n_elem; ++i) {
-        eigval(i) = (eigval(i) > 1.0) ? eigval(i) : 1.0;
+        eigval(i) = (eigval(i) > 1.0) ? eigval(i) : (1.0 + eps);
     }
     return eigvec * diagmat(eigval) * trans(eigvec);
 }
@@ -968,9 +967,12 @@ public:
     TEEM(const arma::mat & X_mat,
       const arma::vec    & w_vec,
       const arma::cube   & U_cube) :
-        X_mat(X_mat), w_vec(w_vec), U_cube(U_cube)
+        X_mat(X_mat), w_vec(w_vec)
     {
-        // initialize other private quantities if necessary
+        T_cube = U_cube;
+        for (unsigned j = 0; j < T_cube.n_slices; ++j) {
+            T_cube.slice(j) += arma::eye(arma::size(T_cube.slice(j)));
+        }
     }
 
     ~TEEM(){ }
@@ -985,10 +987,17 @@ public:
     get_w(){ return w_vec; }
 
     arma::cube
-    get_U(){ return U_cube; }
+    get_U()
+    {
+        arma::cube U_cube = T_cube;
+        for (unsigned j = 0; j < U_cube.n_slices; ++j) {
+            U_cube.slice(j) -= arma::eye(arma::size(U_cube.slice(j)));
+        }
+        return U_cube;
+    }
 
     int
-    fit(const int & maxiter, const double & tol, const bool & verbose)
+    fit(const int & maxiter, const double & converge_tol, const double & eigen_tol, const bool & verbose)
     {
         // initialize to store progress
         objective.zeros(maxiter);
@@ -1002,15 +1011,14 @@ public:
 
         for (unsigned iter = 0; iter < maxiter; ++iter) {
             // store parameters and likelihood in the previous step
-            arma::vec w0_vec   = w_vec;
-            arma::cube U0_cube = U_cube;
+            arma::vec w0_vec = w_vec;
 
             // E-step: calculate posterior probabilities using the current mu and sigmas
             // arma::mat logP = mat(n, k, arma::fill::zeros); // n by k matrix;
             arma::mat logP = arma::zeros<arma::mat>(n, k); // n by k matrix
             for (unsigned j = 0; j < k; ++j) {
                 logP.col(j) = log(w_vec(j)) + dmvnorm_mat(trans(X_mat), arma::zeros<arma::vec>(
-                        X_mat.n_cols), U_cube.slice(j), true); // ??
+                        X_mat.n_cols), T_cube.slice(j), true); // ??
             }
             // softmax for renormalization
             // arma::mat P_mat = mat(k, n, arma::fill::zeros); // k by n matrix. because of row/col vec converting
@@ -1024,14 +1032,14 @@ public:
 
             // M-step:
             for (unsigned j = 0; j < k; ++j) {
-                U_cube.slice(j) = trans(X_mat) * (P_mat.col(j) % X_mat.each_col()) / accu(P_mat.col(j));
-                U_cube.slice(j) = shrink_cov(U_cube.slice(j));
+                T_cube.slice(j) = trans(X_mat) * (P_mat.col(j) % X_mat.each_col()) / accu(P_mat.col(j));
+                T_cube.slice(j) = shrink_cov(T_cube.slice(j), eigen_tol);
             }
             // update mixture weights
             w_vec = arma::conv_to<arma::colvec>::from(sum(P_mat, 0)) / n; // 0:sum by column;
 
             // Compute log-likelihood at the current estimates
-            double f = compute_loglik(X_mat, U_cube, w_vec);
+            double f = compute_loglik(X_mat, T_cube, w_vec);
 
             // Check stopping criterion
             double d = max(abs(w_vec - w0_vec));
@@ -1039,7 +1047,7 @@ public:
             objective(iter) = f;
             iter_out        = iter;
 
-            if (d < tol) {
+            if (d < converge_tol) {
                 break;
             }
         }
@@ -1051,11 +1059,11 @@ public:
 private:
     arma::mat X_mat;
     arma::vec w_vec;
-    arma::cube U_cube;
+    arma::cube T_cube;
     arma::vec objective;
     arma::vec maxd;
     double
-    compute_loglik(arma::mat& X_mat, arma::cube& U_cube, // X_mat n by p;
+    compute_loglik(arma::mat& X_mat, arma::cube& T_cube, // X_mat n by p;
       arma::vec& w_vec)
     {
         int n = X_mat.n_rows;
@@ -1063,7 +1071,7 @@ private:
 
         arma::vec y = arma::zeros<arma::vec>(n);
         for (unsigned j = 0; j < k; ++j) {
-            y = y + w_vec(j) * dmvnorm_mat(trans(X_mat), arma::zeros<arma::vec>(X_mat.n_cols), U_cube.slice(j));
+            y = y + w_vec(j) * dmvnorm_mat(trans(X_mat), arma::zeros<arma::vec>(X_mat.n_cols), T_cube.slice(j));
         }
         return (sum(log(y)));
     }

@@ -208,7 +208,8 @@ fit_teem_rcpp(Rcpp::NumericMatrix X_mat,
   Rcpp::NumericVector             w_vec,
   Rcpp::NumericVector             U_3d,
   int                             maxiter,
-  double                          tol,
+  double                          converge_tol,
+  double                          eigen_tol,
   bool                            verbose)
 {
     // Convert R 3d array to Rcpp cube
@@ -222,7 +223,7 @@ fit_teem_rcpp(Rcpp::NumericMatrix X_mat,
     TEEM teem(Rcpp::as<arma::mat>(X_mat),
       Rcpp::as<arma::vec>(w_vec),
       U_cube);
-    teem.fit(maxiter, tol, verbose);
+    teem.fit(maxiter, converge_tol, eigen_tol, verbose);
     Rcpp::List res = Rcpp::List::create(
         Rcpp::Named("w")         = teem.get_w(),
         Rcpp::Named("U")         = teem.get_U(),

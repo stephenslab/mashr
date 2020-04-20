@@ -10,7 +10,8 @@ teem_wrapper(
   subset = NULL,
   w_init = NULL,
   maxiter = 5000,
-  tol = 1e-07,
+  converge_tol = 1e-07,
+  eigen_tol = 1e-07,
   verbose = FALSE
 )
 }
