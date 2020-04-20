@@ -1039,7 +1039,7 @@ public:
             w_vec = arma::conv_to<arma::colvec>::from(sum(P_mat, 0)) / n; // 0:sum by column;
 
             // Compute log-likelihood at the current estimates
-            double f = compute_loglik(X_mat, T_cube, w_vec);
+            double f = compute_loglik();
 
             // Check stopping criterion
             double d = max(abs(w_vec - w0_vec));
@@ -1063,8 +1063,7 @@ private:
     arma::vec objective;
     arma::vec maxd;
     double
-    compute_loglik(arma::mat& X_mat, arma::cube& T_cube, // X_mat n by p;
-      arma::vec& w_vec)
+    compute_loglik()
     {
         int n = X_mat.n_rows;
         int k = w_vec.size();
