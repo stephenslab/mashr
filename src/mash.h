@@ -149,13 +149,14 @@ get_cov(const arma::vec & s, const arma::mat & V)
 // @return R x R posterior covariance matrix
 // @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
 inline arma::mat
-get_posterior_cov(const arma::mat & Vinv, const arma::mat & U)
+get_posterior_cov(const arma::mat & Vinv, const arma::mat & U, bool partial = false)
 {
     // U %*% solve(Vinv %*% U + diag(nrow(U)))
     arma::mat S = Vinv * U;
 
     S.diag() += 1.0;
-    return U * S.i();
+    if (partial) return S.i();
+    else return U * S.i();
 }
 
 // @title posterior_mean
@@ -704,6 +705,7 @@ public:
         neg_prob.zeros();
         zero_prob.zeros();
         prior_scalar.set_size(U_cube.n_slices);
+        prior_invertable = false;
     }
 
     ~MVSERMix(){ }
@@ -712,19 +714,20 @@ public:
     // @description Make posterior inferences, and also perform the EM update for prior scalar, for mvSuSiE model.
     // @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect.
     // @param posterior_variable_weights P X J matrix, the posterior inclusion probabilities of each effect in a single-effect model.
+    // posterior_variable_weights is only relevant when EM updates for prior scalar is needed.
     int
     compute_posterior(const arma::mat & posterior_weights,
-      const arma::mat                 & posterior_variable_weights)
+      const arma::mat & posterior_variable_weights, double sigma0)
     {
         arma::vec mean(post_mean.n_rows, arma::fill::zeros);
         // This is meant to store a length P of 2nd moment matrices,
         // each element is \sum_j posterior_{p,j} * mu2_{p,j}
-        arma::cube mu2_cube(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-
-        if (!Uinv_cube.is_empty()) {
-            // when input inverse prior matrices are not empty
+        arma::cube mu2_cube;
+        bool to_estimate_prior = !posterior_variable_weights.is_empty();
+        if (to_estimate_prior) {
             // we will compute the EM update for prior scalar here
             // for use with mmbr package
+            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
             mu2_cube.zeros();
         }
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
@@ -742,24 +745,29 @@ public:
                 //
                 arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
                 arma::mat U0;
-                if (U0_cube.is_empty()) {
-                    U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
-                } else {
-                    U0 = U0_cube.slice(j * U_cube.n_slices + p);
-                }
+                if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+                else U0 = U0_cube.slice(j * U_cube.n_slices + p);
                 mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
                 U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
                 // this is posterior 2nd moment for the j-th variable and the p-th prior
                 arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
                 // add to posterior 2nd moment contribution of the p-th component
                 post_cov.slice(j) += posterior_weights.at(p, j) * mu2_mat;
-                if (!Uinv_cube.is_empty()) {
+                if (to_estimate_prior) {
                     // we will compute some quantity to provide for
                     // EM update for prior scalar in mmbr package
                     // the M-step update is:
                     // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
                     // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
-                    mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                    if (prior_invertable) {
+                        mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                    } else {
+                        // Here we compute the U_p^{-1} E[bb^T \,|\, \gamma_p] part using a trick not involving U_p^{-1}
+                        arma::mat U0_prime = get_posterior_cov(Vinv_j, U_cube.slice(p), true);
+                        arma::mat ssb      = U0_prime * Vinv_j * b_mat.col(j);
+                        mu2_cube.slice(p) +=
+                          posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
+                    }
                 }
                 arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
                 diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
@@ -779,10 +787,14 @@ public:
             post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
         }
         post_var -= arma::pow(post_mean, 2.0);
-        if (!Uinv_cube.is_empty()) {
+        if (to_estimate_prior) {
             // now compute \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r for each p
             for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-                prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * mu2_cube.slice(p)) / post_mean.n_rows;
+                if (prior_invertable) {
+                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * mu2_cube.slice(p)) / post_mean.n_rows;
+                } else {
+                    prior_scalar.at(p) = arma::trace(mu2_cube.slice(p)) / post_mean.n_rows;
+                }
             }
         }
         return 0;
@@ -793,13 +805,14 @@ public:
     // @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
     int
     compute_posterior_comcov(const arma::mat & posterior_weights,
-      const arma::mat                        & posterior_variable_weights)
+      const arma::mat & posterior_variable_weights, double sigma0)
     {
         arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
         // for mu2_cube see compute_posterior() for detailed documentations.
-        arma::cube mu2_cube(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-
-        if (!Uinv_cube.is_empty()) {
+        arma::cube mu2_cube;
+        bool to_estimate_prior = !posterior_variable_weights.is_empty();
+        if (to_estimate_prior) {
+            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
             mu2_cube.zeros();
         }
         // R X R
@@ -825,13 +838,28 @@ public:
 
             // FIXME: any better way to set sigma?
             arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
+            arma::mat U0_prime;
+            if (to_estimate_prior && !prior_invertable) U0_prime = get_posterior_cov(Vinv, U_cube.slice(p), true);
             for (arma::uword j = 0; j < sigma.n_cols; ++j) {
                 sigma.col(j) = Svec;
                 arma::mat mu2_mat = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
                 post_cov.slice(j) +=
                   posterior_weights.at(p, j) * mu2_mat;
-                if (!Uinv_cube.is_empty()) {
-                    mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                if (to_estimate_prior) {
+                    if (prior_invertable) {
+                        mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                    } else {
+                        arma::mat ssb = U0_prime * Vinv * b_mat.col(j);
+                        mu2_cube.slice(p) +=
+                          posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
+                    }
+                }
+            }
+            if (to_estimate_prior) {
+                if (prior_invertable) {
+                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * mu2_cube.slice(p)) / post_mean.n_rows;
+                } else {
+                    prior_scalar.at(p) = arma::trace(mu2_cube.slice(p)) / post_mean.n_rows;
                 }
             }
             // R X J
@@ -855,11 +883,6 @@ public:
         for (arma::uword j = 0; j < sigma.n_cols; ++j) {
             post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
         }
-        if (!Uinv_cube.is_empty()) {
-            for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-                prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * mu2_cube.slice(p)) / post_mean.n_rows;
-            }
-        }
         return 0;
     } // compute_posterior_comcov
 
@@ -881,7 +904,8 @@ public:
     int
     set_Uinv(const arma::cube & value)
     {
-        Uinv_cube = value;
+        Uinv_cube        = value;
+        prior_invertable = true;
         return 0;
     }
 
@@ -926,6 +950,7 @@ private:
     arma::cube post_cov;
     // P vector of scalars
     arma::vec prior_scalar;
+    bool prior_invertable;
 };
 
 // Softmax functions: yi = exp(xi) / sum(exp(xj))
