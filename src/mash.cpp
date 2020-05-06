@@ -173,7 +173,8 @@ calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
       Rcpp::as<arma::mat>(v_mat),
       U_cube);
     if (!Rf_isNull(U0_3d.attr("dim"))) {
-        arma::cube U0_cube(U0_3d.begin(), dimU[0], dimU[1], dimU[2]);
+        Rcpp::IntegerVector dimU0 = U0_3d.attr("dim");
+        arma::cube U0_cube(U0_3d.begin(), dimU0[0], dimU0[1], dimU0[2]);
         pc.set_U0(U0_cube);
     }
     if (!Rf_isNull(vinv_3d.attr("dim"))) {
