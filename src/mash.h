@@ -674,8 +674,6 @@ private:
 // @title Inferences for Multivariate Single Effect Regression with Mixture prior
 // @param b_mat R by J
 // @param s_mat R by J
-// @param s_orig_mat R by J
-// @param s_alpha_mat R by J
 // @param v_mat R by R
 // @param U_cube list of prior covariance matrices, for each mixture component P by R by R
 class MVSERMix
@@ -683,17 +681,12 @@ class MVSERMix
 public:
     MVSERMix(const arma::mat & b_mat,
       const arma::mat        & s_mat,
-      const arma::mat        & s_alpha_mat,
-      const arma::mat        & s_orig_mat,
       const arma::mat        & v_mat,
       const arma::cube       & U_cube) :
-        b_mat(b_mat), v_mat(v_mat), U_cube(U_cube)
+        b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), U_cube(U_cube)
     {
         int J = b_mat.n_cols, R = b_mat.n_rows;
 
-        if (s_mat.is_empty()) s_obj.set(R, J);
-        else s_obj.set(s_mat, s_alpha_mat);
-        s_obj.set_original(s_orig_mat);
         post_mean.set_size(R, J);
         post_var.set_size(R, J);
         post_cov.set_size(R, R, J);
@@ -734,7 +727,7 @@ public:
             // FIXME: improved math may help here
             arma::mat Vinv_j;
             if (Vinv_cube.is_empty()) Vinv_j =
-                  arma::inv_sympd(get_cov(s_obj.get_original().col(j), v_mat));
+                  arma::inv_sympd(get_cov(s_mat.col(j), v_mat));
             else Vinv_j = Vinv_cube.slice(j);
             // R X P matrices
             arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
@@ -743,12 +736,10 @@ public:
             arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
             for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
                 //
-                arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
-                arma::mat U0;
-                if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
-                else U0 = U0_cube.slice(j * U_cube.n_slices + p);
-                mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
-                U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
+                arma::mat U1;
+                if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+                else U1 = U0_cube.slice(j * U_cube.n_slices + p);
+                mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U1);
                 // this is posterior 2nd moment for the j-th variable and the p-th prior
                 arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
                 // add to posterior 2nd moment contribution of the p-th component
@@ -818,7 +809,7 @@ public:
         // R X R
         arma::mat Vinv;
         if (Vinv_cube.is_empty()) Vinv =
-              arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat));
+              arma::inv_sympd(get_cov(s_mat.col(0), v_mat));
         else Vinv = Vinv_cube.slice(0);
 
         arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
@@ -827,14 +818,12 @@ public:
         for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
             arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
             // R X R
-            arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
+            arma::mat U1;
             // R X J
-            arma::mat mu1_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-            arma::mat U0;
-            if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv, U_cube.slice(p));
-            else U0 = U0_cube.slice(p);
-            mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get();
-            U1      = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
+            arma::mat mu1_mat;
+            if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv, U_cube.slice(p));
+            else U1 = U0_cube.slice(p);
+            mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
 
             // FIXME: any better way to set sigma?
             arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
@@ -934,7 +923,7 @@ public:
 private:
     // input
     arma::mat b_mat;
-    SE s_obj;
+    arma::mat s_mat;
     arma::mat v_mat;
     arma::cube U_cube;
     arma::cube Vinv_cube;

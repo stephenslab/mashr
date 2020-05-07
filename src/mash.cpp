@@ -138,8 +138,6 @@ calc_post_rcpp(Rcpp::NumericMatrix b_mat,
 Rcpp::List
 calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
   Rcpp::NumericMatrix                s_mat,
-  Rcpp::NumericMatrix                s_alpha_mat,
-  Rcpp::NumericMatrix                s_orig_mat,
   Rcpp::NumericMatrix                v_mat,
   Rcpp::NumericVector                vinv_3d,
   Rcpp::NumericVector                U_3d,
@@ -168,8 +166,6 @@ calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
     }
     MVSERMix pc(Rcpp::as<arma::mat>(b_mat),
       Rcpp::as<arma::mat>(s_mat),
-      Rcpp::as<arma::mat>(s_alpha_mat),
-      Rcpp::as<arma::mat>(s_orig_mat),
       Rcpp::as<arma::mat>(v_mat),
       U_cube);
     if (!Rf_isNull(U0_3d.attr("dim"))) {
