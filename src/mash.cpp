@@ -26,6 +26,7 @@ calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
   Rcpp::NumericMatrix             v_mat,
   Rcpp::NumericMatrix             l_mat,
   Rcpp::NumericVector             U_3d,
+  Rcpp::NumericVector             sigma_3d,
   bool                            logd,
   bool                            common_cov)
 {
@@ -33,19 +34,27 @@ calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
     // std::ostream nullstream(0);
     // arma::set_stream_err2(nullstream);
     arma::mat res;
-
     if (!Rf_isNull(U_3d.attr("dim"))) {
+        // matrix version
         // set cube data from R 3D array
         Rcpp::IntegerVector dimU = U_3d.attr("dim");
         arma::cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+        arma::cube sigma_cube;
+        if (!Rf_isNull(sigma_3d.attr("dim"))) {
+          Rcpp::IntegerVector dimSigma = sigma_3d.attr("dim");
+          arma::cube tmp_cube(sigma_3d.begin(), dimSigma[0], dimSigma[1], dimSigma[2]);
+          sigma_cube = tmp_cube;
+        }
         res = calc_lik(Rcpp::as<arma::mat>(b_mat),
             Rcpp::as<arma::mat>(s_mat),
             Rcpp::as<arma::mat>(v_mat),
             Rcpp::as<arma::mat>(l_mat),
             U_cube,
+            sigma_cube,
             logd,
             common_cov);
     } else {
+        // vector version
         res = calc_lik(Rcpp::as<arma::vec>(b_mat),
             Rcpp::as<arma::vec>(s_mat),
             v_mat(0, 0),

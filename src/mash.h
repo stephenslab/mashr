@@ -186,6 +186,7 @@ get_posterior_mean_mat(const arma::mat & bhat, const arma::mat & Vinv,
 // @param v_mat R by R
 // @param l_mat R by R for the common baseline application (@Yuxin Zou)
 // @param U_cube list of prior covariance matrices
+// @param sigma_cube list of sigma which is result of get_cov(s_mat, v_mat, l_mat)
 // @param logd if true computes log-likelihood
 // @param common_cov if true use version for common covariance
 // @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
@@ -195,6 +196,7 @@ calc_lik(const arma::mat & b_mat,
   const arma::mat        & v_mat,
   const arma::mat        & l_mat,
   const arma::cube       & U_cube,
+  const arma::cube       & sigma_cube,
   bool                   logd,
   bool                   common_cov)
 {
@@ -203,15 +205,17 @@ calc_lik(const arma::mat & b_mat,
     // lik is a J by P matrix
     arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
     arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-
+    arma::mat sigma;
     if (common_cov) {
-        arma::mat sigma = get_cov(s_mat.col(0), v_mat, l_mat);
+        if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(0);
+        else sigma = get_cov(s_mat.col(0), v_mat, l_mat);
         for (arma::uword p = 0; p < lik.n_cols; ++p) {
             lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
         }
     } else {
         for (arma::uword j = 0; j < lik.n_rows; ++j) {
-            arma::mat sigma = get_cov(s_mat.col(j), v_mat, l_mat);
+            if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(j);
+            else sigma = get_cov(s_mat.col(j), v_mat, l_mat);
             for (arma::uword p = 0; p < lik.n_cols; ++p) {
                 lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
             }

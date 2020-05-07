@@ -116,12 +116,12 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     # Run the C implementation using the Rcpp interface.
     if (is.null(data$L))
         res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
-                             matrix(0,0,0), simplify2array(Ulist),log,
-                             is_common_cov_Shat(data))
+                             matrix(0,0,0), simplify2array(Ulist), 0,
+                             log, is_common_cov_Shat(data))
     else
         res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,
-                             data$L, simplify2array(Ulist),log,
-                             is_common_cov_Shat(data))
+                             data$L, simplify2array(Ulist), 0,
+                             log, is_common_cov_Shat(data))
     res <- res$data
 
     # Get column names for R > 1.

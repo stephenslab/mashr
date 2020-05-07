@@ -9,8 +9,8 @@ inv_chol_tri_rcpp <- function(x_mat) {
     .Call('_mashr_inv_chol_tri_rcpp', PACKAGE = 'mashr', x_mat)
 }
 
-calc_lik_rcpp <- function(b_mat, s_mat, v_mat, l_mat, U_3d, logd, common_cov) {
-    .Call('_mashr_calc_lik_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, l_mat, U_3d, logd, common_cov)
+calc_lik_rcpp <- function(b_mat, s_mat, v_mat, l_mat, U_3d, sigma_3d, logd, common_cov) {
+    .Call('_mashr_calc_lik_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, l_mat, U_3d, sigma_3d, logd, common_cov)
 }
 
 calc_lik_precomputed_rcpp <- function(b_mat, rooti_3d, logd, common_cov) {
