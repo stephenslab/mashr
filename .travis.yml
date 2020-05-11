@@ -1,5 +1,4 @@
 language: r
-dist: bionic
 cache: packages
 latex: false
 warnings_are_errors: false
@@ -11,20 +10,28 @@ env:
     - _R_CHECK_FORCE_SUGGESTS_: false
     - R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
-# This is the minimal set of R packages needed to run "R CMD check" on
-# the package.
-install:
-  - R -e 'install.packages(c("assertthat","abind","mvtnorm","Rcpp","RcppArmadillo","RcppGSL","rmeta","plyr","testthat","devtools"))'
-  - R -e 'devtools::install_github("stephens999/ashr")'
-
-before_install:
-  - sudo apt-get install -y libgsl0-dev libomp-dev
-      
 r_packages:
   - covr
+  # This is the minimal set of R packages needed to run "R CMD check" on
+  # the package.
+  - assertthat
+  - abind
+  - mvtnorm
+  - Rcpp
+  - RcppArmadillo
+  - RcppGSL
+  - rmeta
+  - plyr
+  - testthat
 
 r_github_packages: stephens999/ashr
-  
+
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get -q update
+  - sudo apt-get install -y libgsl-dev libomp-dev gcc-6 g++-6
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+
 after_success:
   - Rscript -e 'covr::codecov()'
 
