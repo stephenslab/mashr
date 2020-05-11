@@ -531,6 +531,7 @@ public:
         post_var -= arma::pow(post_mean, 2.0);
         //
         if (report_type == 4) {
+            #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
             for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
                 post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
             }
@@ -851,7 +852,8 @@ public:
 
         arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
         arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
-        #pragma \
+        // FIXME: possible data race still exists
+        //#pragma \
             omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, mu2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
         for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
             arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
@@ -899,14 +901,15 @@ public:
                     neg_mat.row(r)  = zeros;
                 }
             }
-            #pragma omp critical
-            {
+            // FIXME: possible data race still exists
+            //#pragma omp critical
+            //{
                 // compute weighted means of posterior arrays
                 post_mean += mu1_mat.each_row() % posterior_weights.row(p);
                 post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
                 neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
                 zero_prob += zero_mat.each_row() % posterior_weights.row(p);
-            }
+            //}
         }
         post_var -= arma::pow(post_mean, 2.0);
         #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
