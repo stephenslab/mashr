@@ -1,5 +1,5 @@
-dist: bionic
 language: r
+dist: bionic
 cache: packages
 latex: false
 warnings_are_errors: false
