@@ -772,31 +772,23 @@ public:
             arma::mat diag_mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
             arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
             arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+            // R X R X P
+            arma::cube mu2_cube;
+            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
             for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-                //
                 arma::mat U1;
                 if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv_j, U_cube.slice(p));
                 else U1 = U0_cube.slice(j * U_cube.n_slices + p);
                 mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U1);
                 // this is posterior 2nd moment for the j-th variable and the p-th prior
-                arma::mat mu2_mat = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
+                mu2_cube.slice(p) = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
                 // add to posterior 2nd moment contribution of the p-th component
-                post_cov.slice(j) += posterior_weights.at(p, j) * mu2_mat;
-                if (to_estimate_prior) {
-                    // we will compute some quantity to provide for
-                    // EM update for prior scalar in mmbr package
-                    // the M-step update is:
-                    // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
-                    // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
-                    if (prior_invertable) {
-                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
-                    } else {
-                        // Here we compute the U_p^{-1} E[bb^T \,|\, \gamma_p] part using a trick not involving U_p^{-1}
-                        arma::mat U0_prime = get_posterior_cov(Vinv_j, U_cube.slice(p), true);
-                        arma::mat ssb      = U0_prime * Vinv_j * b_mat.col(j);
-                        Eb2_cube.slice(p) +=
-                          posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
-                    }
+                post_cov.slice(j) += posterior_weights.at(p, j) * mu2_cube.slice(p);
+                if (to_estimate_prior && !prior_invertable) {
+                    // Here we compute the U_p^{-1} E[bb^T \,|\, \gamma_p] part using a trick not involving U_p^{-1}
+                    arma::mat U0_prime = get_posterior_cov(Vinv_j, U_cube.slice(p), true);
+                    arma::mat ssb      = U0_prime * Vinv_j * b_mat.col(j);
+                    mu2_cube.slice(p) = sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
                 }
                 arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
                 diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
@@ -814,6 +806,19 @@ public:
             neg_prob.col(j)    = neg_mat * posterior_weights.col(j);
             zero_prob.col(j)   = zero_mat * posterior_weights.col(j);
             post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
+            if (to_estimate_prior) {
+                #pragma omp critical
+                {
+                    for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+                        // we will compute some quantity to provide for
+                        // EM update for prior scalar in mmbr package
+                        // the M-step update is:
+                        // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
+                        // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
+                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(p);
+                    }
+                }
+            }
         }
         post_var -= arma::pow(post_mean, 2.0);
         if (to_estimate_prior) {
@@ -864,14 +869,14 @@ public:
             else U1 = U0_cube.slice(p);
             mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
             arma::cube mu2_cube;
-            mu2_cube.set_size(U1.n_rows, U1.n_rows, post_mean.n_cols);
+            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, post_mean.n_cols);
             arma::mat U0_prime;
             if (to_estimate_prior && !prior_invertable) U0_prime = get_posterior_cov(Vinv, U_cube.slice(p), true);
             for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
                 mu2_cube.slice(j) = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
                 if (to_estimate_prior) {
                     if (prior_invertable) {
-                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube(j);
+                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(j);
                     } else {
                         arma::mat ssb = U0_prime * Vinv * b_mat.col(j);
                         Eb2_cube.slice(p) +=
