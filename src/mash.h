@@ -758,7 +758,7 @@ public:
             mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
             mu2_cube.zeros();
         }
-        //#pragma \
+        #pragma \
             omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, mu2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             // FIXME: improved math may help here
@@ -909,7 +909,7 @@ public:
             }
         }
         post_var -= arma::pow(post_mean, 2.0);
-        #pragma omp parallel for default(none) schedule(static) shared(post_cov, post_mean)
+        #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
         }
