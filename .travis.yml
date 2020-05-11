@@ -29,7 +29,7 @@ r_github_packages: stephens999/ashr
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get -q update
-  - sudo apt-get install -y libgsl-dev libomp-dev gcc-6 g++-6
+  - sudo apt-get install -y libgsl-dev libomp-dev libgfortran-6-dev gfortran gcc-6 g++-6
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
 
 after_success:
