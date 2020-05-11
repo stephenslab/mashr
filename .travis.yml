@@ -17,7 +17,7 @@ install:
   - R -e 'devtools::install_github("stephens999/ashr")'
 
 before_install:
-  - sudo apt-get install -y libgsl0-dev
+  - sudo apt-get install -y libgsl0-dev libomp-dev
       
 r_packages:
   - covr
