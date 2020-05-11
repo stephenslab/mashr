@@ -499,12 +499,6 @@ public:
                   * (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t())
                   * a_mat.t());
             }
-            if (report_type == 2 || report_type == 4) {
-                for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-                    post_cov.slice(j) +=
-                      posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
-                }
-            }
             // R X J
             arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
             diag_mu2_mat.each_col() += U1.diag();
@@ -526,6 +520,12 @@ public:
                 post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
                 neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
                 zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+                if (report_type == 2 || report_type == 4) {
+                    for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+                        post_cov.slice(j) +=
+                          posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
+                    }
+                }
             }
         }
         post_var -= arma::pow(post_mean, 2.0);
@@ -751,16 +751,16 @@ public:
         arma::vec mean(post_mean.n_rows, arma::fill::zeros);
         // This is meant to store a length P of 2nd moment matrices,
         // each element is \sum_j posterior_{p,j} * mu2_{p,j}
-        arma::cube mu2_cube;
+        arma::cube Eb2_cube;
         bool to_estimate_prior = !posterior_variable_weights.is_empty();
         if (to_estimate_prior) {
             // we will compute the EM update for prior scalar here
             // for use with mmbr package
-            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-            mu2_cube.zeros();
+            Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
+            Eb2_cube.zeros();
         }
         #pragma \
-            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, mu2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
+            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             // FIXME: improved math may help here
             arma::mat Vinv_j;
@@ -789,12 +789,12 @@ public:
                     // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
                     // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
                     if (prior_invertable) {
-                        mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
                     } else {
                         // Here we compute the U_p^{-1} E[bb^T \,|\, \gamma_p] part using a trick not involving U_p^{-1}
                         arma::mat U0_prime = get_posterior_cov(Vinv_j, U_cube.slice(p), true);
                         arma::mat ssb      = U0_prime * Vinv_j * b_mat.col(j);
-                        mu2_cube.slice(p) +=
+                        Eb2_cube.slice(p) +=
                           posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
                     }
                 }
@@ -820,9 +820,9 @@ public:
             // now compute \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r for each p
             for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
                 if (prior_invertable) {
-                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * mu2_cube.slice(p)) / post_mean.n_rows;
+                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * Eb2_cube.slice(p)) / post_mean.n_rows;
                 } else {
-                    prior_scalar.at(p) = arma::trace(mu2_cube.slice(p)) / post_mean.n_rows;
+                    prior_scalar.at(p) = arma::trace(Eb2_cube.slice(p)) / post_mean.n_rows;
                 }
             }
         }
@@ -837,12 +837,12 @@ public:
       const arma::mat & posterior_variable_weights, double sigma0)
     {
         arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-        // for mu2_cube see compute_posterior() for detailed documentations.
-        arma::cube mu2_cube;
+        // for Eb2_cube see compute_posterior() for detailed documentations.
+        arma::cube Eb2_cube;
         bool to_estimate_prior = !posterior_variable_weights.is_empty();
         if (to_estimate_prior) {
-            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-            mu2_cube.zeros();
+            Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
+            Eb2_cube.zeros();
         }
         // R X R
         arma::mat Vinv;
@@ -852,9 +852,8 @@ public:
 
         arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
         arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
-        // FIXME: possible data race still exists
-        //#pragma \
-            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, mu2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
+        #pragma \
+            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
         for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
             arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
             // R X R
@@ -864,27 +863,27 @@ public:
             if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv, U_cube.slice(p));
             else U1 = U0_cube.slice(p);
             mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
+            arma::cube mu2_cube;
+            mu2_cube.set_size(U1.n_rows, U1.n_rows, post_mean.n_cols);
             arma::mat U0_prime;
             if (to_estimate_prior && !prior_invertable) U0_prime = get_posterior_cov(Vinv, U_cube.slice(p), true);
             for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-                arma::mat mu2_mat = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
-                post_cov.slice(j) +=
-                  posterior_weights.at(p, j) * mu2_mat;
+                mu2_cube.slice(j) = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
                 if (to_estimate_prior) {
                     if (prior_invertable) {
-                        mu2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_mat;
+                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube(j);
                     } else {
                         arma::mat ssb = U0_prime * Vinv * b_mat.col(j);
-                        mu2_cube.slice(p) +=
+                        Eb2_cube.slice(p) +=
                           posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
                     }
                 }
             }
             if (to_estimate_prior) {
                 if (prior_invertable) {
-                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * mu2_cube.slice(p)) / post_mean.n_rows;
+                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * Eb2_cube.slice(p)) / post_mean.n_rows;
                 } else {
-                    prior_scalar.at(p) = arma::trace(mu2_cube.slice(p)) / post_mean.n_rows;
+                    prior_scalar.at(p) = arma::trace(Eb2_cube.slice(p)) / post_mean.n_rows;
                 }
             }
             // R X J
@@ -901,15 +900,17 @@ public:
                     neg_mat.row(r)  = zeros;
                 }
             }
-            // FIXME: possible data race still exists
-            //#pragma omp critical
-            //{
+            #pragma omp critical
+            {
                 // compute weighted means of posterior arrays
                 post_mean += mu1_mat.each_row() % posterior_weights.row(p);
                 post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
                 neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
                 zero_prob += zero_mat.each_row() % posterior_weights.row(p);
-            //}
+                for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+                    post_cov.slice(j) += posterior_weights.at(p, j) * mu2_cube.slice(j);
+                }
+            }
         }
         post_var -= arma::pow(post_mean, 2.0);
         #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
