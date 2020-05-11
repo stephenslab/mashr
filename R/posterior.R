@@ -47,6 +47,10 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #'
+#' @param mc.cores The argument supplied to
+#'     \code{openmp} specifying the number of cores
+#'     to use. Note that this is only has an effect for the Rcpp version.
+#'
 #' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects.
 #'
 #' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
@@ -82,6 +86,7 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
             algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE,
+            mc.cores = 1,
             posterior_samples = 0, seed = 123) {
   algorithm.version <- match.arg(algorithm.version)
 
@@ -147,12 +152,12 @@ compute_posterior_matrices <-
       res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), matrix(0,0,0),
                            data$V, matrix(0,0,0), A,
                            simplify2array(Ulist), t(posterior_weights),
-                           is_common_cov, output_type)
+                           is_common_cov, output_type, mc.cores)
     else
       res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), t(data$Shat_orig),
                            data$V, data$L, A,
                            simplify2array(Ulist), t(posterior_weights),
-                           is_common_cov, output_type)
+                           is_common_cov, output_type, mc.cores)
     lfsr <- compute_lfsr(res$post_neg, res$post_zero)
     posterior_matrices <- list(PosteriorMean = res$post_mean,
                               PosteriorSD   = res$post_sd,

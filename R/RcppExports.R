@@ -9,20 +9,20 @@ inv_chol_tri_rcpp <- function(x_mat) {
     .Call('_mashr_inv_chol_tri_rcpp', PACKAGE = 'mashr', x_mat)
 }
 
-calc_lik_rcpp <- function(b_mat, s_mat, v_mat, l_mat, U_3d, sigma_3d, logd, common_cov) {
-    .Call('_mashr_calc_lik_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, l_mat, U_3d, sigma_3d, logd, common_cov)
+calc_lik_rcpp <- function(b_mat, s_mat, v_mat, l_mat, U_3d, sigma_3d, logd, common_cov, n_thread = 1L) {
+    .Call('_mashr_calc_lik_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, l_mat, U_3d, sigma_3d, logd, common_cov, n_thread)
 }
 
-calc_lik_precomputed_rcpp <- function(b_mat, rooti_3d, logd, common_cov) {
-    .Call('_mashr_calc_lik_precomputed_rcpp', PACKAGE = 'mashr', b_mat, rooti_3d, logd, common_cov)
+calc_lik_precomputed_rcpp <- function(b_mat, rooti_3d, logd, common_cov, n_thread = 1L) {
+    .Call('_mashr_calc_lik_precomputed_rcpp', PACKAGE = 'mashr', b_mat, rooti_3d, logd, common_cov, n_thread)
 }
 
-calc_post_rcpp <- function(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type) {
-    .Call('_mashr_calc_post_rcpp', PACKAGE = 'mashr', b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type)
+calc_post_rcpp <- function(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type, n_thread = 1L) {
+    .Call('_mashr_calc_post_rcpp', PACKAGE = 'mashr', b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_3d, posterior_weights, common_cov, report_type, n_thread)
 }
 
-calc_sermix_rcpp <- function(b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d, posterior_mixture_weights, posterior_variable_weights, sigma0, common_cov) {
-    .Call('_mashr_calc_sermix_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d, posterior_mixture_weights, posterior_variable_weights, sigma0, common_cov)
+calc_sermix_rcpp <- function(b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d, posterior_mixture_weights, posterior_variable_weights, sigma0, common_cov, n_thread = 1L) {
+    .Call('_mashr_calc_sermix_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d, posterior_mixture_weights, posterior_variable_weights, sigma0, common_cov, n_thread)
 }
 
 fit_teem_rcpp <- function(X_mat, w_vec, U_3d, maxiter, converge_tol, eigen_tol, verbose) {

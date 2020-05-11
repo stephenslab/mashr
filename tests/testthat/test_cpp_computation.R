@@ -13,7 +13,8 @@ test_that("compare likelihood computation R vs C++ in provided data of 100 X 5",
 
   ## Compute the likelihood matrix using the Rcpp implementation.
   out.time <- system.time(out2 <- calc_lik_matrix(data,Ulist,log = TRUE,
-                                                  algorithm.version = "Rcpp"))
+                                                  algorithm.version = "Rcpp",
+                                                  mc.cores = 4))
 
   expect_equal(out1, out2, tolerance=1e-5)
 }
@@ -36,7 +37,8 @@ test_that("compare likelihood computation with contrast matrix R vs C++ in provi
 
   ## Compute the likelihood matrix using the Rcpp implementation.
   out.time <- system.time(out2 <- calc_lik_matrix(data,Ulist,log = TRUE,
-                                                  algorithm.version = "Rcpp"))
+                                                  algorithm.version = "Rcpp",
+                                                  mc.cores = 4))
 
   expect_equal(out1, out2, tolerance=1e-5)
 }
@@ -49,7 +51,7 @@ test_that("compare likelihood computation R vs C++ in simulated data R = 1", {
   Bhat = matrix(rnorm(N),ncol=1)
   data = mash_set_data(Bhat,Shat)
   Ulist = list(id=matrix(1,nrow=1))
-  out1 = calc_lik_matrix(data,Ulist)
+  out1 = calc_lik_matrix(data,Ulist, mc.cores = 4)
   out2 = calc_lik_matrix(data,Ulist,algorithm.version = "R")
   expect_equal(out1, out2, tolerance=1e-5)
 }
@@ -60,7 +62,7 @@ test_that("compare likelihood computation R vs C++ in simulated data common cov"
   Shat = rbind(c(1,1,1),c(1,1,1))
   data = mash_set_data(Bhat, Shat)
   Ulist = cov_singletons(data)
-  out1 = calc_lik_matrix(data, Ulist)
+  out1 = calc_lik_matrix(data, Ulist, mc.cores = 4)
   out2 = calc_lik_matrix(data, Ulist, algorithm.version = "R")
   expect_equal(out1, out2, tolerance=1e-5)
 }
@@ -72,7 +74,7 @@ test_that("compare likelihood computation with contrast matrix R vs C++ in simul
   data = mash_set_data(Bhat, Shat)
   data = mash_update_data(data, ref=1)
   Ulist = cov_singletons(data)
-  out1 = calc_lik_matrix(data, Ulist)
+  out1 = calc_lik_matrix(data, Ulist, mc.cores = 4)
   out2 = calc_lik_matrix(data, Ulist, algorithm.version = "R")
   expect_equal(out1, out2, tolerance=1e-5)
 }
@@ -90,7 +92,8 @@ test_that("compare posterior computation R vs C++ in provided data of 100 X 5", 
   # Compute the posterior quantities using the Rcpp implementation.
   out.time <- system.time(out2 <-
                 compute_posterior_matrices(data,Ulist,posterior_weights,
-                                           algorithm.version = "Rcpp"))
+                                           algorithm.version = "Rcpp",
+                                           mc.cores = 4))
   expect_equal(out1, out2, tolerance=1e-5)
 }
 )
@@ -109,7 +112,7 @@ test_that("compare linear transformed posterior computation R vs C++ in provided
   # Compute the posterior quantities using the Rcpp implementation.
   out.time <- system.time(out2 <-
     compute_posterior_matrices(data,Ulist,posterior_weights,
-                               algorithm.version = "Rcpp", A=A))
+                               algorithm.version = "Rcpp", A=A, mc.cores = 4))
   expect_equal(out1, out2, tolerance=1e-5)
 }
 )
@@ -125,7 +128,8 @@ test_that("compare posterior computation R vs C++ in simulated data R = 1 non co
   out1 <- compute_posterior_matrices(data,Ulist,posterior_weights,
                                      algorithm.version = "R")
   out2 <- compute_posterior_matrices(data,Ulist,posterior_weights,
-                                     algorithm.version = "Rcpp")
+                                     algorithm.version = "Rcpp",
+                                     mc.cores = 4)
   expect_equal(out1, out2, tolerance=1e-5)
 }
 )
@@ -141,7 +145,8 @@ test_that("compare posterior computation R vs C++ in simulated data R = 1 common
   out1 <- compute_posterior_matrices(data,Ulist,posterior_weights,
                                      algorithm.version = "R")
   out2 <- compute_posterior_matrices(data,Ulist,posterior_weights,
-                                     algorithm.version = "Rcpp")
+                                     algorithm.version = "Rcpp",
+                                     mc.cores = 4)
   expect_equal(out1, out2, tolerance=1e-5)
 }
 )
@@ -157,7 +162,8 @@ test_that(paste("compare posterior computation R vs C++ in simulated",
   weights <- weights / rowSums(weights)
 
   out1 <- compute_posterior_matrices(data, Ulist, weights,
-                                     algorithm.version = "Rcpp")
+                                     algorithm.version = "Rcpp",
+                                     mc.cores = 4)
   out2 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "R")
   expect_equal(out1, out2, tolerance = 1e-5)
@@ -176,7 +182,8 @@ test_that(paste("compare posterior computation R vs C++ in simulated",
   weights <- weights / rowSums(weights)
 
   out1 <- compute_posterior_matrices(data, Ulist, weights,
-                                     algorithm.version = "Rcpp")
+                                     algorithm.version = "Rcpp",
+                                     mc.cores = 4)
   out2 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "R")
   expect_equal(out1, out2, tolerance = 1e-5)
@@ -195,7 +202,7 @@ test_that(paste("compare transformed posterior computation R vs C++ in simulated
   A = rbind(c(1,1,1))
 
   out1 <- compute_posterior_matrices(data, Ulist, weights,
-                                     algorithm.version = "Rcpp", A=A)
+                                     algorithm.version = "Rcpp", A=A, mc.cores = 4)
   out2 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "R", A=A)
   expect_equal(out1, out2, tolerance = 1e-5)
@@ -213,7 +220,7 @@ test_that(paste("compare transformed posterior computation R vs C++ in simulated
 
   A = rbind(c(1,1,1))
   out1 <- compute_posterior_matrices(data, Ulist, weights,
-                                     algorithm.version = "Rcpp", A=A)
+                                     algorithm.version = "Rcpp", A=A, mc.cores = 4)
   out2 <- compute_posterior_matrices(data, Ulist, weights,
                                      algorithm.version = "R", A=A)
   expect_equal(out1, out2, tolerance = 1e-5)

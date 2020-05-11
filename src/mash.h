@@ -4,7 +4,9 @@
 #include <cmath>
 #include <armadillo>
 #include <iostream>
-
+#ifdef _OPENMP
+# include <omp.h>
+#endif
 // some utility functions
 const double LOG_2PI = std::log(2.0 * M_PI);
 static const double INV_SQRT_2PI     = 1.0 / std::sqrt(2.0 * M_PI);
@@ -198,7 +200,8 @@ calc_lik(const arma::mat & b_mat,
   const arma::cube       & U_cube,
   const arma::cube       & sigma_cube,
   bool                   logd,
-  bool                   common_cov)
+  bool                   common_cov,
+  int                    n_thread = 1)
 {
     // In armadillo data are stored with column-major ordering
     // slicing columns are therefore faster than rows
@@ -206,13 +209,19 @@ calc_lik(const arma::mat & b_mat,
     arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
     arma::vec mean(b_mat.n_rows, arma::fill::zeros);
     arma::mat sigma;
+    #ifdef _OPENMP
+    omp_set_num_threads(n_thread);
+    #endif
     if (common_cov) {
         if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(0);
         else sigma = get_cov(s_mat.col(0), v_mat, l_mat);
+        #pragma omp parallel for default(none) schedule(static) shared(lik, U_cube, mean, sigma, logd, b_mat)
         for (arma::uword p = 0; p < lik.n_cols; ++p) {
             lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
         }
     } else {
+        #pragma \
+            omp parallel for default(none) schedule(static) shared(lik, mean, logd, U_cube, b_mat, sigma_cube, l_mat, v_mat, s_mat) private(sigma)
         for (arma::uword j = 0; j < lik.n_rows; ++j) {
             if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(j);
             else sigma = get_cov(s_mat.col(j), v_mat, l_mat);
@@ -234,8 +243,11 @@ calc_lik(const arma::mat & b_mat,
 arma::mat
 calc_lik(const arma::mat & b_mat,
   const arma::cube & rooti_cube,
-  bool logd, bool common_cov)
+  bool logd, bool common_cov, int n_thread = 1)
 {
+    #ifdef _OPENMP
+    omp_set_num_threads(n_thread);
+    #endif
     // In armadillo data are stored with column-major ordering
     // slicing columns are therefore faster than rows
     // lik is a J by P matrix
@@ -246,15 +258,15 @@ calc_lik(const arma::mat & b_mat,
     arma::mat lik(b_mat.n_cols, P, arma::fill::zeros);
     arma::vec mean(b_mat.n_rows, arma::fill::zeros);
     if (common_cov) {
+        #pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
         for (arma::uword p = 0; p < lik.n_cols; ++p) {
             lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
         }
     } else {
-        arma::uword k = 0;
+        #pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
         for (arma::uword j = 0; j < lik.n_rows; ++j) {
             for (arma::uword p = 0; p < lik.n_cols; ++p) {
-                lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(k), logd, true);
-                k += 1;
+                lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * lik.n_cols + p), logd, true);
             }
         }
     }
@@ -374,6 +386,9 @@ public:
         post_cov.zeros();
         neg_prob.zeros();
         zero_prob.zeros();
+        #ifdef _OPENMP
+        omp_set_num_threads(1);
+        #endif
     }
 
     ~PosteriorMASH(){ }
@@ -383,10 +398,11 @@ public:
     // @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
     // @param report_type an integer: 1 for posterior mean only, 2 for posterior second moment, 3 for default mash output, 4 for additionally posterior covariance
     int
-    compute_posterior(const arma::mat & posterior_weights, const int report_type)
+    compute_posterior(const arma::mat & posterior_weights, const int & report_type)
     {
         arma::vec mean(post_mean.n_rows, arma::fill::zeros);
-
+        #pragma \
+            omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             // FIXME: improved math may help here
             arma::mat Vinv_j;
@@ -451,7 +467,7 @@ public:
     // @param posterior_weights P X J matrix, the posterior probabilities of each mixture component for each effect
     // @param report_type an integer: 1 for posterior mean only, 2 for posterior second moment, 3 for default mash output, 4 for additionally posterior covariance
     int
-    compute_posterior_comcov(const arma::mat & posterior_weights, const int report_type)
+    compute_posterior_comcov(const arma::mat & posterior_weights, const int & report_type)
     {
         arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
         // R X R
@@ -463,7 +479,8 @@ public:
 
         arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
         arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
-        arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+        #pragma \
+            omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, Vinv, ones, zeros, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, a_mat, U_cube, U0_cube)
         for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
             arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
             // R X R
@@ -482,12 +499,8 @@ public:
                   * (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t())
                   * a_mat.t());
             }
-
-            // FIXME: better initialization?
-            arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-            for (arma::uword j = 0; j < sigma.n_cols; ++j) {
-                sigma.col(j) = Svec;
-                if (report_type == 2 || report_type == 4) {
+            if (report_type == 2 || report_type == 4) {
+                for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
                     post_cov.slice(j) +=
                       posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
                 }
@@ -496,23 +509,29 @@ public:
             arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
             diag_mu2_mat.each_col() += U1.diag();
             // R X J
+            // FIXME: any better way to init sigma?
+            arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+            sigma.each_col() += arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
             arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
-            for (arma::uword r = 0; r < Svec.n_elem; ++r) {
-                if (Svec.at(r) == 0) {
+            for (arma::uword r = 0; r < sigma.n_rows; ++r) {
+                if (sigma.at(r, 0) == 0) {
                     zero_mat.row(r) = ones;
                     neg_mat.row(r)  = zeros;
                 }
             }
             // compute weighted means of posterior arrays
-            post_mean += mu1_mat.each_row() % posterior_weights.row(p);
-            post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
-            neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
-            zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+            #pragma omp critical
+            {
+                post_mean += mu1_mat.each_row() % posterior_weights.row(p);
+                post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
+                neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
+                zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+            }
         }
         post_var -= arma::pow(post_mean, 2.0);
         //
         if (report_type == 4) {
-            for (arma::uword j = 0; j < sigma.n_cols; ++j) {
+            for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
                 post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
             }
         }
@@ -531,6 +550,15 @@ public:
     set_U0(const arma::cube & value)
     {
         U0_cube = value;
+        return 0;
+    }
+
+    int
+    set_thread(const int & value)
+    {
+        #ifdef _OPENMP
+        omp_set_num_threads(value);
+        #endif
         return 0;
     }
 
@@ -703,6 +731,9 @@ public:
         zero_prob.zeros();
         prior_scalar.set_size(U_cube.n_slices);
         prior_invertable = false;
+        #ifdef _OPENMP
+        omp_set_num_threads(1);
+        #endif
     }
 
     ~MVSERMix(){ }
@@ -727,6 +758,8 @@ public:
             mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
             mu2_cube.zeros();
         }
+        //#pragma \
+            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, mu2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             // FIXME: improved math may help here
             arma::mat Vinv_j;
@@ -818,7 +851,8 @@ public:
 
         arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
         arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
-        arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+        #pragma \
+            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, mu2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
         for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
             arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
             // R X R
@@ -828,13 +862,9 @@ public:
             if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv, U_cube.slice(p));
             else U1 = U0_cube.slice(p);
             mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
-
-            // FIXME: any better way to set sigma?
-            arma::vec Svec = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
             arma::mat U0_prime;
             if (to_estimate_prior && !prior_invertable) U0_prime = get_posterior_cov(Vinv, U_cube.slice(p), true);
-            for (arma::uword j = 0; j < sigma.n_cols; ++j) {
-                sigma.col(j) = Svec;
+            for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
                 arma::mat mu2_mat = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
                 post_cov.slice(j) +=
                   posterior_weights.at(p, j) * mu2_mat;
@@ -859,21 +889,28 @@ public:
             arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
             diag_mu2_mat.each_col() += U1.diag();
             // R X J
+            // FIXME: any better way to init sigma?
+            arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+            sigma.each_col() += arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
             arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
-            for (arma::uword r = 0; r < Svec.n_elem; ++r) {
-                if (Svec.at(r) == 0) {
+            for (arma::uword r = 0; r < sigma.n_rows; ++r) {
+                if (sigma.at(r, 0) == 0) {
                     zero_mat.row(r) = ones;
                     neg_mat.row(r)  = zeros;
                 }
             }
-            // compute weighted means of posterior arrays
-            post_mean += mu1_mat.each_row() % posterior_weights.row(p);
-            post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
-            neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
-            zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+            #pragma omp critical
+            {
+                // compute weighted means of posterior arrays
+                post_mean += mu1_mat.each_row() % posterior_weights.row(p);
+                post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
+                neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
+                zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+            }
         }
         post_var -= arma::pow(post_mean, 2.0);
-        for (arma::uword j = 0; j < sigma.n_cols; ++j) {
+        #pragma omp parallel for default(none) schedule(static) shared(post_cov, post_mean)
+        for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
         }
         return 0;
@@ -899,6 +936,15 @@ public:
     {
         Uinv_cube        = value;
         prior_invertable = true;
+        return 0;
+    }
+
+    int
+    set_thread(const int & value)
+    {
+        #ifdef _OPENMP
+        omp_set_num_threads(value);
+        #endif
         return 0;
     }
 

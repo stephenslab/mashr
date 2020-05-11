@@ -70,7 +70,7 @@ calc_lik_matrix_common_cov = function(data, Ulist, log = FALSE){
 #'     likelihoods.
 #'
 #' @param mc.cores The argument supplied to
-#'     \code{\link[parallel]{mclapply}} specifying the number of cores
+#'     \code{openmp} specifying the number of cores
 #'     to use. Note that this is only has an effect for the Rcpp version.
 #'
 #' @param algorithm.version Indicate R or Rcpp version
@@ -117,11 +117,11 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
     if (is.null(data$L))
         res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat),data$V,
                              matrix(0,0,0), simplify2array(Ulist), 0,
-                             log, is_common_cov_Shat(data))
+                             log, is_common_cov_Shat(data), mc.cores)
     else
         res <- calc_lik_rcpp(t(data$Bhat),t(data$Shat_orig),data$V,
                              data$L, simplify2array(Ulist), 0,
-                             log, is_common_cov_Shat(data))
+                             log, is_common_cov_Shat(data), mc.cores)
     res <- res$data
 
     # Get column names for R > 1.

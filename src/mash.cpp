@@ -2,12 +2,17 @@
 // Gao Wang (c) 2017-2019 wang.gao@columbia.edu
 #include <iostream>
 #include <stdexcept>
+#ifdef _OPENMP
+# include <omp.h>
+#endif
 #include "RcppArmadillo.h"
 #include "mash.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // Enable C++11.
 // [[Rcpp::plugins(cpp11)]]
+// Enable openmp
+// [[Rcpp::plugins(openmp)]]
 
 // [[Rcpp::export]]
 Rcpp::List
@@ -28,7 +33,8 @@ calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
   Rcpp::NumericVector             U_3d,
   Rcpp::NumericVector             sigma_3d,
   bool                            logd,
-  bool                            common_cov)
+  bool                            common_cov,
+  int                             n_thread = 1)
 {
     // hide armadillo warning / error messages
     // std::ostream nullstream(0);
@@ -41,9 +47,9 @@ calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
         arma::cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
         arma::cube sigma_cube;
         if (!Rf_isNull(sigma_3d.attr("dim"))) {
-          Rcpp::IntegerVector dimSigma = sigma_3d.attr("dim");
-          arma::cube tmp_cube(sigma_3d.begin(), dimSigma[0], dimSigma[1], dimSigma[2]);
-          sigma_cube = tmp_cube;
+            Rcpp::IntegerVector dimSigma = sigma_3d.attr("dim");
+            arma::cube tmp_cube(sigma_3d.begin(), dimSigma[0], dimSigma[1], dimSigma[2]);
+            sigma_cube = tmp_cube;
         }
         res = calc_lik(Rcpp::as<arma::mat>(b_mat),
             Rcpp::as<arma::mat>(s_mat),
@@ -52,7 +58,8 @@ calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
             U_cube,
             sigma_cube,
             logd,
-            common_cov);
+            common_cov,
+            n_thread);
     } else {
         // vector version
         res = calc_lik(Rcpp::as<arma::vec>(b_mat),
@@ -63,14 +70,15 @@ calc_lik_rcpp(Rcpp::NumericMatrix b_mat,
     }
     return Rcpp::List::create(Rcpp::Named("data") = res,
              Rcpp::Named("status") = 0);
-}
+} // calc_lik_rcpp
 
 // [[Rcpp::export]]
 Rcpp::List
 calc_lik_precomputed_rcpp(Rcpp::NumericMatrix b_mat,
   Rcpp::NumericVector                         rooti_3d,
   bool                                        logd,
-  bool                                        common_cov)
+  bool                                        common_cov,
+  int                                         n_thread = 1)
 {
     // hide armadillo warning / error messages
     // std::ostream nullstream(0);
@@ -82,7 +90,7 @@ calc_lik_precomputed_rcpp(Rcpp::NumericMatrix b_mat,
 
     res = calc_lik(Rcpp::as<arma::mat>(b_mat),
         rooti_cube,
-        logd, common_cov);
+        logd, common_cov, n_thread);
     return Rcpp::List::create(Rcpp::Named("data") = res,
              Rcpp::Named("status") = 0);
 }
@@ -99,7 +107,8 @@ calc_post_rcpp(Rcpp::NumericMatrix b_mat,
   Rcpp::NumericVector              U_3d,
   Rcpp::NumericMatrix              posterior_weights,
   bool                             common_cov,
-  int                              report_type)
+  int                              report_type,
+  int                              n_thread = 1)
 {
     // hide armadillo warning / error messages
     // std::ostream nullstream(0);
@@ -117,6 +126,7 @@ calc_post_rcpp(Rcpp::NumericMatrix b_mat,
           Rcpp::as<arma::mat>(l_mat),
           Rcpp::as<arma::mat>(a_mat),
           U_cube);
+        pc.set_thread(n_thread);
         if (!common_cov) pc.compute_posterior(Rcpp::as<arma::mat>(posterior_weights), report_type);
         else pc.compute_posterior_comcov(Rcpp::as<arma::mat>(posterior_weights), report_type);
         return Rcpp::List::create(
@@ -155,7 +165,8 @@ calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
   Rcpp::NumericMatrix                posterior_mixture_weights,
   Rcpp::NumericMatrix                posterior_variable_weights,
   double                             sigma0,
-  bool                               common_cov)
+  bool                               common_cov,
+  int                                n_thread = 1)
 {
     // hide armadillo warning / error messages
     // std::ostream nullstream(0);
@@ -177,6 +188,7 @@ calc_sermix_rcpp(Rcpp::NumericMatrix b_mat,
       Rcpp::as<arma::mat>(s_mat),
       Rcpp::as<arma::mat>(v_mat),
       U_cube);
+    pc.set_thread(n_thread);
     if (!Rf_isNull(U0_3d.attr("dim"))) {
         Rcpp::IntegerVector dimU0 = U0_3d.attr("dim");
         arma::cube U0_cube(U0_3d.begin(), dimU0[0], dimU0[1], dimU0[2]);

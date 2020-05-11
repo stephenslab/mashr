@@ -11,6 +11,7 @@ compute_posterior_matrices(
   algorithm.version = c("Rcpp", "R"),
   A = NULL,
   output_posterior_cov = FALSE,
+  mc.cores = 1,
   posterior_samples = 0,
   seed = 123
 )
@@ -29,6 +30,10 @@ probability of each mixture component in Ulist for the data.}
 \item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
 
 \item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects.}
+
+\item{mc.cores}{The argument supplied to
+\code{openmp} specifying the number of cores
+to use. Note that this is only has an effect for the Rcpp version.}
 
 \item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
 
