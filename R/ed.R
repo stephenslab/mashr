@@ -53,6 +53,10 @@ teem_wrapper = function(data, Ulist_init, subset=NULL, w_init=NULL, maxiter=5000
   zscore = data$Bhat[subset,]/data$Shat[subset,]
   if(is.null(w_init)) w_init = rep(1/length(Ulist_init), length(Ulist_init))
   res = fit_teem_rcpp(zscore, w_init, simplify2array(Ulist_init), maxiter, converge_tol, eigen_tol, verbose)
-  # format result to list
+  # format result to list with names
+  names(res$U) = names(Ulist_init)
+  res$w = as.vector(res$w)
+  res$objective = as.vector(res$objective)
+  res$maxd = as.vector(res$maxd)
   return(res)
 }
