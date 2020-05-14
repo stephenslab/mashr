@@ -2,9 +2,9 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.21.0690
+Version: 0.2.21.0691
 Date: 2020-05-14
-Authors@R: c(person("Matthew","Stephens",role="aut",
+Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
              person("Yuxin","Zou",role="aut"),
