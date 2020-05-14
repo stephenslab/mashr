@@ -5,3 +5,5 @@
 ^\.travis\.yml$
 ^\.appveyor\.yml$
 ^_pkgdown\.yaml$
+^tests/testthat/estimate_null_cor\.rds
+^tests/testthat/estimate_null_cor_alpha\.rds

@@ -15,6 +15,7 @@ test_that("Estimate null correlation properly: alpha = 0", {
   expect_equal(mash.adhoc, V.est$mash.model)
 
   # saved result comes from version 0.2.21.0641
+  skip_if_not(file.exists("estimate_null_cor.rds"))
   original.null.cor = readRDS('estimate_null_cor.rds')
   set.seed(1)
   simdata = simple_sims(500,5,0.5)
@@ -43,6 +44,7 @@ test_that("Estimate null correlation properly: alpha = 1", {
   expect_equal(mash.adhoc, V.est$mash.model)
 
   # saved result comes from version 0.2.18.0532
+  skip_if_not(file.exists("estimate_null_cor_alpha.rds"))
   original.null.cor = readRDS('estimate_null_cor_alpha.rds')
   set.seed(1)
   simdata = simple_sims(500,5,0.5)
