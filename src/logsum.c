@@ -35,7 +35,7 @@ double logsum(gsl_matrix * q, int row, bool isrow){
   max += logxmax - log(l);
   (min >  max) ? (max=max+0) : (max=min);
   double loglike=0.0;
-  int dd;
+  unsigned int dd;
   if (isrow)
     for (dd = 0; dd != q->size2; ++dd)
 	loglike += exp(gsl_matrix_get(q,row,dd)+max);

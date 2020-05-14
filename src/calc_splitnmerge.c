@@ -36,7 +36,7 @@ void calc_splitnmerge(struct datapoint * data,int N,
   gsl_matrix * Jmerge = gsl_matrix_alloc(K,K);
   gsl_matrix_set_all(Jmerge,-1.);
   int kk1, kk2, kk, ii,maxsnm= K*(K-1)*(K-2)/2;
-  int d = (gaussians->VV)->size1;//dim of mm
+  unsigned long d = (gaussians->VV)->size1;//dim of mm
   double temp1,temp2,temp;
   for (kk1 = 0; kk1 != K; ++kk1)
     for (kk2 = kk1+1; kk2 != K; ++kk2){

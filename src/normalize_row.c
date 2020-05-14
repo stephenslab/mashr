@@ -31,7 +31,7 @@ double normalize_row(gsl_matrix * q, int row, bool isrow,
   else
     loglike = logsum(q,row,false);
 
-  int dd;
+  unsigned int dd;
   if (isrow)
     for (dd = 0; dd != q->size2; ++dd) {
       if ( noweight ) 

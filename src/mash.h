@@ -400,7 +400,7 @@ public:
     int
     compute_posterior(const arma::mat & posterior_weights, const int & report_type)
     {
-        arma::vec mean(post_mean.n_rows, arma::fill::zeros);
+
         #pragma \
             omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
@@ -1078,11 +1078,10 @@ public:
         int iter_out;
 
         // Get the number of samples (n) and the number of mixture components (k)
-        int n = X_mat.n_rows;
-        // int m = X_mat.n_cols;
-        int k = w_vec.size();
+        unsigned int n = X_mat.n_rows;
+        unsigned int k = w_vec.size();
 
-        for (unsigned iter = 0; iter < maxiter; ++iter) {
+        for (unsigned int iter = 0; iter < (unsigned int) maxiter; ++iter) {
             // store parameters and likelihood in the previous step
             arma::vec w0_vec = w_vec;
 
@@ -1104,7 +1103,7 @@ public:
             P_mat = trans(P_mat); // n by k matrix
 
             // M-step:
-            for (unsigned j = 0; j < k; ++j) {
+            for (unsigned int j = 0; j < k; ++j) {
                 T_cube.slice(j) = trans(X_mat) * (P_mat.col(j) % X_mat.each_col()) / accu(P_mat.col(j));
                 T_cube.slice(j) = shrink_cov(T_cube.slice(j), eigen_tol);
             }
@@ -1138,11 +1137,11 @@ private:
     double
     compute_loglik()
     {
-        int n = X_mat.n_rows;
-        int k = w_vec.size();
+        unsigned int n = X_mat.n_rows;
+        unsigned int k = w_vec.size();
 
         arma::vec y = arma::zeros<arma::vec>(n);
-        for (unsigned j = 0; j < k; ++j) {
+        for (unsigned int j = 0; j < k; ++j) {
             y = y + w_vec(j) * dmvnorm_mat(trans(X_mat), arma::zeros<arma::vec>(X_mat.n_cols), T_cube.slice(j));
         }
         return (sum(log(y)));

@@ -24,7 +24,7 @@ void minmax(gsl_matrix * q, int row, bool isrow, double * min,
 	    double * max){
   *max = -DBL_MAX;
   *min = DBL_MAX;
-  int dd;
+  unsigned int dd;
   double temp;
   if (isrow) {
     for (dd = 0; dd != q->size2; ++dd){
