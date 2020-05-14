@@ -2,12 +2,13 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.21.0695
+Version: 0.2.21.0696
 Date: 2020-05-14
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
              person("Yuxin","Zou",role="aut"),
+             person("Yunqi","Yang",role="ctb"),
              person("Peter","Carbonetto",role=c("aut","cre"),
                     email="peter.carbonetto@gmail.com"))
 Description: Empirical Bayes shrinkage of multivariate effects.
