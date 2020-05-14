@@ -27,14 +27,13 @@ double logsum(gsl_matrix * q, int row, bool isrow){
 
   /* First find the maximum and mininum */
   double max, min;
-  minmax(q,row,isrow,&min,&max);//,allfixed);
-
+  minmax(q,row,isrow,&min,&max);
 
   min *= -1.;
   min += logxmin;
   max *= -1.;
   max += logxmax - log(l);
-  (min >  max) ? (max=max) : (max=min);
+  (min >  max) ? (max=max+0) : (max=min);
   double loglike=0.0;
   int dd;
   if (isrow)
@@ -43,7 +42,6 @@ double logsum(gsl_matrix * q, int row, bool isrow){
   else
     for (dd = 0; dd != q->size1; ++dd)
 	loglike += exp(gsl_matrix_get(q,dd,row)+max);
-  
 
   return log(loglike)-max;
 }
