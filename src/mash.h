@@ -400,6 +400,7 @@ public:
     int
     compute_posterior(const arma::mat & posterior_weights, const int & report_type)
     {
+      arma::vec mean(post_mean.n_rows, arma::fill::zeros);
 
         #pragma \
             omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
