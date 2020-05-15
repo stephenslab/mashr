@@ -2,16 +2,21 @@
 % Please edit documentation in R/likelihoods_origdata.R
 \name{compute_null_loglik_from_matrix}
 \alias{compute_null_loglik_from_matrix}
-\title{Compute vector of null loglikelihoods from a matrix of log-likelihoods}
+\title{Compute a vector of null loglikelihoods from a matrix of
+  log-likelihoods}
 \usage{
 compute_null_loglik_from_matrix(lm, Shat_alpha)
 }
 \arguments{
-\item{lm}{the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
-whose first column corresponds to null}
+\item{lm}{the results of a likelihood matrix calculation from
+\code{calc_relative_lik_matrix} whose first column corresponds to
+null}
 
 \item{Shat_alpha}{matrix of Shat^alpha}
 }
 \description{
-Compute vector of null loglikelihoods from a matrix of log-likelihoods
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

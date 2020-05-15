@@ -61,5 +61,5 @@ The return value is a list containing the following
    \item{PosteriorSamples}{M x Q x J array of samples, if the \code{posterior_samples = M > 0}.}
 }
 \description{
-More detailed description of function goes here.
+Compute posterior matrices.
 }

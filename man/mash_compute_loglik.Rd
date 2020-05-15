@@ -21,6 +21,6 @@ Compute loglikelihood for fitted mash object on new data.
 }
 \details{
 The log-likelihood for each element is \eqn{p(Bhat_j |
-Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
-Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
+  Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
+  Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
 }

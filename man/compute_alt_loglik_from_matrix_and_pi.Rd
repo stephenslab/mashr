@@ -8,15 +8,18 @@
 compute_alt_loglik_from_matrix_and_pi(pi_s, lm, Shat_alpha)
 }
 \arguments{
-\item{pi_s}{the vector of mixture proportions, with first element corresponding to null}
+\item{pi_s}{the vector of mixture proportions, with first element
+corresponding to null}
 
-\item{lm}{the results of a likelihood matrix calculation from \code{calc_relative_lik_matrix}
-whose first column corresponds to null}
+\item{lm}{the results of a likelihood matrix calculation from
+\code{calc_relative_lik_matrix} whose first column corresponds to
+null}
 
 \item{Shat_alpha}{matrix of Shat^alpha}
 }
 \description{
-Compute vector of alternative loglikelihoods from a matrix
-  of log-likelihoods and fitted pi
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
 \keyword{internal}

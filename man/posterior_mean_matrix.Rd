@@ -24,7 +24,7 @@ This is an internal (non-exported) function. This help
 }
 \details{
 Computes posterior mean under multivariate normal model
-  for each row of matrix Bhat.  Note that if bhat is N_R(b,V) and b
+  for each row of matrix Bhat. Note that if bhat is N_R(b,V) and b
   is N_R(0,U) then b|bhat N_R(mu1,U1). This function returns a
   matrix with jth row equal to mu1(bhat) for bhat= Bhat[j,].
 }

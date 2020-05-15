@@ -13,13 +13,18 @@ optimize_pi(
 )
 }
 \arguments{
-\item{matrix_lik}{a matrix of likelihoods, where the (i,k)th entry is the probability of observation i given it came from component k of g}
+\item{matrix_lik}{a matrix of likelihoods, where the (i,k)th entry
+is the probability of observation i given it came from component k
+of g}
 
-\item{pi_init}{numeric vector specifying value from which to initialize optimization}
+\item{pi_init}{numeric vector specifying value from which to
+initialize optimization}
 
-\item{prior}{numeric vector specifying prior to use in the penalized likelihood}
+\item{prior}{numeric vector specifying prior to use in the
+penalized likelihood}
 
-\item{optmethod}{a string, giving name of optimization function to use}
+\item{optmethod}{a string, giving name of optimization function to
+use}
 
 \item{control}{a list of parameters to be passed to optmethod}
 }

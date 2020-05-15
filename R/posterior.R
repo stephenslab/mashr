@@ -37,6 +37,7 @@ posterior_cov <- function(Vinv, U){
 #' @return R vector of posterior mean
 #' 
 #' @keywords internal
+#' 
 posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% (Vinv %*% bhat))
 }
@@ -48,7 +49,7 @@ posterior_mean <- function(bhat, Vinv, U1){
 #'   developers and expert users.
 #' 
 #' @details Computes posterior mean under multivariate normal model
-#'   for each row of matrix Bhat.  Note that if bhat is N_R(b,V) and b
+#'   for each row of matrix Bhat. Note that if bhat is N_R(b,V) and b
 #'   is N_R(0,U) then b|bhat N_R(mu1,U1). This function returns a
 #'   matrix with jth row equal to mu1(bhat) for bhat= Bhat[j,].
 #' 
@@ -68,8 +69,6 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 }
 
 #' @title Compute posterior matrices.
-#'
-#' @description More detailed description of function goes here.
 #'
 #' @param data A \code{mash} data object; e.g., created by
 #'     \code{\link{mash_set_data}} or \code{\link{mash_set_data_contrast}}.
@@ -119,6 +118,7 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #' @importFrom Rcpp evalCpp
 #'
 #' @export
+#' 
 compute_posterior_matrices <-
   function (data, Ulist, posterior_weights,
             algorithm.version = c("Rcpp","R"), A=NULL, output_posterior_cov=FALSE,

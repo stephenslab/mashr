@@ -15,7 +15,6 @@ get_log10bf = function(m) {
   }
 }
 
-
 #' Find effects that are significant in at least one condition
 #' @param m the mash result (from joint or 1by1 analysis)
 #' @param thresh indicates the threshold below which to call signals significant
