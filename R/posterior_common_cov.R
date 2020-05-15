@@ -1,5 +1,13 @@
-#' @title Compute posterior matrices (when error covariance V_j is equal for all observations j)
-#' @description Computes posterior matrices without allocating huge memory
+#' @title Compute posterior matrices (when error covariance V_j is
+#'   equal for all observations j)
+#'
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
+#'   The computations are performed without allocating an excessive
+#'   amount of memory.
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data} or \code{mash_set_data_contrast}
 #' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
 #' @param Ulist a list of P covariance matrices for each mixture component
@@ -19,6 +27,7 @@
 #' @importFrom plyr aaply
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom abind abind
+#' @keywords internal
 compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
                                                  posterior_samples = 0, seed = 123){
   R = n_conditions(data)

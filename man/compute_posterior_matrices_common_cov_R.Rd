@@ -2,7 +2,8 @@
 % Please edit documentation in R/posterior_common_cov.R
 \name{compute_posterior_matrices_common_cov_R}
 \alias{compute_posterior_matrices_common_cov_R}
-\title{Compute posterior matrices (when error covariance V_j is equal for all observations j)}
+\title{Compute posterior matrices (when error covariance V_j is
+  equal for all observations j)}
 \usage{
 compute_posterior_matrices_common_cov_R(
   data,
@@ -45,5 +46,11 @@ PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_p
 PosteriorSamples JxQxM array of samples, if the \code{posterior_samples = M > 0}
 }
 \description{
-Computes posterior matrices without allocating huge memory
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
+
+  The computations are performed without allocating an excessive
+  amount of memory.
 }
+\keyword{internal}

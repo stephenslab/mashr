@@ -1,4 +1,5 @@
-#note that many of the get_ functions used in mashr (get_lfsr, get_pm etc) are defined in the ashr package
+# Note that many of the "get" functions used in mashr (get_lfsr, get_pm,
+# etc.) are also defined in the ashr package.
 
 #' Return the Bayes Factor for each effect
 #' @param m the mash result (from joint or 1by1 analysis); must have been computed using usepointmass=TRUE

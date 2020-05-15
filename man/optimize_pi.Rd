@@ -2,7 +2,7 @@
 % Please edit documentation in R/opt.R
 \name{optimize_pi}
 \alias{optimize_pi}
-\title{Estimate the mixture weights by maximum (penalized) likelihood}
+\title{Estimate mixture weights by maximum (penalized) likelihood}
 \usage{
 optimize_pi(
   matrix_lik,
@@ -27,5 +27,8 @@ optimize_pi(
 numeric vector specifying the optimal mixture weights
 }
 \description{
-Estimate the mixture weights by maximum (penalized) likelihood
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}
