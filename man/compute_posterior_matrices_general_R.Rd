@@ -45,5 +45,11 @@ PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_p
 PosteriorSamples JxQxM array of samples, if the \code{posterior_samples = M > 0}
 }
 \description{
-Computes posterior matrices without allocating huge memory
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
+
+  The computations are performed without allocating an excessive
+  amount of memory.
 }
+\keyword{internal}

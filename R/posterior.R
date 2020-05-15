@@ -1,23 +1,40 @@
 #' @title posterior_cov
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param Vinv R x R inverse covariance matrix for the likelihood
 #' @param U R x R prior covariance matrix
 #' @return R x R posterior covariance matrix
 #' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
+#' @keywords internal
 posterior_cov <- function(Vinv, U){
   return(U %*% solve(Vinv %*% U + diag(nrow(U))))
 }
 
 #' @title posterior_mean
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param bhat R vector of observations
 #' @param Vinv R x R inverse covariance matrix for the likelihood
 #' @param U1 R x R posterior covariance matrix, computed using posterior_cov
 #' @return R vector of posterior mean
 #' @description If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
+#' @keywords internal
 posterior_mean <- function(bhat, Vinv, U1){
   return(U1 %*% (Vinv %*% bhat))
 }
 
 #' @title posterior_mean_matrix
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param Bhat J by R matrix of observations
 #' @param Vinv R x R inverse covariance matrix for the likelihood
 #' @param U1 R x R posterior covariance matrix, computed using posterior_cov
@@ -25,11 +42,10 @@ posterior_mean <- function(bhat, Vinv, U1){
 #' @description Computes posterior mean under multivariate normal model for each row of matrix Bhat.
 #' Note that if bhat is N_R(b,V) and b is N_R(0,U) then b|bhat N_R(mu1,U1).
 #' This function returns a matrix with jth row equal to mu1(bhat) for bhat= Bhat[j,].
+#' @keywords internal
 posterior_mean_matrix <- function(Bhat, Vinv, U1){
   return(Bhat %*% (Vinv %*% U1))
 }
-
-
 
 #' @title Compute posterior matrices.
 #'
@@ -183,11 +199,18 @@ compute_posterior_matrices <-
   return(posterior_matrices)
 }
 
+#' @title compute_posterior_weights
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @title compute posterior probabilities
 #' @description computes posterior probabilities that each effect came from each component
 #' @param pi a K vector of mixture proportions
 #' @param lik_mat a JxK matrix of likelihoods
 #' @return a JxK matrix of posterior probabilities, the jth row contains posteriors for jth effect
+#' @keywords internal
 compute_posterior_weights <- function(pi, lik_mat) {
   d    <- t(pi * t(lik_mat))
   norm <- rowSums(d) # normalize probabilities to sum to 1
