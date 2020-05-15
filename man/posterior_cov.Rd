@@ -18,7 +18,9 @@ R x R posterior covariance matrix
 This is an internal (non-exported) function. This help
   page provides additional documentation mainly intended for
   developers and expert users.
-
-If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns U1.
+}
+\details{
+If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This
+  function returns U1.
 }
 \keyword{internal}

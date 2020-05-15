@@ -7,7 +7,7 @@
 posterior_mean(bhat, Vinv, U1)
 }
 \arguments{
-\item{bhat}{R vector of observations}
+\item{bhat}{R vector of observation}
 
 \item{Vinv}{R x R inverse covariance matrix for the likelihood}
 
@@ -20,7 +20,9 @@ R vector of posterior mean
 This is an internal (non-exported) function. This help
   page provides additional documentation mainly intended for
   developers and expert users.
-
-If bhat is N(b,V) and b is N(0,U) then b|bhat N(mu1,U1). This function returns mu1.
+}
+\details{
+If bhat is N(b,V) and b is N(0,U) then b|bhat
+  N(mu1,U1). This function returns mu1.
 }
 \keyword{internal}

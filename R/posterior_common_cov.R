@@ -5,29 +5,55 @@
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
 #' 
-#'   The computations are performed without allocating an excessive
-#'   amount of memory.
+#' @details The computations are performed without allocating an
+#'   excessive amount of memory.
 #'
-#' @param data a mash data object, eg as created by \code{mash_set_data} or \code{mash_set_data_contrast}
-#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
+#' @param data a mash data object, eg as created by
+#'   \code{mash_set_data} or \code{mash_set_data_contrast}
+#' 
+#' @param A the linear transformation matrix, Q x R matrix. This is
+#'   used to compute the posterior for Ab.
+#' 
 #' @param Ulist a list of P covariance matrices for each mixture component
-#' @param posterior_weights the JxP posterior probabilities of each mixture component in Ulist for the data
-#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
-#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
-#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
+#' 
+#' @param posterior_weights the JxP posterior probabilities of each
+#'   mixture component in Ulist for the data
+#' 
+#' @param output_posterior_cov whether or not to output posterior
+#'   covariance matrices for all effects
+#' 
+#' @param posterior_samples the number of samples to be drawn from the
+#'   posterior distribution of each effect.
+#' 
+#' @param seed a random number seed to use when sampling from the
+#'   posteriors. It is used when \code{posterior_samples > 0}.
+#' 
 #' @return PosteriorMean JxQ matrix of posterior means
+#' 
 #' @return PosteriorSD JxQ matrix of posterior (marginal) standard deviations
-#' @return NegativeProb JxQ matrix of posterior (marginal) probability of being negative
-#' @return ZeroProb JxQ matrix of posterior (marginal) probability of being zero
+#' 
+#' @return NegativeProb JxQ matrix of posterior (marginal) probability
+#'   of being negative
+#' 
+#' @return ZeroProb JxQ matrix of posterior (marginal) probability of
+#'   being zero
+#' 
 #' @return lfsr JxQ matrix of local false sign rates
-#' @return PosteriorCov QxQxJ array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}
-#' @return PosteriorSamples JxQxM array of samples, if the \code{posterior_samples = M > 0}
+#' 
+#' @return PosteriorCov QxQxJ array of posterior covariance matrices,
+#'   if the \code{output_posterior_cov = TRUE}
+#' 
+#' @return PosteriorSamples JxQxM array of samples, if the
+#'   \code{posterior_samples = M > 0}
+#' 
 #' @importFrom ashr compute_lfsr
 #' @importFrom stats pnorm rmultinom
 #' @importFrom plyr aaply
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom abind abind
+#' 
 #' @keywords internal
+#' 
 compute_posterior_matrices_common_cov_R=function(data,A, Ulist, posterior_weights, output_posterior_cov = FALSE,
                                                  posterior_samples = 0, seed = 123){
   R = n_conditions(data)

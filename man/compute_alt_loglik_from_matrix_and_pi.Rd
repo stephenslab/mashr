@@ -2,7 +2,8 @@
 % Please edit documentation in R/likelihoods_origdata.R
 \name{compute_alt_loglik_from_matrix_and_pi}
 \alias{compute_alt_loglik_from_matrix_and_pi}
-\title{Compute vector of alternative loglikelihoods from a matrix of log-likelihoods and fitted pi}
+\title{Compute vector of alternative loglikelihoods from a matrix
+  of log-likelihoods and fitted pi}
 \usage{
 compute_alt_loglik_from_matrix_and_pi(pi_s, lm, Shat_alpha)
 }
@@ -15,5 +16,7 @@ whose first column corresponds to null}
 \item{Shat_alpha}{matrix of Shat^alpha}
 }
 \description{
-Compute vector of alternative loglikelihoods from a matrix of log-likelihoods and fitted pi
+Compute vector of alternative loglikelihoods from a matrix
+  of log-likelihoods and fitted pi
 }
+\keyword{internal}
