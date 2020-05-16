@@ -25,6 +25,10 @@
 #'   V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
 #'   Defaults to identity.
 #'
+#' @param zero_Bhat_Shat_reset Replace zeros in Shat matrix to given value if the corresponding Bhat are also zeros.
+#'
+#' @param zero_Shat_reset Replace zeros in Shat matrix to given value.
+#'
 #' @return A data object for passing into mash functions.
 #'
 #' @importFrom stats pt
@@ -32,7 +36,8 @@
 #' @export
 #'
 mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
-                          pval = NULL, V = diag(ncol(Bhat))) {
+                          pval = NULL, V = diag(ncol(Bhat)),
+                          zero_Bhat_Shat_reset = 0, zero_Shat_reset = 0) {
   if (is.null(Shat) && is.null(pval)) {
     Shat = 1
   }
@@ -62,10 +67,20 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     stop("Shat cannot contain NaN/Inf values")
   }
   if (length(which(Shat == 0))>0) {
-    msg = "If it is expected please set Shat to a small positive number to avoid numerical issues."
-    if (length(which(Shat == 0 & Bhat == 0)) > 0)
-      stop(paste("Both Bhat and Shat are zero for some input data. Please check your input.", msg))
-    else stop(paste("Shat contains zero values.", msg))
+    msg = "If it is expected please set Shat to a positive number to avoid numerical issues"
+    if (length(which(Shat == 0 & Bhat == 0)) > 0) {
+      if (zero_Bhat_Shat_reset>0) {
+        Shat[which(Shat == 0 & Bhat == 0)] = zero_Bhat_Shat_reset
+      } else {
+        stop(paste("Both Bhat and Shat are zero for some input data. Please check your input.", msg, "(using zero_Bhat_Shat_reset)."))
+      }
+    } else {
+      if (zero_Shat_reset>0) {
+        Shat[which(Shat == 0)] = zero_Shat_reset
+      } else {
+        stop(paste("Shat contains zero values.", msg, "(using zero_Shat_reset)."))
+      }
+    }
   }
   commonV = TRUE
   if(length(dim(V)) == 3){

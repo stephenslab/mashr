@@ -10,7 +10,9 @@ mash_set_data(
   alpha = 0,
   df = Inf,
   pval = NULL,
-  V = diag(ncol(Bhat))
+  V = diag(ncol(Bhat)),
+  zero_Bhat_Shat_reset = 0,
+  zero_Shat_reset = 0
 )
 }
 \arguments{
@@ -38,6 +40,10 @@ provided.}
 be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
 V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
 Defaults to identity.}
+
+\item{zero_Bhat_Shat_reset}{Replace zeros in Shat matrix to given value if the corresponding Bhat are also zeros.}
+
+\item{zero_Shat_reset}{Replace zeros in Shat matrix to given value.}
 }
 \value{
 A data object for passing into mash functions.
