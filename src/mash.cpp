@@ -9,11 +9,6 @@
 #include "mash.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Enable C++11.
-// [[Rcpp::plugins(cpp11)]]
-// Enable openmp
-// [[Rcpp::plugins(openmp)]]
-
 // [[Rcpp::export]]
 Rcpp::List
 inv_chol_tri_rcpp(Rcpp::NumericMatrix x_mat)

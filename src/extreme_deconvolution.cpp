@@ -12,9 +12,6 @@ extern "C" {
 }
 // [[Rcpp::depends(RcppGSL)]]
 
-// Enable C++11.
-// [[Rcpp::plugins(cpp11)]]
-
 bool *
 int2bool(RcppGSL::vector<int> & a, int K)
 {

@@ -2,14 +2,22 @@
 #define __PROJ_GAUSS_MIXTURES_H__
 
 /* To compile with C++ compiler, the Extreme Deconvolution library is merged to one header file: cat proj_gauss_mixtures.h bovy_det.c bovy_randvec.c calc_splitnmerge.c logsum.c minmax.c normalize_row.c proj_EM.c proj_EM_step.c proj_gauss_mixtures.c splitnmergegauss.c > extreme_deconvolution.h */
+/* then move and remove some #include statements */
 
 /* include */
 #include <stdbool.h>
 #include <float.h>
+#include <math.h>
+#include <stdio.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_linalg.h>
+#include <gsl/gsl_blas.h>
+
+#ifdef _OPENMP
+# include <omp.h>
+#endif
 
 /* variable declarations and definitions */
 
@@ -101,8 +109,6 @@ calc_qstarij(double * qstarij, gsl_matrix * qij, int partial_indx[3]);
  * REVISION HISTORY:
  *   2008-09-21 - Written Bovy
  */
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_linalg.h>
 
 double
 bovy_det(gsl_matrix * A)
@@ -133,9 +139,6 @@ bovy_det(gsl_matrix * A)
  * REVISION HISTORY:
  *    2008-09-21
  */
-#include <math.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_rng.h>
 
 void
 bovy_randvec(gsl_vector * eps, int d, double length)
@@ -168,12 +171,6 @@ bovy_randvec(gsl_vector * eps, int d, double length)
  * REVISION HISTORY:
  *   2008-09-21 - Written Bovy
  */
-#include <stdio.h>
-#include <math.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_blas.h>
 
 void
 calc_splitnmerge(struct datapoint * data, int N,
@@ -396,10 +393,6 @@ calc_splitnmerge(struct datapoint * data, int N,
  * REVISION HISTORY:
  *   2008-09-21 - Written Bovy
  */
-#include <stdbool.h>
-#include <math.h>
-#include <float.h>
-#include <gsl/gsl_matrix.h>
 
 double
 logsum(gsl_matrix * q, int row, bool isrow)
@@ -447,9 +440,6 @@ logsum(gsl_matrix * q, int row, bool isrow)
  * REVISION HISTORY:
  *   2008-09-21 - Written Bovy
  */
-#include <gsl/gsl_matrix.h>
-#include <float.h>
-#include <stdbool.h>
 
 void
 minmax(gsl_matrix * q, int row, bool isrow, double * min,
@@ -499,8 +489,6 @@ minmax(gsl_matrix * q, int row, bool isrow, double * min,
  *   2010-04-01 - Added noweight and weight inputs to allow the qij to have
  *                weights - Bovy
  */
-#include <math.h>
-#include <gsl/gsl_matrix.h>
 
 double
 normalize_row(gsl_matrix * q, int row, bool isrow,
@@ -571,8 +559,6 @@ normalize_row(gsl_matrix * q, int row, bool isrow,
  *   2010-03-01 Added noproj option - Bovy
  *   2010-04-01 Added noweight option - Bovy
  */
-#include <stdio.h>
-#include <math.h>
 
 void
 proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
@@ -649,16 +635,6 @@ proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
  *   2010-03-01 Added noproj option - Bovy
  *   2010-04-01 Added noweight option - Bovy
  */
-#ifdef _OPENMP
-# include <omp.h>
-#endif
-
-#include <math.h>
-#include <float.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_blas.h>
 
 #define CHUNKSIZE 1
 
@@ -984,14 +960,6 @@ proj_EM_step(struct datapoint * data, int N,
  *   2010-03-01 Added noproj option - Bovy
  *   2010-04-01 Added noweight option - Bovy
  */
-#ifdef _OPENMP
-# include <omp.h>
-#endif
-#include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
 
 void
 proj_gauss_mixtures(struct datapoint * data, int N,
@@ -1302,10 +1270,6 @@ proj_gauss_mixtures(struct datapoint * data, int N,
  * REVISION HISTORY:
  *   2008-09-21 - Written Bovy
  */
-#include <math.h>
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_linalg.h>
 
 void
 splitnmergegauss(struct gaussian * gaussians, int K,
