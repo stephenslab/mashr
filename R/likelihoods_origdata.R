@@ -68,22 +68,22 @@ mash_compute_loglik = function(g,data, algorithm.version=c("Rcpp", "R")){
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param pi_s the vector of mixture proportions, with first element
 #' corresponding to null
-#' 
+#'
 #' @param lm the results of a likelihood matrix calculation from
 #'   \code{calc_relative_lik_matrix} whose first column corresponds to
 #'   null
-#' 
+#'
 #' @param Shat_alpha matrix of Shat^alpha
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 compute_alt_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
   if(pi_s[1] == 1){
     # 1-pi_s[1] = 0 --> NaN
-v    # so we use weight 1/(P-1), where P is the length of pi_s
+    # so we use weight 1/(P-1), where P is the length of pi_s
     tmp = rep(1/(length(pi_s)-1), (length(pi_s)-1))
     return(log(exp(lm$loglik_matrix[,-1,drop=FALSE]) %*% (tmp))+lm$lfactors-rowSums(log(Shat_alpha)))
   }else{
@@ -97,55 +97,55 @@ v    # so we use weight 1/(P-1), where P is the length of pi_s
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param lm the results of a likelihood matrix calculation from
 #'   \code{calc_relative_lik_matrix} whose first column corresponds to
 #'   null
-#' 
+#'
 #' @param Shat_alpha matrix of Shat^alpha
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 compute_null_loglik_from_matrix = function(lm,Shat_alpha){
   lm$loglik_matrix[,1]+lm$lfactors-rowSums(log(Shat_alpha))
 }
 
 #' @title Computes a vector of loglikelihoods from a matrix of
 #'   log-likelihoods and fitted pi
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param pi_s the vector of mixture proportions
-#' 
+#'
 #' @param lm the results of a likelihood matrix calculation from
 #'   \code{calc_relative_lik_matrix}
-#' 
+#'
 #' @param Shat_alpha matrix of Shat^alpha
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 compute_vloglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
   return(log(exp(lm$loglik_matrix) %*% pi_s)+lm$lfactors-rowSums(log(Shat_alpha)))
 }
 
 #' @title Compute the total loglikelihood from a matrix of
 #'   log-likelihoods and fitted pi
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param pi_s the vector of mixture proportions
-#' 
+#'
 #' @param lm the results of a likelihood matrix calculation from
 #'   \code{calc_relative_lik_matrix}
-#' 
+#'
 #' @param Shat_alpha matrix of Shat^alpha
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 compute_loglik_from_matrix_and_pi = function(pi_s,lm,Shat_alpha){
   return(sum(compute_vloglik_from_matrix_and_pi(pi_s,lm,Shat_alpha)))
 }
