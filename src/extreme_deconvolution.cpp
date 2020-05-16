@@ -725,7 +725,7 @@ void proj_gauss_mixtures(struct datapoint * data, int N,
   //create temporary file to hold convergence info
   FILE *tmpconvfile;
   char tmpfilename[256];
-  mkstemp(tmpfilename);
+  int temp_fd = mkstemp(tmpfilename);
   if (keeplog)
     tmpconvfile= fopen(tmpfilename,"w+");
 
