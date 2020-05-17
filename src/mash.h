@@ -1,4 +1,4 @@
-// Gao Wang (c) 2017-2019 wang.gao@columbia.edu
+// Gao Wang (c) 2017-2020 wang.gao@columbia.edu
 #ifndef _MASH_H
 #define _MASH_H
 #include <cmath>
@@ -14,9 +14,9 @@ static const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
 
 inline arma::vec
 dnorm(const arma::vec & x,
-  const arma::vec     & mu,
-  const arma::vec     & sigma2,
-  bool                logd = false)
+      const arma::vec & mu,
+      const arma::vec & sigma2,
+      bool              logd = false)
 {
     arma::vec res = LOG_INV_SQRT_2PI
       - arma::log(arma::sqrt(sigma2))
@@ -67,10 +67,10 @@ dmvnorm_mat(const arma::mat & x,
 
 inline double
 dmvnorm(const arma::vec & x,
-  const arma::vec       & mean,
-  const arma::mat       & sigma,
-  bool                  logd     = false,
-  bool                  inversed = false)
+	const arma::vec & mean,
+	const arma::mat & sigma,
+	bool              logd     = false,
+	bool              inversed = false)
 {
     arma::mat rooti;
 
@@ -328,14 +328,14 @@ public:
     }
 
     arma::mat
-    get_original()
+    get_original() const
     {
         if (is_orig_empty) return (s);
         else return (s_orig);
     }
 
     arma::mat
-    get()
+    get() const
     {
         return (s_alpha);
     }
@@ -347,13 +347,14 @@ private:
     bool is_orig_empty;
 };
 
-int mash_compute_posterior (arma::mat b_mat, SE& s_obj, arma::mat& v_mat,
-			    arma::mat& l_mat, arma::mat& a_mat,
-			    arma::cube& U_cube, arma::cube& Vinv_cube,
-			    arma::cube& U0_cube, arma::mat& post_mean,
+int mash_compute_posterior (const arma::mat& b_mat, const SE& s_obj,
+			    const arma::mat& v_mat, const arma::mat& l_mat,
+			    const arma::mat& a_mat, const arma::cube& U_cube,
+			    const arma::cube& Vinv_cube,
+			    const arma::cube& U0_cube, arma::mat& post_mean,
 			    arma::mat& post_var, arma::mat& neg_prob,
 			    arma::mat& zero_prob, arma::cube& post_cov,
-			    const arma::mat & posterior_weights,
+			    const arma::mat& posterior_weights,
 			    const int& report_type);
 
 // @param b_mat R by J
@@ -1004,16 +1005,16 @@ public:
     ~TEEM(){ }
 
     arma::vec
-    get_objective(){ return objective; }
+    get_objective() const { return objective; }
 
     arma::vec
-    get_maxd(){ return maxd; }
+    get_maxd() const { return maxd; }
 
     arma::vec
-    get_w(){ return w_vec; }
+    get_w() const { return w_vec; }
 
     arma::cube
-    get_U()
+    get_U () const
     {
         arma::cube U_cube = T_cube;
         for (unsigned j = 0; j < U_cube.n_slices; ++j) {
@@ -1103,13 +1104,14 @@ private:
 
 // This implements the core part of the compute_posterior method in
 // the PosteriorMASH class.
-int mash_compute_posterior (arma::mat b_mat, SE& s_obj, arma::mat& v_mat,
-			    arma::mat& l_mat, arma::mat& a_mat,
-			    arma::cube& U_cube, arma::cube& Vinv_cube,
-			    arma::cube& U0_cube, arma::mat& post_mean,
+int mash_compute_posterior (const arma::mat& b_mat, const SE& s_obj,
+			    const arma::mat& v_mat, const arma::mat& l_mat,
+			    const arma::mat& a_mat, const arma::cube& U_cube,
+			    const arma::cube& Vinv_cube,
+			    const arma::cube& U0_cube, arma::mat& post_mean,
 			    arma::mat& post_var, arma::mat& neg_prob,
 			    arma::mat& zero_prob, arma::cube& post_cov,
-			    const arma::mat & posterior_weights,
+			    const arma::mat& posterior_weights,
 			    const int& report_type) {
 
   arma::vec mean(post_mean.n_rows, arma::fill::zeros);
