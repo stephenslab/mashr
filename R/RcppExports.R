@@ -25,7 +25,7 @@ calc_sermix_rcpp <- function(b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d,
     .Call('_mashr_calc_sermix_rcpp', PACKAGE = 'mashr', b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d, posterior_mixture_weights, posterior_variable_weights, sigma0, common_cov, n_thread)
 }
 
-fit_teem_rcpp <- function(X_mat, w_vec, U_3d, maxiter, converge_tol, eigen_tol, verbose) {
-    .Call('_mashr_fit_teem_rcpp', PACKAGE = 'mashr', X_mat, w_vec, U_3d, maxiter, converge_tol, eigen_tol, verbose)
+fit_teem_rcpp <- function(x_mat, w_vec, U_3d, maxiter, converge_tol, eigen_tol, verbose) {
+    .Call('_mashr_fit_teem_rcpp', PACKAGE = 'mashr', x_mat, w_vec, U_3d, maxiter, converge_tol, eigen_tol, verbose)
 }
 
