@@ -1101,6 +1101,8 @@ private:
     }
 };
 
+// This implements the core part of the compute_posterior method in
+// the PosteriorMASH class.
 int mash_compute_posterior (arma::mat b_mat, SE& s_obj, arma::mat& v_mat,
 			    arma::mat& l_mat, arma::mat& a_mat,
 			    arma::cube& U_cube, arma::cube& Vinv_cube,
