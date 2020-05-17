@@ -73,7 +73,7 @@ normalize_row(gsl_matrix * q, int row, bool isrow, bool noweight, double weight)
 void
 bovy_randvec(gsl_vector * eps, int d, double length); /* returns random vector */
 double
-bovy_det(gsl_matrix * A);       /* determinant of matrix A */
+bovy_det(gsl_matrix * A); /* determinant of matrix A */
 void
 calc_splitnmerge(struct datapoint * data, int N, struct gaussian * gaussians, int K, gsl_matrix * qij,
   int * snmhierarchy);
@@ -737,7 +737,7 @@ proj_EM_step(struct datapoint * data, int N,
                 gsl_matrix_transpose_memcpy(Rtrans, thisdata->RR);
                 gsl_blas_dsymm(CblasLeft, CblasUpper, 1.0, thisgaussian->VV, Rtrans, 0.0, VRT);// Only the upper right part of VV is calculated --> use only that part
                 gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, thisdata->RR, VRT, 1.0, Tij);
-            }                                                               // This is Tij
+            } // This is Tij
             else {
                 if (diagerrs) {
                     for (kk = 0; kk != d; ++kk) {
@@ -774,7 +774,7 @@ proj_EM_step(struct datapoint * data, int N,
             gsl_blas_ddot(wminusRm, TinvwminusRm, &exponent);
             // printf("Exponent = %f\nDet = %f\n",exponent,gsl_linalg_LU_det(Tij,signum));
             gsl_matrix_set(qij, ii, jj, log(thisgaussian->alpha) - di * halflogtwopi - 0.5 * gsl_linalg_LU_lndet(
-                  Tij) - 0.5 * exponent);                                                                                     // This is actually the log of qij
+                  Tij) - 0.5 * exponent); // This is actually the log of qij
             // printf("Here we have = %f\n",gsl_matrix_get(qij,ii,jj));
             // Now calculate bij and Bij
             thisbs = bs + tid * K + jj;

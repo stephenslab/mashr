@@ -14,9 +14,9 @@ static const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
 
 inline arma::vec
 dnorm(const arma::vec & x,
-      const arma::vec & mu,
-      const arma::vec & sigma2,
-      bool              logd = false)
+  const arma::vec     & mu,
+  const arma::vec     & sigma2,
+  bool                logd = false)
 {
     arma::vec res = LOG_INV_SQRT_2PI
       - arma::log(arma::sqrt(sigma2))
@@ -67,10 +67,10 @@ dmvnorm_mat(const arma::mat & x,
 
 inline double
 dmvnorm(const arma::vec & x,
-	const arma::vec & mean,
-	const arma::mat & sigma,
-	bool              logd     = false,
-	bool              inversed = false)
+  const arma::vec       & mean,
+  const arma::mat       & sigma,
+  bool                  logd     = false,
+  bool                  inversed = false)
 {
     arma::mat rooti;
 
@@ -347,67 +347,71 @@ private:
     bool is_orig_empty;
 };
 
-int mash_compute_posterior (const arma::mat& b_mat, const SE& s_obj,
-			    const arma::mat& v_mat, const arma::mat& l_mat,
-			    const arma::mat& a_mat, const arma::cube& U_cube,
-			    const arma::cube& Vinv_cube,
-			    const arma::cube& U0_cube, arma::mat& post_mean,
-			    arma::mat& post_var, arma::mat& neg_prob,
-			    arma::mat& zero_prob, arma::cube& post_cov,
-			    const arma::mat& posterior_weights,
-			    const int& report_type);
+int
+mash_compute_posterior(const arma::mat& b_mat, const SE& s_obj,
+  const arma::mat& v_mat, const arma::mat& l_mat,
+  const arma::mat& a_mat, const arma::cube& U_cube,
+  const arma::cube& Vinv_cube,
+  const arma::cube& U0_cube, arma::mat& post_mean,
+  arma::mat& post_var, arma::mat& neg_prob,
+  arma::mat& zero_prob, arma::cube& post_cov,
+  const arma::mat& posterior_weights,
+  const int& report_type);
 
-int mash_compute_posterior_comcov (const arma::mat& b_mat,
-				   const SE& s_obj,
-				   const arma::mat& v_mat,
-				   const arma::mat& l_mat,
-				   const arma::mat& a_mat,
-				   const arma::cube& U_cube,
-				   const arma::cube& Vinv_cube,
-				   const arma::cube& U0_cube,
-				   arma::mat& post_mean,
-				   arma::mat& post_var,
-				   arma::mat& neg_prob,
-				   arma::mat& zero_prob,
-				   arma::cube& post_cov,
-				   const arma::mat& posterior_weights,
-				   const int& report_type);
+int
+mash_compute_posterior_comcov(const arma::mat& b_mat,
+  const SE                                   & s_obj,
+  const arma::mat                            & v_mat,
+  const arma::mat                            & l_mat,
+  const arma::mat                            & a_mat,
+  const arma::cube                           & U_cube,
+  const arma::cube                           & Vinv_cube,
+  const arma::cube                           & U0_cube,
+  arma::mat                                  & post_mean,
+  arma::mat                                  & post_var,
+  arma::mat                                  & neg_prob,
+  arma::mat                                  & zero_prob,
+  arma::cube                                 & post_cov,
+  const arma::mat                            & posterior_weights,
+  const int                                  & report_type);
 
-int mvsermix_compute_posterior (const arma::mat& b_mat,
-				const arma::mat& s_mat,
-				arma::mat& v_mat,
-				arma::cube& U_cube,
-				arma::cube& Vinv_cube,
-				arma::cube& U0_cube,
-				arma::cube& Uinv_cube,
-				arma::mat& post_mean,
-				arma::mat& post_var,
-				arma::mat& neg_prob,
-				arma::mat& zero_prob,
-				arma::cube& post_cov,
-				arma::vec& prior_scalar,
-				bool prior_invertable,
-				const arma::mat& posterior_weights,
-				const arma::mat& posterior_variable_weights,
-				double sigma0);
+int
+mvsermix_compute_posterior(const arma::mat& b_mat,
+  const arma::mat                         & s_mat,
+  arma::mat                               & v_mat,
+  arma::cube                              & U_cube,
+  arma::cube                              & Vinv_cube,
+  arma::cube                              & U0_cube,
+  arma::cube                              & Uinv_cube,
+  arma::mat                               & post_mean,
+  arma::mat                               & post_var,
+  arma::mat                               & neg_prob,
+  arma::mat                               & zero_prob,
+  arma::cube                              & post_cov,
+  arma::vec                               & prior_scalar,
+  bool                                    prior_invertable,
+  const arma::mat                         & posterior_weights,
+  const arma::mat                         & posterior_variable_weights,
+  double                                  sigma0);
 
-int mvsermix_compute_posterior_comcov (const arma::mat& b_mat,
-				       const arma::mat& s_mat,
-				       const arma::mat& v_mat,
-				       const arma::cube& U_cube,
-				       const arma::cube& Vinv_cube,
-				       const arma::cube& U0_cube,
-				       const arma::cube& Uinv_cube,
-				       arma::mat& post_mean,
-				       arma::mat& post_var,
-				       arma::mat& neg_prob,
-				       arma::mat& zero_prob,
-				       arma::cube& post_cov,
-				       arma::vec& prior_scalar,
-				       bool prior_invertable,
-				       const arma::mat & posterior_weights,
-				       const arma::mat & posterior_variable_weights,
-				       double sigma0);
+int
+mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
+  const arma::mat                                & s_mat,
+  const arma::mat                                & v_mat,
+  const arma::cube                               & U_cube,
+  const arma::cube                               & Vinv_cube,
+  const arma::cube                               & U0_cube,
+  const arma::cube                               & Uinv_cube,
+  arma::mat                                      & post_mean,
+  arma::mat                                      & post_var,
+  arma::mat                                      & neg_prob,
+  arma::mat                                      & zero_prob,
+  arma::cube                                     & post_cov,
+  arma::vec                                      & prior_scalar,
+  bool                                           prior_invertable,
+  const arma::mat                                & posterior_weights,
+  const arma::mat                                & posterior_variable_weights,
+  double                                         sigma0);
 
 // @param b_mat R by J
 // @param s_mat R by J
@@ -462,10 +466,10 @@ public:
     int
     compute_posterior(const arma::mat & posterior_weights, const int & report_type)
     {
-      return mash_compute_posterior(b_mat,s_obj,v_mat,l_mat,a_mat,U_cube,
-				    Vinv_cube,U0_cube,post_mean,post_var,
-				    neg_prob,zero_prob,post_cov,
-				    posterior_weights,report_type);
+        return mash_compute_posterior(b_mat, s_obj, v_mat, l_mat, a_mat, U_cube,
+                 Vinv_cube, U0_cube, post_mean, post_var,
+                 neg_prob, zero_prob, post_cov,
+                 posterior_weights, report_type);
     }
 
     // @title Compute posterior matrices when covariance SVS is the same for all J conditions
@@ -475,11 +479,11 @@ public:
     int
     compute_posterior_comcov(const arma::mat & posterior_weights, const int & report_type)
     {
-      return mash_compute_posterior_comcov(b_mat,s_obj,v_mat,l_mat,a_mat,
-					   U_cube,Vinv_cube,U0_cube,post_mean,
-					   post_var,neg_prob,zero_prob,
-					   post_cov,posterior_weights,
-					   report_type);
+        return mash_compute_posterior_comcov(b_mat, s_obj, v_mat, l_mat, a_mat,
+                 U_cube, Vinv_cube, U0_cube, post_mean,
+                 post_var, neg_prob, zero_prob,
+                 post_cov, posterior_weights,
+                 report_type);
     } // compute_posterior_comcov
 
     // initializing some optinally precomputed quantities
@@ -655,10 +659,10 @@ private:
 class MVSERMix
 {
 public:
-    MVSERMix(const arma::mat  & b_mat,
-	     const arma::mat  & s_mat,
-	     const arma::mat  & v_mat,
-	     const arma::cube & U_cube) :
+    MVSERMix(const arma::mat & b_mat,
+      const arma::mat        & s_mat,
+      const arma::mat        & v_mat,
+      const arma::cube       & U_cube) :
         b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), U_cube(U_cube)
     {
         int J = b_mat.n_cols, R = b_mat.n_rows;
@@ -689,15 +693,15 @@ public:
     // posterior_variable_weights is only relevant when EM updates for prior scalar is needed.
     int
     compute_posterior(const arma::mat & posterior_weights,
-		      const arma::mat & posterior_variable_weights,
-		      double sigma0)
+      const arma::mat                 & posterior_variable_weights,
+      double                          sigma0)
     {
-      return mvsermix_compute_posterior(b_mat,s_mat,v_mat,U_cube,Vinv_cube,
-					U0_cube,Uinv_cube,post_mean,post_var,
-					neg_prob,zero_prob,post_cov,
-					prior_scalar,prior_invertable,
-					posterior_weights,
-					posterior_variable_weights,sigma0);
+        return mvsermix_compute_posterior(b_mat, s_mat, v_mat, U_cube, Vinv_cube,
+                 U0_cube, Uinv_cube, post_mean, post_var,
+                 neg_prob, zero_prob, post_cov,
+                 prior_scalar, prior_invertable,
+                 posterior_weights,
+                 posterior_variable_weights, sigma0);
     } // compute_posterior
 
     // @title Compute posterior matrices when covariance SVS is the same for all J conditions
@@ -707,14 +711,14 @@ public:
     compute_posterior_comcov(const arma::mat & posterior_weights,
       const arma::mat & posterior_variable_weights, double sigma0)
     {
-      return mvsermix_compute_posterior_comcov(b_mat,s_mat,v_mat,U_cube,
-					       Vinv_cube,U0_cube,Uinv_cube,
-					       post_mean,post_var,neg_prob,
-					       zero_prob,post_cov,prior_scalar,
-					       prior_invertable,
-					       posterior_weights,
-					       posterior_variable_weights,
-					       sigma0);
+        return mvsermix_compute_posterior_comcov(b_mat, s_mat, v_mat, U_cube,
+                 Vinv_cube, U0_cube, Uinv_cube,
+                 post_mean, post_var, neg_prob,
+                 zero_prob, post_cov, prior_scalar,
+                 prior_invertable,
+                 posterior_weights,
+                 posterior_variable_weights,
+                 sigma0);
     } // compute_posterior_comcov
 
     // initializing some optinally precomputed quantities
@@ -852,7 +856,7 @@ public:
     get_w() const { return w_vec; }
 
     arma::cube
-    get_U () const
+    get_U() const
     {
         arma::cube U_cube = T_cube;
         for (unsigned j = 0; j < U_cube.n_slices; ++j) {
@@ -942,374 +946,381 @@ private:
 
 // This implements the core part of the compute_posterior method in
 // the PosteriorMASH class.
-int mash_compute_posterior (const arma::mat& b_mat, const SE& s_obj,
-			    const arma::mat& v_mat, const arma::mat& l_mat,
-			    const arma::mat& a_mat, const arma::cube& U_cube,
-			    const arma::cube& Vinv_cube,
-			    const arma::cube& U0_cube, arma::mat& post_mean,
-			    arma::mat& post_var, arma::mat& neg_prob,
-			    arma::mat& zero_prob, arma::cube& post_cov,
-			    const arma::mat& posterior_weights,
-			    const int& report_type) {
+int
+mash_compute_posterior(const arma::mat& b_mat, const SE& s_obj,
+  const arma::mat& v_mat, const arma::mat& l_mat,
+  const arma::mat& a_mat, const arma::cube& U_cube,
+  const arma::cube& Vinv_cube,
+  const arma::cube& U0_cube, arma::mat& post_mean,
+  arma::mat& post_var, arma::mat& neg_prob,
+  arma::mat& zero_prob, arma::cube& post_cov,
+  const arma::mat& posterior_weights,
+  const int& report_type)
+{
+    arma::vec mean(post_mean.n_rows, arma::fill::zeros);
+    #pragma \
+        omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
+    for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+        // FIXME: improved math may help here
+        arma::mat Vinv_j;
+        if (Vinv_cube.is_empty())
+            Vinv_j = arma::inv_sympd(get_cov(s_obj.get_original().col(j),
+                v_mat, l_mat));
+        else
+            Vinv_j = Vinv_cube.slice(j);
 
-  arma::vec mean(post_mean.n_rows, arma::fill::zeros);
-  #pragma \
-    omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
-  for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-    
-    // FIXME: improved math may help here
-    arma::mat Vinv_j;
-    if (Vinv_cube.is_empty())
-      Vinv_j = arma::inv_sympd(get_cov(s_obj.get_original().col(j),
-				       v_mat, l_mat));
-    else
-      Vinv_j = Vinv_cube.slice(j);
-    
-    // R X P matrices
-    arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    arma::mat diag_mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    
-    for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-      //
-      arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
-      arma::mat U0;
-      if (U0_cube.is_empty())
-	U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
-      else
-	U0 = U0_cube.slice(j * U_cube.n_slices + p);
-      if (a_mat.is_empty()) {
-	mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
-	U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
-      } else {
-	mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j));
-	U1 = a_mat * (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) * a_mat.t());
-      }
+        // R X P matrices
+        arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        arma::mat diag_mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
 
-      if (report_type == 2 || report_type == 4) {
-	post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
-      }
-      
-      arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-      diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
-      neg_mat.col(p)      = pnorm(mu1_mat.col(p), mean, sigma);
-      for (arma::uword r = 0; r < sigma.n_elem; ++r) {
-	if (sigma.at(r) == 0) {
-	  zero_mat.at(r, p) = 1.0;
-	  neg_mat.at(r, p)  = 0.0;
-	}
-      }
+        for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+            //
+            arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
+            arma::mat U0;
+            if (U0_cube.is_empty())
+                U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+            else
+                U0 = U0_cube.slice(j * U_cube.n_slices + p);
+            if (a_mat.is_empty()) {
+                mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
+                U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
+            } else {
+                mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j));
+                U1 = a_mat * (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) * a_mat.t());
+            }
+
+            if (report_type == 2 || report_type == 4) {
+                post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
+            }
+
+            arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
+            diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
+            neg_mat.col(p)      = pnorm(mu1_mat.col(p), mean, sigma);
+            for (arma::uword r = 0; r < sigma.n_elem; ++r) {
+                if (sigma.at(r) == 0) {
+                    zero_mat.at(r, p) = 1.0;
+                    neg_mat.at(r, p)  = 0.0;
+                }
+            }
+        }
+
+        // compute weighted means of posterior arrays
+        post_mean.col(j) = mu1_mat * posterior_weights.col(j);
+        post_var.col(j)  = diag_mu2_mat * posterior_weights.col(j);
+        neg_prob.col(j)  = neg_mat * posterior_weights.col(j);
+        zero_prob.col(j) = zero_mat * posterior_weights.col(j);
+        //
+        if (report_type == 4)
+            post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
     }
-    
-    // compute weighted means of posterior arrays
-    post_mean.col(j) = mu1_mat * posterior_weights.col(j);
-    post_var.col(j)  = diag_mu2_mat * posterior_weights.col(j);
-    neg_prob.col(j)  = neg_mat * posterior_weights.col(j);
-    zero_prob.col(j) = zero_mat * posterior_weights.col(j);
-    //
-    if (report_type == 4)
-      post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
-  }
-  post_var -= arma::pow(post_mean, 2.0);
-  
-  return 0;
-}
+    post_var -= arma::pow(post_mean, 2.0);
+
+    return 0;
+} // mash_compute_posterior
 
 // This implements the core part of the compute_posterior_comcov method in
 // the PosteriorMASH class.
-int mash_compute_posterior_comcov (const arma::mat& b_mat,
-				   const SE& s_obj,
-				   const arma::mat& v_mat,
-				   const arma::mat& l_mat,
-				   const arma::mat& a_mat,
-				   const arma::cube& U_cube,
-				   const arma::cube& Vinv_cube,
-				   const arma::cube& U0_cube,
-				   arma::mat& post_mean,
-				   arma::mat& post_var,
-				   arma::mat& neg_prob,
-				   arma::mat& zero_prob,
-				   arma::cube& post_cov,
-				   const arma::mat& posterior_weights,
-				   const int& report_type) {
-  arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-  // R X R
-  arma::mat Vinv;
-
-  if (Vinv_cube.is_empty())
-    Vinv =
-      arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
-  else Vinv = Vinv_cube.slice(0);
-
-  arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
-  arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
-  
-  #pragma omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, Vinv, ones, zeros, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, a_mat, U_cube, U0_cube)
-  for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-    arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+int
+mash_compute_posterior_comcov(const arma::mat& b_mat,
+  const SE                                   & s_obj,
+  const arma::mat                            & v_mat,
+  const arma::mat                            & l_mat,
+  const arma::mat                            & a_mat,
+  const arma::cube                           & U_cube,
+  const arma::cube                           & Vinv_cube,
+  const arma::cube                           & U0_cube,
+  arma::mat                                  & post_mean,
+  arma::mat                                  & post_var,
+  arma::mat                                  & neg_prob,
+  arma::mat                                  & zero_prob,
+  arma::cube                                 & post_cov,
+  const arma::mat                            & posterior_weights,
+  const int                                  & report_type)
+{
+    arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
     // R X R
-    arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
-    // R X J
-    arma::mat mu1_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-    arma::mat U0;
-    if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv, U_cube.slice(p));
-    else U0 = U0_cube.slice(p);
-    if (a_mat.is_empty()) {
-      mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get();
-      U1      = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
-    } else {
-      mu1_mat = a_mat * (get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get());
-      U1      = a_mat
-	* (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t())
-	   * a_mat.t());
-    }
-    // R X J
-    arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
-    diag_mu2_mat.each_col() += U1.diag();
-    // R X J
-    // FIXME: any better way to init sigma?
-    arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-    sigma.each_col() += arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-    arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
-    for (arma::uword r = 0; r < sigma.n_rows; ++r) {
-      if (sigma.at(r, 0) == 0) {
-	zero_mat.row(r) = ones;
-	neg_mat.row(r)  = zeros;
-      }
-    }
-    // compute weighted means of posterior arrays
-    #pragma omp critical
-    {
-      post_mean += mu1_mat.each_row() % posterior_weights.row(p);
-      post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
-      neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
-      zero_prob += zero_mat.each_row() % posterior_weights.row(p);
-      if (report_type == 2 || report_type == 4) {
-	for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-	  post_cov.slice(j) +=
-	    posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
-	}
-      }
-    }
-  }
-  post_var -= arma::pow(post_mean, 2.0);
-  //
-  if (report_type == 4) {
-    #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
-    for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-      post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
-    }
-  }
-  return 0;
-}
+    arma::mat Vinv;
 
-// This implements the core part of the compute_posterior method in
-// the MVSERMix class.
-int mvsermix_compute_posterior (const arma::mat& b_mat,
-				const arma::mat& s_mat,
-				arma::mat& v_mat,
-				arma::cube& U_cube,
-				arma::cube& Vinv_cube,
-				arma::cube& U0_cube,
-				arma::cube& Uinv_cube,
-				arma::mat& post_mean,
-				arma::mat& post_var,
-				arma::mat& neg_prob,
-				arma::mat& zero_prob,
-				arma::cube& post_cov,
-				arma::vec& prior_scalar,
-				bool prior_invertable,
-				const arma::mat& posterior_weights,
-				const arma::mat& posterior_variable_weights,
-				double sigma0) {
-  arma::vec mean(post_mean.n_rows, arma::fill::zeros);
-  // This is meant to store a length P of 2nd moment matrices,
-  // each element is \sum_j posterior_{p,j} * mu2_{p,j}
-  arma::cube Eb2_cube;
-  bool to_estimate_prior = !posterior_variable_weights.is_empty();
-  if (to_estimate_prior) {
-    // we will compute the EM update for prior scalar here
-    // for use with mmbr package
-    Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-    Eb2_cube.zeros();
-  }
-  #pragma omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
-  for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-    // FIXME: improved math may help here
-    arma::mat Vinv_j;
     if (Vinv_cube.is_empty())
-      Vinv_j = arma::inv_sympd(get_cov(s_mat.col(j), v_mat));
-    else Vinv_j = Vinv_cube.slice(j);
-    // R X P matrices
-    arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    arma::mat diag_mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
-    // R X R X P
-    arma::cube mu2_cube;
-    mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-    for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-      arma::mat U1;
-      if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv_j, U_cube.slice(p));
-      else U1 = U0_cube.slice(j * U_cube.n_slices + p);
-      mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U1);
-      // this is posterior 2nd moment for the j-th variable and the p-th prior
-      mu2_cube.slice(p) = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
-      // add to posterior 2nd moment contribution of the p-th component
-      post_cov.slice(j) += posterior_weights.at(p, j) * mu2_cube.slice(p);
-      if (to_estimate_prior && !prior_invertable) {
-	// Here we compute the U_p^{-1} E[bb^T \,|\, \gamma_p] part using a trick not involving U_p^{-1}
-	arma::mat U0_prime = get_posterior_cov(Vinv_j, U_cube.slice(p), true);
-	arma::mat ssb      = U0_prime * Vinv_j * b_mat.col(j);
-	mu2_cube.slice(p) = sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
-      }
-      arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-      diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
-      neg_mat.col(p)      = pnorm(mu1_mat.col(p), mean, sigma);
-      for (arma::uword r = 0; r < sigma.n_elem; ++r) {
-	if (sigma.at(r) == 0) {
-	  zero_mat.at(r, p) = 1.0;
-	  neg_mat.at(r, p)  = 0.0;
-	}
-      }
-    }
-    // compute weighted means of posterior arrays
-    post_mean.col(j)   = mu1_mat * posterior_weights.col(j);
-    post_var.col(j)    = diag_mu2_mat * posterior_weights.col(j);
-    neg_prob.col(j)    = neg_mat * posterior_weights.col(j);
-    zero_prob.col(j)   = zero_mat * posterior_weights.col(j);
-    post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
-    if (to_estimate_prior) {
-      #pragma omp critical
-      {
-	for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-	  // we will compute some quantity to provide for
-	  // EM update for prior scalar in mmbr package
-	  // the M-step update is:
-	  // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
-	  // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
-	  Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(p);
-	}
-      }
-    }
-  }
-  post_var -= arma::pow(post_mean, 2.0);
-  if (to_estimate_prior) {
-    // now compute \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r for each p
-    for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-      if (prior_invertable) {
-	prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * Eb2_cube.slice(p)) / post_mean.n_rows;
-      } else {
-	prior_scalar.at(p) = arma::trace(Eb2_cube.slice(p)) / post_mean.n_rows;
-      }
-    }
-  }
-  return 0;
-}
+        Vinv =
+          arma::inv_sympd(get_cov(s_obj.get_original().col(0), v_mat, l_mat));
+    else Vinv = Vinv_cube.slice(0);
 
-// This implements the core part of the compute_posterior_comcov method in
-// the MVSERMix class.
-int mvsermix_compute_posterior_comcov (const arma::mat& b_mat,
-				       const arma::mat& s_mat,
-				       const arma::mat& v_mat,
-				       const arma::cube& U_cube,
-				       const arma::cube& Vinv_cube,
-				       const arma::cube& U0_cube,
-				       const arma::cube& Uinv_cube,
-				       arma::mat& post_mean,
-				       arma::mat& post_var,
-				       arma::mat& neg_prob,
-				       arma::mat& zero_prob,
-				       arma::cube& post_cov,
-				       arma::vec& prior_scalar,
-				       bool prior_invertable,
-				       const arma::mat& posterior_weights,
-				       const arma::mat& posterior_variable_weights,
-				       double sigma0) {
-        arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-        // for Eb2_cube see compute_posterior() for detailed documentations.
-        arma::cube Eb2_cube;
-        bool to_estimate_prior = !posterior_variable_weights.is_empty();
-        if (to_estimate_prior) {
-            Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
-            Eb2_cube.zeros();
-        }
+    arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
+    arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
+
+    #pragma \
+        omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, Vinv, ones, zeros, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, a_mat, U_cube, U0_cube)
+    for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+        arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
         // R X R
-        arma::mat Vinv;
-        if (Vinv_cube.is_empty()) Vinv =
-              arma::inv_sympd(get_cov(s_mat.col(0), v_mat));
-        else Vinv = Vinv_cube.slice(0);
-
-        arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
-        arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
-        #pragma \
-            omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
-        for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
-            arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-            // R X R
-            arma::mat U1;
-            // R X J
-            arma::mat mu1_mat;
-            if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv, U_cube.slice(p));
-            else U1 = U0_cube.slice(p);
-            mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
-            arma::cube mu2_cube;
-            mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, post_mean.n_cols);
-            arma::mat U0_prime;
-            if (to_estimate_prior && !prior_invertable) U0_prime = get_posterior_cov(Vinv, U_cube.slice(p), true);
-            for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-                mu2_cube.slice(j) = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
-                if (to_estimate_prior) {
-                    if (prior_invertable) {
-                        Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(j);
-                    } else {
-                        arma::mat ssb = U0_prime * Vinv * b_mat.col(j);
-                        Eb2_cube.slice(p) +=
-                          posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
-                    }
-                }
+        arma::mat U1(post_mean.n_rows, post_mean.n_rows, arma::fill::zeros);
+        // R X J
+        arma::mat mu1_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+        arma::mat U0;
+        if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv, U_cube.slice(p));
+        else U0 = U0_cube.slice(p);
+        if (a_mat.is_empty()) {
+            mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get();
+            U1      = (U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t();
+        } else {
+            mu1_mat = a_mat * (get_posterior_mean_mat(b_mat, Vinv, U0) % s_obj.get());
+            U1      = a_mat
+              * (((U0.each_col() % s_obj.get().col(0)).each_row() % s_obj.get().col(0).t())
+              * a_mat.t());
+        }
+        // R X J
+        arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
+        diag_mu2_mat.each_col() += U1.diag();
+        // R X J
+        // FIXME: any better way to init sigma?
+        arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+        sigma.each_col() += arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
+        arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
+        for (arma::uword r = 0; r < sigma.n_rows; ++r) {
+            if (sigma.at(r, 0) == 0) {
+                zero_mat.row(r) = ones;
+                neg_mat.row(r)  = zeros;
             }
-            if (to_estimate_prior) {
-                if (prior_invertable) {
-                    prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * Eb2_cube.slice(p)) / post_mean.n_rows;
-                } else {
-                    prior_scalar.at(p) = arma::trace(Eb2_cube.slice(p)) / post_mean.n_rows;
-                }
-            }
-            // R X J
-            arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
-            diag_mu2_mat.each_col() += U1.diag();
-            // R X J
-            // FIXME: any better way to init sigma?
-            arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
-            sigma.each_col() += arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
-            arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
-            for (arma::uword r = 0; r < sigma.n_rows; ++r) {
-                if (sigma.at(r, 0) == 0) {
-                    zero_mat.row(r) = ones;
-                    neg_mat.row(r)  = zeros;
-                }
-            }
-            #pragma omp critical
-            {
-                // compute weighted means of posterior arrays
-                post_mean += mu1_mat.each_row() % posterior_weights.row(p);
-                post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
-                neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
-                zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+        }
+        // compute weighted means of posterior arrays
+        #pragma omp critical
+        {
+            post_mean += mu1_mat.each_row() % posterior_weights.row(p);
+            post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
+            neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
+            zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+            if (report_type == 2 || report_type == 4) {
                 for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
-                    post_cov.slice(j) += posterior_weights.at(p, j) * mu2_cube.slice(j);
+                    post_cov.slice(j) +=
+                      posterior_weights.at(p, j) * (U1 + mu1_mat.col(j) * mu1_mat.col(j).t());
                 }
             }
         }
-        post_var -= arma::pow(post_mean, 2.0);
+    }
+    post_var -= arma::pow(post_mean, 2.0);
+    //
+    if (report_type == 4) {
         #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
         for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
             post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
         }
-        return 0;
-}
+    }
+    return 0;
+} // mash_compute_posterior_comcov
+
+// This implements the core part of the compute_posterior method in
+// the MVSERMix class.
+int
+mvsermix_compute_posterior(const arma::mat& b_mat,
+  const arma::mat                         & s_mat,
+  arma::mat                               & v_mat,
+  arma::cube                              & U_cube,
+  arma::cube                              & Vinv_cube,
+  arma::cube                              & U0_cube,
+  arma::cube                              & Uinv_cube,
+  arma::mat                               & post_mean,
+  arma::mat                               & post_var,
+  arma::mat                               & neg_prob,
+  arma::mat                               & zero_prob,
+  arma::cube                              & post_cov,
+  arma::vec                               & prior_scalar,
+  bool                                    prior_invertable,
+  const arma::mat                         & posterior_weights,
+  const arma::mat                         & posterior_variable_weights,
+  double                                  sigma0)
+{
+    arma::vec mean(post_mean.n_rows, arma::fill::zeros);
+    // This is meant to store a length P of 2nd moment matrices,
+    // each element is \sum_j posterior_{p,j} * mu2_{p,j}
+    arma::cube Eb2_cube;
+    bool to_estimate_prior = !posterior_variable_weights.is_empty();
+    if (to_estimate_prior) {
+        // we will compute the EM update for prior scalar here
+        // for use with mmbr package
+        Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
+        Eb2_cube.zeros();
+    }
+    #pragma \
+        omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
+    for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+        // FIXME: improved math may help here
+        arma::mat Vinv_j;
+        if (Vinv_cube.is_empty())
+            Vinv_j = arma::inv_sympd(get_cov(s_mat.col(j), v_mat));
+        else Vinv_j = Vinv_cube.slice(j);
+        // R X P matrices
+        arma::mat mu1_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        arma::mat diag_mu2_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        arma::mat zero_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        arma::mat neg_mat(post_mean.n_rows, U_cube.n_slices, arma::fill::zeros);
+        // R X R X P
+        arma::cube mu2_cube;
+        mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
+        for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+            arma::mat U1;
+            if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+            else U1 = U0_cube.slice(j * U_cube.n_slices + p);
+            mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U1);
+            // this is posterior 2nd moment for the j-th variable and the p-th prior
+            mu2_cube.slice(p) = U1 + mu1_mat.col(p) * mu1_mat.col(p).t();
+            // add to posterior 2nd moment contribution of the p-th component
+            post_cov.slice(j) += posterior_weights.at(p, j) * mu2_cube.slice(p);
+            if (to_estimate_prior && !prior_invertable) {
+                // Here we compute the U_p^{-1} E[bb^T \,|\, \gamma_p] part using a trick not involving U_p^{-1}
+                arma::mat U0_prime = get_posterior_cov(Vinv_j, U_cube.slice(p), true);
+                arma::mat ssb      = U0_prime * Vinv_j * b_mat.col(j);
+                mu2_cube.slice(p) = sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
+            }
+            arma::vec sigma = arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
+            diag_mu2_mat.col(p) = arma::pow(mu1_mat.col(p), 2.0) + U1.diag();
+            neg_mat.col(p)      = pnorm(mu1_mat.col(p), mean, sigma);
+            for (arma::uword r = 0; r < sigma.n_elem; ++r) {
+                if (sigma.at(r) == 0) {
+                    zero_mat.at(r, p) = 1.0;
+                    neg_mat.at(r, p)  = 0.0;
+                }
+            }
+        }
+        // compute weighted means of posterior arrays
+        post_mean.col(j)   = mu1_mat * posterior_weights.col(j);
+        post_var.col(j)    = diag_mu2_mat * posterior_weights.col(j);
+        neg_prob.col(j)    = neg_mat * posterior_weights.col(j);
+        zero_prob.col(j)   = zero_mat * posterior_weights.col(j);
+        post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
+        if (to_estimate_prior) {
+            #pragma omp critical
+            {
+                for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+                    // we will compute some quantity to provide for
+                    // EM update for prior scalar in mmbr package
+                    // the M-step update is:
+                    // \sigma_0^2 = \sum_{p=1}^P p(\gamma_p) \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r
+                    // where E[bb^T \,|\, \gamma_p] = \sum_j \alpha_{p,j} * mu2_mat_{p,j}
+                    Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(p);
+                }
+            }
+        }
+    }
+    post_var -= arma::pow(post_mean, 2.0);
+    if (to_estimate_prior) {
+        // now compute \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r for each p
+        for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+            if (prior_invertable) {
+                prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * Eb2_cube.slice(p)) / post_mean.n_rows;
+            } else {
+                prior_scalar.at(p) = arma::trace(Eb2_cube.slice(p)) / post_mean.n_rows;
+            }
+        }
+    }
+    return 0;
+} // mvsermix_compute_posterior
+
+// This implements the core part of the compute_posterior_comcov method in
+// the MVSERMix class.
+int
+mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
+  const arma::mat                                & s_mat,
+  const arma::mat                                & v_mat,
+  const arma::cube                               & U_cube,
+  const arma::cube                               & Vinv_cube,
+  const arma::cube                               & U0_cube,
+  const arma::cube                               & Uinv_cube,
+  arma::mat                                      & post_mean,
+  arma::mat                                      & post_var,
+  arma::mat                                      & neg_prob,
+  arma::mat                                      & zero_prob,
+  arma::cube                                     & post_cov,
+  arma::vec                                      & prior_scalar,
+  bool                                           prior_invertable,
+  const arma::mat                                & posterior_weights,
+  const arma::mat                                & posterior_variable_weights,
+  double                                         sigma0)
+{
+    arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+    // for Eb2_cube see compute_posterior() for detailed documentations.
+    arma::cube Eb2_cube;
+    bool to_estimate_prior = !posterior_variable_weights.is_empty();
+    if (to_estimate_prior) {
+        Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
+        Eb2_cube.zeros();
+    }
+    // R X R
+    arma::mat Vinv;
+    if (Vinv_cube.is_empty()) Vinv =
+          arma::inv_sympd(get_cov(s_mat.col(0), v_mat));
+    else Vinv = Vinv_cube.slice(0);
+
+    arma::rowvec ones(post_mean.n_cols, arma::fill::ones);
+    arma::rowvec zeros(post_mean.n_cols, arma::fill::zeros);
+    #pragma \
+        omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
+    for (arma::uword p = 0; p < U_cube.n_slices; ++p) {
+        arma::mat zero_mat(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+        // R X R
+        arma::mat U1;
+        // R X J
+        arma::mat mu1_mat;
+        if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv, U_cube.slice(p));
+        else U1 = U0_cube.slice(p);
+        mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);
+        arma::cube mu2_cube;
+        mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, post_mean.n_cols);
+        arma::mat U0_prime;
+        if (to_estimate_prior && !prior_invertable) U0_prime = get_posterior_cov(Vinv, U_cube.slice(p), true);
+        for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+            mu2_cube.slice(j) = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
+            if (to_estimate_prior) {
+                if (prior_invertable) {
+                    Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(j);
+                } else {
+                    arma::mat ssb = U0_prime * Vinv * b_mat.col(j);
+                    Eb2_cube.slice(p) +=
+                      posterior_variable_weights.at(p, j) * sigma0 * (ssb * ssb.t() * U_cube.slice(p) + U0_prime);
+                }
+            }
+        }
+        if (to_estimate_prior) {
+            if (prior_invertable) {
+                prior_scalar.at(p) = arma::trace(Uinv_cube.slice(p) * Eb2_cube.slice(p)) / post_mean.n_rows;
+            } else {
+                prior_scalar.at(p) = arma::trace(Eb2_cube.slice(p)) / post_mean.n_rows;
+            }
+        }
+        // R X J
+        arma::mat diag_mu2_mat = arma::pow(mu1_mat, 2.0);
+        diag_mu2_mat.each_col() += U1.diag();
+        // R X J
+        // FIXME: any better way to init sigma?
+        arma::mat sigma(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
+        sigma.each_col() += arma::sqrt(U1.diag()); // U1.diag() is the posterior covariance
+        arma::mat neg_mat = pnorm(mu1_mat, mean, sigma);
+        for (arma::uword r = 0; r < sigma.n_rows; ++r) {
+            if (sigma.at(r, 0) == 0) {
+                zero_mat.row(r) = ones;
+                neg_mat.row(r)  = zeros;
+            }
+        }
+        #pragma omp critical
+        {
+            // compute weighted means of posterior arrays
+            post_mean += mu1_mat.each_row() % posterior_weights.row(p);
+            post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
+            neg_prob  += neg_mat.each_row() % posterior_weights.row(p);
+            zero_prob += zero_mat.each_row() % posterior_weights.row(p);
+            for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+                post_cov.slice(j) += posterior_weights.at(p, j) * mu2_cube.slice(j);
+            }
+        }
+    }
+    post_var -= arma::pow(post_mean, 2.0);
+    #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
+    for (arma::uword j = 0; j < post_mean.n_cols; ++j) {
+        post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
+    }
+    return 0;
+} // mvsermix_compute_posterior_comcov
 
 #endif // ifndef _MASH_H
-
