@@ -136,7 +136,7 @@ E_V = function(data, m.model){
   Shat = data$Shat * data$Shat_alpha
   post.m.shat = m.model$result$PosteriorMean / Shat
   post.sec.shat = laply(1:J, function(i) (t(m.model$result$PosteriorCov[,,i]/Shat[i,])/Shat[i,]) +
-                          tcrossprod(post.m.shat[i,])) # Jx2x2 array
+                          tcrossprod(post.m.shat[i,])) # JxRxR array
   temp1 = crossprod(Z)
   temp2 = crossprod(post.m.shat, Z) + crossprod(Z, post.m.shat)
   temp3 = unname(aaply(post.sec.shat, c(2,3), sum))
