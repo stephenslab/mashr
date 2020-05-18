@@ -6,28 +6,24 @@
 This package implements methods to estimate and test many effects in
 many conditions (or many effects on many outcomes).
 
-The methods use Empirical Bayes methods to estimate patterns of
-similarity among conditions, and then exploit those patterns of
-similarity among conditions to improve accuracy of effect estimates.
-See [Urbut et al][mash-paper] for details of the model and methods.
+Empirical Bayes methods are used to estimate patterns of similarity
+among conditions, then exploit these patterns of similarity among
+conditions to improve accuracy of effect estimates. See
+[Urbut et al][mash-paper] for details.
 
-Note that this R package is a refactoring of the code originally used
-to generate the results for the manuscript. The original package code is
-[here](http://github.com/stephenslab/mashr-paper).
+*Note:* the R package used to generate the results for the manuscript
+is [here][mashr-pkg-for-paper].
 
 ## Quick Start
 
 1. Follow the setup instructions below.
 
-2. See the [Introductory
-Vignette](https://stephenslab.github.io/mashr/articles/intro_mash.html) for an
+2. See the [introductory vignette][vignette-intro] for an
 introduction to mashr.
 
-3. Then work through the other vignettes to learn more about mashr:
-[Introduction to mash: data-driven
-covariances](https://stephenslab.github.io/mashr/articles/intro_mash_dd.html)
-and [Simulation with non-canonical
-matrices](https://stephenslab.github.io/mashr/articles/simulate_noncanon.html).
+3. Then walk through these vignettes to learn more about mashr:
+[Introduction to mash: data-driven covariances][vignette-data-driven-cov]
+and [Simulation with non-canonical matrices][vignette-non-canonical].
 
 ## Citing this work
 
@@ -96,8 +92,12 @@ connected to Internet while running these commands):
    build_site(mathjax = FALSE)
    ```
 
+[mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
 [mashr-release]: https://github.com/stephenslab/mashr/releases/tag/v0.2-11
 [devtools]: https://github.com/r-lib/devtools
 [flashr]: https://github.com/stephenslab/flashr
+[vignette-intro]: https://stephenslab.github.io/mashr/articles/intro_mash.html
+[vignette-data-driven-cov]: https://stephenslab.github.io/mashr/articles/intro_mash_dd.html
+[vignette-non-canonical]: https://stephenslab.github.io/mashr/articles/simulate_noncanon.html
