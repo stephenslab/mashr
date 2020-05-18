@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check that all rows of Shat_alpha are the same. — is_common_cov_Shat_alpha • mashr</title>
+<title>Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens — teem_wrapper • mashr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Check that all rows of Shat_alpha are the same. — is_common_cov_Shat_alpha" />
-<meta property="og:description" content="checks if all rows of Shat_alpha are the same" />
+<meta property="og:title" content="Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens — teem_wrapper" />
+<meta property="og:description" content="Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens" />
 
 
 
@@ -108,26 +108,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check that all rows of Shat_alpha are the same.</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/set_data.R'><code>R/set_data.R</code></a></small>
-    <div class="hidden name"><code>is_common_cov_Shat_alpha.Rd</code></div>
+    <h1>Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens</h1>
+    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/ed.R'><code>R/ed.R</code></a></small>
+    <div class="hidden name"><code>teem_wrapper.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>checks if all rows of Shat_alpha are the same</p>
+    <p>Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens</p>
     </div>
 
-    <pre class="usage"><span class='fu'>is_common_cov_Shat_alpha</span>(<span class='no'>data</span>)</pre>
+    <pre class="usage"><span class='fu'>teem_wrapper</span>(
+  <span class='no'>data</span>,
+  <span class='no'>Ulist_init</span>,
+  <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>w_init</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>5000</span>,
+  <span class='kw'>converge_tol</span> <span class='kw'>=</span> <span class='fl'>1e-07</span>,
+  <span class='kw'>eigen_tol</span> <span class='kw'>=</span> <span class='fl'>1e-07</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>A mash data object.</p></td>
+      <td><p>mash data object</p></td>
+    </tr>
+    <tr>
+      <th>Ulist_init</th>
+      <td><p>a list of covariance matrices to initialize to</p></td>
+    </tr>
+    <tr>
+      <th>subset</th>
+      <td><p>the indices of the observations to be used (defaults to all of them)</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>the fitted mixture: a list of mixture proportions and covariance matrices</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

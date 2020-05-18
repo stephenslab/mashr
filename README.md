@@ -88,9 +88,16 @@ the man directory),
 connected to Internet while running these commands):
 
    ```R
-   library(pkgdown)
-   build_site(mathjax = FALSE)
+   pkgdown::build_site(lazy=TRUE, examples=FALSE)
    ```
+
++ After editing C++ codes under `src` please use [`uncrustify`](http://uncrustify.sourceforge.net/)
+to format the code using configuration file `inst/misc/uncrustify_default.cfg`. For example:
+
+   ```bash
+   uncrustify -c uncrustify_default.cfg --replace --no-backup -l CPP mash.cpp
+   ```
+
 
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
