@@ -11,7 +11,7 @@ among conditions, then exploit these patterns of similarity among
 conditions to improve accuracy of effect estimates. See
 [Urbut et al][mash-paper] for details.
 
-*Note:* the R package used to generate the results for the manuscript
+**Note:** the R package used to generate the results for the manuscript
 is [here][mashr-pkg-for-paper].
 
 ## Quick Start
@@ -68,21 +68,21 @@ Please follow these steps to install mashr.
 3. By default, the `devtools::install_github` function does not build
    the vignettes. If you would like to build the vignettes as well,
    you will need to several additional packages, including
-   [flashr][flashr], that are used only in the vignettes:
+   [flashr][flashr], that are used only in the vignettes. This can
+   also be done with devtools:
 
    ```R
-   install.packages(c("kableExtra","corrplot"))
-   devtools::install_github("stephenslab/flashr")
-   devtools::install_github("stephenslab/mashr@v0.2-11",build_vignettes = TRUE)
+   devtools::install_github("stephenslab/mashr@v0.2-11",dependencies = TRUE,
+                            build_vignettes = TRUE)
    ```
 
 ## Developer notes
 
 + When any changes are made to `roxygen2` markup or the C++ code in
-the src directory, simply run `devtools::document()` to update
-the [RcppExports.cpp](src/RcppExports.cpp), the package namespaces
-(see [NAMESPACE](NAMESPACE)), and the package documentation files (in
-the man directory),
+the src directory, run `devtools::document()` to update the
+[RcppExports.cpp](src/RcppExports.cpp), the package namespaces (see
+[NAMESPACE](NAMESPACE)), and the package documentation files (in the
+"man" subdirectory),
 
 + These are the R commands to build the website (make sure you are
 connected to Internet while running these commands):
@@ -91,6 +91,9 @@ connected to Internet while running these commands):
    library(pkgdown)
    build_site(mathjax = FALSE)
    ```
+
++ *Add notes here about modifications that need to be made prior to
+  submitting the mashr package to CRAN.*
 
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
