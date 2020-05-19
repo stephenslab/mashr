@@ -44,26 +44,35 @@ struct datapoint {
 	double logweight;
 };
 
-struct gaussian * newgaussians, * startnewgaussians;
-gsl_matrix * qij;
-gsl_permutation * p;
-gsl_vector * wminusRm, * TinvwminusRm;
-gsl_matrix * Tij, * Tij_inv, * VRT, * VRTTinv, * Rtrans, * I;
+struct gaussian * newgaussians = NULL;
+struct gaussian * startnewgaussians = NULL;
+gsl_matrix * qij          = NULL;
+gsl_permutation * p       = NULL;
+gsl_vector * wminusRm     = NULL;
+gsl_vector * TinvwminusRm = NULL;
+gsl_matrix * Tij          = NULL;
+gsl_matrix * Tij_inv      = NULL;
+gsl_matrix * VRT          = NULL;
+gsl_matrix * VRTTinv      = NULL;
+gsl_matrix * Rtrans       = NULL;
+gsl_matrix * I            = NULL;
+
 struct modelbs {
 	gsl_vector * bbij;
 	gsl_matrix * BBij;
 };
 
-struct modelbs * bs;
+struct modelbs * bs = NULL;
 
-FILE * logfile, * convlogfile;
+FILE * logfile     = NULL;
+FILE * convlogfile = NULL;
 
 /* global random number generator */
-gsl_rng * randgen; 
+gsl_rng * randgen = NULL; 
 
 // FUNCTION DECLARATIONS
 // ---------------------
-static inline bool
+inline bool
 bovy_isfin(double x) /* true if x is finite */
 {
 	return (x > DBL_MAX || x < -DBL_MAX) ? false : true;
@@ -350,7 +359,6 @@ calc_splitnmerge(struct datapoint * data, int N,
 	gsl_matrix_free(tempVV);
 	gsl_vector_free(tempSS);
 	gsl_vector_free(tempwork);
-
 
 	// and put everything in the hierarchy
 	size_t maxj, maxk, maxl;

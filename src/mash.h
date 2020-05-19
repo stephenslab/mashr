@@ -7,11 +7,15 @@
 #ifdef _OPENMP
 # include <omp.h>
 #endif
-// some utility functions
-const double LOG_2PI = std::log(2.0 * M_PI);
-static const double INV_SQRT_2PI     = 1.0 / std::sqrt(2.0 * M_PI);
-static const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
 
+// CONSTANTS
+// ---------
+const double LOG_2PI          = std::log(2.0 * M_PI);
+const double INV_SQRT_2PI     = 1.0 / std::sqrt(2.0 * M_PI);
+const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
+
+// INLINE FUNCTION DEFINITONS
+// --------------------------
 inline arma::vec
 dnorm(const arma::vec & x,
       const arma::vec     & mu,
