@@ -14,6 +14,127 @@ const double LOG_2PI          = std::log(2.0 * M_PI);
 const double INV_SQRT_2PI     = 1.0 / std::sqrt(2.0 * M_PI);
 const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
 
+// SE CLASS
+// --------
+class SE
+{
+public:
+SE(){
+}
+
+~SE(){
+}
+
+void
+set(const arma::mat & sbhat, const arma::mat & sbhat_alpha)
+{
+	s = sbhat;
+	if (sbhat_alpha.is_empty()) s_alpha.ones(sbhat.n_rows, sbhat.n_cols);
+	else s_alpha = sbhat_alpha;
+}
+
+void
+set(int J, int R)
+{
+	s.ones(J, R);
+	s_alpha.ones(J, R);
+}
+
+void
+set_original(const arma::mat & value)
+{
+	s_orig        = value;
+	is_orig_empty = s_orig.is_empty();
+}
+
+arma::mat
+get_original() const
+{
+	if (is_orig_empty) return (s);
+	else return (s_orig);
+}
+
+arma::mat
+get() const
+{
+	return (s_alpha);
+}
+
+private:
+arma::mat s;
+arma::mat s_orig;
+arma::mat s_alpha;
+bool is_orig_empty;
+};
+
+// FUNCTION DECLARATIONS
+// ---------------------
+int
+mash_compute_posterior(const arma::mat& b_mat, const SE& s_obj,
+                       const arma::mat& v_mat, const arma::mat& l_mat,
+                       const arma::mat& a_mat, const arma::cube& U_cube,
+                       const arma::cube& Vinv_cube,
+                       const arma::cube& U0_cube, arma::mat& post_mean,
+                       arma::mat& post_var, arma::mat& neg_prob,
+                       arma::mat& zero_prob, arma::cube& post_cov,
+                       const arma::mat& posterior_weights,
+                       const int& report_type);
+
+int
+mash_compute_posterior_comcov(const arma::mat& b_mat,
+                              const SE                                   & s_obj,
+                              const arma::mat                            & v_mat,
+                              const arma::mat                            & l_mat,
+                              const arma::mat                            & a_mat,
+                              const arma::cube                           & U_cube,
+                              const arma::cube                           & Vinv_cube,
+                              const arma::cube                           & U0_cube,
+                              arma::mat                                  & post_mean,
+                              arma::mat                                  & post_var,
+                              arma::mat                                  & neg_prob,
+                              arma::mat                                  & zero_prob,
+                              arma::cube                                 & post_cov,
+                              const arma::mat                            & posterior_weights,
+                              const int                                  & report_type);
+
+int
+mvsermix_compute_posterior(const arma::mat& b_mat,
+                           const arma::mat                         & s_mat,
+                           arma::mat                               & v_mat,
+                           arma::cube                              & U_cube,
+                           arma::cube                              & Vinv_cube,
+                           arma::cube                              & U0_cube,
+                           arma::cube                              & Uinv_cube,
+                           arma::mat                               & post_mean,
+                           arma::mat                               & post_var,
+                           arma::mat                               & neg_prob,
+                           arma::mat                               & zero_prob,
+                           arma::cube                              & post_cov,
+                           arma::vec                               & prior_scalar,
+                           bool prior_invertable,
+                           const arma::mat                         & posterior_weights,
+                           const arma::mat                         & posterior_variable_weights,
+                           double sigma0);
+
+int
+mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
+                                  const arma::mat                                & s_mat,
+                                  const arma::mat                                & v_mat,
+                                  const arma::cube                               & U_cube,
+                                  const arma::cube                               & Vinv_cube,
+                                  const arma::cube                               & U0_cube,
+                                  const arma::cube                               & Uinv_cube,
+                                  arma::mat                                      & post_mean,
+                                  arma::mat                                      & post_var,
+                                  arma::mat                                      & neg_prob,
+                                  arma::mat                                      & zero_prob,
+                                  arma::cube                                     & post_cov,
+                                  arma::vec                                      & prior_scalar,
+                                  bool prior_invertable,
+                                  const arma::mat                                & posterior_weights,
+                                  const arma::mat                                & posterior_variable_weights,
+                                  double sigma0);
+
 // INLINE FUNCTION DEFINITONS
 // --------------------------
 inline arma::vec
@@ -185,240 +306,33 @@ get_posterior_mean_mat(const arma::mat & bhat, const arma::mat & Vinv,
 	return U1 * Vinv * bhat;
 }
 
-// @title calc_lik
-// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
-// @param b_mat R by J
-// @param s_mat R by J
-// @param v_mat R by R
-// @param l_mat R by R for the common baseline application (@Yuxin Zou)
-// @param U_cube list of prior covariance matrices
-// @param sigma_cube list of sigma which is result of get_cov(s_mat, v_mat, l_mat)
-// @param logd if true computes log-likelihood
-// @param common_cov if true use version for common covariance
-// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
-arma::mat
-calc_lik(const arma::mat & b_mat,
-         const arma::mat        & s_mat,
-         const arma::mat        & v_mat,
-         const arma::mat        & l_mat,
-         const arma::cube       & U_cube,
-         const arma::cube       & sigma_cube,
-         bool logd,
-         bool common_cov,
-         int n_thread = 1)
+// Softmax functions: yi = exp(xi) / sum(exp(xj))
+inline arma::vec
+softmax(const arma::vec & x)
 {
-	// In armadillo data are stored with column-major ordering
-	// slicing columns are therefore faster than rows
-	// lik is a J by P matrix
-	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
-	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-	arma::mat sigma;
-    #ifdef _OPENMP
-	omp_set_num_threads(n_thread);
-    #endif
-	if (common_cov) {
-		if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(0);
-		else sigma = get_cov(s_mat.col(0), v_mat, l_mat);
-	#pragma omp parallel for default(none) schedule(static) shared(lik, U_cube, mean, sigma, logd, b_mat)
-		for (arma::uword p = 0; p < lik.n_cols; ++p) {
-			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
-		}
-	} else {
-	#pragma \
-		omp parallel for default(none) schedule(static) shared(lik, mean, logd, U_cube, b_mat, sigma_cube, l_mat, v_mat, s_mat) private(sigma)
-		for (arma::uword j = 0; j < lik.n_rows; ++j) {
-			if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(j);
-			else sigma = get_cov(s_mat.col(j), v_mat, l_mat);
-			for (arma::uword p = 0; p < lik.n_cols; ++p) {
-				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
-			}
-		}
+	// Calculate exp()
+	// Subtract the max - this prevents overflow, which happens for x ~ 1000
+	arma::vec y = arma::exp(x - arma::max(x));
+	// Renormalise
+	y /= arma::sum(y);
+	return y;
+}
+
+// function for "shrinking" the covariance matrix, to get $\hat U_k$.
+inline arma::mat
+shrink_cov(const arma::mat & V, const double & eps)
+{
+	arma::vec eigval;
+	arma::mat eigvec;
+	eig_sym(eigval, eigvec, V);
+	for (arma::uword i = 0; i < eigval.n_elem; ++i) {
+		eigval(i) = (eigval(i) > 1.0) ? eigval(i) : (1.0 + eps);
 	}
-	return lik;
+	return eigvec * diagmat(eigval) * trans(eigvec);
 }
 
-// @title calc_lik multivariate common cov version with sigma inverse precomputed
-// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
-// @param b_mat R by J
-// @param rooti_cube R by R by P, or R by R by J by P, if common_cov is False
-// @param logd if true computes log-likelihood
-// @param common_cov if true use version for common covariance
-// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
-arma::mat
-calc_lik(const arma::mat & b_mat,
-         const arma::cube & rooti_cube,
-         bool logd, bool common_cov, int n_thread = 1)
-{
-    #ifdef _OPENMP
-	omp_set_num_threads(n_thread);
-    #endif
-	// In armadillo data are stored with column-major ordering
-	// slicing columns are therefore faster than rows
-	// lik is a J by P matrix
-	int P;
-
-	if (common_cov) P = rooti_cube.n_slices;
-	else P = rooti_cube.n_slices / b_mat.n_cols;
-	arma::mat lik(b_mat.n_cols, P, arma::fill::zeros);
-	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
-	if (common_cov) {
-	#pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
-		for (arma::uword p = 0; p < lik.n_cols; ++p) {
-			lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
-		}
-	} else {
-	#pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
-		for (arma::uword j = 0; j < lik.n_rows; ++j) {
-			for (arma::uword p = 0; p < lik.n_cols; ++p) {
-				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * lik.n_cols + p), logd, true);
-			}
-		}
-	}
-	return lik;
-}
-
-// @title calc_lik univariate version
-// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior sigma
-// @param b_vec of J
-// @param s_vec of J
-// @param v numeric
-// @param U_vec P vector
-// @param logd if true computes log-likelihood
-// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
-arma::mat
-calc_lik(const arma::vec & b_vec,
-         const arma::vec        & s_vec,
-         double v,
-         const arma::vec        & U_vec,
-         bool logd)
-{
-	arma::mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
-	arma::vec sigma = s_vec % s_vec * v;
-	arma::vec mean(b_vec.n_elem, arma::fill::zeros);
-
-	for (arma::uword p = 0; p < lik.n_cols; ++p) {
-		lik.col(p) = dnorm(b_vec, mean, sigma + U_vec.at(p), logd);
-	}
-	return lik;
-}
-
-class SE
-{
-public:
-SE(){
-}
-
-~SE(){
-}
-
-void
-set(const arma::mat & sbhat, const arma::mat & sbhat_alpha)
-{
-	s = sbhat;
-	if (sbhat_alpha.is_empty()) s_alpha.ones(sbhat.n_rows, sbhat.n_cols);
-	else s_alpha = sbhat_alpha;
-}
-
-void
-set(int J, int R)
-{
-	s.ones(J, R);
-	s_alpha.ones(J, R);
-}
-
-void
-set_original(const arma::mat & value)
-{
-	s_orig        = value;
-	is_orig_empty = s_orig.is_empty();
-}
-
-arma::mat
-get_original() const
-{
-	if (is_orig_empty) return (s);
-	else return (s_orig);
-}
-
-arma::mat
-get() const
-{
-	return (s_alpha);
-}
-
-private:
-arma::mat s;
-arma::mat s_orig;
-arma::mat s_alpha;
-bool is_orig_empty;
-};
-
-int
-mash_compute_posterior(const arma::mat& b_mat, const SE& s_obj,
-                       const arma::mat& v_mat, const arma::mat& l_mat,
-                       const arma::mat& a_mat, const arma::cube& U_cube,
-                       const arma::cube& Vinv_cube,
-                       const arma::cube& U0_cube, arma::mat& post_mean,
-                       arma::mat& post_var, arma::mat& neg_prob,
-                       arma::mat& zero_prob, arma::cube& post_cov,
-                       const arma::mat& posterior_weights,
-                       const int& report_type);
-
-int
-mash_compute_posterior_comcov(const arma::mat& b_mat,
-                              const SE                                   & s_obj,
-                              const arma::mat                            & v_mat,
-                              const arma::mat                            & l_mat,
-                              const arma::mat                            & a_mat,
-                              const arma::cube                           & U_cube,
-                              const arma::cube                           & Vinv_cube,
-                              const arma::cube                           & U0_cube,
-                              arma::mat                                  & post_mean,
-                              arma::mat                                  & post_var,
-                              arma::mat                                  & neg_prob,
-                              arma::mat                                  & zero_prob,
-                              arma::cube                                 & post_cov,
-                              const arma::mat                            & posterior_weights,
-                              const int                                  & report_type);
-
-int
-mvsermix_compute_posterior(const arma::mat& b_mat,
-                           const arma::mat                         & s_mat,
-                           arma::mat                               & v_mat,
-                           arma::cube                              & U_cube,
-                           arma::cube                              & Vinv_cube,
-                           arma::cube                              & U0_cube,
-                           arma::cube                              & Uinv_cube,
-                           arma::mat                               & post_mean,
-                           arma::mat                               & post_var,
-                           arma::mat                               & neg_prob,
-                           arma::mat                               & zero_prob,
-                           arma::cube                              & post_cov,
-                           arma::vec                               & prior_scalar,
-                           bool prior_invertable,
-                           const arma::mat                         & posterior_weights,
-                           const arma::mat                         & posterior_variable_weights,
-                           double sigma0);
-
-int
-mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
-                                  const arma::mat                                & s_mat,
-                                  const arma::mat                                & v_mat,
-                                  const arma::cube                               & U_cube,
-                                  const arma::cube                               & Vinv_cube,
-                                  const arma::cube                               & U0_cube,
-                                  const arma::cube                               & Uinv_cube,
-                                  arma::mat                                      & post_mean,
-                                  arma::mat                                      & post_var,
-                                  arma::mat                                      & neg_prob,
-                                  arma::mat                                      & zero_prob,
-                                  arma::cube                                     & post_cov,
-                                  arma::vec                                      & prior_scalar,
-                                  bool prior_invertable,
-                                  const arma::mat                                & posterior_weights,
-                                  const arma::mat                                & posterior_variable_weights,
-                                  double sigma0);
-
+// POSTERIORMASH CLASS
+// -------------------
 // @param b_mat R by J
 // @param s_mat R by J
 // @param s_orig_mat R by J
@@ -566,6 +480,8 @@ arma::mat zero_prob;
 arma::cube post_cov;
 };
 
+// POSTERIORASH CLASS
+// ------------------
 // @param b_vec of J
 // @param s_vec of J
 // @param s_alpha_vec of J
@@ -679,6 +595,8 @@ arma::vec neg_prob;
 arma::vec zero_prob;
 };
 
+// MVSERMIX CLASS
+// --------------
 // @title Inferences for Multivariate Single Effect Regression with Mixture prior
 // @param b_mat R by J
 // @param s_mat R by J
@@ -838,31 +756,8 @@ arma::vec prior_scalar;
 bool prior_invertable;
 };
 
-// Softmax functions: yi = exp(xi) / sum(exp(xj))
-inline arma::vec
-softmax(const arma::vec & x)
-{
-	// Calculate exp()
-	// Subtract the max - this prevents overflow, which happens for x ~ 1000
-	arma::vec y = arma::exp(x - arma::max(x));
-	// Renormalise
-	y /= arma::sum(y);
-	return y;
-}
-
-// function for "shrinking" the covariance matrix, to get $\hat U_k$.
-inline arma::mat
-shrink_cov(const arma::mat & V, const double & eps)
-{
-	arma::vec eigval;
-	arma::mat eigvec;
-	eig_sym(eigval, eigvec, V);
-	for (arma::uword i = 0; i < eigval.n_elem; ++i) {
-		eigval(i) = (eigval(i) > 1.0) ? eigval(i) : (1.0 + eps);
-	}
-	return eigvec * diagmat(eigval) * trans(eigvec);
-}
-
+// TEEM CLASS
+// ----------
 // @title Truncated Eigenvalue Extreme deconvolution
 // @description ...
 // @param X
@@ -991,6 +886,125 @@ compute_loglik()
 	return (sum(log(y)));
 }
 };
+
+// FUNCTION DEFINITIONS
+// --------------------
+// @title calc_lik
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param s_mat R by J
+// @param v_mat R by R
+// @param l_mat R by R for the common baseline application (@Yuxin Zou)
+// @param U_cube list of prior covariance matrices
+// @param sigma_cube list of sigma which is result of get_cov(s_mat, v_mat, l_mat)
+// @param logd if true computes log-likelihood
+// @param common_cov if true use version for common covariance
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat
+calc_lik(const arma::mat & b_mat,
+         const arma::mat        & s_mat,
+         const arma::mat        & v_mat,
+         const arma::mat        & l_mat,
+         const arma::cube       & U_cube,
+         const arma::cube       & sigma_cube,
+         bool logd,
+         bool common_cov,
+         int n_thread = 1)
+{
+	// In armadillo data are stored with column-major ordering
+	// slicing columns are therefore faster than rows
+	// lik is a J by P matrix
+	arma::mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+	arma::mat sigma;
+    #ifdef _OPENMP
+	omp_set_num_threads(n_thread);
+    #endif
+	if (common_cov) {
+		if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(0);
+		else sigma = get_cov(s_mat.col(0), v_mat, l_mat);
+	#pragma omp parallel for default(none) schedule(static) shared(lik, U_cube, mean, sigma, logd, b_mat)
+		for (arma::uword p = 0; p < lik.n_cols; ++p) {
+			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
+		}
+	} else {
+	#pragma \
+		omp parallel for default(none) schedule(static) shared(lik, mean, logd, U_cube, b_mat, sigma_cube, l_mat, v_mat, s_mat) private(sigma)
+		for (arma::uword j = 0; j < lik.n_rows; ++j) {
+			if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(j);
+			else sigma = get_cov(s_mat.col(j), v_mat, l_mat);
+			for (arma::uword p = 0; p < lik.n_cols; ++p) {
+				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, sigma + U_cube.slice(p), logd);
+			}
+		}
+	}
+	return lik;
+}
+
+// @title calc_lik multivariate common cov version with sigma inverse precomputed
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior covariances
+// @param b_mat R by J
+// @param rooti_cube R by R by P, or R by R by J by P, if common_cov is False
+// @param logd if true computes log-likelihood
+// @param common_cov if true use version for common covariance
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat
+calc_lik(const arma::mat & b_mat,
+         const arma::cube & rooti_cube,
+         bool logd, bool common_cov, int n_thread = 1)
+{
+    #ifdef _OPENMP
+	omp_set_num_threads(n_thread);
+    #endif
+	// In armadillo data are stored with column-major ordering
+	// slicing columns are therefore faster than rows
+	// lik is a J by P matrix
+	int P;
+
+	if (common_cov) P = rooti_cube.n_slices;
+	else P = rooti_cube.n_slices / b_mat.n_cols;
+	arma::mat lik(b_mat.n_cols, P, arma::fill::zeros);
+	arma::vec mean(b_mat.n_rows, arma::fill::zeros);
+	if (common_cov) {
+	#pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
+		for (arma::uword p = 0; p < lik.n_cols; ++p) {
+			lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
+		}
+	} else {
+	#pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
+		for (arma::uword j = 0; j < lik.n_rows; ++j) {
+			for (arma::uword p = 0; p < lik.n_cols; ++p) {
+				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * lik.n_cols + p), logd, true);
+			}
+		}
+	}
+	return lik;
+}
+
+// @title calc_lik univariate version
+// @description computes matrix of likelihoods for each of J cols of Bhat for each of P prior sigma
+// @param b_vec of J
+// @param s_vec of J
+// @param v numeric
+// @param U_vec P vector
+// @param logd if true computes log-likelihood
+// @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
+arma::mat
+calc_lik(const arma::vec & b_vec,
+         const arma::vec        & s_vec,
+         double v,
+         const arma::vec        & U_vec,
+         bool logd)
+{
+	arma::mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
+	arma::vec sigma = s_vec % s_vec * v;
+	arma::vec mean(b_vec.n_elem, arma::fill::zeros);
+
+	for (arma::uword p = 0; p < lik.n_cols; ++p) {
+		lik.col(p) = dnorm(b_vec, mean, sigma + U_vec.at(p), logd);
+	}
+	return lik;
+}
 
 // This implements the core part of the compute_posterior method in
 // the PosteriorMASH class.
@@ -1372,3 +1386,4 @@ mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
 } // mvsermix_compute_posterior_comcov
 
 #endif // ifndef _MASH_H
+

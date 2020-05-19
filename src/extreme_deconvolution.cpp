@@ -1,5 +1,5 @@
 // Wrapper to the projected gaussian mixture algorithm (Bovy 2009)
-// Gao Wang (c) 2018-2020 gaow@uchicago.edu
+// Gao Wang (c) 2018-2020 wang.gao@columbia.edu
 #include "RcppGSL.h"
 #include <iostream>
 #include <stdio.h>
@@ -12,7 +12,7 @@
 bool *
 int2bool(RcppGSL::vector<int> & a, int K)
 {
-	bool * x = (bool *) malloc(K * sizeof(bool));
+        bool * x = (bool *) malloc(K * sizeof(bool));
 	int kk;
 
 	for (kk = 0; kk != K; ++kk) *(x++) = (bool) a[kk];
@@ -83,8 +83,8 @@ extreme_deconvolution_rcpp(
 	}
 
 	// Copy everything into the right formats
-	struct datapoint * data     = (struct datapoint *) malloc(N * sizeof(struct datapoint) );
-	struct gaussian * gaussians = (struct gaussian *) malloc(K * sizeof(struct gaussian) );
+	struct datapoint * data      = (struct datapoint *) malloc(N * sizeof(struct datapoint) );
+	struct gaussian  * gaussians = (struct gaussian *) malloc(K * sizeof(struct gaussian) );
 
 	int ii, jj, dd1, dd2;
 	for (ii = 0; ii != N; ++ii) {
