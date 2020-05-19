@@ -1,10 +1,13 @@
 #ifndef __PROJ_GAUSS_MIXTURES_H__
 #define __PROJ_GAUSS_MIXTURES_H__
 
-/* To compile with C++ compiler, the Extreme Deconvolution library is merged to one header file: cat proj_gauss_mixtures.h bovy_det.c bovy_randvec.c calc_splitnmerge.c logsum.c minmax.c normalize_row.c proj_EM.c proj_EM_step.c proj_gauss_mixtures.c splitnmergegauss.c > extreme_deconvolution.h */
-/* then move and remove some #include statements */
+/* To compile with C++ compiler, the Extreme Deconvolution library is
+   merged to one header file: cat proj_gauss_mixtures.h bovy_det.c
+   bovy_randvec.c calc_splitnmerge.c logsum.c minmax.c normalize_row.c
+   proj_EM.c proj_EM_step.c proj_gauss_mixtures.c splitnmergegauss.c >
+   extreme_deconvolution.h, then move and remove some #include
+   statements */
 
-/* include */
 #include <stdbool.h>
 #include <float.h>
 #include <math.h>
@@ -19,8 +22,10 @@
 # include <omp.h>
 #endif
 
-/* variable declarations and definitions */
+#define CHUNKSIZE 1
 
+// GLOBAL VARIABLES
+// ----------------
 double halflogtwopi; /* constant used in calculation */
 
 int nthreads;
@@ -53,11 +58,11 @@ struct modelbs * bs;
 
 FILE * logfile, * convlogfile;
 
-gsl_rng * randgen; /* global random number generator */
+/* global random number generator */
+gsl_rng * randgen; 
 
-
-/* function declarations */
-
+// FUNCTION DECLARATIONS
+// ---------------------
 static inline bool
 bovy_isfin(double x) /* true if x is finite */
 {
@@ -66,19 +71,28 @@ bovy_isfin(double x) /* true if x is finite */
 
 void
 minmax(gsl_matrix * q, int row, bool isrow, double * min, double * max);
+
 double
 logsum(gsl_matrix * q, int row, bool isrow);
+
 double
 normalize_row(gsl_matrix * q, int row, bool isrow, bool noweight, double weight);
+
+/* returns random vector */
 void
-bovy_randvec(gsl_vector * eps, int d, double length); /* returns random vector */
+bovy_randvec(gsl_vector * eps, int d, double length); 
+
+/* determinant of matrix A */
 double
-bovy_det(gsl_matrix * A); /* determinant of matrix A */
+bovy_det(gsl_matrix * A);
+
 void
 calc_splitnmerge(struct datapoint * data, int N, struct gaussian * gaussians, int K, gsl_matrix * qij,
                  int * snmhierarchy);
+
 void
 splitnmergegauss(struct gaussian * gaussians, int K, gsl_matrix * qij, int j, int k, int l);
+
 void
 proj_EM_step(struct datapoint * data, int N, struct gaussian * gaussians, int K, bool * fixamp, bool * fixmean,
              bool * fixcovar, double * avgloglikedata, bool likeonly, double w, bool noproj, bool diagerrs,
@@ -94,6 +108,9 @@ proj_gauss_mixtures(struct datapoint * data, int N, struct gaussian * gaussians,
                     bool diagerrs, bool noweight);
 void
 calc_qstarij(double * qstarij, gsl_matrix * qij, int partial_indx[3]);
+
+// FUNCTION DEFINITIONS
+// --------------------
 
 /*
  * NAME:
@@ -282,26 +299,12 @@ calc_splitnmerge(struct datapoint * data, int N,
 		gaussians -= K;
 		// if missing, fill in the missing data
 		tempRR = gsl_matrix_alloc((data->RR)->size2, (data->RR)->size1);// will hold the transpose of RR
-		// tempVV = gsl_matrix_alloc((data->RR)->size1,(data->RR)->size1);
-		// tempSS = gsl_vector_alloc((data->RR)->size1);
-		// tempwork = gsl_vector_alloc((data->RR)->size1);
 		gsl_matrix_transpose_memcpy(tempRR, data->RR);
 		gsl_blas_dgemv(CblasNoTrans, 1., tempRR, data->ww, 0., missingdata->ww);
-		// gsl_linalg_SV_decomp(tempRR,tempVV,tempSS,tempwork);
-		// compute the missing data THIS PART IS NOT IMPLEMENTED CORRECTLY
-		// for (kk = 0; kk != d-(data->ww)->size; ++kk){
-		// tempUcol = gsl_matrix_column(tempRR,d-1-kk);
-		// gsl_blas_ddot(&(tempUcol.vector),expectedww,&lambda);
-		// gsl_vector_scale(&(tempUcol.vector),lambda);
-		// gsl_vector_add(missingdata->ww,&(tempUcol.vector));
-		// }
 		++missingdata;
 		++data;
 		// free
 		gsl_matrix_free(tempRR);
-		// gsl_matrix_free(tempVV);
-		// gsl_vector_free(tempSS);
-		// gsl_vector_free(tempwork);
 	}
 	data        -= N;
 	missingdata -= N;
@@ -336,7 +339,6 @@ calc_splitnmerge(struct datapoint * data, int N,
 			++missingdata;
 		}
 		gsl_vector_set(Jsplit, kk, tempsplit);
-		// printf("Jsplit for gaussian %i = %f\n",kk,tempsplit);
 		missingdata -= N;
 		++gaussians;
 	}
@@ -363,13 +365,11 @@ calc_splitnmerge(struct datapoint * data, int N,
 			*(snmhierarchy++) = maxj;
 			*(snmhierarchy++) = maxk;
 			*(snmhierarchy++) = maxl;
-			// printf("j = %i, k = %i, l = %i\n",(int)maxj,(int)maxk,(int)maxl);
 		}
 		// then set it to zero and find the next
 		gsl_matrix_set(Jmerge, maxj, maxk, -1.);
 	}
 	snmhierarchy -= 3 * maxsnm;
-
 
 	// clean up
 	gsl_matrix_free(Jmerge);
@@ -567,7 +567,8 @@ proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
         bool likeonly, double w, bool keeplog, FILE * logfile,
         FILE * tmplogfile, bool noproj, bool diagerrs, bool noweight)
 {
-	double diff = 2. * tol, oldavgloglikedata;
+        double diff = 2. * tol;
+        double oldavgloglikedata = 0;
 	int niter = 0;
 	int d     = (gaussians->mm)->size;
 
@@ -585,7 +586,8 @@ proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
 			diff = *avgloglikedata - oldavgloglikedata;
 			if (diff < 0 && keeplog) {
 				fprintf(logfile, "Warning: log likelihood decreased by %g\n", diff);
-				fprintf(logfile, "oldavgloglike was %g\navgloglike is %g\n", oldavgloglikedata, *avgloglikedata);
+				fprintf(logfile, "oldavgloglike was %g\navgloglike is %g\n",
+					oldavgloglikedata, *avgloglikedata);
 			}
 		}
 		oldavgloglikedata = *avgloglikedata;
@@ -636,8 +638,6 @@ proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
  *   2010-04-01 Added noweight option - Bovy
  */
 
-#define CHUNKSIZE 1
-
 void
 proj_EM_step(struct datapoint * data, int N,
              struct gaussian * gaussians, int K, bool * fixamp,
@@ -646,7 +646,6 @@ proj_EM_step(struct datapoint * data, int N,
              bool noweight)
 {
 	*avgloglikedata = 0.0;
-	// struct timeval start,time1, time2, time3, time4, time5,end;
 	struct datapoint * thisdata;
 	struct gaussian * thisgaussian;
 	struct gaussian * thisnewgaussian;
@@ -656,7 +655,6 @@ proj_EM_step(struct datapoint * data, int N,
 	struct modelbs * thisbs;
 	int d = (gaussians->VV)->size1;// dim of mm
 
-	// gettimeofday(&start,NULL);
 	// Initialize new parameters
 	int kk;
 	for (kk = 0; kk != K * nthreads; ++kk) {
@@ -667,7 +665,6 @@ proj_EM_step(struct datapoint * data, int N,
 	}
 	newgaussians = startnewgaussians;
 
-	// gettimeofday(&time1,NULL);
 	// check whether for some Gaussians none of the parameters get updated
 	double sumfixedamps = 0;
 	bool * allfixed     = (bool *) calloc(K, sizeof(bool) );
@@ -690,8 +687,6 @@ proj_EM_step(struct datapoint * data, int N,
 	fixmean   -= K;
 	fixcovar  -= K;
 
-	// gettimeofday(&time2,NULL);
-
 	// now loop over data and gaussians to update the model parameters
 	int ii, jj, ll;
 	double sumSV;
@@ -708,7 +703,6 @@ proj_EM_step(struct datapoint * data, int N,
 		tid = 0;
 	#endif
 		di = (thisdata->SS)->size1;
-		// printf("Datapoint has dimension %i\n",di);
 		p            = gsl_permutation_alloc(di);
 		wminusRm     = gsl_vector_alloc(di);
 		TinvwminusRm = gsl_vector_alloc(di);
@@ -718,9 +712,7 @@ proj_EM_step(struct datapoint * data, int N,
 		VRTTinv = gsl_matrix_alloc(d, di);
 		if (!noproj) Rtrans = gsl_matrix_alloc(d, di);
 		for (jj = 0; jj != K; ++jj) {
-			// printf("%i,%i\n",(thisdata->ww)->size,wminusRm->size);
 			gsl_vector_memcpy(wminusRm, thisdata->ww);
-			// fprintf(stdout,"Where is the seg fault?\n");
 			thisgaussian = gaussians + jj;
 			// prepare...
 			if (!noproj) {
@@ -761,28 +753,21 @@ proj_EM_step(struct datapoint * data, int N,
 					}
 				}
 			}
-			// gsl_matrix_add(Tij,thisgaussian->VV);}
 			// Calculate LU decomp of Tij and Tij inverse
 			gsl_linalg_LU_decomp(Tij, p, &signum);
 			gsl_linalg_LU_invert(Tij, p, Tij_inv);
 			// Calculate Tijinv*(w-Rm)
 			if (!noproj) gsl_blas_dgemv(CblasNoTrans, -1.0, thisdata->RR, thisgaussian->mm, 1.0, wminusRm);
 			else gsl_vector_sub(wminusRm, thisgaussian->mm);
-			// printf("wminusRm = %f\t%f\n",gsl_vector_get(wminusRm,0),gsl_vector_get(wminusRm,1));
 			gsl_blas_dsymv(CblasUpper, 1.0, Tij_inv, wminusRm, 0.0, TinvwminusRm);
-			// printf("TinvwminusRm = %f\t%f\n",gsl_vector_get(TinvwminusRm,0),gsl_vector_get(TinvwminusRm,1));
 			gsl_blas_ddot(wminusRm, TinvwminusRm, &exponent);
-			// printf("Exponent = %f\nDet = %f\n",exponent,gsl_linalg_LU_det(Tij,signum));
 			gsl_matrix_set(qij, ii, jj, log(thisgaussian->alpha) - di * halflogtwopi - 0.5 * gsl_linalg_LU_lndet(
 					       Tij) - 0.5 * exponent); // This is actually the log of qij
-			// printf("Here we have = %f\n",gsl_matrix_get(qij,ii,jj));
 			// Now calculate bij and Bij
 			thisbs = bs + tid * K + jj;
 			gsl_vector_memcpy(thisbs->bbij, thisgaussian->mm);
-			// printf("%i,%i,%i\n",tid,ii,jj);
 			if (!noproj) gsl_blas_dgemv(CblasNoTrans, 1.0, VRT, TinvwminusRm, 1.0, thisbs->bbij);
 			else gsl_blas_dsymv(CblasUpper, 1.0, thisgaussian->VV, TinvwminusRm, 1.0, thisbs->bbij);
-			// printf("bij = %f\t%f\n",gsl_vector_get(bs->bbij,0),gsl_vector_get(bs->bbij,1));
 			gsl_matrix_memcpy(thisbs->BBij, thisgaussian->VV);
 			if (!noproj) {
 				gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, VRT, Tij_inv, 0.0, VRTTinv);
@@ -807,19 +792,14 @@ proj_EM_step(struct datapoint * data, int N,
 			// Normalize qij properly
 			*avgloglikedata += normalize_row(qij, ii, true, noweight, thisdata->logweight);
 		}
-		// printf("qij = %f\t%f\n",gsl_matrix_get(qij,ii,0),gsl_matrix_get(qij,ii,1));
-		// printf("avgloglgge = %f\n",*avgloglikedata);
 		for (jj = 0; jj != K; ++jj) {
 			currqij = exp(gsl_matrix_get(qij, ii, jj));
-			// printf("Current qij = %f\n",currqij);
 			thisbs = bs + tid * K + jj;
 			thisnewgaussian = newgaussians + tid * K + jj;
 			gsl_vector_scale(thisbs->bbij, currqij);
 			gsl_vector_add(thisnewgaussian->mm, thisbs->bbij);
 			gsl_matrix_scale(thisbs->BBij, currqij);
 			gsl_matrix_add(thisnewgaussian->VV, thisbs->BBij);
-			// printf("bij = %f\t%f\n",gsl_vector_get(bs->bbij,0),gsl_vector_get(bs->bbij,1));
-			// printf("Bij = %f\t%f\t%f\n",gsl_matrix_get(bs->BBij,0,0),gsl_matrix_get(bs->BBij,1,1),gsl_matrix_get(bs->BBij,0,1));
 		}
 	}
 	*avgloglikedata /= N;
@@ -827,7 +807,6 @@ proj_EM_step(struct datapoint * data, int N,
 		free(allfixed);
 		return;
 	}
-	// gettimeofday(&time3,NULL);
 
 	// gather newgaussians
 	if (nthreads != 1)
@@ -838,8 +817,6 @@ proj_EM_step(struct datapoint * data, int N,
 				gsl_vector_add((newgaussians + jj)->mm, (newgaussians + ll * K + jj)->mm);
 				gsl_matrix_add((newgaussians + jj)->VV, (newgaussians + ll * K + jj)->VV);
 			}
-
-	// gettimeofday(&time4,NULL);
 
 	// Now update the parameters
 	// Thus, loop over gaussians again!
@@ -852,7 +829,6 @@ proj_EM_step(struct datapoint * data, int N,
 		} else {
 			qj = exp(logsum(qij, jj, false));
 			(qj < DBL_MIN) ? qj = 0 : 0;
-			// printf("qj = %f\n",qj);
 			if (*(fixamp + jj) != true) {
 				(gaussians + jj)->alpha = qj;
 				if (qj == 0) {// rethink this
@@ -867,12 +843,8 @@ proj_EM_step(struct datapoint * data, int N,
 				gsl_vector_memcpy((gaussians + jj)->mm, (newgaussians + jj)->mm);
 			}
 			if (*(fixcovar + jj) != true) {
-				//	if (*(fixmean+jj) != true)
-				//  gsl_blas_dsyr(CblasUpper,-qj,(gaussians+jj)->mm,(newgaussians+jj)->VV);
-				// else {
 				gsl_blas_dsyr(CblasUpper, qj, (gaussians + jj)->mm, (newgaussians + jj)->VV);
 				gsl_blas_dsyr2(CblasUpper, -qj, (gaussians + jj)->mm, (newgaussians + jj)->mm, (newgaussians + jj)->VV);
-				// }
 				if (w > 0.) {
 					gsl_matrix_add((newgaussians + jj)->VV, I);
 					gsl_matrix_scale((newgaussians + jj)->VV, 1.0 / (qj + 1.0));
@@ -881,7 +853,6 @@ proj_EM_step(struct datapoint * data, int N,
 			}
 		}
 	}
-	// gettimeofday(&time5,NULL);
 
 	// normalize the amplitudes
 	if (sumfixedamps == 0. && noweight) {
@@ -906,16 +877,6 @@ proj_EM_step(struct datapoint * data, int N,
 		fixamp    -= K;
 		gaussians -= K;
 	}
-	// gettimeofday(&end,NULL);
-	// double diff, diff1, diff2, diff3, diff4, diff5,diff6;
-	// diff= difftime (end.tv_sec,start.tv_sec)+difftime (end.tv_usec,start.tv_usec)/1000000;
-	// diff1= (difftime(time1.tv_sec,start.tv_sec)+difftime(time1.tv_usec,start.tv_usec)/1000000)/diff;
-	// diff2= (difftime(time2.tv_sec,time1.tv_sec)+difftime(time2.tv_usec,time1.tv_usec)/1000000)/diff;
-	// diff3= (difftime(time3.tv_sec,time2.tv_sec)+difftime(time3.tv_usec,time2.tv_usec)/1000000)/diff;
-	// diff4= (difftime(time4.tv_sec,time3.tv_sec)+difftime(time4.tv_usec,time3.tv_usec)/1000000)/diff;
-	// diff5= (difftime(time5.tv_sec,time4.tv_sec)+difftime(time5.tv_usec,time4.tv_usec)/1000000)/diff;
-	// diff6= (difftime(end.tv_sec,time5.tv_sec)+difftime(end.tv_usec,time5.tv_usec)/1000000)/diff;
-	// printf("%f,%f,%f,%f,%f,%f,%f\n",diff,diff1,diff2,diff3,diff4,diff5,diff6);
 
 	free(allfixed);
 } // proj_EM_step
@@ -971,10 +932,6 @@ proj_gauss_mixtures(struct datapoint * data, int N,
                     FILE * convlogfile, bool noproj, bool diagerrs,
                     bool noweight)
 {
-	// Allocate some memory
-	struct gaussian * startgaussians;
-
-	startgaussians = gaussians;
 	int d = (gaussians->VV)->size1;// dim of mm
 	// Only give copies of the fix* vectors to the EM algorithm
 	bool * fixamp_tmp, * fixmean_tmp, * fixcovar_tmp;
@@ -1038,7 +995,7 @@ proj_gauss_mixtures(struct datapoint * data, int N,
 	oldgaussians -= K;
 
 	// create temporary file to hold convergence info
-	FILE * tmpconvfile;
+	FILE * tmpconvfile = NULL;
 	if (keeplog)
 		tmpconvfile = tmpfile();
 
@@ -1046,7 +1003,6 @@ proj_gauss_mixtures(struct datapoint * data, int N,
 	// proj_EM
 	if (keeplog)
 		fprintf(logfile, "#Initial proj_EM\n");
-	// printf("Where's the segmentation fault?\n");
 	proj_EM(data, N, gaussians, K, fixamp_tmp, fixmean_tmp, fixcovar_tmp,
 	        avgloglikedata, tol, maxiter, likeonly, w,
 	        keeplog, logfile, convlogfile, noproj, diagerrs, noweight);
@@ -1171,7 +1127,6 @@ proj_gauss_mixtures(struct datapoint * data, int N,
 					}
 					// revert back to the older solution
 					*avgloglikedata = oldavgloglikedata;
-					/*  gsl_matrix_memcpy(qij,oldqij);*/
 					for (ll = 0; ll != K; ++ll) {
 						gaussians->alpha = oldgaussians->alpha;
 						gsl_vector_memcpy(gaussians->mm, oldgaussians->mm);
@@ -1192,7 +1147,6 @@ proj_gauss_mixtures(struct datapoint * data, int N,
 		fclose(tmpconvfile);
 		fprintf(convlogfile, "\n");
 	}
-
 
 	// Compute some criteria to set the number of Gaussians and print these to the logfile
 	int ii;
@@ -1215,7 +1169,6 @@ proj_gauss_mixtures(struct datapoint * data, int N,
 		mdl = -*avgloglikedata * N + 0.5 * np * log(N);
 		fprintf(logfile, "MDL \t\t\t=\t%f\n", mdl);
 	}
-
 
 	// Free memory
 	gsl_matrix_free(I);
@@ -1277,35 +1230,39 @@ splitnmergegauss(struct gaussian * gaussians, int K,
 {
 	// get the gaussians to be split 'n' merged
 	int d = (gaussians->VV)->size1;// dim of mm
-	// int partial_indx[]= {-1,-1,-1};/* dummy argument for logsum */
-	// bool * dummy_allfixed = (bool *) calloc(K,sizeof(bool));
 	// j,k,l gaussians
 	struct gaussian gaussianj, gaussiank, gaussianl;
 
+	gaussianj.alpha = 0;
+	gaussiank.alpha = 0;
+	gaussianl.alpha = 0;
+	
 	gaussianj.mm = gsl_vector_alloc(d);
 	gaussianj.VV = gsl_matrix_alloc(d, d);
 	gaussiank.mm = gsl_vector_alloc(d);
 	gaussiank.VV = gsl_matrix_alloc(d, d);
 	gaussianl.mm = gsl_vector_alloc(d);
 	gaussianl.VV = gsl_matrix_alloc(d, d);
-
+	
 	gsl_matrix * unitm = gsl_matrix_alloc(d, d);
 	gsl_matrix_set_identity(unitm);
 	gsl_vector * eps = gsl_vector_alloc(d);
-	double qjj, qjk, detVVjl;
+	double qjj = 0;
+	double qjk = 0;
+	double detVVjl;
 	int kk;
 	for (kk = 0; kk != K; ++kk) {
 		if (kk == j) {
 			gaussianj.alpha = gaussians->alpha;
 			gsl_vector_memcpy(gaussianj.mm, gaussians->mm);
 			gsl_matrix_memcpy(gaussianj.VV, gaussians->VV);
-			qjj = exp(logsum(qij, j, false));// ,dummy_allfixed));
+			qjj = exp(logsum(qij, j, false));
 		}
 		if (kk == k) {
 			gaussiank.alpha = gaussians->alpha;
 			gsl_vector_memcpy(gaussiank.mm, gaussians->mm);
 			gsl_matrix_memcpy(gaussiank.VV, gaussians->VV);
-			qjk = exp(logsum(qij, k, false));// ,dummy_allfixed));
+			qjk = exp(logsum(qij, k, false));
 		}
 		if (kk == l) {
 			gaussianl.alpha = gaussians->alpha;
@@ -1370,7 +1327,6 @@ splitnmergegauss(struct gaussian * gaussians, int K,
 	// cleanup
 	gsl_matrix_free(unitm);
 	gsl_vector_free(eps);
-	// free(dummy_allfixed);
 } // splitnmergegauss
 
 #endif /* proj_gauss_mixtures.h */

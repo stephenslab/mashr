@@ -915,7 +915,7 @@ fit(const int & maxiter, const double & converge_tol, const double & eigen_tol, 
 	// initialize to store progress
 	objective.zeros(maxiter);
 	maxd.zeros(maxiter);
-	int iter_out;
+	int iter_out = 0;
 
 	// Get the number of samples (n) and the number of mixture components (k)
 	unsigned int n = X_mat.n_rows;

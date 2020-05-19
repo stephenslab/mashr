@@ -1,16 +1,13 @@
 // Wrapper to the projected gaussian mixture algorithm (Bovy 2009)
-// Gao Wang (c) 2018 gaow@uchicago.edu
+// Gao Wang (c) 2018-2020 gaow@uchicago.edu
 #include "RcppGSL.h"
 #include <iostream>
-extern "C" {
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "extreme_deconvolution.h"
-}
-// [[Rcpp::depends(RcppGSL)]]
 
 bool *
 int2bool(RcppGSL::vector<int> & a, int K)
@@ -23,6 +20,7 @@ int2bool(RcppGSL::vector<int> & a, int K)
 	return x;
 }
 
+// [[Rcpp::depends(RcppGSL)]]
 // [[Rcpp::export]]
 Rcpp::List
 extreme_deconvolution_rcpp(
@@ -49,6 +47,7 @@ extreme_deconvolution_rcpp(
 	bool * fixamp   = int2bool(fixamp_int, K);
 	bool * fixmean  = int2bool(fixmean_int, K);
 	bool * fixcovar = int2bool(fixcovar_int, K);
+	
 	// Set up logfiles
 	bool keeplog = true;
 	char logname[slen + 1];
@@ -161,11 +160,11 @@ extreme_deconvolution_rcpp(
 	double avgloglikedata_np = 0.0;
 	double * avgloglikedata;
 	avgloglikedata = &avgloglikedata_np;
+	
 	// Then run projected_gauss_mixtures
 	proj_gauss_mixtures(data, N, gaussians, K, fixamp, fixmean, fixcovar,
 	                    avgloglikedata, tol, (long long int) maxiter, (bool) likeonly, w,
 	                    splitnmerge, keeplog, logfile, convlogfile, noproj, diagerrs, noweight);
-
 
 	// Print the final model parameters to the logfile
 	if (keeplog) {

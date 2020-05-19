@@ -91,15 +91,17 @@ connected to Internet while running these commands):
    pkgdown::build_site(lazy=TRUE, examples=FALSE)
    ```
 
-+ After editing C++ codes under `src` please use [`uncrustify`](http://uncrustify.sourceforge.net/)
-to format the code using configuration file `inst/misc/uncrustify_default.cfg`. For example:
++ After editing C++ code in the `src` directory, please use
+[uncrustify][uncrustify] to format the code using configuration file
+`inst/misc/uncrustify_default.cfg`. For example:
 
    ```bash
    uncrustify -c uncrustify_default.cfg --replace --no-backup -l CPP mash.cpp
    ```
 
-+ *Add notes here about modifications that need to be made prior to
-  submitting the mashr package to CRAN.*
++ Prior to submitting the package to CRAN, the following modifications
+need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; (2)
+remove the `flash_mash.Rmd` vignette.
 
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
@@ -110,3 +112,4 @@ to format the code using configuration file `inst/misc/uncrustify_default.cfg`. 
 [vignette-intro]: https://stephenslab.github.io/mashr/articles/intro_mash.html
 [vignette-data-driven-cov]: https://stephenslab.github.io/mashr/articles/intro_mash_dd.html
 [vignette-non-canonical]: https://stephenslab.github.io/mashr/articles/simulate_noncanon.html
+[uncrustify]: http://uncrustify.sourceforge.net

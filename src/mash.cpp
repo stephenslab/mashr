@@ -1,5 +1,5 @@
 // Wrapper to various C++ functions/objects for inference in MASH
-// Gao Wang (c) 2017-2019 wang.gao@columbia.edu
+// Gao Wang (c) 2017-2020 wang.gao@columbia.edu
 #include <iostream>
 #include <stdexcept>
 #ifdef _OPENMP
