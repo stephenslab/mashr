@@ -18,9 +18,9 @@ const double LOG_INV_SQRT_2PI = std::log(INV_SQRT_2PI);
 // --------------------------
 inline arma::vec
 dnorm(const arma::vec & x,
-      const arma::vec     & mu,
-      const arma::vec     & sigma2,
-      bool logd = false)
+      const arma::vec & mu,
+      const arma::vec & sigma2,
+      bool              logd = false)
 {
 	arma::vec res = LOG_INV_SQRT_2PI
 	                - arma::log(arma::sqrt(sigma2))
@@ -32,10 +32,10 @@ dnorm(const arma::vec & x,
 
 inline arma::vec
 dmvnorm_mat(const arma::mat & x,
-            const arma::vec           & mean,
-            const arma::mat           & sigma,
-            bool logd     = false,
-            bool inversed = false)
+            const arma::vec & mean,
+            const arma::mat & sigma,
+            bool              logd     = false,
+            bool              inversed = false)
 {
 	double xdim = static_cast<double>(x.n_rows);
 
@@ -71,10 +71,10 @@ dmvnorm_mat(const arma::mat & x,
 
 inline double
 dmvnorm(const arma::vec & x,
-        const arma::vec       & mean,
-        const arma::mat       & sigma,
-        bool logd     = false,
-        bool inversed = false)
+        const arma::vec & mean,
+        const arma::mat & sigma,
+        bool              logd     = false,
+        bool              inversed = false)
 {
 	arma::mat rooti;
 
@@ -197,15 +197,15 @@ get_posterior_mean_mat(const arma::mat & bhat, const arma::mat & Vinv,
 // @param common_cov if true use version for common covariance
 // @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
 arma::mat
-calc_lik(const arma::mat & b_mat,
-         const arma::mat        & s_mat,
-         const arma::mat        & v_mat,
-         const arma::mat        & l_mat,
-         const arma::cube       & U_cube,
-         const arma::cube       & sigma_cube,
-         bool logd,
-         bool common_cov,
-         int n_thread = 1)
+calc_lik(const arma::mat &  b_mat,
+         const arma::mat &  s_mat,
+         const arma::mat &  v_mat,
+         const arma::mat &  l_mat,
+         const arma::cube & U_cube,
+         const arma::cube & sigma_cube,
+         bool               logd,
+         bool               common_cov,
+         int                n_thread = 1)
 {
 	// In armadillo data are stored with column-major ordering
 	// slicing columns are therefore faster than rows
@@ -287,10 +287,10 @@ calc_lik(const arma::mat & b_mat,
 // @return J x P matrix of multivariate normal likelihoods, p(bhat | U[p], V)
 arma::mat
 calc_lik(const arma::vec & b_vec,
-         const arma::vec        & s_vec,
-         double v,
-         const arma::vec        & U_vec,
-         bool logd)
+         const arma::vec & s_vec,
+         double            v,
+         const arma::vec & U_vec,
+         bool              logd)
 {
 	arma::mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
 	arma::vec sigma = s_vec % s_vec * v;
@@ -365,59 +365,59 @@ mash_compute_posterior(const arma::mat& b_mat, const SE& s_obj,
                        const int& report_type);
 
 int
-mash_compute_posterior_comcov(const arma::mat& b_mat,
-                              const SE                                   & s_obj,
-                              const arma::mat                            & v_mat,
-                              const arma::mat                            & l_mat,
-                              const arma::mat                            & a_mat,
-                              const arma::cube                           & U_cube,
-                              const arma::cube                           & Vinv_cube,
-                              const arma::cube                           & U0_cube,
-                              arma::mat                                  & post_mean,
-                              arma::mat                                  & post_var,
-                              arma::mat                                  & neg_prob,
-                              arma::mat                                  & zero_prob,
-                              arma::cube                                 & post_cov,
-                              const arma::mat                            & posterior_weights,
-                              const int                                  & report_type);
+mash_compute_posterior_comcov(const arma::mat&   b_mat,
+                              const SE &         s_obj,
+                              const arma::mat &  v_mat,
+                              const arma::mat &  l_mat,
+                              const arma::mat &  a_mat,
+                              const arma::cube & U_cube,
+                              const arma::cube & Vinv_cube,
+                              const arma::cube & U0_cube,
+                              arma::mat &        post_mean,
+                              arma::mat &        post_var,
+                              arma::mat &        neg_prob,
+                              arma::mat &        zero_prob,
+                              arma::cube &       post_cov,
+                              const arma::mat &  posterior_weights,
+                              const int &        report_type);
 
 int
-mvsermix_compute_posterior(const arma::mat& b_mat,
-                           const arma::mat                         & s_mat,
-                           arma::mat                               & v_mat,
-                           arma::cube                              & U_cube,
-                           arma::cube                              & Vinv_cube,
-                           arma::cube                              & U0_cube,
-                           arma::cube                              & Uinv_cube,
-                           arma::mat                               & post_mean,
-                           arma::mat                               & post_var,
-                           arma::mat                               & neg_prob,
-                           arma::mat                               & zero_prob,
-                           arma::cube                              & post_cov,
-                           arma::vec                               & prior_scalar,
-                           bool prior_invertable,
-                           const arma::mat                         & posterior_weights,
-                           const arma::mat                         & posterior_variable_weights,
-                           double sigma0);
+mvsermix_compute_posterior(const arma::mat&  b_mat,
+                           const arma::mat & s_mat,
+                           arma::mat &       v_mat,
+                           arma::cube &      U_cube,
+                           arma::cube &      Vinv_cube,
+                           arma::cube &      U0_cube,
+                           arma::cube &      Uinv_cube,
+                           arma::mat &       post_mean,
+                           arma::mat &       post_var,
+                           arma::mat &       neg_prob,
+                           arma::mat &       zero_prob,
+                           arma::cube &      post_cov,
+                           arma::vec &       prior_scalar,
+                           bool              prior_invertable,
+                           const arma::mat & posterior_weights,
+                           const arma::mat & posterior_variable_weights,
+                           double            sigma0);
 
 int
-mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
-                                  const arma::mat                                & s_mat,
-                                  const arma::mat                                & v_mat,
-                                  const arma::cube                               & U_cube,
-                                  const arma::cube                               & Vinv_cube,
-                                  const arma::cube                               & U0_cube,
-                                  const arma::cube                               & Uinv_cube,
-                                  arma::mat                                      & post_mean,
-                                  arma::mat                                      & post_var,
-                                  arma::mat                                      & neg_prob,
-                                  arma::mat                                      & zero_prob,
-                                  arma::cube                                     & post_cov,
-                                  arma::vec                                      & prior_scalar,
-                                  bool prior_invertable,
-                                  const arma::mat                                & posterior_weights,
-                                  const arma::mat                                & posterior_variable_weights,
-                                  double sigma0);
+mvsermix_compute_posterior_comcov(const arma::mat&   b_mat,
+                                  const arma::mat &  s_mat,
+                                  const arma::mat &  v_mat,
+                                  const arma::cube & U_cube,
+                                  const arma::cube & Vinv_cube,
+                                  const arma::cube & U0_cube,
+                                  const arma::cube & Uinv_cube,
+                                  arma::mat &        post_mean,
+                                  arma::mat &        post_var,
+                                  arma::mat &        neg_prob,
+                                  arma::mat &        zero_prob,
+                                  arma::cube &       post_cov,
+                                  arma::vec &        prior_scalar,
+                                  bool               prior_invertable,
+                                  const arma::mat &  posterior_weights,
+                                  const arma::mat &  posterior_variable_weights,
+                                  double             sigma0);
 
 // @param b_mat R by J
 // @param s_mat R by J
@@ -430,14 +430,14 @@ mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
 class PosteriorMASH
 {
 public:
-PosteriorMASH(const arma::mat & b_mat,
-              const arma::mat             & s_mat,
-              const arma::mat             & s_alpha_mat,
-              const arma::mat             & s_orig_mat,
-              const arma::mat             & v_mat,
-              const arma::mat             & l_mat,
-              const arma::mat             & a_mat,
-              const arma::cube            & U_cube) :
+PosteriorMASH(const arma::mat &  b_mat,
+              const arma::mat &  s_mat,
+              const arma::mat &  s_alpha_mat,
+              const arma::mat &  s_orig_mat,
+              const arma::mat &  v_mat,
+              const arma::mat &  l_mat,
+              const arma::mat &  a_mat,
+              const arma::cube & U_cube) :
 	b_mat(b_mat), v_mat(v_mat), l_mat(l_mat), a_mat(a_mat), U_cube(U_cube)
 {
 	int J = b_mat.n_cols, R = b_mat.n_rows;
@@ -575,10 +575,10 @@ class PosteriorASH
 {
 public:
 PosteriorASH(const arma::vec & b_vec,
-             const arma::vec            & s_vec,
-             const arma::vec            & s_alpha,
-             double v,
-             const arma::vec            & U_vec) :
+             const arma::vec & s_vec,
+             const arma::vec & s_alpha,
+             double            v,
+             const arma::vec & U_vec) :
 	b_vec(b_vec), s_vec(s_vec), v(v), U_vec(U_vec)
 {
 	int J = b_vec.n_elem;
@@ -687,10 +687,10 @@ arma::vec zero_prob;
 class MVSERMix
 {
 public:
-MVSERMix(const arma::mat & b_mat,
-         const arma::mat        & s_mat,
-         const arma::mat        & v_mat,
-         const arma::cube       & U_cube) :
+MVSERMix(const arma::mat &  b_mat,
+         const arma::mat &  s_mat,
+         const arma::mat &  v_mat,
+         const arma::cube & U_cube) :
 	b_mat(b_mat), s_mat(s_mat), v_mat(v_mat), U_cube(U_cube)
 {
 	int J = b_mat.n_cols, R = b_mat.n_rows;
@@ -722,8 +722,8 @@ MVSERMix(const arma::mat & b_mat,
 // posterior_variable_weights is only relevant when EM updates for prior scalar is needed.
 int
 compute_posterior(const arma::mat & posterior_weights,
-                  const arma::mat                 & posterior_variable_weights,
-                  double sigma0)
+                  const arma::mat & posterior_variable_weights,
+                  double            sigma0)
 {
 	return mvsermix_compute_posterior(b_mat, s_mat, v_mat, U_cube, Vinv_cube,
 	                                  U0_cube, Uinv_cube, post_mean, post_var,
@@ -874,9 +874,9 @@ shrink_cov(const arma::mat & V, const double & eps)
 class TEEM
 {
 public:
-TEEM(const arma::mat & X_mat,
-     const arma::vec    & w_vec,
-     const arma::cube   & U_cube) :
+TEEM(const arma::mat &  X_mat,
+     const arma::vec &  w_vec,
+     const arma::cube & U_cube) :
 	X_mat(X_mat), w_vec(w_vec)
 {
 	T_cube = U_cube;
@@ -1071,21 +1071,21 @@ mash_compute_posterior(const arma::mat& b_mat, const SE& s_obj,
 // This implements the core part of the compute_posterior_comcov method in
 // the PosteriorMASH class.
 int
-mash_compute_posterior_comcov(const arma::mat& b_mat,
-                              const SE                                   & s_obj,
-                              const arma::mat                            & v_mat,
-                              const arma::mat                            & l_mat,
-                              const arma::mat                            & a_mat,
-                              const arma::cube                           & U_cube,
-                              const arma::cube                           & Vinv_cube,
-                              const arma::cube                           & U0_cube,
-                              arma::mat                                  & post_mean,
-                              arma::mat                                  & post_var,
-                              arma::mat                                  & neg_prob,
-                              arma::mat                                  & zero_prob,
-                              arma::cube                                 & post_cov,
-                              const arma::mat                            & posterior_weights,
-                              const int                                  & report_type)
+mash_compute_posterior_comcov(const arma::mat&   b_mat,
+                              const SE &         s_obj,
+                              const arma::mat &  v_mat,
+                              const arma::mat &  l_mat,
+                              const arma::mat &  a_mat,
+                              const arma::cube & U_cube,
+                              const arma::cube & Vinv_cube,
+                              const arma::cube & U0_cube,
+                              arma::mat &        post_mean,
+                              arma::mat &        post_var,
+                              arma::mat &        neg_prob,
+                              arma::mat &        zero_prob,
+                              arma::cube &       post_cov,
+                              const arma::mat &  posterior_weights,
+                              const int &        report_type)
 {
 	arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 	// R X R
@@ -1162,23 +1162,23 @@ mash_compute_posterior_comcov(const arma::mat& b_mat,
 // This implements the core part of the compute_posterior method in
 // the MVSERMix class.
 int
-mvsermix_compute_posterior(const arma::mat& b_mat,
-                           const arma::mat                         & s_mat,
-                           arma::mat                               & v_mat,
-                           arma::cube                              & U_cube,
-                           arma::cube                              & Vinv_cube,
-                           arma::cube                              & U0_cube,
-                           arma::cube                              & Uinv_cube,
-                           arma::mat                               & post_mean,
-                           arma::mat                               & post_var,
-                           arma::mat                               & neg_prob,
-                           arma::mat                               & zero_prob,
-                           arma::cube                              & post_cov,
-                           arma::vec                               & prior_scalar,
-                           bool prior_invertable,
-                           const arma::mat                         & posterior_weights,
-                           const arma::mat                         & posterior_variable_weights,
-                           double sigma0)
+mvsermix_compute_posterior(const arma::mat&  b_mat,
+                           const arma::mat & s_mat,
+                           arma::mat &       v_mat,
+                           arma::cube &      U_cube,
+                           arma::cube &      Vinv_cube,
+                           arma::cube &      U0_cube,
+                           arma::cube &      Uinv_cube,
+                           arma::mat &       post_mean,
+                           arma::mat &       post_var,
+                           arma::mat &       neg_prob,
+                           arma::mat &       zero_prob,
+                           arma::cube &      post_cov,
+                           arma::vec &       prior_scalar,
+                           bool              prior_invertable,
+                           const arma::mat & posterior_weights,
+                           const arma::mat & posterior_variable_weights,
+                           double            sigma0)
 {
 	arma::vec mean(post_mean.n_rows, arma::fill::zeros);
 	// This is meant to store a length P of 2nd moment matrices,
@@ -1269,23 +1269,23 @@ mvsermix_compute_posterior(const arma::mat& b_mat,
 // This implements the core part of the compute_posterior_comcov method in
 // the MVSERMix class.
 int
-mvsermix_compute_posterior_comcov(const arma::mat& b_mat,
-                                  const arma::mat                                & s_mat,
-                                  const arma::mat                                & v_mat,
-                                  const arma::cube                               & U_cube,
-                                  const arma::cube                               & Vinv_cube,
-                                  const arma::cube                               & U0_cube,
-                                  const arma::cube                               & Uinv_cube,
-                                  arma::mat                                      & post_mean,
-                                  arma::mat                                      & post_var,
-                                  arma::mat                                      & neg_prob,
-                                  arma::mat                                      & zero_prob,
-                                  arma::cube                                     & post_cov,
-                                  arma::vec                                      & prior_scalar,
-                                  bool prior_invertable,
-                                  const arma::mat                                & posterior_weights,
-                                  const arma::mat                                & posterior_variable_weights,
-                                  double sigma0)
+mvsermix_compute_posterior_comcov(const arma::mat&   b_mat,
+                                  const arma::mat &  s_mat,
+                                  const arma::mat &  v_mat,
+                                  const arma::cube & U_cube,
+                                  const arma::cube & Vinv_cube,
+                                  const arma::cube & U0_cube,
+                                  const arma::cube & Uinv_cube,
+                                  arma::mat &        post_mean,
+                                  arma::mat &        post_var,
+                                  arma::mat &        neg_prob,
+                                  arma::mat &        zero_prob,
+                                  arma::cube &       post_cov,
+                                  arma::vec &        prior_scalar,
+                                  bool               prior_invertable,
+                                  const arma::mat &  posterior_weights,
+                                  const arma::mat &  posterior_variable_weights,
+                                  double             sigma0)
 {
 	arma::mat mean(post_mean.n_rows, post_mean.n_cols, arma::fill::zeros);
 	// for Eb2_cube see compute_posterior() for detailed documentations.

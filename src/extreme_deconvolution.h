@@ -68,7 +68,7 @@ FILE * logfile     = NULL;
 FILE * convlogfile = NULL;
 
 /* global random number generator */
-gsl_rng * randgen = NULL; 
+gsl_rng * randgen = NULL;
 
 // FUNCTION DECLARATIONS
 // ---------------------
@@ -89,7 +89,7 @@ normalize_row(gsl_matrix * q, int row, bool isrow, bool noweight, double weight)
 
 /* returns random vector */
 void
-bovy_randvec(gsl_vector * eps, int d, double length); 
+bovy_randvec(gsl_vector * eps, int d, double length);
 
 /* determinant of matrix A */
 double
@@ -575,8 +575,8 @@ proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
         bool likeonly, double w, bool keeplog, FILE * logfile,
         FILE * tmplogfile, bool noproj, bool diagerrs, bool noweight)
 {
-        double diff = 2. * tol;
-        double oldavgloglikedata = 0;
+	double diff = 2. * tol;
+	double oldavgloglikedata = 0;
 	int niter = 0;
 	int d     = (gaussians->mm)->size;
 
@@ -595,7 +595,7 @@ proj_EM(struct datapoint * data, int N, struct gaussian * gaussians,
 			if (diff < 0 && keeplog) {
 				fprintf(logfile, "Warning: log likelihood decreased by %g\n", diff);
 				fprintf(logfile, "oldavgloglike was %g\navgloglike is %g\n",
-					oldavgloglikedata, *avgloglikedata);
+				        oldavgloglikedata, *avgloglikedata);
 			}
 		}
 		oldavgloglikedata = *avgloglikedata;
@@ -818,7 +818,7 @@ proj_EM_step(struct datapoint * data, int N,
 
 	// gather newgaussians
 	if (nthreads != 1)
-			#pragma omp parallel for schedule(static,chunk) \
+			    #pragma omp parallel for schedule(static,chunk) \
 		private(ll,jj)
 		for (jj = 0; jj < K; ++jj)
 			for (ll = 1; ll != nthreads; ++ll) {
@@ -1244,14 +1244,14 @@ splitnmergegauss(struct gaussian * gaussians, int K,
 	gaussianj.alpha = 0;
 	gaussiank.alpha = 0;
 	gaussianl.alpha = 0;
-	
+
 	gaussianj.mm = gsl_vector_alloc(d);
 	gaussianj.VV = gsl_matrix_alloc(d, d);
 	gaussiank.mm = gsl_vector_alloc(d);
 	gaussiank.VV = gsl_matrix_alloc(d, d);
 	gaussianl.mm = gsl_vector_alloc(d);
 	gaussianl.VV = gsl_matrix_alloc(d, d);
-	
+
 	gsl_matrix * unitm = gsl_matrix_alloc(d, d);
 	gsl_matrix_set_identity(unitm);
 	gsl_vector * eps = gsl_vector_alloc(d);

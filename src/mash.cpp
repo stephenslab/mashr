@@ -21,15 +21,15 @@ inv_chol_tri_rcpp(const arma::mat & x_mat)
 
 // [[Rcpp::export]]
 Rcpp::List
-calc_lik_rcpp(const arma::mat & b_mat,
-              const arma::mat             & s_mat,
-              const arma::mat             & v_mat,
-              const arma::mat             & l_mat,
+calc_lik_rcpp(const arma::mat &   b_mat,
+              const arma::mat &   s_mat,
+              const arma::mat &   v_mat,
+              const arma::mat &   l_mat,
               Rcpp::NumericVector U_3d,
               Rcpp::NumericVector sigma_3d,
-              bool logd,
-              bool common_cov,
-              int n_thread = 1)
+              bool                logd,
+              bool                common_cov,
+              int                 n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);
@@ -57,11 +57,11 @@ calc_lik_rcpp(const arma::mat & b_mat,
 
 // [[Rcpp::export]]
 Rcpp::List
-calc_lik_precomputed_rcpp(const arma::mat & b_mat,
+calc_lik_precomputed_rcpp(const arma::mat &   b_mat,
                           Rcpp::NumericVector rooti_3d,
-                          bool logd,
-                          bool common_cov,
-                          int n_thread = 1)
+                          bool                logd,
+                          bool                common_cov,
+                          int                 n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);
@@ -78,18 +78,18 @@ calc_lik_precomputed_rcpp(const arma::mat & b_mat,
 
 // [[Rcpp::export]]
 Rcpp::List
-calc_post_rcpp(const arma::mat & b_mat,
-               const arma::mat              & s_mat,
-               const arma::mat              & s_alpha_mat,
-               const arma::mat              & s_orig_mat,
-               const arma::mat              & v_mat,
-               const arma::mat              & l_mat,
-               const arma::mat              & a_mat,
+calc_post_rcpp(const arma::mat &   b_mat,
+               const arma::mat &   s_mat,
+               const arma::mat &   s_alpha_mat,
+               const arma::mat &   s_orig_mat,
+               const arma::mat &   v_mat,
+               const arma::mat &   l_mat,
+               const arma::mat &   a_mat,
                Rcpp::NumericVector U_3d,
-               const arma::mat              & posterior_weights,
-               bool common_cov,
-               int report_type,
-               int n_thread = 1)
+               const arma::mat &   posterior_weights,
+               bool                common_cov,
+               int                 report_type,
+               int                 n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);
@@ -129,18 +129,18 @@ calc_post_rcpp(const arma::mat & b_mat,
 
 // [[Rcpp::export]]
 Rcpp::List
-calc_sermix_rcpp(const arma::mat & b_mat,
-                 const arma::mat                & s_mat,
-                 const arma::mat                & v_mat,
+calc_sermix_rcpp(const arma::mat &   b_mat,
+                 const arma::mat &   s_mat,
+                 const arma::mat &   v_mat,
                  Rcpp::NumericVector vinv_3d,
                  Rcpp::NumericVector U_3d,
                  Rcpp::NumericVector Uinv_3d,
                  Rcpp::NumericVector U0_3d,
-                 const arma::mat                & posterior_mixture_weights,
-                 const arma::mat                & posterior_variable_weights,
-                 double sigma0,
-                 bool common_cov,
-                 int n_thread = 1)
+                 const arma::mat &   posterior_mixture_weights,
+                 const arma::mat &   posterior_variable_weights,
+                 double              sigma0,
+                 bool                common_cov,
+                 int                 n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	// std::ostream nullstream(0);
@@ -193,13 +193,13 @@ calc_sermix_rcpp(const arma::mat & b_mat,
 
 // [[Rcpp::export]]
 Rcpp::List
-fit_teem_rcpp(const arma::mat & x_mat,
-              const arma::vec             & w_vec,
+fit_teem_rcpp(const arma::mat &   x_mat,
+              const arma::vec &   w_vec,
               Rcpp::NumericVector U_3d,
-              int maxiter,
-              double converge_tol,
-              double eigen_tol,
-              bool verbose)
+              int                 maxiter,
+              double              converge_tol,
+              double              eigen_tol,
+              bool                verbose)
 {
 	// Convert R 3d array to Rcpp cube
 	if (Rf_isNull(U_3d.attr("dim"))) {
