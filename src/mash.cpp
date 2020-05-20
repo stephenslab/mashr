@@ -7,13 +7,13 @@
 #endif
 #include "RcppArmadillo.h"
 #include "mash.h"
-// [[Rcpp::depends(RcppArmadillo)]]
 
+// [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 Rcpp::List
 inv_chol_tri_rcpp(const arma::mat & x_mat)
 {
-	arma::mat res = arma::trans(arma::inv(arma::trimatu(arma::chol(x_mat))));
+	mat res = arma::trans(inv(arma::trimatu(arma::chol(x_mat))));
 
 	return Rcpp::List::create(Rcpp::Named("data") = res,
 	                          Rcpp::Named("status") = 0);

@@ -9,6 +9,9 @@
 #include <gsl/gsl_vector.h>
 #include "extreme_deconvolution.h"
 
+using Rcpp::List;
+using Rcpp::Named;
+
 void
 int2bool(RcppGSL::vector<int> & a, int K, bool* x)
 {
@@ -236,8 +239,8 @@ extreme_deconvolution_rcpp(
 		fclose(convlogfile);
 	}
 
-	return Rcpp::List::create(Rcpp::Named("xmean") = xmean,
-	                          Rcpp::Named("xcovar")         = xcovar,
-	                          Rcpp::Named("xamp")           = amp,
-	                          Rcpp::Named("avgloglikedata") = avgloglikedata_np);
+	return List::create(Named("xmean") = xmean,
+	                    Named("xcovar")         = xcovar,
+	                    Named("xamp")           = amp,
+	                    Named("avgloglikedata") = avgloglikedata_np);
 } // extreme_deconvolution_rcpp
