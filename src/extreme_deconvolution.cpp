@@ -42,6 +42,7 @@ extreme_deconvolution_rcpp(
 	// convert variables from R interface
 	int N = ydata.nrow(), dy = ydata.ncol(), d = xmean.ncol(), K = xmean.nrow(),
 	    slen = logfilename.size(), convloglen = convlogfilename.size();
+
         bool fixamp_array[K];
 	bool fixmean_array[K];
 	bool fixcovar_array[K];
@@ -164,7 +165,7 @@ extreme_deconvolution_rcpp(
 	double avgloglikedata_np = 0.0;
 	double * avgloglikedata;
 	avgloglikedata = &avgloglikedata_np;
-	
+
 	// Then run projected_gauss_mixtures
 	proj_gauss_mixtures(data, N, gaussians, K, fixamp, fixmean, fixcovar,
 	                    avgloglikedata, tol, (long long int) maxiter, (bool) likeonly, w,
