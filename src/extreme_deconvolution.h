@@ -1,5 +1,5 @@
-#ifndef __PROJ_GAUSS_MIXTURES_H__
-#define __PROJ_GAUSS_MIXTURES_H__
+#ifndef __EXTREME_DECONVOLUTION_H__
+#define __EXTREME_DECONVOLUTION_H__
 
 /* To compile with C++ compiler, the Extreme Deconvolution library is
    merged to one header file: cat proj_gauss_mixtures.h bovy_det.c
@@ -1337,4 +1337,4 @@ splitnmergegauss(struct gaussian * gaussians, int K,
 	gsl_vector_free(eps);
 } // splitnmergegauss
 
-#endif /* proj_gauss_mixtures.h */
+#endif /* extreme_deconvolution.h */

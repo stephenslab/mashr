@@ -9,15 +9,13 @@
 #include <gsl/gsl_vector.h>
 #include "extreme_deconvolution.h"
 
-bool *
-int2bool(RcppGSL::vector<int> & a, int K)
+void
+int2bool(RcppGSL::vector<int> & a, int K, bool* x)
 {
-        bool * x = (bool *) malloc(K * sizeof(bool));
 	int kk;
 
 	for (kk = 0; kk != K; ++kk) *(x++) = (bool) a[kk];
 	x -= K;
-	return x;
 }
 
 // [[Rcpp::depends(RcppGSL)]]
@@ -44,9 +42,15 @@ extreme_deconvolution_rcpp(
 	// convert variables from R interface
 	int N = ydata.nrow(), dy = ydata.ncol(), d = xmean.ncol(), K = xmean.nrow(),
 	    slen = logfilename.size(), convloglen = convlogfilename.size();
-	bool * fixamp   = int2bool(fixamp_int, K);
-	bool * fixmean  = int2bool(fixmean_int, K);
-	bool * fixcovar = int2bool(fixcovar_int, K);
+        bool fixamp_array[K];
+	bool fixmean_array[K];
+	bool fixcovar_array[K];
+	bool * fixamp   = &fixamp_array[0];
+	bool * fixmean  = &fixmean_array[0];
+	bool * fixcovar = &fixcovar_array[0];
+	int2bool(fixamp_int,K,fixamp);
+	int2bool(fixmean_int,K,fixmean);
+	int2bool(fixcovar_int,K,fixcovar);
 	
 	// Set up logfiles
 	bool keeplog = true;
