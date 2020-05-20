@@ -23,7 +23,7 @@ int2bool(RcppGSL::vector<int> & a, int K, bool* x)
 
 // [[Rcpp::depends(RcppGSL)]]
 // [[Rcpp::export]]
-Rcpp::List
+List
 extreme_deconvolution_rcpp(
 	RcppGSL::matrix<double> & ydata,
 	RcppGSL::vector<double> & ycovar,
