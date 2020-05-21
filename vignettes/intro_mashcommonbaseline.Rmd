@@ -29,7 +29,7 @@ not properly accounted
 for, can lead to many false positives in a multivariate analysis. 
 This vignette illustrates how to properly account for such correlations.
 
-Here is the [write-up](MASH_baseline.pdf) for the details of the
+Here is the [write-up][mash-baseline] for the details of the
 model. When there is no control condition in the study, we can compare
 the quantity in different conditions with the mean. We illustrate an
 example in the [no baseline vignette](intro_mashnobaseline.html).
@@ -98,7 +98,4 @@ We can see that the log likelihood is lower, since it does not consider the indu
 
 There are `r length(get_significant_results(m))` significant effects, `r sum(get_significant_results(m) < 12000-1200)` of them are false positives. The number of false positives is much more than the one include the induced correlation.
 
-
-
-
-
+[mash-baseline]: https://stephenslab.github.io/mashr/articles/MASH_baseline.pdf
