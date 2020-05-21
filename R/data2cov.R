@@ -1,12 +1,21 @@
-#' Perform PCA on data and return list of candidate covariance matrices
+#' @title Perform PCA on data and return list of candidate covariance
+#' matrices
+#' 
 #' @param data a mash data object
+#' 
 #' @param npc the number of PCs to use
-#' @param subset indices of the subset of data to use (set to NULL for all data)
+#' 
+#' @param subset indices of the subset of data to use (set to NULL for
+#' all data)
 #'
-#' @return Returns a list of covariance matrices: the npc rank-one covariance matrices based on the first npc PCs,
-#' and the rank npc covariance matrix
+#' @return Returns a list of covariance matrices: the npc rank-one
+#' covariance matrices based on the first npc PCs, and the rank npc
+#' covariance matrix
+#' 
 #' @importFrom assertthat assert_that
+#' 
 #' @export
+#' 
 cov_pca = function(data,npc,subset = NULL){
   assert_that(npc>1)
   assert_that(npc<=n_conditions(data))
@@ -20,16 +29,32 @@ cov_pca = function(data,npc,subset = NULL){
   return(Ulist)
 }
 
-#' Perform "extreme deconvolution" (Bovy et al) on a subset of the data
+#' @title Perform "extreme deconvolution" (Bovy et al) on a subset of
+#' the data
+#' 
 #' @param data a mash data object
-#' @param Ulist_init a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs
-#' @param subset a subset of data to be used when ED is run (set to NULL for all the data)
+#' 
+#' @param Ulist_init a named list of covariance matrices to use to
+#' initialize ED; default is to use matrices from PCs
+#' 
+#' @param subset a subset of data to be used when ED is run (set to
+#' NULL for all the data)
+#' 
 #' @param algorithm algorithm to run ED
-#' @param ... other arguments to be passed to ED algorith, see \code{?mashr::extreme_deconvolution} for algorithm 'bovy', or \code{?mashr::teem_wrapper} for algorithm 'teem'
-#' @details Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
-#' The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
+#' 
+#' @param ... other arguments to be passed to ED algorith, see
+#' \code{\link{extreme_deconvolution}} for algorithm 'bovy', or
+#' \code{\link{teem_wrapper}} for algorithm 'teem'
+#' 
+#' @details Runs the extreme deconvolution algorithm from Bovy et al
+#' (Annals of Applied Statistics) to estimate data-driven covariance
+#' matrices The default is to initialize the EM algorithm from
+#' data2cov_pca with 5 PCs
+#' 
 #' @export
-cov_ed = function(data, Ulist_init, subset = NULL, algorithm=c('bovy', 'teem'), ...) {
+#' 
+cov_ed = function(data, Ulist_init, subset = NULL,
+                  algorithm=c('bovy', 'teem'), ...) {
   algorithm = match.arg(algorithm)
   if (algorithm=='bovy') {
     Ulist_ed = bovy_wrapper(data, Ulist_init, subset, ...)$Ulist
@@ -43,11 +68,17 @@ cov_ed = function(data, Ulist_init, subset = NULL, algorithm=c('bovy', 'teem'), 
 # For a vector x, return the rank one matrix xx'.
 r1cov=function(x){x %*% t(x)}
 
-#' produce list of rank 1 covariance matrices corresponding to rows of f
+#' produce list of rank-1 covariance matrices corresponding to rows of f
+#' 
 #' @param f a matrix of factors (each row is a factor)
+#' 
 #' @param name a string indicating the name to use
-#' @return a list of rank one matrices whose kth element is f[k,] f[k,]' and named name_k
+#' 
+#' @return a list of rank one matrices whose kth element is f[k,]
+#' f[k,]' and named name_k
+#' 
 #' @export
+#' 
 cov_from_factors = function(f, name){
   Ulist = list()
   for(i in 1:nrow(f)){

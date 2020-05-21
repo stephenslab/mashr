@@ -2,25 +2,33 @@
 % Please edit documentation in R/data2cov.R
 \name{cov_ed}
 \alias{cov_ed}
-\title{Perform "extreme deconvolution" (Bovy et al) on a subset of the data}
+\title{Perform "extreme deconvolution" (Bovy et al) on a subset of
+the data}
 \usage{
 cov_ed(data, Ulist_init, subset = NULL, algorithm = c("bovy", "teem"), ...)
 }
 \arguments{
 \item{data}{a mash data object}
 
-\item{Ulist_init}{a named list of covariance matrices to use to initialize ED; default is to use matrices from  PCs}
+\item{Ulist_init}{a named list of covariance matrices to use to
+initialize ED; default is to use matrices from PCs}
 
-\item{subset}{a subset of data to be used when ED is run (set to NULL for all the data)}
+\item{subset}{a subset of data to be used when ED is run (set to
+NULL for all the data)}
 
 \item{algorithm}{algorithm to run ED}
 
-\item{...}{other arguments to be passed to ED algorith, see \code{?mashr::extreme_deconvolution} for algorithm 'bovy', or \code{?mashr::teem_wrapper} for algorithm 'teem'}
+\item{...}{other arguments to be passed to ED algorith, see
+\code{\link{extreme_deconvolution}} for algorithm 'bovy', or
+\code{\link{teem_wrapper}} for algorithm 'teem'}
 }
 \description{
-Perform "extreme deconvolution" (Bovy et al) on a subset of the data
+Perform "extreme deconvolution" (Bovy et al) on a subset of
+the data
 }
 \details{
-Runs the extreme deconvolution algorithm from Bovy et al (Annals of Applied Statistics) to estimate data-driven covariance matrices
-The default is to initialize the EM algorithm from data2cov_pca with 5 PCs
+Runs the extreme deconvolution algorithm from Bovy et al
+(Annals of Applied Statistics) to estimate data-driven covariance
+matrices The default is to initialize the EM algorithm from
+data2cov_pca with 5 PCs
 }
