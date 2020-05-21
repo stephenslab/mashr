@@ -25,6 +25,8 @@
 #'   V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
 #'   Defaults to identity.
 #'
+#' @param zero_check_tol a small positive number as threshold for Shat to be considered zero if any Shat is smaller or equal to this number.
+#'
 #' @param zero_Bhat_Shat_reset Replace zeros in Shat matrix to given value if the corresponding Bhat are also zeros.
 #'
 #' @param zero_Shat_reset Replace zeros in Shat matrix to given value.
@@ -37,6 +39,7 @@
 #'
 mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
                           pval = NULL, V = diag(ncol(Bhat)),
+                          zero_check_tol = .Machine$double.eps,
                           zero_Bhat_Shat_reset = 0, zero_Shat_reset = 0) {
   if (is.null(Shat) && is.null(pval)) {
     Shat = 1
@@ -66,19 +69,19 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
   if (length(which(is.nan(Shat) | is.infinite(Shat)))>0) {
     stop("Shat cannot contain NaN/Inf values")
   }
-  if (length(which(Shat == 0))>0) {
-    msg = "If it is expected please set Shat to a positive number to avoid numerical issues"
-    if (length(which(Shat == 0 & Bhat == 0)) > 0) {
+  if (length(which(Shat <= zero_check_tol))>0) {
+    msg = paste0("If it is expected please set Shat to a positive number to avoid numerical issues; or lower the threshold to call zeros using zero_check_tol (currently set to ", zero_check_tol, ").")
+    if (length(which(Shat <= zero_check_tol & Bhat <= zero_check_tol)) > 0) {
       if (zero_Bhat_Shat_reset>0) {
-        Shat[which(Shat == 0 & Bhat == 0)] = zero_Bhat_Shat_reset
+        Shat[which(Shat <= zero_check_tol & Bhat <= zero_check_tol)] = zero_Bhat_Shat_reset
       } else {
-        stop(paste("Both Bhat and Shat are zero for some input data. Please check your input.", msg, "(using zero_Bhat_Shat_reset)."))
+        stop(paste("Both Bhat and Shat are zero (or near zero) for some input data. Please check your input.", msg, "To replace zero elements you can use `zero_Bhat_Shat_reset`."))
       }
     } else {
       if (zero_Shat_reset>0) {
-        Shat[which(Shat == 0)] = zero_Shat_reset
+        Shat[which(Shat <= zero_check_tol)] = zero_Shat_reset
       } else {
-        stop(paste("Shat contains zero values.", msg, "(using zero_Shat_reset)."))
+        stop(paste("Shat contains zero (or near zero) values.", msg, "To replace zero elements you can use `zero_Shat_reset`."))
       }
     }
   }
