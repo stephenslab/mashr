@@ -11,6 +11,7 @@ mash_set_data(
   df = Inf,
   pval = NULL,
   V = diag(ncol(Bhat)),
+  zero_check_tol = .Machine$double.eps,
   zero_Bhat_Shat_reset = 0,
   zero_Shat_reset = 0
 )
@@ -41,6 +42,10 @@ correlation matrix of error correlations; must be positive
 definite. [So Bhat_j distributed as N(B_j,diag(Shat_j) V_j
 diag(Shat_j)) where _j denotes the jth row of a matrix]. Defaults
 to identity.}
+
+\item{zero_check_tol}{a small positive number as threshold for Shat
+to be considered zero if any Shat is smaller or equal to this
+number.}
 
 \item{zero_Bhat_Shat_reset}{Replace zeros in Shat matrix to given
 value if the corresponding Bhat are also zeros.}
