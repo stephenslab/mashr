@@ -63,7 +63,7 @@
 #' Shat     = matrix(rep(1,100),ncol=5)
 #' data     = mash_set_data(Bhat,Shat, alpha=1)
 #' U.c      = cov_canonical(data)
-#' res.mash = :mash(data,U.c)
+#' res.mash = mash(data,U.c)
 #' 
 #' @export
 #' 
