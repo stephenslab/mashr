@@ -36,12 +36,14 @@ freedom are equal. Default is inf (for large samples).}
 Bhat/Shat. Shat and df should not be specified when pval is
 provided.}
 
-\item{V}{an R by R matrix / [R x R x J] array of effect specific correlation matrix of error correlations; must
-be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
-V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
-Defaults to identity.}
+\item{V}{an R by R matrix / [R x R x J] array of effect specific
+correlation matrix of error correlations; must be positive
+definite. [So Bhat_j distributed as N(B_j,diag(Shat_j) V_j
+diag(Shat_j)) where _j denotes the jth row of a matrix]. Defaults
+to identity.}
 
-\item{zero_Bhat_Shat_reset}{Replace zeros in Shat matrix to given value if the corresponding Bhat are also zeros.}
+\item{zero_Bhat_Shat_reset}{Replace zeros in Shat matrix to given
+value if the corresponding Bhat are also zeros.}
 
 \item{zero_Shat_reset}{Replace zeros in Shat matrix to given value.}
 }
