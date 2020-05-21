@@ -27,21 +27,30 @@ mash(
 )
 }
 \arguments{
-\item{data}{a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data} or \code{mash_set_data_contrast}}
+\item{data}{a mash data object containing the Bhat matrix, standard
+errors, alpha value; created using \code{mash_set_data} or
+\code{mash_set_data_contrast}}
 
 \item{Ulist}{a list of covariance matrices to use}
 
-\item{gridmult}{scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid}
+\item{gridmult}{scalar indicating factor by which adjacent grid
+values should differ; close to 1 for fine grid}
 
-\item{grid}{vector of grid values to use (scaling factors omega in paper)}
+\item{grid}{vector of grid values to use (scaling factors omega in
+paper)}
 
-\item{normalizeU}{whether or not to normalize the U covariances to have maximum of 1 on diagonal}
+\item{normalizeU}{whether or not to normalize the U covariances to
+have maximum of 1 on diagonal}
 
-\item{usepointmass}{whether to include a point mass at 0, corresponding to null in every condition}
+\item{usepointmass}{whether to include a point mass at 0,
+corresponding to null in every condition}
 
-\item{g}{the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass}
+\item{g}{the value of g obtained from a previous mash fit - an
+alternative to supplying Ulist, grid and usepointmass}
 
-\item{fixg}{if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data}
+\item{fixg}{if g is supplied, allows the mixture proportions to be
+fixed rather than estimated; e.g., useful for fitting mash to test
+data after fitting it to training data}
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
@@ -51,19 +60,28 @@ mash(
 
 \item{verbose}{If \code{TRUE}, print progress to R console.}
 
-\item{add.mem.profile}{If \code{TRUE}, print memory usage to R console (requires R library `profmem`).}
+\item{add.mem.profile}{If \code{TRUE}, print memory usage to R
+console (requires R library `profmem`).}
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
-\item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
+\item{pi_thresh}{threshold below which mixture components are
+ignored in computing posterior summaries (to speed calculations by
+ignoring negligible components)}
 
-\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
+\item{A}{the linear transformation matrix, Q x R matrix. This is
+used to compute the posterior for Ab.}
 
-\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
+\item{posterior_samples}{the number of samples to be drawn from the
+posterior distribution of each effect.}
 
-\item{seed}{A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
+\item{seed}{A random number seed to use when sampling from the
+posteriors. It is used when \code{posterior_samples > 0}.}
 
-\item{outputlevel}{controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices}
+\item{outputlevel}{controls amount of computation / output; 1:
+output only estimated mixture component proportions, 2: and
+posterior estimates, 3: and posterior covariance matrices, 4: and
+likelihood matrices}
 }
 \value{
 a list with elements result, loglik and fitted_g
@@ -72,9 +90,10 @@ a list with elements result, loglik and fitted_g
 Apply mash method to data
 }
 \examples{
-Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
-Shat = matrix(rep(1,100),ncol=5)
-data = mashr::mash_set_data(Bhat,Shat, alpha=1)
-U.c = mashr::cov_canonical(data)
-res.mash = mashr::mash(data,U.c)
+Bhat     = matrix(rnorm(100),ncol=5) # create some simulated data
+Shat     = matrix(rep(1,100),ncol=5)
+data     = mash_set_data(Bhat,Shat, alpha=1)
+U.c      = cov_canonical(data)
+res.mash = :mash(data,U.c)
+
 }
