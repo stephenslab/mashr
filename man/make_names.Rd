@@ -9,8 +9,9 @@ make_names(names, suffixes)
 \arguments{
 \item{names}{a string}
 
-\item{suffixes}{Adds _suffixes to names for each element of suffixes}
+\item{suffixes}{}
 }
 \description{
-Create names for covariance matrices
+Adds _suffixes to names for each element of suffixes
 }
+\keyword{internal}

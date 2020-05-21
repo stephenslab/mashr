@@ -7,12 +7,15 @@
 get_log10bf(m)
 }
 \arguments{
-\item{m}{the mash result (from joint or 1by1 analysis); must have been computed using usepointmass=TRUE}
+\item{m}{the mash result (from joint or 1by1 analysis); must have
+been computed using usepointmass=TRUE}
 }
 \value{
-if m was fitted using usepointmass=TRUE then returns a vector of the log10(bf) values for each effect. That is, the jth element
-lbf[j] is log10(Pr(Bj | g=ghat-nonnull)/Pr(Bj | g = 0)) where ghat-nonnull is the non-null part of ghat.
-Otherwise returns NULL.
+if m was fitted using usepointmass=TRUE then returns a
+vector of the log10(bf) values for each effect. That is, the jth
+element lbf[j] is log10(Pr(Bj | g=ghat-nonnull)/Pr(Bj | g = 0))
+where ghat-nonnull is the non-null part of ghat.  Otherwise returns
+NULL.
 }
 \description{
 Return the Bayes Factor for each effect

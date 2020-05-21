@@ -1,21 +1,33 @@
-#' Compute a list of canonical covariance matrices
+#' @title Compute a list of canonical covariance matrices
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' @param cov_methods a vector of strings indicating the matrices to be used:
-#' "identity" for the identity (effects are independent among conditions);
-#' "singletons" for the set of matrices with just one non-zero entry x_{jj} = 1 (j=1,...,R); (effect specific to condition j);
-#' "equal_effects" for the matrix of all 1s (effects are equal among conditions);
-#' "simple_het" for a set of matrices with 1s on the diagonal and all off-diagonal elements equal to 0.25, 0.5 or 0.75; see \code{cov_simple_het} for details; (effects are correlated among conditions).
+#' 
+#' @param cov_methods a vector of strings indicating the matrices to
+#' be used: "identity" for the identity (effects are independent among
+#' conditions); "singletons" for the set of matrices with just one
+#' non-zero entry x_{jj} = 1 (j=1,...,R); (effect specific to
+#' condition j); "equal_effects" for the matrix of all 1s (effects are
+#' equal among conditions); "simple_het" for a set of matrices with 1s
+#' on the diagonal and all off-diagonal elements equal to 0.25, 0.5 or
+#' 0.75; see \code{cov_simple_het} for details; (effects are
+#' correlated among conditions).
+#' 
 #' @return a list of covariance matrices
+#' 
 #' @details The default is that this function computes covariance matrices corresponding
 #' to the "bmalite" models.
+#' 
 #' @examples data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #'  cov_canonical(data)
 #'  cov_canonical(data,"singletons")
 #'  cov_canonical(data,c("id","sing")) # can use partial matching of names
+#' 
 #' @importFrom utils modifyList
+#' 
 #' @export
+#' 
 cov_canonical = function(data,
-                       cov_methods= c("identity","singletons","equal_effects","simple_het")){
+                         cov_methods= c("identity","singletons","equal_effects","simple_het")){
   res = list()
   for(i in 1:length(cov_methods)){
     if(is.character(cov_methods[[i]])){
@@ -40,15 +52,6 @@ cov_canonical = function(data,
   res = unlist(res,recursive=FALSE)
   return(res)
 }
-
-# #' Compute a list of data-driven covariance matrices;
-# #' @param data a mash data object, eg as created by \code{mash_set_data}
-# #' @return a list of covariance matrices
-# #' @details currently just applies Extreme Deconvolution to a subset of signals; future expansion expected
-# #' @export
-# cov_data_driven = function(data,subset=NULL){
-#   data2cov_ed(data,subset=subset)
-# }
 
 # A function that maps names of covariance matrices to covariance
 # computation functions. The return value is a named list of defaults
@@ -88,10 +91,18 @@ cov_singletons = function(data){
   return(Ulist)
 }
 
-#' Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes
+#' @title Compute all the singleton matrices corresponding to
+#' condition-specific effects in first condition only; used for
+#' testing purposes
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
+#' 
 #' @return an R by R matrix with all 0s except the (1,1) element is 1
+#' 
 #' @export
+#'
+#' @keywords internal
+#' 
 cov_first_singleton = function(data){
   R = n_conditions(data)
   res = matrix(0,nrow=R,ncol=R)
@@ -99,27 +110,43 @@ cov_first_singleton = function(data){
   return(res)
 }
 
-#' Compute an R by R matrix of all 1s
+#' @title Compute an R by R matrix of all 1s
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
+#' 
 #' @return a list with 1 entry, the R by R matrix of all 1s
+#'
+#' @keywords internal
+#' 
 cov_equal_effects = function(data){
   R = n_conditions(data)
   matrix(1,nrow=R,ncol=R)
 }
 
-#' Compute an R by R matrix of all 0s
+#' @title Compute an R by R matrix of all 0s
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
+#' 
 #' @return a list with 1 entry, the R by R matrix of all 0s
+#'
+#' @keywords internal
+#' 
 cov_all_zeros = function(data){
   R = ncol(data$Bhat)
   matrix(0,nrow=R,ncol=R)
 }
 
-#' Compute covariance matrices with diagonal element 1 and off-diagonal element corr
+#' @title Compute covariance matrices with diagonal element 1 and
+#' off-diagonal element corr
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
+#' 
 #' @param corr a vector containing the correlations to be used
+#' 
 #' @return a list of matrices, one for each value in corr
-#' @export
+#' 
+#' @keywords internal
+#' 
 cov_simple_het = function(data, corr=c(0.25,0.5,0.75)){
   R = n_conditions(data)
   simplehet=list()
@@ -131,10 +158,18 @@ cov_simple_het = function(data, corr=c(0.25,0.5,0.75)){
   return(simplehet)
 }
 
-#' Scale each covariance matrix in list Ulist by a scalar in vector grid
+#' @title Scale each covariance matrix in list Ulist by a scalar in
+#' vector grid
+#' 
 #' @param Ulist a list of matrices
+#' 
 #' @param grid a vector of scaling factors (standard deviaions)
-#' @return a list with length length(Ulist)*length(grid), with values grid[i]^2*Ulist[[j]]
+#' 
+#' @return a list with length length(Ulist)*length(grid), with values
+#' grid[i]^2*Ulist[[j]]
+#'
+#' @keywords internal
+#' 
 scale_cov = function(Ulist, grid){
   orig_names = names(Ulist)
   Ulist = unlist( lapply(grid^2, function(x){multiply_list(Ulist,x)}), recursive=FALSE)
@@ -160,10 +195,16 @@ normalize_cov = function(U){
 # to each element.
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}
 
-#' Create names for covariance matrices
+#' @title Create names for covariance matrices
+#' 
 #' @param names a string
+#' 
 #' @param suffixes
-#' Adds _suffixes to names for each element of suffixes
+#' 
+#' @description Adds _suffixes to names for each element of suffixes
+#'
+#' @keywords internal
+#' 
 make_names = function(names,suffixes){paste0(names,"_",suffixes)}
 
 check_dim = function(mat,R){

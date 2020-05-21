@@ -9,14 +9,18 @@ get_significant_results(m, thresh = 0.05, conditions = NULL, sig_fn = get_lfsr)
 \arguments{
 \item{m}{the mash result (from joint or 1by1 analysis)}
 
-\item{thresh}{indicates the threshold below which to call signals significant}
+\item{thresh}{indicates the threshold below which to call signals
+significant}
 
 \item{conditions}{which conditions to include in check (default to all)}
 
-\item{sig_fn}{the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr. (Small values must indicate significant.)}
+\item{sig_fn}{the significance function used to extract
+significance from mash object; eg could be ashr::get_lfsr or
+ashr::get_lfdr. (Small values must indicate significant.)}
 }
 \value{
-a vector containing the indices of the significant effects, by order of most significant to least
+a vector containing the indices of the significant effects,
+by order of most significant to least
 }
 \description{
 Find effects that are significant in at least one condition
