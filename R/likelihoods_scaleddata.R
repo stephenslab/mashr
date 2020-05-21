@@ -1,17 +1,15 @@
-# NOTE:
-# All likelihood calculations in this file are for the scaled data
-# data$Bhat = S^-alpha Bhat
-# So, for example, when alpha=1 they are  for p(Z | g) and not for p(Bhat | g)
-
+# NOTE: All likelihood calculations in this file are for the scaled
+# data data$Bhat = S^-alpha Bhat So, for example, when alpha=1 they
+# are for p(Z | g) and not for p(Bhat | g)
+#
 # To get to likelihoods for unscaled data need to multiply by S^alpha
-# As for example is done in the functions in likelihoods_originaldata.R
-# However, this scaling only matters when comparing fits of different models - not when
-# fitting the model itself (as the scaling effects all p components the same)
-# So we only do it when computing log-likelihoods for public reporting,
-# not for internal use.
-
-# (We should probably only ever export likelihood functions for the originaldata to avoid
-# confusion?)
+# As for example is done in the functions in
+# likelihoods_originaldata.R However, this scaling only matters when
+# comparing fits of different models - not when fitting the model
+# itself (as the scaling effects all p components the same) So we only
+# do it when computing log-likelihoods for public reporting, not for
+# internal use.
+#
 
 #' @title Compute conditional likelihoods for bhat vector.
 #'
@@ -31,18 +29,36 @@
 #'     multivariate normal likelihood p(bhat | Ulist[[p]], V).
 #'
 #' @importFrom mvtnorm dmvnorm
+#'
+#' @keywords internal
+#' 
 calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
   sapply(Ulist,function(p) dmvnorm(bhat,sigma = p + V,log = log))
 
 #' @title calc_lik_matrix_common_cov
-#' @description computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances; special case when standard errors and variances are all same across j;
+#' 
+#' @description computes matrix of likelihoods for each of J rows of
+#' Bhat for each of P prior covariances; special case when standard
+#' errors and variances are all same across j.
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
+#' 
 #' @param Ulist list of prior covariance matrices
+#' 
 #' @param log if true computes log-likelihood
-#' @return J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V), where V is same for each bhat
-#' @details Compared with \code{calc_lik_matrix} this function exploits fact that observations are iid in this case,
-#' so the inverse covariance matrices only need to be done once, reducing computation to R^3 + JR^2 instead of JR^3
+#' 
+#' @return J x P vector of multivariate normal likelihoods, p(bhat |
+#' Ulist[p], V), where V is same for each bhat
+#' 
+#' @details Compared with \code{calc_lik_matrix} this function
+#' exploits fact that observations are iid in this case, so the
+#' inverse covariance matrices only need to be done once, reducing
+#' computation to R^3 + JR^2 instead of JR^3
+#' 
 #' @importFrom plyr laply
+#'
+#' @keywords internal
+#' 
 calc_lik_matrix_common_cov = function(data, Ulist, log = FALSE){
   V   <- get_cov(data,1) # all covariances are same
   res <- laply(Ulist,function(U) {
@@ -81,6 +97,9 @@ calc_lik_matrix_common_cov = function(data, Ulist, log = FALSE){
 #' @useDynLib mashr
 #'
 #' @importFrom Rcpp evalCpp
+#'
+#' @keywords internal
+#' 
 calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
                              algorithm.version = c("Rcpp","R")) {
 
@@ -166,6 +185,9 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 #'       likelihoods; for example, \code{lfactors[i] +
 #'       log(lik_matrix[i,])} yields the log-likelihoods corresponding
 #'       to row i of the Bhat data matrix.}
+#'
+#' @keywords internal
+#' 
 calc_relative_lik_matrix <-
   function (data, Ulist, algorithm.version= c("Rcpp","R")) {
 

@@ -30,3 +30,4 @@ The return value is a list containing the following components:
 Computes matrix of relative likelihoods for each of J
     rows of Bhat for each of P prior covariances.
 }
+\keyword{internal}

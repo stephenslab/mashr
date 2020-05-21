@@ -80,17 +80,21 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #' @param algorithm.version Indicates whether to use R or Rcpp version.
 #'
-#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
+#' @param A the linear transformation matrix, Q x R matrix. This is
+#' used to compute the posterior for Ab.
 #'
 #' @param mc.cores The argument supplied to
 #'     \code{openmp} specifying the number of cores
 #'     to use. Note that this is only has an effect for the Rcpp version.
 #'
-#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects.
+#' @param output_posterior_cov whether or not to output posterior
+#' covariance matrices for all effects.
 #'
-#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
+#' @param posterior_samples the number of samples to be drawn from the
+#' posterior distribution of each effect.
 #'
-#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
+#' @param seed a random number seed to use when sampling from the
+#' posteriors. It is used when \code{posterior_samples > 0}.
 #'
 #' @return The return value is a list containing the following
 #'    components:
@@ -108,10 +112,12 @@ posterior_mean_matrix <- function(Bhat, Vinv, U1){
 #'
 #'    \item{lfsr}{J x Q matrix of local false sign rates.}
 #'
-#'    \item{PosteriorCov}{Q x Q x J array of posterior covariance matrices, if the \code{output_posterior_cov = TRUE}.}
+#'    \item{PosteriorCov}{Q x Q x J array of posterior covariance
+#'      matrices, if the \code{output_posterior_cov = TRUE}.}
 #'
-#'    \item{PosteriorSamples}{M x Q x J array of samples, if the \code{posterior_samples = M > 0}.}
-#'
+#'    \item{PosteriorSamples}{M x Q x J array of samples, if the
+#'      \code{posterior_samples = M > 0}.}
+#' 
 #' @useDynLib mashr
 #'
 #' @importFrom ashr compute_lfsr

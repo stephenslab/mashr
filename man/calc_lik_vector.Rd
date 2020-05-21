@@ -24,3 +24,4 @@ Vector of length P in which the pth element contains the
 Computes vector of likelihoods for bhat for each of P
     prior covariances.
 }
+\keyword{internal}
