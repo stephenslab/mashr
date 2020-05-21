@@ -9,7 +9,7 @@
 #' 
 #' @details There is no true deviation exists in this case
 #' 
-#' @keywords internal
+#' @export
 #' 
 sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
   # generate scalar
@@ -45,7 +45,7 @@ sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
 #' different types of deviations: equal among conditions, present only
 #' in the first subsequent condition, independent across conditions.
 #'
-#' @keywords internal
+#' @export
 #' 
 sim_contrast2 = function(nsamp = 1000, ncond = 5, err_sd=sqrt(0.5)){
 

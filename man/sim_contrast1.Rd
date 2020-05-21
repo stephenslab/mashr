@@ -21,4 +21,3 @@ analysis
 \details{
 There is no true deviation exists in this case
 }
-\keyword{internal}

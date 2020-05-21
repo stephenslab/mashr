@@ -26,4 +26,3 @@ reference group.  The simulation consists of 90% null deviations,
 different types of deviations: equal among conditions, present only
 in the first subsequent condition, independent across conditions.
 }
-\keyword{internal}
