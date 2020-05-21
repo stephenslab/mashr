@@ -91,7 +91,7 @@ We estimate the correlation structure in the null tests from the `random` data (
 they will not necessarily contain any null tests).
 
 To do this we set up a temporary data object `data.temp`
-from the random tests and use `estimate_null_correlation_simple` as in [this vignette](intro_correlations).
+from the random tests and use `estimate_null_correlation_simple` as in [this vignette](intro_correlations.html).
 ```{r}
 data.temp = mash_set_data(simdata$Bhat[random.subset,],simdata$Shat[random.subset,])
 Vhat = estimate_null_correlation_simple(data.temp)

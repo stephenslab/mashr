@@ -29,7 +29,10 @@ not properly accounted
 for, can lead to many false positives in a multivariate analysis. 
 This vignette illustrates how to properly account for such correlations.
 
-Here is the [write-up](MASH_baseline.pdf) for the details of the model. When there is no control condition in the study, we can compare the quantity in different conditions with the mean. We illustrate an example in the [no baseline vignette](intro_mashnobaseline.html).
+Here is the [write-up](MASH_baseline.pdf) for the details of the
+model. When there is no control condition in the study, we can compare
+the quantity in different conditions with the mean. We illustrate an
+example in the [no baseline vignette](intro_mashnobaseline.html).
 
 To deal with these correlations, mashr allows the user to specify the reference condition using `mash_update_data`, after setting up the data in `mash_set_data`. 
 
