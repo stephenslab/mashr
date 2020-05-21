@@ -144,7 +144,7 @@
 #' res <- extreme_deconvolution(ydata, ycovar, xamp, xmean, xcovar,
 #'          projection=projection, logfile="ExDeconDemo")
 #' 
-#' @keywords internal
+#' @export
 #' 
 extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar, 
                                   projection = NULL, weight = NULL, 

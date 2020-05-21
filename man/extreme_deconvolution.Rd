@@ -161,4 +161,3 @@ Roweis, Submitted to AOAS (2009) [arXiv/0905.2979]
 \author{
 Jo Bovy, David W. Hogg, & Sam T. Roweis
 }
-\keyword{internal}
