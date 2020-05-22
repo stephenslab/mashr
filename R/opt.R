@@ -1,34 +1,34 @@
 #' @title Estimate mixture weights by maximum (penalized) likelihood
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param matrix_lik a matrix of likelihoods, where the (i,k)th entry
 #'   is the probability of observation i given it came from component k
 #'   of g
-#' 
+#'
 #' @param pi_init numeric vector specifying value from which to
 #'   initialize optimization
-#' 
+#'
 #' @param prior numeric vector specifying prior to use in the
 #'   penalized likelihood
-#' 
+#'
 #' @param optmethod a string, giving name of optimization function to
 #'   use
-#' 
+#'
 #' @param control a list of parameters to be passed to optmethod
-#' 
+#'
 #' @return numeric vector specifying the optimal mixture weights
-#' 
+#'
 #' @importFrom assertthat are_equal
 #' @importFrom ashr mixIP
 #' @importFrom ashr mixEM
 #' @importFrom ashr cxxMixSquarem
 #' @importFrom ashr mixSQP
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 optimize_pi = function(matrix_lik, pi_init = NULL,
                        prior=NULL,
                        optmethod=c("mixSQP","mixIP","mixEM","cxxMixSquarem"),
@@ -41,14 +41,6 @@ optimize_pi = function(matrix_lik, pi_init = NULL,
                    "switching to optmethod = \"mixSQP\""))
      optmethod <- "mixSQP"
    }
-
-  if(optmethod == "mixIP"){control = ashr:::set_control_mixIP(control)
-  }else if(optmethod == 'mixEM' || optmethod == 'cxxMixSquarem'){
-    control = ashr:::set_control_squarem(control, nrow(matrix_lik))
-  }else if(optmethod == 'mixSQP'){
-    control0 = list() # eps = 1e-6, delta = 1e-6
-    control = modifyList(control0, control, keep.null = TRUE)
-  }
 
   K = ncol(matrix_lik)
   if(missing(prior)){prior = rep(1,K)}
