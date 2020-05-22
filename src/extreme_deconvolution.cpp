@@ -46,20 +46,17 @@ extreme_deconvolution_rcpp(
 	int N = ydata.nrow(), dy = ydata.ncol(), d = xmean.ncol(), K = xmean.nrow(),
 	    slen = logfilename.size(), convloglen = convlogfilename.size();
 
-        bool fixamp_array[K];
-	bool fixmean_array[K];
-	bool fixcovar_array[K];
-	bool * fixamp   = &fixamp_array[0];
-	bool * fixmean  = &fixmean_array[0];
-	bool * fixcovar = &fixcovar_array[0];
+	bool* fixamp   = (bool*) R_alloc(K,sizeof(bool));
+	bool* fixmean  = (bool*) R_alloc(K,sizeof(bool));
+	bool* fixcovar = (bool*) R_alloc(K,sizeof(bool));
 	int2bool(fixamp_int,K,fixamp);
 	int2bool(fixmean_int,K,fixmean);
 	int2bool(fixcovar_int,K,fixcovar);
 	
 	// Set up logfiles
 	bool keeplog = true;
-	char logname[slen + 1];
-	char convlogname[convloglen + 1];
+	char* logname     = R_alloc(slen + 1,sizeof(char));
+	char* convlogname = R_alloc(convloglen + 1,sizeof(char));
 	int ss;
 
 	if (likeonly != 0 || slen <= 1) {
