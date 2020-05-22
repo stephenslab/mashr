@@ -29,7 +29,7 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
                                    fixmean = TRUE,
                                    ...)
   }else{
-    if(!is.null(data.L)){
+    if(!is.null(data$L)){
       ycovar = lapply(subset, function(i) data$L %*% (data$Shat_orig[i,] * t(data$V * data$Shat_orig[i,])) %*% t(data$L) )
     }else{
       ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V * data$Shat[i,]) )
