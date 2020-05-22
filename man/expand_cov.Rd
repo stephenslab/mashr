@@ -22,7 +22,8 @@ them by the grid values If usepointmass is TRUE then it adds a null
 component.
 }
 \description{
-Create expanded list of covariance matrices expanded by
-  grid, Sigma_{lk} = omega_l U_k
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
 \keyword{internal}

@@ -310,6 +310,10 @@ set_prior = function(K,prior){
 #' @title Create expanded list of covariance matrices expanded by
 #'   grid, Sigma_{lk} = omega_l U_k
 #' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param Ulist a list of covarance matrices
 #' 
 #' @param grid a grid of scalar values by which the covariance

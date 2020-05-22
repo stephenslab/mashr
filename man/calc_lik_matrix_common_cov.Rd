@@ -19,8 +19,12 @@ Ulist[p], V), where V is same for each bhat
 }
 \description{
 computes matrix of likelihoods for each of J rows of
-Bhat for each of P prior covariances; special case when standard
-errors and variances are all same across j.
+  Bhat for each of P prior covariances; special case when standard
+  errors and variances are all same across j.
+
+  This is an internal (non-exported) function. This help page
+  provides additional documentation mainly intended for developers
+  and expert users.
 }
 \details{
 Compared with \code{calc_lik_matrix} this function

@@ -29,7 +29,8 @@ the fitted mixture: a list of mixture proportions and
 covariance matrices
 }
 \description{
-Fit extreme deconvolution to mash data using TEEM method
-developed by Y. Yang and M Stephens
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
 \keyword{internal}

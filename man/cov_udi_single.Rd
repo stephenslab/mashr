@@ -15,6 +15,8 @@ cov_udi_single(data, model)
 returns a named list of one element
 }
 \description{
-Computes the covariance matrix for a single UDI model
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
 \keyword{internal}

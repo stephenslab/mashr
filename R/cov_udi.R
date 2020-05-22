@@ -32,6 +32,10 @@ cov_udi = function(data, model = udi_model_matrix(n_conditions(data))) {
 
 #' @title Computes the covariance matrix for a single UDI model
 #' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param data a mash data object
 #' 
 #' @param model a vector of length R of "U","D" and "I"
@@ -86,6 +90,11 @@ names_cov_udi = function(model){
 
 #' @title Create a matrix whose rows contain all possible
 #' combinations of the U,D,I models that are allowed.
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param R the number of conditions
 #' 
 #' @return a matrix that is Nmodel by R with each row containing a

@@ -22,7 +22,9 @@ the fitted mixture: a list of mixture proportions and
 covariance matrices
 }
 \description{
-Fit extreme deconvolution to mash data using Bovy et al 2011
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
 \details{
 This is a wrapper to ExtremeDeconvolution::extreme_deconvolution

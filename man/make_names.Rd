@@ -12,6 +12,10 @@ make_names(names, suffixes)
 \item{suffixes}{}
 }
 \description{
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
+
 Adds _suffixes to names for each element of suffixes
 }
 \keyword{internal}

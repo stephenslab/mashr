@@ -95,6 +95,10 @@ cov_singletons = function(data){
 #' condition-specific effects in first condition only; used for
 #' testing purposes
 #' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' 
 #' @return an R by R matrix with all 0s except the (1,1) element is 1
@@ -112,6 +116,10 @@ cov_first_singleton = function(data){
 
 #' @title Compute an R by R matrix of all 1s
 #' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' 
 #' @return a list with 1 entry, the R by R matrix of all 1s
@@ -124,6 +132,10 @@ cov_equal_effects = function(data){
 }
 
 #' @title Compute an R by R matrix of all 0s
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
 #' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' 
@@ -138,6 +150,10 @@ cov_all_zeros = function(data){
 
 #' @title Compute covariance matrices with diagonal element 1 and
 #' off-diagonal element corr
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
 #' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' 
@@ -160,6 +176,10 @@ cov_simple_het = function(data, corr=c(0.25,0.5,0.75)){
 
 #' @title Scale each covariance matrix in list Ulist by a scalar in
 #' vector grid
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
 #' 
 #' @param Ulist a list of matrices
 #' 
@@ -196,6 +216,10 @@ normalize_cov = function(U){
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}
 
 #' @title Create names for covariance matrices
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
 #' 
 #' @param names a string
 #' 

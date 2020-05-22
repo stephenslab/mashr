@@ -1,5 +1,9 @@
 #' @title Fit extreme deconvolution to mash data using Bovy et al 2011
 #' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param data mash data object
 #' 
 #' @param Ulist_init a list of covariance matrices to initialize to
@@ -47,6 +51,10 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
 
 #' @title Fit extreme deconvolution to mash data using TEEM method
 #' developed by Y. Yang and M Stephens
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
 #' 
 #' @param data mash data object
 #' 

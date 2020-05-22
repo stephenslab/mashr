@@ -244,6 +244,10 @@ contrast_matrix = function(R, ref, name=1:R){
 
 #' @title Create a data object for mash contrast analysis
 #' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param mashdata a mash data object containing the Bhat matrix,
 #' standard errors, V; created using \code{mash_set_data}
 #' 

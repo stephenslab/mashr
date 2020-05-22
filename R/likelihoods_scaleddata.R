@@ -14,8 +14,12 @@
 #' @title Compute conditional likelihoods for bhat vector.
 #'
 #' @description Computes vector of likelihoods for bhat for each of P
-#'     prior covariances.
+#'   prior covariances.
 #'
+#'   This is an internal (non-exported) function. This help page
+#'   provides additional documentation mainly intended for developers
+#'   and expert users.
+#' 
 #' @param bhat bhat vector (length R)
 #'
 #' @param V R x R covariance matrix for likelihood.
@@ -38,8 +42,12 @@ calc_lik_vector <- function(bhat,V,Ulist,log = FALSE)
 #' @title calc_lik_matrix_common_cov
 #' 
 #' @description computes matrix of likelihoods for each of J rows of
-#' Bhat for each of P prior covariances; special case when standard
-#' errors and variances are all same across j.
+#'   Bhat for each of P prior covariances; special case when standard
+#'   errors and variances are all same across j.
+#' 
+#'   This is an internal (non-exported) function. This help page
+#'   provides additional documentation mainly intended for developers
+#'   and expert users.
 #' 
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #' 
@@ -75,8 +83,12 @@ calc_lik_matrix_common_cov = function(data, Ulist, log = FALSE){
 #' @title Compute matrix of conditional likelihoods.
 #'
 #' @description computes matrix of condition likelihoods for each of J
-#'     rows of Bhat for each of P prior covariances.
+#'   rows of Bhat for each of P prior covariances.
 #'
+#'   This is an internal (non-exported) function. This help page
+#'   provides additional documentation mainly intended for developers
+#'   and expert users.
+#' 
 #' @param data A \code{mash} data object; e.g., created by
 #'     \code{\link{mash_set_data}}.
 #'
@@ -166,8 +178,12 @@ calc_lik_matrix <- function (data, Ulist, log = FALSE, mc.cores = 1,
 #' @title Calculate matrix of relative likelihoods.
 #'
 #' @description Computes matrix of relative likelihoods for each of J
-#'     rows of Bhat for each of P prior covariances.
+#'   rows of Bhat for each of P prior covariances.
 #'
+#'   This is an internal (non-exported) function. This help page
+#'   provides additional documentation mainly intended for developers
+#'   and expert users.
+#' 
 #' @param data A \code{mash} data object; e.g., created by
 #'     \code{\link{mash_set_data}}.
 #'

@@ -22,7 +22,10 @@
 #' @return numeric vector specifying the optimal mixture weights
 #' 
 #' @importFrom assertthat are_equal
-#' @importFrom ashr mixIP mixEM cxxMixSquarem mixSQP
+#' @importFrom ashr mixIP
+#' @importFrom ashr mixEM
+#' @importFrom ashr cxxMixSquarem
+#' @importFrom ashr mixSQP
 #' 
 #' @keywords internal
 #' 
