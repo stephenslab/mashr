@@ -102,7 +102,8 @@ connected to Internet while running these commands):
 + Prior to submitting the package to CRAN, the following modifications
 need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; (2)
 remove the `flash_mash.Rmd` vignette; (3) remove "flashr" from
-`Suggests:` in `DESCRIPTION`.
+`Suggests:` in `DESCRIPTION`; (4) Make sure version number is of the
+form x.y.z.
 
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
