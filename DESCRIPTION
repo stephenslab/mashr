@@ -29,7 +29,6 @@ Depends: R (>= 3.3.0),
 Imports:
     assertthat,
     utils,
-    parallel,
     stats,
     plyr,
     rmeta,
