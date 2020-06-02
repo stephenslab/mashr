@@ -2,7 +2,7 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.25
+Version: 0.2.26
 Date: 2020-06-02
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
@@ -25,6 +25,7 @@ Description: Implements the multivariate adaptive shrinkage (mash)
 URL: http://github.com/stephenslab/mashr
 BugReports: http://github.com/stephenslab/mashr/issues
 License: BSD_3_clause + file LICENSE
+Copyright: file COPYRIGHTS
 LazyData: true
 SystemRequirements: C++11
 Depends: R (>= 3.3.0),
