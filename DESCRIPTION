@@ -2,8 +2,8 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.23
-Date: 2020-05-25
+Version: 0.2.24
+Date: 2020-06-02
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
@@ -11,11 +11,11 @@ Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Yunqi","Yang",role="ctb"),
              person("Peter","Carbonetto",role=c("aut","cre"),
                     email="peter.carbonetto@gmail.com"))
-Description: Implements the Multivariate Adaptive Shrinkage (mash)
+Description: Implements the multivariate adaptive shrinkage (mash)
     method of Urbut et al (2019) <DOI:10.1038/s41588-018-0268-8> for
     estimating and testing large numbers of effects in many conditions
-    (or many outcomes). Mash takes an Empirical Bayes approach to
-    testing and effect estimation: it estimates patterns of similarity
+    (or many outcomes). Mash takes an empirical Bayes approach to
+    testing and effect estimation; it estimates patterns of similarity
     among conditions, then exploits these patterns to improve accuracy
     of the effect estimates. The core linear algebra is implemented in
     C++ for fast model fitting and posterior computation.
