@@ -1,27 +1,32 @@
 #' @title Compute a list of covariance matrices corresponding to the
 #' "Unassociated", "Directly associated" and "Indirectly associated"
 #' models
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @param model a model matrix with R columns, where R is the number
 #' of conditions in the data; each row should be a vector of length R
 #' with elements "U","D" and "I" indicating whether each effect is
 #' Unassociated, Directly associated or Indirectly associated
-#' 
+#'
 #' @return a named list of covariance matrices
-#' 
+#'
 #' @details If model is specified then this returns the covariance
 #' matrices for those models. The default creates all possible models.
 #' For a desription of the "Unassociated", "Directly associated" and
 #' "Indirectly associated" models see Stephens M (2013), A unified
 #' framework for Association Analysis with Multiple Related
 #' Phenotypes, PloS ONE.
-#' 
+#'
+#' @examples
+#' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+#' cov_udi(data)
+#' cov_udi(data,c('I','D'))
+#'
 #' @importFrom plyr alply
-#' 
+#'
 #' @export
-#' 
+#'
 cov_udi = function(data, model = udi_model_matrix(n_conditions(data))) {
   if(is.vector(model)){model = matrix(model,nrow=1)}
   res = alply(model, 1, cov_udi_single, data = data)
@@ -31,19 +36,19 @@ cov_udi = function(data, model = udi_model_matrix(n_conditions(data))) {
 }
 
 #' @title Computes the covariance matrix for a single UDI model
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param data a mash data object
-#' 
+#'
 #' @param model a vector of length R of "U","D" and "I"
 #'
 #' @return returns a named list of one element
 #'
 #' @keywords internal
-#' 
+#'
 cov_udi_single = function(data, model) {
   R = n_conditions(data)
   V = data$V
@@ -90,19 +95,19 @@ names_cov_udi = function(model){
 
 #' @title Create a matrix whose rows contain all possible
 #' combinations of the U,D,I models that are allowed.
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param R the number of conditions
-#' 
+#'
 #' @return a matrix that is Nmodel by R with each row containing a
 #' vector of "U", "D" and "I" characters corresponding to a valide
 #' model. Constraint is that there is at least one "D" in each row
 #'
 #' @keywords internal
-#' 
+#'
 udi_model_matrix = function(R) {
   all = expand.grid(rep(list(c("U", "D", "I")), R))
   nD = apply(all, 1, function(x) {

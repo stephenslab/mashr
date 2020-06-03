@@ -1,20 +1,25 @@
 #' @title Estimate null correlations (simple)
-#' 
+#'
 #' @description Estimates a null correlation matrix from data using
 #' simple z score threshold
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @param z_thresh the z score threshold below which to call an effect null
-#' 
+#'
 #' @param est_cor whether to estimate correlation matrix (TRUE) or the
 #' covariance matrix (FALSE).
-#' 
+#'
 #' @details Returns a simple estimate of the correlation matrix (or
 #' covariance matrix) among conditions under the null.  Specifically,
 #' the simple estimate is the empirical correlation (or covariance)
 #' matrix of the z scores for those effects that have (absolute) z
 #' score < z_thresh in all conditions.
+#'
+#'  @examples
+#'  simdata = simple_sims(50,5,1)
+#'  data = mash_set_data(simdata$Bhat, simdata$Shat)
+#'  estimate_null_correlation_simple(data)
 #'
 #' @importFrom stats cov2cor
 #' @importFrom stats cov
@@ -37,35 +42,35 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 }
 
 #' @title Estimate null correlations
-#' 
+#'
 #' @description Estimates a null correlation matrix from data
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @param Ulist a list of covariance matrices to use
-#' 
+#'
 #' @param init the initial value for the null correlation. If it is
 #' not given, we use result from
 #' \code{estimate_null_correlation_adhoc}
-#' 
+#'
 #' @param max_iter maximum number of iterations to perform
-#' 
+#'
 #' @param tol convergence tolerance
-#' 
+#'
 #' @param est_cor whether to estimate correlation matrix (TRUE) or the
 #' covariance matrix (FALSE)
-#' 
+#'
 #' @param track_fit add an attribute \code{trace} to output that saves
 #' current values of all iterations
-#' 
+#'
 #' @param prior indicates what penalty to use on the likelihood, if any
-#' 
+#'
 #' @param details whether to return details of the model, if it is
 #' TRUE, the number of iterations and the value of objective functions
 #' will be returned
-#' 
+#'
 #' @param ... other parameters pass to \code{mash}
-#' 
+#'
 #' @details Returns the estimated correlation matrix (or covariance
 #' matrix) among conditions under the null.  The correlation (or
 #' covariance) matrix is estimated by maximum likelihood.
@@ -81,11 +86,21 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #'
 #' @return the estimated correlation (or covariance) matrix and the
 #' fitted mash model \cr
-#' 
+#'
 #' \item{V}{estimated correlation (or covariance) matrix}
-#' 
+#'
 #' \item{mash.model}{fitted mash model}
-#' 
+#'
+#' @examples
+#' simdata = simple_sims(100,5,1)
+#' m.1by1 = mash_1by1(mash_set_data(simdata$Bhat,simdata$Shat))
+#' strong.subset = get_significant_results(m.1by1,0.05)
+#' random.subset = sample(1:nrow(simdata$Bhat),20)
+#' data.strong = mash_set_data(simdata$Bhat[strong.subset,], simdata$Shat[strong.subset,])
+#' data.tmp = mash_set_data(simdata$Bhat[random.subset,], simdata$Shat[random.subset,])
+#' U_pca = cov_pca(data.strong, 3)
+#' U_ed = cov_ed(data.strong, U_pca)
+#' Vhat = estimate_null_correlation(data.tmp, U_ed)
 #' @importFrom stats cov2cor
 #'
 #' @export

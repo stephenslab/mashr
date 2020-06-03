@@ -32,3 +32,9 @@ For a desription of the "Unassociated", "Directly associated" and
 framework for Association Analysis with Multiple Related
 Phenotypes, PloS ONE.
 }
+\examples{
+data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+cov_udi(data)
+cov_udi(data,c('I','D'))
+
+}

@@ -18,3 +18,4 @@ f[k,]' and named name_k
 \description{
 produce list of rank-1 covariance matrices corresponding to rows of f
 }
+\keyword{internal}

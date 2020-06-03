@@ -24,3 +24,8 @@ covariance matrix
 Perform PCA on data and return list of candidate covariance
 matrices
 }
+\examples{
+data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+cov_pca(data,2)
+
+}

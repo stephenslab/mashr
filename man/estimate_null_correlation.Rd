@@ -69,3 +69,14 @@ Warning: This method could take some time.  The
 \code{\link{estimate_null_correlation_simple}} gives a quick
 approximation for the null correlation (or covariance) matrix.
 }
+\examples{
+simdata = simple_sims(100,5,1)
+m.1by1 = mash_1by1(mash_set_data(simdata$Bhat,simdata$Shat))
+strong.subset = get_significant_results(m.1by1,0.05)
+random.subset = sample(1:nrow(simdata$Bhat),20)
+data.strong = mash_set_data(simdata$Bhat[strong.subset,], simdata$Shat[strong.subset,])
+data.tmp = mash_set_data(simdata$Bhat[random.subset,], simdata$Shat[random.subset,])
+U_pca = cov_pca(data.strong, 3)
+U_ed = cov_ed(data.strong, U_pca)
+Vhat = estimate_null_correlation(data.tmp, U_ed)
+}

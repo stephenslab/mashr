@@ -32,3 +32,11 @@ Runs the extreme deconvolution algorithm from Bovy et al
 matrices The default is to initialize the EM algorithm from
 data2cov_pca with 5 PCs
 }
+\examples{
+data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+U_pca = cov_pca(data,2)
+U_x = apply(data$Bhat, 2, function(x) x - mean(x))
+U_xx = t(U_x) \%*\% U_x / nrow(U_x)
+cov_ed(data,c(U_pca, list(xx = U_xx)))
+
+}

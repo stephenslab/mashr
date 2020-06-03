@@ -1,7 +1,7 @@
 #' @title Compute a list of canonical covariance matrices
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @param cov_methods a vector of strings indicating the matrices to
 #' be used: "identity" for the identity (effects are independent among
 #' conditions); "singletons" for the set of matrices with just one
@@ -11,21 +11,21 @@
 #' on the diagonal and all off-diagonal elements equal to 0.25, 0.5 or
 #' 0.75; see \code{cov_simple_het} for details; (effects are
 #' correlated among conditions).
-#' 
+#'
 #' @return a list of covariance matrices
-#' 
+#'
 #' @details The default is that this function computes covariance matrices corresponding
 #' to the "bmalite" models.
-#' 
+#'
 #' @examples data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #'  cov_canonical(data)
 #'  cov_canonical(data,"singletons")
 #'  cov_canonical(data,c("id","sing")) # can use partial matching of names
-#' 
+#'
 #' @importFrom utils modifyList
-#' 
+#'
 #' @export
-#' 
+#'
 cov_canonical = function(data,
                          cov_methods= c("identity","singletons","equal_effects","simple_het")){
   res = list()
@@ -94,19 +94,17 @@ cov_singletons = function(data){
 #' @title Compute all the singleton matrices corresponding to
 #' condition-specific effects in first condition only; used for
 #' testing purposes
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @return an R by R matrix with all 0s except the (1,1) element is 1
-#' 
-#' @export
 #'
 #' @keywords internal
-#' 
+#'
 cov_first_singleton = function(data){
   R = n_conditions(data)
   res = matrix(0,nrow=R,ncol=R)
@@ -115,34 +113,34 @@ cov_first_singleton = function(data){
 }
 
 #' @title Compute an R by R matrix of all 1s
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @return a list with 1 entry, the R by R matrix of all 1s
 #'
 #' @keywords internal
-#' 
+#'
 cov_equal_effects = function(data){
   R = n_conditions(data)
   matrix(1,nrow=R,ncol=R)
 }
 
 #' @title Compute an R by R matrix of all 0s
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @return a list with 1 entry, the R by R matrix of all 0s
 #'
 #' @keywords internal
-#' 
+#'
 cov_all_zeros = function(data){
   R = ncol(data$Bhat)
   matrix(0,nrow=R,ncol=R)
@@ -150,19 +148,19 @@ cov_all_zeros = function(data){
 
 #' @title Compute covariance matrices with diagonal element 1 and
 #' off-diagonal element corr
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
-#' 
+#'
 #' @param corr a vector containing the correlations to be used
-#' 
+#'
 #' @return a list of matrices, one for each value in corr
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 cov_simple_het = function(data, corr=c(0.25,0.5,0.75)){
   R = n_conditions(data)
   simplehet=list()
@@ -176,20 +174,20 @@ cov_simple_het = function(data, corr=c(0.25,0.5,0.75)){
 
 #' @title Scale each covariance matrix in list Ulist by a scalar in
 #' vector grid
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param Ulist a list of matrices
-#' 
+#'
 #' @param grid a vector of scaling factors (standard deviaions)
-#' 
+#'
 #' @return a list with length length(Ulist)*length(grid), with values
 #' grid[i]^2*Ulist[[j]]
 #'
 #' @keywords internal
-#' 
+#'
 scale_cov = function(Ulist, grid){
   orig_names = names(Ulist)
   Ulist = unlist( lapply(grid^2, function(x){multiply_list(Ulist,x)}), recursive=FALSE)
@@ -216,19 +214,19 @@ normalize_cov = function(U){
 normalize_Ulist = function(Ulist){lapply(Ulist,normalize_cov)}
 
 #' @title Create names for covariance matrices
-#' 
+#'
 #' @description This is an internal (non-exported) function. This help
 #'   page provides additional documentation mainly intended for
 #'   developers and expert users.
-#' 
+#'
 #' @param names a string
-#' 
+#'
 #' @param suffixes
-#' 
+#'
 #' @description Adds _suffixes to names for each element of suffixes
 #'
 #' @keywords internal
-#' 
+#'
 make_names = function(names,suffixes){paste0(names,"_",suffixes)}
 
 check_dim = function(mat,R){
