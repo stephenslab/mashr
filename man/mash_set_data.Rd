@@ -58,3 +58,8 @@ A data object for passing into mash functions.
 \description{
 Create a data object for mash analysis.
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+
+}

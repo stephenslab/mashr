@@ -18,3 +18,7 @@ there is no reference group, it can be the string 'mean'.}
 \description{
 Create contrast matrix
 }
+\examples{
+contrast_matrix(5, 'mean')
+
+}

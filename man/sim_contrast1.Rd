@@ -21,3 +21,7 @@ analysis
 \details{
 There is no true deviation exists in this case
 }
+\examples{
+sim_contrast1(100,5)
+
+}

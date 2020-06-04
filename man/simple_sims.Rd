@@ -21,3 +21,7 @@ The simulation consists of equal numbers of four different
 types of effects: null, equal among conditions, present only in
 first condition, independent across conditions
 }
+\examples{
+simple_sims(100, 5)
+
+}

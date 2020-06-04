@@ -26,3 +26,9 @@ data. The first one is setting the reference group, so the mash
 data can be used for commonbaseline analysis. The other one is
 updating the null correlation matrix.
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+mash_update_data(data, 'mean')
+
+}

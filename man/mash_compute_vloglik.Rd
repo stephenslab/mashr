@@ -36,3 +36,10 @@ simulations, where you might want to compute the likelihood under
 the "true" g. When used in this way the user is responsible for
 making sure that the g makes sense with the alpha set in data.
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+mash_compute_vloglik(m,data)
+
+}

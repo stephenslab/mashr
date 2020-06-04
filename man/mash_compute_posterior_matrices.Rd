@@ -47,3 +47,10 @@ A list of posterior matrices
 Compute posterior matrices for fitted mash object on new
 data
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+mash_compute_posterior_matrices(m,data)
+
+}

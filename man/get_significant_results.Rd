@@ -25,3 +25,9 @@ by order of most significant to least
 \description{
 Find effects that are significant in at least one condition
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+get_significant_results(m)
+}

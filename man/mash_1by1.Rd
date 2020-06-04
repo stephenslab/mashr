@@ -28,3 +28,8 @@ running \code{ash} from package \code{ashr} on data from each
 condition, one at a time. May be a useful first step to identify
 top hits in each condition before a mash analysis.
 }
+\examples{
+simdata = simple_sims(50,5,1)
+mash_1by1(simdata)
+
+}

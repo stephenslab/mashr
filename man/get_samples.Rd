@@ -12,3 +12,9 @@ get_samples(m)
 \description{
 Return samples from a mash object
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data), posterior_samples=5, algorithm='R')
+get_samples(m)
+}

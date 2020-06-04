@@ -36,9 +36,10 @@ effects that are within a factor `factor` of one another. The
 results are returned as an R by R matrix.
 }
 \examples{
-\dontrun{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data), posterior_samples=5, algorithm='R')
 get_pairwise_sharing_from_samples(m) # sharing by magnitude (same sign)
 get_pairwise_sharing_from_samples(m, factor=0) # sharing by sign
 get_pairwise_sharing_from_samples(m, FUN=abs) # sharing by magnitude when sign is ignored
-}
 }

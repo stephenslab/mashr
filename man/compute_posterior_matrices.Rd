@@ -69,3 +69,4 @@ The return value is a list containing the following
 \description{
 Compute posterior matrices.
 }
+\keyword{internal}

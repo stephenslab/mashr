@@ -19,3 +19,7 @@ The simulation consists of five conditions with two types
 of effecc those present (and identical) in first two conditions and
 those present (and identical) in last three conditions
 }
+\examples{
+simple_sims2(100, 5)
+
+}

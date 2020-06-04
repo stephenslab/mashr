@@ -33,9 +33,10 @@ tissues. Then compute what fraction of these have an estimated
 another. The results are returned as an R by R matrix.
 }
 \examples{
-\dontrun{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
 get_pairwise_sharing(m) # sharing by magnitude (same sign)
 get_pairwise_sharing(m, factor=0) # sharing by sign
 get_pairwise_sharing(m, FUN=abs) # sharing by magnitude when sign is ignored
-}
 }
