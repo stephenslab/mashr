@@ -24,9 +24,10 @@ covariance matrix) among conditions under the null.  Specifically,
 the simple estimate is the empirical correlation (or covariance)
 matrix of the z scores for those effects that have (absolute) z
 score < z_thresh in all conditions.
+}
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+estimate_null_correlation_simple(data)
 
- @examples
- simdata = simple_sims(50,5,1)
- data = mash_set_data(simdata$Bhat, simdata$Shat)
- estimate_null_correlation_simple(data)
 }
