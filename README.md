@@ -112,7 +112,7 @@ were inappropriately defined in one of the RcppGSL headers. A
 workaround for this linking issue is to remove `#include <RcppGSL.h>`
 from `RcppExports.cpp`, and move any RcppGSL-related function
 definitions to `extreme_deconvolution.cpp`. For an example of what
-this looks like, see commit xxx.
+this looks like, see commit 4a41f14.
 
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
