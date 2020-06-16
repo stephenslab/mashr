@@ -105,6 +105,15 @@ remove the `flash_mash.Rmd` vignette; (3) remove "flashr" from
 `Suggests:` in `DESCRIPTION`; (4) Make sure version number is of the
 form x.y.z.
 
++ For one of the Solaris computing environments, `rhub::check(platform
+= "solaris-x86-patched-ods")`, we encountered an
+[RcppGSL linking issue][rcppgsl-issue], probably due to symbols that
+were inappropriately defined in one of the RcppGSL headers. A
+workaround for this linking issue is to remove `#include <RcppGSL.h>`
+from `RcppExports.cpp`, and move any RcppGSL-related function
+definitions to `extreme_deconvolution.cpp`. For an example of what
+this looks like, see commit xxx.
+
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
@@ -115,3 +124,4 @@ form x.y.z.
 [vignette-data-driven-cov]: https://stephenslab.github.io/mashr/articles/intro_mash_dd.html
 [vignette-non-canonical]: https://stephenslab.github.io/mashr/articles/simulate_noncanon.html
 [uncrustify]: http://uncrustify.sourceforge.net
+[rcppgsl-issue]: https://github.com/eddelbuettel/rcppgsl/issues/25
