@@ -17,7 +17,8 @@ is [here][mashr-pkg-for-paper].
 
 ## Quick Start
 
-1. Follow the setup instructions below.
+1. Install mashr from CRAN: `install.packages("mashr")`. For more
+detailed setup instructions, see below.
 
 2. See the [introductory vignette][vignette-intro] for an
 introduction to mashr.
@@ -28,7 +29,7 @@ and [Simulation with non-canonical matrices][vignette-non-canonical].
 
 ## Citing this work
 
-If you find the masr package or any of the source code in this
+If you find the mashr package or any of the source code in this
 repository useful for your work, please cite:
 
 > Sarah Urbut, Gao Wang, Peter Carbonetto and Matthew Stephens
@@ -45,13 +46,13 @@ install.packages("mashr")
 ```
 
 For Mac and Windows, usually the package is precompiled, so no
-compiler setup is required. If you have Linux, and in some rare cases,
-you will need to make sure that your R installation is properly set up
-to compile packages with C++ source; in particular, the C++ compiler
-programs supported by your version of R should be installed on your
-computer, and R should be correctly configured to call these compilers
-when installing packages from source. For more information, see the
-[CRAN documentation][cran-docs].
+additional compiler setup is required. If you have Linux, and in some
+other rare cases, you will need to make sure that your R installation
+is properly set up to compile packages with C++ source; in particular,
+the C++ compiler programs supported by your version of R should be
+installed on your computer, and R should be correctly configured to
+call these compilers when installing packages from source. For more
+information, see the [CRAN documentation][cran-docs].
 
 Alternatively, you may use [devtools][devtools] to install the latest
 version of mashr from GitHub:
@@ -62,7 +63,7 @@ devtools::install_github("stephenslab/mashr")
  ```
    
 This command should automatically install any missing dependencies
-that are available from CRAN. 
+that are available from CRAN and GitHub. 
 
 ## Developer notes
 
