@@ -60,7 +60,7 @@ version of mashr from GitHub:
 ```R
 install.packages("devtools")
 devtools::install_github("stephenslab/mashr")
- ```
+```
    
 This command should automatically install any missing dependencies
 that are available from CRAN and GitHub. 
