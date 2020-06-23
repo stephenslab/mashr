@@ -60,7 +60,7 @@ Please follow these steps to install mashr.
 
     ```R
     install.packages("devtools")
-    devtools::install_github("stephenslab")
+    devtools::install_github("stephenslab/mashr")
     ```
    
    This command should automatically install any missing dependencies
