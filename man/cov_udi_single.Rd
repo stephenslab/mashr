@@ -2,16 +2,21 @@
 % Please edit documentation in R/cov_udi.R
 \name{cov_udi_single}
 \alias{cov_udi_single}
-\title{computes the covariance matrix for a single UDI model}
+\title{Computes the covariance matrix for a single UDI model}
 \usage{
 cov_udi_single(data, model)
 }
 \arguments{
 \item{data}{a mash data object}
 
-\item{model}{a vector of length R of "U","D" and "I"
-returns a named list of one element}
+\item{model}{a vector of length R of "U","D" and "I"}
+}
+\value{
+returns a named list of one element
 }
 \description{
-computes the covariance matrix for a single UDI model
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

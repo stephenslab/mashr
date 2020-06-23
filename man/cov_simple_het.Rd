@@ -2,7 +2,8 @@
 % Please edit documentation in R/compute_covs.R
 \name{cov_simple_het}
 \alias{cov_simple_het}
-\title{Compute covariance matrices with diagonal element 1 and off-diagonal element corr}
+\title{Compute covariance matrices with diagonal element 1 and
+off-diagonal element corr}
 \usage{
 cov_simple_het(data, corr = c(0.25, 0.5, 0.75))
 }
@@ -15,5 +16,8 @@ cov_simple_het(data, corr = c(0.25, 0.5, 0.75))
 a list of matrices, one for each value in corr
 }
 \description{
-Compute covariance matrices with diagonal element 1 and off-diagonal element corr
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

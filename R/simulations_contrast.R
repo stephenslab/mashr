@@ -1,10 +1,19 @@
-#' Create simplest simulation, cj = mu 1
-#' data used for contrast analysis
+#' @title Create simplest simulation, cj = mu 1 data used for contrast
+#' analysis
+#'
 #' @param nsamp number of samples of each type
+#'
 #' @param ncond number of conditions
+#'
 #' @param err_sd the standard deviation of the errors
+#'
 #' @details There is no true deviation exists in this case
+#'
+#' @examples
+#' sim_contrast1(100,5)
+#'
 #' @export
+#'
 sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
   # generate scalar
   Cs = rnorm(nsamp, 10)
@@ -32,12 +41,15 @@ sim_contrast1 = function(nsamp = 100, ncond = 5, err_sd=sqrt(0.5)){
 #'
 #' @param err_sd The standard deviation of the errors.
 #'
-#' @details The first condition is the reference group. The deviations are the difference
-#'   between the subsequent conditions with the reference group.
-#'   The simulation consists of 90% null deviations, 10% non-nulls.
-#'   The non-nulls consist of equal numbers of three different types of deviations:
-#'   equal among conditions, present only in the first subsequent condition,
-#'   independent across conditions.
+#' @details The first condition is the reference group. The deviations
+#' are the difference between the subsequent conditions with the
+#' reference group.  The simulation consists of 90% null deviations,
+#' 10% non-nulls.  The non-nulls consist of equal numbers of three
+#' different types of deviations: equal among conditions, present only
+#' in the first subsequent condition, independent across conditions.
+#'
+#' @examples
+#' sim_contrast2(100,5)
 #'
 #' @export
 #'
@@ -81,5 +93,3 @@ sim_contrast2 = function(nsamp = 1000, ncond = 5, err_sd=sqrt(0.5)){
   colnames(Shat) = col_ids
   return(list(C=C,Chat=Chat,Shat=Shat))
 }
-
-

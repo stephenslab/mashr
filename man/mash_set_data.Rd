@@ -37,14 +37,18 @@ freedom are equal. Default is inf (for large samples).}
 Bhat/Shat. Shat and df should not be specified when pval is
 provided.}
 
-\item{V}{an R by R matrix / [R x R x J] array of effect specific correlation matrix of error correlations; must
-be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
-V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
-Defaults to identity.}
+\item{V}{an R by R matrix / [R x R x J] array of effect specific
+correlation matrix of error correlations; must be positive
+definite. [So Bhat_j distributed as N(B_j,diag(Shat_j) V_j
+diag(Shat_j)) where _j denotes the jth row of a matrix]. Defaults
+to identity.}
 
-\item{zero_check_tol}{a small positive number as threshold for Shat to be considered zero if any Shat is smaller or equal to this number.}
+\item{zero_check_tol}{a small positive number as threshold for Shat
+to be considered zero if any Shat is smaller or equal to this
+number.}
 
-\item{zero_Bhat_Shat_reset}{Replace zeros in Shat matrix to given value if the corresponding Bhat are also zeros.}
+\item{zero_Bhat_Shat_reset}{Replace zeros in Shat matrix to given
+value if the corresponding Bhat are also zeros.}
 
 \item{zero_Shat_reset}{Replace zeros in Shat matrix to given value.}
 }
@@ -53,4 +57,9 @@ A data object for passing into mash functions.
 }
 \description{
 Create a data object for mash analysis.
+}
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+
 }

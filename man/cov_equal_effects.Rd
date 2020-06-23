@@ -13,5 +13,8 @@ cov_equal_effects(data)
 a list with 1 entry, the R by R matrix of all 1s
 }
 \description{
-Compute an R by R matrix of all 1s
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

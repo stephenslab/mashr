@@ -2,7 +2,8 @@
 % Please edit documentation in R/ed.R
 \name{teem_wrapper}
 \alias{teem_wrapper}
-\title{Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens}
+\title{Fit extreme deconvolution to mash data using TEEM method
+developed by Y. Yang and M Stephens}
 \usage{
 teem_wrapper(
   data,
@@ -20,11 +21,16 @@ teem_wrapper(
 
 \item{Ulist_init}{a list of covariance matrices to initialize to}
 
-\item{subset}{the indices of the observations to be used (defaults to all of them)}
+\item{subset}{the indices of the observations to be used (defaults
+to all of them)}
 }
 \value{
-the fitted mixture: a list of mixture proportions and covariance matrices
+the fitted mixture: a list of mixture proportions and
+covariance matrices
 }
 \description{
-Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

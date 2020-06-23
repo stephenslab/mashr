@@ -24,3 +24,10 @@ The log-likelihood for each element is \eqn{p(Bhat_j |
   Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
   Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+mash_compute_loglik(m,data)
+
+}

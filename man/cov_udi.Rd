@@ -3,27 +3,38 @@
 \name{cov_udi}
 \alias{cov_udi}
 \title{Compute a list of covariance matrices corresponding to the
-"Unassociated", "Directly associated" and "Indirectly associated" models}
+"Unassociated", "Directly associated" and "Indirectly associated"
+models}
 \usage{
 cov_udi(data, model = udi_model_matrix(n_conditions(data)))
 }
 \arguments{
 \item{data}{a mash data object, eg as created by \code{mash_set_data}}
 
-\item{model}{a model matrix with R columns, where R is the number of conditions in the data;
-each row should be a vector of length R with elements "U","D" and "I" indicating whether each effect
-is Unassociated, Directly associated or Indirectly associated}
+\item{model}{a model matrix with R columns, where R is the number
+of conditions in the data; each row should be a vector of length R
+with elements "U","D" and "I" indicating whether each effect is
+Unassociated, Directly associated or Indirectly associated}
 }
 \value{
 a named list of covariance matrices
 }
 \description{
 Compute a list of covariance matrices corresponding to the
-"Unassociated", "Directly associated" and "Indirectly associated" models
+"Unassociated", "Directly associated" and "Indirectly associated"
+models
 }
 \details{
 If model is specified then this returns the covariance
 matrices for those models. The default creates all possible models.
-For a desription of the "Unassociated", "Directly associated" and "Indirectly associated" models
-see Stephens M (2013), A unified framework for Association Analysis with Multiple Related Phenotypes, PloS ONE.
+For a desription of the "Unassociated", "Directly associated" and
+"Indirectly associated" models see Stephens M (2013), A unified
+framework for Association Analysis with Multiple Related
+Phenotypes, PloS ONE.
+}
+\examples{
+data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+cov_udi(data)
+cov_udi(data,c('I','D'))
+
 }

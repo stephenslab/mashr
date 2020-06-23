@@ -14,15 +14,25 @@ get_n_significant_conditions(
 \arguments{
 \item{m}{the mash result (from joint or 1by1 analysis)}
 
-\item{thresh}{indicates the threshold below which to call signals significant}
+\item{thresh}{indicates the threshold below which to call signals
+significant}
 
-\item{conditions}{which conditions to include in check (default to all)}
+\item{conditions}{which conditions to include in check (default to
+all)}
 
-\item{sig_fn}{the significance function used to extract significance from mash object; eg could be ashr::get_lfsr or ashr::get_lfdr}
+\item{sig_fn}{the significance function used to extract
+significance from mash object; eg could be ashr::get_lfsr or
+ashr::get_lfdr}
 }
 \value{
 a vector containing the number of significant conditions
 }
 \description{
 Count number of conditions each effect is significant in
+}
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+get_n_significant_conditions(m)
 }

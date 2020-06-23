@@ -12,7 +12,9 @@ n by R matrix of observations (n units in R conditions); and
 \code{Shat}, an n by R matrix of standard errors (n units in R
 conditions),}
 
-\item{alpha}{Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).}
+\item{alpha}{Numeric value of alpha parameter in the model. alpha =
+0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable
+Z-scores (EZ).}
 
 \item{...}{optionally, other parameters to be passed to ash}
 }
@@ -25,4 +27,9 @@ Performs simple "condition-by-condition" analysis by
 running \code{ash} from package \code{ashr} on data from each
 condition, one at a time. May be a useful first step to identify
 top hits in each condition before a mash analysis.
+}
+\examples{
+simdata = simple_sims(50,5,1)
+mash_1by1(simdata)
+
 }

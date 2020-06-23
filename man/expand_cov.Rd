@@ -2,22 +2,28 @@
 % Please edit documentation in R/mash.R
 \name{expand_cov}
 \alias{expand_cov}
-\title{Create expanded list of covariance matrices expanded by grid, Sigma_{lk} = omega_l U_k}
+\title{Create expanded list of covariance matrices expanded by
+  grid, Sigma_{lk} = omega_l U_k}
 \usage{
 expand_cov(Ulist, grid, usepointmass = TRUE)
 }
 \arguments{
 \item{Ulist}{a list of covarance matrices}
 
-\item{grid}{a grid of scalar values by which the covariance matrices are to be sc}
+\item{grid}{a grid of scalar values by which the covariance
+matrices are to be sc}
 
-\item{usepointmass}{if TRUE adds a point mass at 0 (null component) to the list}
+\item{usepointmass}{if TRUE adds a point mass at 0 (null component)
+to the list}
 }
 \value{
-A list of covariance matrices
-This takes the covariance matrices in Ulist and multiplies them by the grid values
-If usepointmass is TRUE then it adds a null component.
+This takes the covariance matrices in Ulist and multiplies
+them by the grid values If usepointmass is TRUE then it adds a null
+component.
 }
 \description{
-Create expanded list of covariance matrices expanded by grid, Sigma_{lk} = omega_l U_k
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

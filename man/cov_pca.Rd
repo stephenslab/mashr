@@ -2,7 +2,8 @@
 % Please edit documentation in R/data2cov.R
 \name{cov_pca}
 \alias{cov_pca}
-\title{Perform PCA on data and return list of candidate covariance matrices}
+\title{Perform PCA on data and return list of candidate covariance
+matrices}
 \usage{
 cov_pca(data, npc, subset = NULL)
 }
@@ -11,12 +12,20 @@ cov_pca(data, npc, subset = NULL)
 
 \item{npc}{the number of PCs to use}
 
-\item{subset}{indices of the subset of data to use (set to NULL for all data)}
+\item{subset}{indices of the subset of data to use (set to NULL for
+all data)}
 }
 \value{
-Returns a list of covariance matrices: the npc rank-one covariance matrices based on the first npc PCs,
-and the rank npc covariance matrix
+Returns a list of covariance matrices: the npc rank-one
+covariance matrices based on the first npc PCs, and the rank npc
+covariance matrix
 }
 \description{
-Perform PCA on data and return list of candidate covariance matrices
+Perform PCA on data and return list of candidate covariance
+matrices
+}
+\examples{
+data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
+cov_pca(data,2)
+
 }

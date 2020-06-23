@@ -20,18 +20,26 @@
 #'   Bhat/Shat. Shat and df should not be specified when pval is
 #'   provided.
 #'
-#' @param V an R by R matrix / [R x R x J] array of effect specific correlation matrix of error correlations; must
-#'   be positive definite. [So Bhat_j distributed as N(B_j,diag(Shat_j)
-#'   V_j diag(Shat_j)) where _j denotes the jth row of a matrix].
-#'   Defaults to identity.
+#' @param V an R by R matrix / [R x R x J] array of effect specific
+#'   correlation matrix of error correlations; must be positive
+#'   definite. [So Bhat_j distributed as N(B_j,diag(Shat_j) V_j
+#'   diag(Shat_j)) where _j denotes the jth row of a matrix]. Defaults
+#'   to identity.
 #'
-#' @param zero_check_tol a small positive number as threshold for Shat to be considered zero if any Shat is smaller or equal to this number.
+#' @param zero_check_tol a small positive number as threshold for Shat
+#'   to be considered zero if any Shat is smaller or equal to this
+#'   number.
 #'
-#' @param zero_Bhat_Shat_reset Replace zeros in Shat matrix to given value if the corresponding Bhat are also zeros.
+#' @param zero_Bhat_Shat_reset Replace zeros in Shat matrix to given
+#'   value if the corresponding Bhat are also zeros.
 #'
 #' @param zero_Shat_reset Replace zeros in Shat matrix to given value.
 #'
 #' @return A data object for passing into mash functions.
+#'
+#' @examples
+#' simdata = simple_sims(50,5,1)
+#' data = mash_set_data(simdata$Bhat, simdata$Shat)
 #'
 #' @importFrom stats pt
 #'
@@ -136,13 +144,31 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 }
 
 #' @title Update the data object for mash analysis.
-#' @description This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
-#' can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
-#' @param mashdata mash data object ontaining the Bhat matrix, standard errors, V; created using \code{mash_set_data}
-#' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
-#' @param V an R by R matrix / [R x R x J] array of correlation matrix of error correlations
+#'
+#' @description This function can update two parts of the mash
+#' data. The first one is setting the reference group, so the mash
+#' data can be used for commonbaseline analysis. The other one is
+#' updating the null correlation matrix.
+#'
+#' @param mashdata mash data object ontaining the Bhat matrix,
+#' standard errors, V; created using \code{mash_set_data}
+#'
+#' @param ref the reference group. It could be a number between 1,...,
+#' R, R is number of conditions, or the name of reference group. If
+#' there is no reference group, it can be the string 'mean'.
+#'
+#' @param V an R by R matrix / [R x R x J] array of correlation matrix
+#' of error correlations
+#'
 #' @return a updated mash data object
+#
+#' @examples
+#' simdata = simple_sims(50,5,1)
+#' data = mash_set_data(simdata$Bhat, simdata$Shat)
+#' mash_update_data(data, 'mean')
+#'
 #' @export
+#'
 mash_update_data = function(mashdata, ref= NULL, V = NULL){
   if(class(mashdata) != 'mash'){
     stop('data is not a "mash" object')
@@ -185,11 +211,21 @@ mash_update_data = function(mashdata, ref= NULL, V = NULL){
   return(mashdata)
 }
 
-#' Create contrast matrix
+#' @title Create contrast matrix
+#'
 #' @param R the number of column for the contrast matrix
-#' @param ref the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.
+#'
+#' @param ref the reference group. It could be a number between 1,...,
+#' R, R is number of conditions, or the name of reference group. If
+#' there is no reference group, it can be the string 'mean'.
+#'
 #' @param name a length R vector contains the name for conditions
+#'
+#' @examples
+#' contrast_matrix(5, 'mean')
+#'
 #' @export
+#'
 contrast_matrix = function(R, ref, name=1:R){
   if(ref == 'mean'){
     L = matrix(-1/R, R, R)
@@ -218,10 +254,21 @@ contrast_matrix = function(R, ref, name=1:R){
   return(L)
 }
 
-#' Create a data object for mash contrast analysis
-#' @param mashdata a mash data object containing the Bhat matrix, standard errors, V; created using \code{mash_set_data}
+#' @title Create a data object for mash contrast analysis
+#'
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#'
+#' @param mashdata a mash data object containing the Bhat matrix,
+#' standard errors, V; created using \code{mash_set_data}
+#'
 #' @param L the contrast matrix
+#'
 #' @return a data object after the contrast transfermation
+#'
+#' @keywords internal
+#'
 mash_set_data_contrast = function(mashdata, L){
   # check data
   if(class(mashdata) != 'mash'){
@@ -277,12 +324,10 @@ get_cov = function(data,j){
   }
 }
 
-#' @title Check that all covariances are equal (Shat).
-#'
-#' @description checks if all rows of Shat are the same - if so
-#'     covariances are equal
-#'
-#' @param data A mash data object.
+# @title Check that all covariances are equal (Shat).
+# @description checks if all rows of Shat are the same - if so
+#   covariances are equal
+# @param data A mash data object.
 is_common_cov_Shat = function(data){
   if(is.null(data$L)){
     sum(1-duplicated(data$Shat, MARGIN=1)) == 1
@@ -291,11 +336,9 @@ is_common_cov_Shat = function(data){
   }
 }
 
-#' @title Check that all rows of Shat_alpha are the same.
-#'
-#' @description checks if all rows of Shat_alpha are the same
-#'
-#' @param data A mash data object.
+# @title Check that all rows of Shat_alpha are the same.
+# @description checks if all rows of Shat_alpha are the same
+# @param data A mash data object.
 is_common_cov_Shat_alpha = function(data){
   sum(1-duplicated(data$Shat_alpha, MARGIN=1)) == 1
 }

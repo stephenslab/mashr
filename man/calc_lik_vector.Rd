@@ -22,5 +22,10 @@ Vector of length P in which the pth element contains the
 }
 \description{
 Computes vector of likelihoods for bhat for each of P
-    prior covariances.
+  prior covariances.
+
+  This is an internal (non-exported) function. This help page
+  provides additional documentation mainly intended for developers
+  and expert users.
 }
+\keyword{internal}

@@ -2,7 +2,9 @@
 % Please edit documentation in R/compute_covs.R
 \name{cov_first_singleton}
 \alias{cov_first_singleton}
-\title{Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes}
+\title{Compute all the singleton matrices corresponding to
+condition-specific effects in first condition only; used for
+testing purposes}
 \usage{
 cov_first_singleton(data)
 }
@@ -13,5 +15,8 @@ cov_first_singleton(data)
 an R by R matrix with all 0s except the (1,1) element is 1
 }
 \description{
-Compute all the singleton matrices corresponding to condition-specific effects in first condition only; used for testing purposes
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

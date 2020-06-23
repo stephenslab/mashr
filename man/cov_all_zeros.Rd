@@ -13,5 +13,8 @@ cov_all_zeros(data)
 a list with 1 entry, the R by R matrix of all 0s
 }
 \description{
-Compute an R by R matrix of all 0s
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

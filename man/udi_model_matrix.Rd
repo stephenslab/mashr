@@ -11,11 +11,13 @@ udi_model_matrix(R)
 \item{R}{the number of conditions}
 }
 \value{
-a matrix that is Nmodel by R with each row containing
-a vector of "U", "D" and "I" characters corresponding to a valide model.
-Constraint is that there is at least one "D" in each row
+a matrix that is Nmodel by R with each row containing a
+vector of "U", "D" and "I" characters corresponding to a valide
+model. Constraint is that there is at least one "D" in each row
 }
 \description{
-Create a matrix whose rows contain all possible
-combinations of the U,D,I models that are allowed.
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

@@ -2,19 +2,30 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.21.0707
-Date: 2020-05-21
+Version: 0.2.38
+Date: 2020-06-16
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
              person("Yuxin","Zou",role="aut"),
              person("Yunqi","Yang",role="ctb"),
+	     person("Sam","Roweis",role="cph"),
+	     person("David","Hogg",role="cph"),
+	     person("Jo","Bovy",role="cph"),
              person("Peter","Carbonetto",role=c("aut","cre"),
                     email="peter.carbonetto@gmail.com"))
-Description: Empirical Bayes shrinkage of multivariate effects.
+Description: Implements the multivariate adaptive shrinkage (mash)
+    method of Urbut et al (2019) <DOI:10.1038/s41588-018-0268-8> for
+    estimating and testing large numbers of effects in many conditions
+    (or many outcomes). Mash takes an empirical Bayes approach to
+    testing and effect estimation; it estimates patterns of similarity
+    among conditions, then exploits these patterns to improve accuracy
+    of the effect estimates. The core linear algebra is implemented in
+    C++ for fast model fitting and posterior computation.
 URL: http://github.com/stephenslab/mashr
 BugReports: http://github.com/stephenslab/mashr/issues
 License: BSD_3_clause + file LICENSE
+Copyright: file COPYRIGHTS
 LazyData: true
 SystemRequirements: C++11
 Depends: R (>= 3.3.0),
@@ -22,14 +33,12 @@ Depends: R (>= 3.3.0),
 Imports:
     assertthat,
     utils,
-    parallel,
     stats,
     plyr,
     rmeta,
     Rcpp (>= 0.12.11),
     mvtnorm,
-    abind,
-    mixsqp
+    abind
 LinkingTo:
     Rcpp, 
     RcppArmadillo,
@@ -46,6 +55,7 @@ Suggests:
     profmem
 VignetteBuilder: knitr
 NeedsCompilation: yes
+Biarch: true
 RoxygenNote: 7.1.0
 Remotes: 
     stephens999/ashr,

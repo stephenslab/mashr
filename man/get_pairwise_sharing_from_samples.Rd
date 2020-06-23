@@ -2,7 +2,8 @@
 % Please edit documentation in R/get_functions.R
 \name{get_pairwise_sharing_from_samples}
 \alias{get_pairwise_sharing_from_samples}
-\title{Compute the proportion of (significant) signals shared by magnitude in each pair of conditions}
+\title{Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions}
 \usage{
 get_pairwise_sharing_from_samples(
   m,
@@ -14,24 +15,31 @@ get_pairwise_sharing_from_samples(
 \arguments{
 \item{m}{the mash fit with samples from posteriors}
 
-\item{factor}{a number in [0,1] the factor within which effects are considered to be shared}
+\item{factor}{a number in [0,1] the factor within which effects are
+considered to be shared}
 
-\item{lfsr_thresh}{the lfsr threshold for including an effect in the assessment}
+\item{lfsr_thresh}{the lfsr threshold for including an effect in
+the assessment}
 
-\item{FUN}{a function to be applied to the estimated effect sizes before assessing sharing. The most obvious choice beside the default
-'FUN=identity' would be 'FUN=abs' if you want to ignore the sign of the effects when assesing sharing.}
+\item{FUN}{a function to be applied to the estimated effect sizes
+before assessing sharing. The most obvious choice beside the
+default 'FUN=identity' would be 'FUN=abs' if you want to ignore the
+sign of the effects when assesing sharing.}
 }
 \description{
-Compute the proportion of (significant) signals shared by magnitude in each pair of conditions
+Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions
 }
 \details{
-For each pair of conditions, compute the fraction of effects that are within
- a factor `factor` of one another. The results are returned as an R by R matrix.
+For each pair of conditions, compute the fraction of
+effects that are within a factor `factor` of one another. The
+results are returned as an R by R matrix.
 }
 \examples{
-\dontrun{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data), posterior_samples=5, algorithm='R')
 get_pairwise_sharing_from_samples(m) # sharing by magnitude (same sign)
 get_pairwise_sharing_from_samples(m, factor=0) # sharing by sign
 get_pairwise_sharing_from_samples(m, FUN=abs) # sharing by magnitude when sign is ignored
-}
 }

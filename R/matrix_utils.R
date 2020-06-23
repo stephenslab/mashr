@@ -1,6 +1,6 @@
 ## @title A wrapper function to `stop` call
 labelled_stop = function(x, msg) 
-    stop(paste(gsub("\\s+", " ", paste0(deparse(x))), msg), call.=F)
+  stop(paste(gsub("\\s+", " ", paste0(deparse(x))), msg), call.=F)
 
 ## @title Basic sanity check for covariance matrices
 ## @param X input matrix

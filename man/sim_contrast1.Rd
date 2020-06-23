@@ -2,8 +2,8 @@
 % Please edit documentation in R/simulations_contrast.R
 \name{sim_contrast1}
 \alias{sim_contrast1}
-\title{Create simplest simulation, cj = mu 1
-data used for contrast analysis}
+\title{Create simplest simulation, cj = mu 1 data used for contrast
+analysis}
 \usage{
 sim_contrast1(nsamp = 100, ncond = 5, err_sd = sqrt(0.5))
 }
@@ -15,9 +15,13 @@ sim_contrast1(nsamp = 100, ncond = 5, err_sd = sqrt(0.5))
 \item{err_sd}{the standard deviation of the errors}
 }
 \description{
-Create simplest simulation, cj = mu 1
-data used for contrast analysis
+Create simplest simulation, cj = mu 1 data used for contrast
+analysis
 }
 \details{
 There is no true deviation exists in this case
+}
+\examples{
+sim_contrast1(100,5)
+
 }

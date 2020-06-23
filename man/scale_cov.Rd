@@ -2,7 +2,8 @@
 % Please edit documentation in R/compute_covs.R
 \name{scale_cov}
 \alias{scale_cov}
-\title{Scale each covariance matrix in list Ulist by a scalar in vector grid}
+\title{Scale each covariance matrix in list Ulist by a scalar in
+vector grid}
 \usage{
 scale_cov(Ulist, grid)
 }
@@ -12,8 +13,12 @@ scale_cov(Ulist, grid)
 \item{grid}{a vector of scaling factors (standard deviaions)}
 }
 \value{
-a list with length length(Ulist)*length(grid), with values grid[i]^2*Ulist[[j]]
+a list with length length(Ulist)*length(grid), with values
+grid[i]^2*Ulist[[j]]
 }
 \description{
-Scale each covariance matrix in list Ulist by a scalar in vector grid
+This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.
 }
+\keyword{internal}

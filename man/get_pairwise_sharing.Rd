@@ -2,32 +2,41 @@
 % Please edit documentation in R/get_functions.R
 \name{get_pairwise_sharing}
 \alias{get_pairwise_sharing}
-\title{Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean}
+\title{Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean}
 \usage{
 get_pairwise_sharing(m, factor = 0.5, lfsr_thresh = 0.05, FUN = identity)
 }
 \arguments{
 \item{m}{the mash fit}
 
-\item{factor}{a number in [0,1] the factor within which effects are considered to be shared}
+\item{factor}{a number in [0,1] the factor within which effects are
+considered to be shared}
 
-\item{lfsr_thresh}{the lfsr threshold for including an effect in the assessment}
+\item{lfsr_thresh}{the lfsr threshold for including an effect in
+the assessment}
 
-\item{FUN}{a function to be applied to the estimated effect sizes before assessing sharing. The most obvious choice beside the default
-'FUN=identity' would be 'FUN=abs' if you want to ignore the sign of the effects when assesing sharing.}
+\item{FUN}{a function to be applied to the estimated effect sizes
+before assessing sharing. The most obvious choice beside the
+default 'FUN=identity' would be 'FUN=abs' if you want to ignore the
+sign of the effects when assesing sharing.}
 }
 \description{
-Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean
+Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean
 }
 \details{
-For each pair of tissues, first identify the effects that are significant (by lfsr<lfsr_thresh)
- in at least one of the two tissues. Then compute what fraction of these have an estimated (posterior mean) effect size within
- a factor `factor` of one another. The results are returned as an R by R matrix.
+For each pair of tissues, first identify the effects that
+are significant (by lfsr<lfsr_thresh) in at least one of the two
+tissues. Then compute what fraction of these have an estimated
+(posterior mean) effect size within a factor `factor` of one
+another. The results are returned as an R by R matrix.
 }
 \examples{
-\dontrun{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
 get_pairwise_sharing(m) # sharing by magnitude (same sign)
 get_pairwise_sharing(m, factor=0) # sharing by sign
 get_pairwise_sharing(m, FUN=abs) # sharing by magnitude when sign is ignored
-}
 }

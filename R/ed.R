@@ -1,19 +1,27 @@
-# notes on ED
-# 1. clone the ED repo
-# 2 remove -fopenmp flags from r/src/Makefile
-# 3. make rpackage (after brew install gsl ?) [not sure if necessary]
-# 3alt. or possibly install.packages("~/Dropbox/Documents/git/extreme-deconvolution/r",repos=NULL,type="src")
-
-#' Fit extreme deconvolution to mash data using Bovy et al 2011
+#' @title Fit extreme deconvolution to mash data using Bovy et al 2011
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param data mash data object
+#' 
 #' @param Ulist_init a list of covariance matrices to initialize to
-#' @param subset the indices of the observations to be used (defaults to all of them)
-#' @param ... arguments to be passed to \code{extreme_deconvolution} function, such as \code{tol}, \code{maxiter}.
-#' @return the fitted mixture: a list of mixture proportions and covariance matrices
+#' 
+#' @param subset the indices of the observations to be used (defaults
+#' to all of them)
+#' 
+#' @param ... arguments to be passed to \code{extreme_deconvolution}
+#' function, such as \code{tol}, \code{maxiter}.
+#' 
+#' @return the fitted mixture: a list of mixture proportions and
+#' covariance matrices
+#' 
 #' @details This is a wrapper to ExtremeDeconvolution::extreme_deconvolution
 #' It fixes the projection to be the identity, and the means to be 0
 #'
-#' @export
+#' @keywords internal
+#' 
 bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   if(is.null(subset)){subset = 1:n_effects(data)}
   K = length(Ulist_init)
@@ -45,13 +53,25 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   return(list(pi = ed.res$xamp, Ulist = ed.res$xcovar, av_loglik = ed.res$avgloglikedata))
 }
 
-#' Fit extreme deconvolution to mash data using TEEM method developed by Y. Yang and M Stephens
+#' @title Fit extreme deconvolution to mash data using TEEM method
+#' developed by Y. Yang and M Stephens
+#' 
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#' 
 #' @param data mash data object
+#' 
 #' @param Ulist_init a list of covariance matrices to initialize to
-#' @param subset the indices of the observations to be used (defaults to all of them)
-#' @return the fitted mixture: a list of mixture proportions and covariance matrices
+#' 
+#' @param subset the indices of the observations to be used (defaults
+#' to all of them)
+#' 
+#' @return the fitted mixture: a list of mixture proportions and
+#' covariance matrices
 #'
-#' @export
+#' @keywords internal
+#' 
 teem_wrapper = function(data, Ulist_init, subset=NULL, w_init=NULL, maxiter=5000, converge_tol=1e-7, eigen_tol = 1e-7, verbose=FALSE) {
   if(is.null(subset)){subset = 1:n_effects(data)}
   zscore = data$Bhat[subset,]/data$Shat[subset,]

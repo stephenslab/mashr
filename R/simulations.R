@@ -1,10 +1,22 @@
-#' Create some simple simulated data for testing purposes
+#' @title Create some simple simulated data for testing purposes
+#'
 #' @param nsamp number of samples of each type
+#'
 #' @param ncond number of conditions
+#'
 #' @param err_sd the standard deviation of the errors
-#' @details The simulation consists of equal numbers of four different types of effects: null, equal among conditions, present only in first condition, independent across conditions
+#'
+#' @details The simulation consists of equal numbers of four different
+#' types of effects: null, equal among conditions, present only in
+#' first condition, independent across conditions
+#'
+#' @examples
+#' simple_sims(100, 5)
+#'
 #' @importFrom stats rnorm
+#'
 #' @export
+#'
 simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
 
   B.id = matrix(rnorm(nsamp*ncond),nrow=nsamp, ncol=ncond) #independent effects
@@ -34,14 +46,23 @@ simple_sims = function(nsamp = 100, ncond = 5, err_sd=0.01){
   return(list(B=B,Bhat=Bhat,Shat=Shat))
 }
 
-
-#' Create some more simple simulated data for testing purposes
+#' @title Create some more simple simulated data for testing purposes
+#'
 #' @param nsamp number of samples of each type
+#'
 #' @param err_sd the standard deviation of the errors
-#' @details The simulation consists of five conditions with two types of effecc
-#' those present (and identical) in first two conditions and those present (and identical) in last three conditions
+#'
+#' @details The simulation consists of five conditions with two types
+#' of effecc those present (and identical) in first two conditions and
+#' those present (and identical) in last three conditions
+#'
+#' @examples
+#' simple_sims2(100, 5)
+#'
 #' @importFrom stats rnorm
+#'
 #' @export
+#'
 simple_sims2 = function(nsamp = 100, err_sd=0.01){
 
   ncond=5

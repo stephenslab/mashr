@@ -9,10 +9,16 @@ contrast_matrix(R, ref, name = 1:R)
 \arguments{
 \item{R}{the number of column for the contrast matrix}
 
-\item{ref}{the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.}
+\item{ref}{the reference group. It could be a number between 1,...,
+R, R is number of conditions, or the name of reference group. If
+there is no reference group, it can be the string 'mean'.}
 
 \item{name}{a length R vector contains the name for conditions}
 }
 \description{
 Create contrast matrix
+}
+\examples{
+contrast_matrix(5, 'mean')
+
 }

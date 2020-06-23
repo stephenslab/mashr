@@ -20,3 +20,10 @@ mash_plot_meta(m, i, xlab = "Effect size", ylab = "Condition", ...)
 \description{
 Plot metaplot for an effect based on posterior from mash
 }
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+mash_plot_meta(m,1)
+
+}

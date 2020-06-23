@@ -33,5 +33,10 @@ J x P matrix of multivariate normal likelihoods, p(bhat |
 }
 \description{
 computes matrix of condition likelihoods for each of J
-    rows of Bhat for each of P prior covariances.
+  rows of Bhat for each of P prior covariances.
+
+  This is an internal (non-exported) function. This help page
+  provides additional documentation mainly intended for developers
+  and expert users.
 }
+\keyword{internal}

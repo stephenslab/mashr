@@ -19,10 +19,14 @@ Create simulation with signal data used for contrast
 analysis.
 }
 \details{
-The first condition is the reference group. The deviations are the difference
-  between the subsequent conditions with the reference group.
-  The simulation consists of 90% null deviations, 10% non-nulls.
-  The non-nulls consist of equal numbers of three different types of deviations:
-  equal among conditions, present only in the first subsequent condition,
-  independent across conditions.
+The first condition is the reference group. The deviations
+are the difference between the subsequent conditions with the
+reference group.  The simulation consists of 90% null deviations,
+10% non-nulls.  The non-nulls consist of equal numbers of three
+different types of deviations: equal among conditions, present only
+in the first subsequent condition, independent across conditions.
+}
+\examples{
+sim_contrast2(100,5)
+
 }

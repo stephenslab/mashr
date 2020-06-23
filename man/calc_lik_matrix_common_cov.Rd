@@ -14,12 +14,22 @@ calc_lik_matrix_common_cov(data, Ulist, log = FALSE)
 \item{log}{if true computes log-likelihood}
 }
 \value{
-J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V), where V is same for each bhat
+J x P vector of multivariate normal likelihoods, p(bhat |
+Ulist[p], V), where V is same for each bhat
 }
 \description{
-computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances; special case when standard errors and variances are all same across j;
+computes matrix of likelihoods for each of J rows of
+  Bhat for each of P prior covariances; special case when standard
+  errors and variances are all same across j.
+
+  This is an internal (non-exported) function. This help page
+  provides additional documentation mainly intended for developers
+  and expert users.
 }
 \details{
-Compared with \code{calc_lik_matrix} this function exploits fact that observations are iid in this case,
-so the inverse covariance matrices only need to be done once, reducing computation to R^3 + JR^2 instead of JR^3
+Compared with \code{calc_lik_matrix} this function
+exploits fact that observations are iid in this case, so the
+inverse covariance matrices only need to be done once, reducing
+computation to R^3 + JR^2 instead of JR^3
 }
+\keyword{internal}

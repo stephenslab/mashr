@@ -2,7 +2,7 @@
 % Please edit documentation in R/data2cov.R
 \name{cov_from_factors}
 \alias{cov_from_factors}
-\title{produce list of rank 1 covariance matrices corresponding to rows of f}
+\title{produce list of rank-1 covariance matrices corresponding to rows of f}
 \usage{
 cov_from_factors(f, name)
 }
@@ -12,8 +12,10 @@ cov_from_factors(f, name)
 \item{name}{a string indicating the name to use}
 }
 \value{
-a list of rank one matrices whose kth element is f[k,] f[k,]' and named name_k
+a list of rank one matrices whose kth element is f[k,]
+f[k,]' and named name_k
 }
 \description{
-produce list of rank 1 covariance matrices corresponding to rows of f
+produce list of rank-1 covariance matrices corresponding to rows of f
 }
+\keyword{internal}

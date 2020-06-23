@@ -1,5 +1,6 @@
 ^mashr.Rproj$
 ^docs$
+^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$

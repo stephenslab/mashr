@@ -23,6 +23,12 @@
 #' the "true" g. When used in this way the user is responsible for
 #' making sure that the g makes sense with the alpha set in data.
 #'
+#' @examples
+#' simdata = simple_sims(50,5,1)
+#' data = mash_set_data(simdata$Bhat, simdata$Shat)
+#' m = mash(data, cov_canonical(data))
+#' mash_compute_vloglik(m,data)
+#'
 #' @export
 #'
 mash_compute_vloglik = function(g,data, algorithm.version= c("Rcpp","R")){
@@ -55,6 +61,12 @@ mash_compute_vloglik = function(g,data, algorithm.version= c("Rcpp","R")){
 #' @details The log-likelihood for each element is \eqn{p(Bhat_j |
 #'   Shat_j,g,\alpha)} where \eqn{Bhat_j | B_j, Shat_j \sim N(B_j,
 #'   Shat_j)} and \eqn{B_j/Shat_j^\alpha | Shat_j \sim g}.
+#'
+#' @examples
+#' simdata = simple_sims(50,5,1)
+#' data = mash_set_data(simdata$Bhat, simdata$Shat)
+#' m = mash(data, cov_canonical(data))
+#' mash_compute_loglik(m,data)
 #'
 #' @export
 #'

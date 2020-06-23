@@ -22,38 +22,61 @@ estimate_null_correlation(
 
 \item{Ulist}{a list of covariance matrices to use}
 
-\item{init}{the initial value for the null correlation. If it is not given, we use result from \code{estimate_null_correlation_adhoc}}
+\item{init}{the initial value for the null correlation. If it is
+not given, we use result from
+\code{estimate_null_correlation_adhoc}}
 
 \item{max_iter}{maximum number of iterations to perform}
 
 \item{tol}{convergence tolerance}
 
-\item{est_cor}{whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE)}
+\item{est_cor}{whether to estimate correlation matrix (TRUE) or the
+covariance matrix (FALSE)}
 
-\item{track_fit}{add an attribute \code{trace} to output that saves current values of all iterations}
+\item{track_fit}{add an attribute \code{trace} to output that saves
+current values of all iterations}
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
 
-\item{details}{whether to return details of the model, if it is TRUE, the number of iterations and the value of objective functions will be returned}
+\item{details}{whether to return details of the model, if it is
+TRUE, the number of iterations and the value of objective functions
+will be returned}
 
 \item{...}{other parameters pass to \code{mash}}
 }
 \value{
-the estimated correlation (or covariance) matrix and the fitted mash model
-\cr
+the estimated correlation (or covariance) matrix and the
+fitted mash model \cr
+
 \item{V}{estimated correlation (or covariance) matrix}
+
 \item{mash.model}{fitted mash model}
 }
 \description{
 Estimates a null correlation matrix from data
 }
 \details{
-Returns the estimated correlation matrix (or covariance matrix) among conditions under the null.
-The correlation (or covariance) matrix is estimated by maximum likelihood.
-Specifically, the unknown correlation/covariance matrix V and the unknown weights are estimated iteratively.
-The unknown correlation/covariance matrix V is estimated using the posterior second moment of the noise.
-The unknown weights pi is estimated by maximum likelihood, which is a convex problem.
+Returns the estimated correlation matrix (or covariance
+matrix) among conditions under the null.  The correlation (or
+covariance) matrix is estimated by maximum likelihood.
+Specifically, the unknown correlation/covariance matrix V and the
+unknown weights are estimated iteratively.  The unknown
+correlation/covariance matrix V is estimated using the posterior
+second moment of the noise.  The unknown weights pi is estimated by
+maximum likelihood, which is a convex problem.
 
-Warning: This method could take some time.
-The \code{\link{estimate_null_correlation_simple}} gives a quick approximation for the null correlation (or covariance) matrix.
+Warning: This method could take some time.  The
+\code{\link{estimate_null_correlation_simple}} gives a quick
+approximation for the null correlation (or covariance) matrix.
+}
+\examples{
+simdata = simple_sims(100,5,1)
+m.1by1 = mash_1by1(mash_set_data(simdata$Bhat,simdata$Shat))
+strong.subset = get_significant_results(m.1by1,0.05)
+random.subset = sample(1:nrow(simdata$Bhat),20)
+data.strong = mash_set_data(simdata$Bhat[strong.subset,], simdata$Shat[strong.subset,])
+data.tmp = mash_set_data(simdata$Bhat[random.subset,], simdata$Shat[random.subset,])
+U_pca = cov_pca(data.strong, 3)
+U_ed = cov_ed(data.strong, U_pca)
+Vhat = estimate_null_correlation(data.tmp, U_ed)
 }

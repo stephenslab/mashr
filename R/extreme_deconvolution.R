@@ -12,62 +12,81 @@
     return(fix)
 }
 
-#' @title Density estimation using Gaussian mixtures in the presence of noisy,
-#' heterogeneous and incomplete data
+#' @title Density estimation using Gaussian mixtures in the presence
+#' of noisy, heterogeneous and incomplete data
 #' 
-#' @description We present a general algorithm to infer a d-dimensional distribution
-#' function given a set of heterogeneous, noisy observations or samples. This
-#' algorithm reconstructs the error-deconvolved or 'underlying' distribution
-#' function common to all samples, even when the individual samples have unique
-#' error and missing-data properties. The underlying distribution is modeled as
-#' a mixture of Gaussians, which is completely general. Model parameters are
-#' chosen to optimize a justified, scalar objective function: the logarithm of
-#' the probability of the data under the error-convolved model, where the error
-#' convolution is different for each data point. Optimization is performed by
-#' an Expectation Maximization (EM) algorithm, extended by a regularization
-#' technique and 'split-and-merge' procedure. These extensions mitigate
-#' problems with singularities and local maxima, which are often encountered
+#' @description We present a general algorithm to infer a
+#' d-dimensional distribution function given a set of heterogeneous,
+#' noisy observations or samples. This algorithm reconstructs the
+#' error-deconvolved or 'underlying' distribution function common to
+#' all samples, even when the individual samples have unique error and
+#' missing-data properties. The underlying distribution is modeled as
+#' a mixture of Gaussians, which is completely general. Model
+#' parameters are chosen to optimize a justified, scalar objective
+#' function: the logarithm of the probability of the data under the
+#' error-convolved model, where the error convolution is different for
+#' each data point. Optimization is performed by an Expectation
+#' Maximization (EM) algorithm, extended by a regularization technique
+#' and 'split-and-merge' procedure. These extensions mitigate problems
+#' with singularities and local maxima, which are often encountered
 #' when using the EM algorithm to estimate Gaussian density mixtures.
 #' 
-#' @usage extreme_deconvolution(ydata,ycovar,xamp,xmean,xcovar,
-#' projection=NULL,weight=NULL, fixamp=NULL,fixmean=NULL,fixcovar=NULL,
-#' tol=1.e-6,maxiter=1e9,w=0,logfile=NULL,
-#' splitnmerge=0,maxsnm=FALSE,likeonly=FALSE, logweight=FALSE)
 #' @param ydata [ndata,dy] matrix of observed quantities
-#' @param ycovar [ndata,dy] / [ndata,dy,dy] / [dy,dy,ndata] matrix, list or 3D
-#' array of observational error covariances (if [ndata,dy] then the error
-#' correlations are assumed to vanish)
+#' 
+#' @param ycovar [ndata,dy] / [ndata,dy,dy] / [dy,dy,ndata] matrix,
+#' list or 3D array of observational error covariances (if [ndata,dy]
+#' then the error correlations are assumed to vanish)
+#' 
 #' @param xamp [ngauss] array of initial amplitudes (*not* [1,ngauss])
+#' 
 #' @param xmean [ngauss,dx] matrix of initial means
+#' 
 #' @param xcovar [ngauss,dx,dx] list of matrices of initial covariances
+#' 
 #' @param projection [ndata,dy,dx] list of projection matrices
+#' 
 #' @param weight [ndata] array of weights to be applied to the data points
+#' 
 #' @param logweight (bool, default=False) if True, weight is actually
 #' log(weight)
+#' 
 #' @param fixamp (default=None) None, True/False, or list of bools
+#' 
 #' @param fixmean (default=None) None, True/False, or list of bools
+#' 
 #' @param fixcovar (default=None) None, True/False, or list of bools
+#' 
 #' @param tol (double, default=1.e-6) tolerance for convergence
+#' 
 #' @param maxiter (long, default= 10**9) maximum number of iterations to
 #' perform
+#' 
 #' @param w (double, default=0.) covariance regularization parameter (of the
 #' conjugate prior)
-#' @param logfile basename for several logfiles (_c.log has output from the
-#' c-routine; _loglike.log has the log likelihood path of all the accepted
-#' routes, i.e. only parts which increase the likelihood are included, during
-#' splitnmerge)
+#' 
+#' @param logfile basename for several logfiles (_c.log has output
+#' from the c-routine; _loglike.log has the log likelihood path of all
+#' the accepted routes, i.e. only parts which increase the likelihood
+#' are included, during splitnmerge)
+#' 
 #' @param splitnmerge (int, default=0) depth to go down the splitnmerge path
+#' 
 #' @param maxsnm (Bool, default=False) use the maximum number of split 'n'
 #' merge steps, K*(K-1)*(K-2)/2
-#' @param likeonly (Bool, default=False) only compute the total log likelihood
-#' of the data
+#' 
+#' @param likeonly (Bool, default=False) only compute the total log
+#' likelihood of the data
+#' 
 #' @return \item{avgloglikedata}{avgloglikedata after convergence}
-#' \item{xamp}{updated xamp} \item{xmean}{updated xmean} \item{xcovar}{updated
-#' xcovar}
+#' \item{xamp}{updated xamp} \item{xmean}{updated xmean}
+#' \item{xcovar}{updated xcovar}
+#' 
 #' @author Jo Bovy, David W. Hogg, & Sam T. Roweis
+#' 
 #' @references Inferring complete distribution functions from noisy,
 #' heterogeneous and incomplete observations Jo Bovy, David W. Hogg, & Sam T.
 #' Roweis, Submitted to AOAS (2009) [arXiv/0905.2979]
+#' 
 #' @examples
 #' ydata <-
 #' c(2.62434536, 0.38824359, 0.47182825, -0.07296862, 1.86540763,
@@ -148,7 +167,7 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
     fixamp <- .fixfix(fixamp, ngauss)
     fixmean <- .fixfix(fixmean, ngauss)
     fixcovar <- .fixfix(fixcovar, ngauss)
-    # 
+
     if (is.null(logfile)) {
         clog <- array(0)
         clog2 <- array(0)
@@ -156,7 +175,7 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
         clog <- charToRaw(paste(logfile, "c.log", sep = "_"))
         clog2 <- charToRaw(paste(logfile, "loglike.log", sep = "_"))
     }
-    # 
+
     if (maxsnm) 
         splitnmerge <- ngauss * (ngauss - 1) * (ngauss - 2)/2
     if (is.null(projection)) {
@@ -176,7 +195,7 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
         noweight <- FALSE
         logweights <- weight
     }
-    # 
+
     res <- extreme_deconvolution_rcpp(
         ydata, 
         tycovar,
@@ -198,7 +217,7 @@ extreme_deconvolution <- function(ydata, ycovar, xamp, xmean, xcovar,
         noprojection, 
         diagerrors, 
         noweight)
-    # 
+
     start <- 1
     end <- 0
     for (i in 1:length(xcovar)) {

@@ -17,5 +17,11 @@ simple_sims(nsamp = 100, ncond = 5, err_sd = 0.01)
 Create some simple simulated data for testing purposes
 }
 \details{
-The simulation consists of equal numbers of four different types of effects: null, equal among conditions, present only in first condition, independent across conditions
+The simulation consists of equal numbers of four different
+types of effects: null, equal among conditions, present only in
+first condition, independent across conditions
+}
+\examples{
+simple_sims(100, 5)
+
 }

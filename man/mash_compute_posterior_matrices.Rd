@@ -2,7 +2,8 @@
 % Please edit documentation in R/mash.R
 \name{mash_compute_posterior_matrices}
 \alias{mash_compute_posterior_matrices}
-\title{Compute posterior matrices for fitted mash object on new data}
+\title{Compute posterior matrices for fitted mash object on new
+data}
 \usage{
 mash_compute_posterior_matrices(
   g,
@@ -18,23 +19,38 @@ mash_compute_posterior_matrices(
 \arguments{
 \item{g}{a mash object or the fitted_g from a mash object.}
 
-\item{data}{a set of data on which to compute the posterior matrices}
+\item{data}{a set of data on which to compute the posterior
+matrices}
 
-\item{pi_thresh}{threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)}
+\item{pi_thresh}{threshold below which mixture components are
+ignored in computing posterior summaries (to speed calculations by
+ignoring negligible components)}
 
 \item{algorithm.version}{Indicates whether to use R or Rcpp version}
 
-\item{A}{the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.}
+\item{A}{the linear transformation matrix, Q x R matrix. This is
+used to compute the posterior for Ab.}
 
-\item{output_posterior_cov}{whether or not to output posterior covariance matrices for all effects}
+\item{output_posterior_cov}{whether or not to output posterior
+covariance matrices for all effects}
 
-\item{posterior_samples}{the number of samples to be drawn from the posterior distribution of each effect.}
+\item{posterior_samples}{the number of samples to be drawn from the
+posterior distribution of each effect.}
 
-\item{seed}{a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.}
+\item{seed}{a random number seed to use when sampling from the
+posteriors. It is used when \code{posterior_samples > 0}.}
 }
 \value{
 A list of posterior matrices
 }
 \description{
-Compute posterior matrices for fitted mash object on new data
+Compute posterior matrices for fitted mash object on new
+data
+}
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+mash_compute_posterior_matrices(m,data)
+
 }

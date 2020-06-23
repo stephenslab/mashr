@@ -18,11 +18,20 @@ a named vector containing the estimated mixture proportions.
 Return the estimated mixture proportions
 }
 \details{
-If the fit was done with `usepointmass=TRUE` then the first element of the returned vector will correspond to the null, and the remaining elements
-to the non-null covariance matrices.
-Suppose the fit was done with $K$ covariances and a grid of length $L$.
-If `dimension=cov` then the returned vector will be of length $K$ (or $K+1$ if
-`usepointmass=TRUE`).  If `dimension=grid` then the returned vector will be of length $L$ (or $L+1$).
-If `dimension=all` then the returned vector will be of length $LK$ (or $LK+1$).
-The names of the vector will be informative for which combination each element corresponds to.
+If the fit was done with `usepointmass=TRUE` then the
+first element of the returned vector will correspond to the null,
+and the remaining elements to the non-null covariance matrices.
+Suppose the fit was done with $K$ covariances and a grid of length
+$L$. If `dimension=cov` then the returned vector will be of length
+$K$ (or $K+1$ if `usepointmass=TRUE`).  If `dimension=grid` then
+the returned vector will be of length $L$ (or $L+1$).  If
+`dimension=all` then the returned vector will be of length $LK$ (or
+$LK+1$). The names of the vector will be informative for which
+combination each element corresponds to.
+}
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+m = mash(data, cov_canonical(data))
+get_estimated_pi(m)
 }

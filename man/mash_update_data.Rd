@@ -7,16 +7,28 @@
 mash_update_data(mashdata, ref = NULL, V = NULL)
 }
 \arguments{
-\item{mashdata}{mash data object ontaining the Bhat matrix, standard errors, V; created using \code{mash_set_data}}
+\item{mashdata}{mash data object ontaining the Bhat matrix,
+standard errors, V; created using \code{mash_set_data}}
 
-\item{ref}{the reference group. It could be a number between 1,..., R, R is number of conditions, or the name of reference group. If there is no reference group, it can be the string 'mean'.}
+\item{ref}{the reference group. It could be a number between 1,...,
+R, R is number of conditions, or the name of reference group. If
+there is no reference group, it can be the string 'mean'.}
 
-\item{V}{an R by R matrix / [R x R x J] array of correlation matrix of error correlations}
+\item{V}{an R by R matrix / [R x R x J] array of correlation matrix
+of error correlations}
 }
 \value{
 a updated mash data object
 }
 \description{
-This function can update two parts of the mash data. The first one is setting the reference group, so the mash data
-can be used for commonbaseline analysis. The other one is updating the null correlation matrix.
+This function can update two parts of the mash
+data. The first one is setting the reference group, so the mash
+data can be used for commonbaseline analysis. The other one is
+updating the null correlation matrix.
+}
+\examples{
+simdata = simple_sims(50,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+mash_update_data(data, 'mean')
+
 }

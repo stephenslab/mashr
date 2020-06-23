@@ -1,31 +1,72 @@
-#' Apply mash method to data
-#' @param data a mash data object containing the Bhat matrix, standard errors, alpha value; created using \code{mash_set_data} or \code{mash_set_data_contrast}
+#' @title Apply mash method to data
+#'
+#' @param data a mash data object containing the Bhat matrix, standard
+#' errors, alpha value; created using \code{mash_set_data} or
+#' \code{mash_set_data_contrast}
+#'
 #' @param Ulist a list of covariance matrices to use
-#' @param gridmult scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid
-#' @param grid vector of grid values to use (scaling factors omega in paper)
-#' @param normalizeU whether or not to normalize the U covariances to have maximum of 1 on diagonal
-#' @param usepointmass whether to include a point mass at 0, corresponding to null in every condition
-#' @param g the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass
-#' @param fixg if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data
+#'
+#' @param gridmult scalar indicating factor by which adjacent grid
+#' values should differ; close to 1 for fine grid
+#'
+#' @param grid vector of grid values to use (scaling factors omega in
+#' paper)
+#'
+#' @param normalizeU whether or not to normalize the U covariances to
+#' have maximum of 1 on diagonal
+#'
+#' @param usepointmass whether to include a point mass at 0,
+#' corresponding to null in every condition
+#'
+#' @param g the value of g obtained from a previous mash fit - an
+#' alternative to supplying Ulist, grid and usepointmass
+#'
+#' @param fixg if g is supplied, allows the mixture proportions to be
+#' fixed rather than estimated; e.g., useful for fitting mash to test
+#' data after fitting it to training data
+#'
 #' @param prior indicates what penalty to use on the likelihood, if any
+#'
 #' @param optmethod name of optimization method to use
+#'
 #' @param control A list of control parameters passed to optmethod.
+#'
 #' @param verbose If \code{TRUE}, print progress to R console.
-#' @param add.mem.profile If \code{TRUE}, print memory usage to R console (requires R library `profmem`).
+#'
+#' @param add.mem.profile If \code{TRUE}, print memory usage to R
+#' console (requires R library `profmem`).
+#'
 #' @param algorithm.version Indicates whether to use R or Rcpp version
-#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
-#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
-#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
-#' @param seed A random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
-#' @param outputlevel controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices
+#'
+#' @param pi_thresh threshold below which mixture components are
+#' ignored in computing posterior summaries (to speed calculations by
+#' ignoring negligible components)
+#'
+#' @param A the linear transformation matrix, Q x R matrix. This is
+#' used to compute the posterior for Ab.
+#'
+#' @param posterior_samples the number of samples to be drawn from the
+#' posterior distribution of each effect.
+#'
+#' @param seed A random number seed to use when sampling from the
+#' posteriors. It is used when \code{posterior_samples > 0}.
+#'
+#' @param outputlevel controls amount of computation / output; 1:
+#' output only estimated mixture component proportions, 2: and
+#' posterior estimates, 3: and posterior covariance matrices, 4: and
+#' likelihood matrices
+#'
 #' @return a list with elements result, loglik and fitted_g
+#'
 #' @examples
-#' Bhat = matrix(rnorm(100),ncol=5) # create some simulated data
-#' Shat = matrix(rep(1,100),ncol=5)
-#' data = mashr::mash_set_data(Bhat,Shat, alpha=1)
-#' U.c = mashr::cov_canonical(data)
-#' res.mash = mashr::mash(data,U.c)
+#' Bhat     = matrix(rnorm(100),ncol=5) # create some simulated data
+#' Shat     = matrix(rep(1,100),ncol=5)
+#' data     = mash_set_data(Bhat,Shat, alpha=1)
+#' U.c      = cov_canonical(data)
+#' res.mash = mash(data,U.c)
+#'
 #' @export
+#'
 mash = function(data,
                 Ulist = NULL,
                 gridmult= sqrt(2),
@@ -195,19 +236,41 @@ mash = function(data,
   return(m)
 }
 
-
-
-#' Compute posterior matrices for fitted mash object on new data
+#' @title Compute posterior matrices for fitted mash object on new
+#' data
+#'
 #' @param g a mash object or the fitted_g from a mash object.
-#' @param data a set of data on which to compute the posterior matrices
-#' @param pi_thresh threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)
+#'
+#' @param data a set of data on which to compute the posterior
+#' matrices
+#'
+#' @param pi_thresh threshold below which mixture components are
+#' ignored in computing posterior summaries (to speed calculations by
+#' ignoring negligible components)
+#'
 #' @param algorithm.version Indicates whether to use R or Rcpp version
-#' @param A the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.
-#' @param posterior_samples the number of samples to be drawn from the posterior distribution of each effect.
-#' @param seed a random number seed to use when sampling from the posteriors. It is used when \code{posterior_samples > 0}.
-#' @param output_posterior_cov whether or not to output posterior covariance matrices for all effects
+#'
+#' @param A the linear transformation matrix, Q x R matrix. This is
+#' used to compute the posterior for Ab.
+#'
+#' @param posterior_samples the number of samples to be drawn from the
+#' posterior distribution of each effect.
+#'
+#' @param seed a random number seed to use when sampling from the
+#' posteriors. It is used when \code{posterior_samples > 0}.
+#'
+#' @param output_posterior_cov whether or not to output posterior
+#' covariance matrices for all effects
+#'
 #' @return A list of posterior matrices
+#' @examples
+#' simdata = simple_sims(50,5,1)
+#' data = mash_set_data(simdata$Bhat, simdata$Shat)
+#' m = mash(data, cov_canonical(data))
+#' mash_compute_posterior_matrices(m,data)
+#'
 #' @export
+#'
 mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE,
                                            posterior_samples = 0, seed = 123){
 
@@ -234,7 +297,6 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   return(posterior_matrices)
 }
 
-
 # Sets prior to be a vector of length K depending on character string
 # prior can be "nullbiased" or "uniform".
 set_prior = function(K,prior){
@@ -250,14 +312,27 @@ set_prior = function(K,prior){
   return(prior)
 }
 
-#' Create expanded list of covariance matrices expanded by grid, Sigma_{lk} = omega_l U_k
+#' @title Create expanded list of covariance matrices expanded by
+#'   grid, Sigma_{lk} = omega_l U_k
+#'
+#' @description This is an internal (non-exported) function. This help
+#'   page provides additional documentation mainly intended for
+#'   developers and expert users.
+#'
 #' @param Ulist a list of covarance matrices
-#' @param grid a grid of scalar values by which the covariance matrices are to be sc
-#' @param usepointmass if TRUE adds a point mass at 0 (null component) to the list
-#' @return A list of covariance matrices
-#' This takes the covariance matrices in Ulist and multiplies them by the grid values
-#' If usepointmass is TRUE then it adds a null component.
-#' @export
+#'
+#' @param grid a grid of scalar values by which the covariance
+#'   matrices are to be sc
+#'
+#' @param usepointmass if TRUE adds a point mass at 0 (null component)
+#'   to the list
+#'
+#' @return This takes the covariance matrices in Ulist and multiplies
+#' them by the grid values If usepointmass is TRUE then it adds a null
+#' component.
+#'
+#' @keywords internal
+#'
 expand_cov = function(Ulist,grid,usepointmass=TRUE){
   scaled_Ulist = scale_cov(Ulist, grid)
   R = nrow(Ulist[[1]])
@@ -274,7 +349,9 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' \code{Shat}, an n by R matrix of standard errors (n units in R
 #' conditions),
 #'
-#' @param alpha Numeric value of alpha parameter in the model. alpha = 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable Z-scores (EZ).
+#' @param alpha Numeric value of alpha parameter in the model. alpha =
+#' 0 for Exchangeable Effects (EE), alpha = 1 for Exchangeable
+#' Z-scores (EZ).
 #'
 #' @param ... optionally, other parameters to be passed to ash
 #'
@@ -287,7 +364,13 @@ expand_cov = function(Ulist,grid,usepointmass=TRUE){
 #' including posterior matrices.
 #'
 #' @importFrom ashr ash get_pm get_psd get_lfsr get_loglik
+#'
+#' @examples
+#' simdata = simple_sims(50,5,1)
+#' mash_1by1(simdata)
+#'
 #' @export
+#'
 mash_1by1 = function(data, alpha=0, ...){
   Bhat = data$Bhat
   Shat = data$Shat
@@ -313,10 +396,9 @@ mash_1by1 = function(data, alpha=0, ...){
   return(m)
 }
 
-
-#' Initialize mixture proportions - currently by making them all equal
-#' @param K the number of components
-#' @return a vector of length K whose elements are positive and sums to 1
+# @title Initialize mixture proportions - currently by making them all equal
+# @param K the number of components
+# @return a vector of length K whose elements are positive and sums to 1
 initialize_pi = function(K){
   return(rep(1/K,K))
 }

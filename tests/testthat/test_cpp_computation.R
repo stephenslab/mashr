@@ -94,7 +94,10 @@ test_that("compare posterior computation R vs C++ in provided data of 100 X 5", 
                 compute_posterior_matrices(data,Ulist,posterior_weights,
                                            algorithm.version = "Rcpp",
                                            mc.cores = 4))
-  expect_equal(out1, out2, tolerance=1e-5)
+  expect_equal(out1$PosteriorMean,out2$PosteriorMean,tolerance = 1e-5)
+  expect_equal(out1$NegativeProb,out2$NegativeProb,tolerance = 1e-5)
+  expect_equal(out1$lfdr,out2$lfdr,tolerance = 1e-5)
+  expect_equal(out1$lfsr,out2$lfsr,tolerance = 1e-5)
 }
 )
 
