@@ -37,34 +37,32 @@ repository useful for your work, please cite:
 
 ## Setup
 
-Please follow these steps to install mashr.
+The simplest and quickest to obtain mashr is to install it from
+[CRAN][mashr-cran]:
 
-1. Unlike most packages available on CRAN, mashr is not precompiled,
-   and therefore to install mashr you will need to make sure that your
-   R installation is properly set up to compile packages with C++
-   source; in particular, the C++ compiler programs supported by your
-   version of R should be installed on your computer, and R should be
-   correctly configured to call these compilers when installing
-   packages from source. For more information, see the
-   [CRAN documentation][cran-docs].
+```R
+install.packages("mashr")
+```
 
-2. Install from CRAN,
+For Mac and Windows, usually the package is precompiled, so no
+compiler setup is required. If you have Linux, and in some rare cases,
+you will need to make sure that your R installation is properly set up
+to compile packages with C++ source; in particular, the C++ compiler
+programs supported by your version of R should be installed on your
+computer, and R should be correctly configured to call these compilers
+when installing packages from source. For more information, see the
+[CRAN documentation][cran-docs].
 
-   ```R
-   install.packages("mashr")
-   ```
+Alternatively, you may use [devtools][devtools] to install the latest
+version of mashr from GitHub:
+
+```R
+install.packages("devtools")
+devtools::install_github("stephenslab/mashr")
+ ```
    
-3. The [latest stable version][mashr-release] of the mashr package contains
-   most recent developments and bug fixes. It will eventually be uploaded to `cran`
-   but before that happens, you can still install and use it with [devtools][devtools]:
-
-    ```R
-    install.packages("devtools")
-    devtools::install_github("stephenslab/mashr")
-    ```
-   
-   This command should automatically install any missing dependencies
-   that are available from CRAN. 
+This command should automatically install any missing dependencies
+that are available from CRAN. 
 
 ## Developer notes
 
@@ -105,3 +103,4 @@ form x.y.z.
 [vignette-data-driven-cov]: https://stephenslab.github.io/mashr/articles/intro_mash_dd.html
 [vignette-non-canonical]: https://stephenslab.github.io/mashr/articles/simulate_noncanon.html
 [uncrustify]: http://uncrustify.sourceforge.net
+[mashr-cran]: https://cran.r-project.org/package=mashr
