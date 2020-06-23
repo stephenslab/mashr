@@ -89,10 +89,6 @@ connected to Internet while running these commands):
    uncrustify -c uncrustify_default.cfg --replace --no-backup -l CPP mash.cpp
    ```
 
-+ To load the package into R without recompiling the Rcpp attributes,
-run `pkgbuild::compile_dll(compile_attributes = FALSE)`, then run
-`devtools::load_all()`.
-
 + Prior to submitting the package to CRAN, the following modifications
 need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; (2)
 remove the `flash_mash.Rmd` vignette; (3) remove "flashr" from
@@ -107,6 +103,10 @@ workaround for this linking issue is to remove `#include <RcppGSL.h>`
 from `RcppExports.cpp`, and move any RcppGSL-related function
 definitions to `extreme_deconvolution.cpp`. For an example of what
 this looks like, see commit 4a41f14.
+
++ To load the package into R without recompiling the Rcpp attributes,
+run `pkgbuild::compile_dll(compile_attributes = FALSE)`, then run
+`devtools::load_all()`.
 
 [mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
