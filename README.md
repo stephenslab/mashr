@@ -1,5 +1,6 @@
 # mashr: Multivariate Adaptive Shrinkage in R
 
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mashr)](https://cran.r-project.org/package=mashr)
 [![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr)
 [![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://codecov.io/gh/stephenslab/mashr)
 
@@ -46,35 +47,24 @@ Please follow these steps to install mashr.
    correctly configured to call these compilers when installing
    packages from source. For more information, see the
    [CRAN documentation][cran-docs].
+
+2. Install from CRAN,
+
+   ```R
+   install.packages("mashr")
+   ```
    
-2. Install the [latest release][mashr-release] of the mashr package
-   using [devtools][devtools]:
+3. The [latest stable version][mashr-release] of the mashr package contains
+   most recent developments and bug fixes. It will eventually be uploaded to `cran`
+   but before that happens, you can still install and use it with [devtools][devtools]:
 
     ```R
     install.packages("devtools")
-    devtools::install_github("stephenslab/mashr@v0.2-11")
+    devtools::install_github("stephenslab")
     ```
    
    This command should automatically install any missing dependencies
-   that are available from CRAN. This command should also
-   automatically retrieve and install the latest version of the ashr
-   package from Github. If it does not, you can install the ashr
-   package separately using devtools:
-
-   ```R
-   devtools::install_github("stephens999/ashr")
-   ```
-   
-3. By default, the `devtools::install_github` function does not build
-   the vignettes. If you would like to build the vignettes as well,
-   you will need to several additional packages, including
-   [flashr][flashr], that are used only in the vignettes. This can
-   also be done with devtools:
-
-   ```R
-   devtools::install_github("stephenslab/mashr@v0.2-11",dependencies = TRUE,
-                            build_vignettes = TRUE)
-   ```
+   that are available from CRAN. 
 
 ## Developer notes
 
