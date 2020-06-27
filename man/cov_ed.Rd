@@ -29,8 +29,8 @@ the data
 \details{
 Runs the extreme deconvolution algorithm from Bovy et al
 (Annals of Applied Statistics) to estimate data-driven covariance
-matrices The default is to initialize the EM algorithm from
-data2cov_pca with 5 PCs
+matrices. It can be initialized with, for example running \code{cov_pca} with, 
+say, 5 PCs.
 }
 \examples{
 data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))

@@ -4,7 +4,8 @@
 #' errors, alpha value; created using \code{mash_set_data} or
 #' \code{mash_set_data_contrast}
 #'
-#' @param Ulist a list of covariance matrices to use
+#' @param Ulist a list of covariance matrices to use 
+#' (see \code{normalizeU} for rescaling these matrices) 
 #'
 #' @param gridmult scalar indicating factor by which adjacent grid
 #' values should differ; close to 1 for fine grid

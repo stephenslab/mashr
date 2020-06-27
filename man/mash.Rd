@@ -31,7 +31,8 @@ mash(
 errors, alpha value; created using \code{mash_set_data} or
 \code{mash_set_data_contrast}}
 
-\item{Ulist}{a list of covariance matrices to use}
+\item{Ulist}{a list of covariance matrices to use 
+(see \code{normalizeU} for rescaling these matrices)}
 
 \item{gridmult}{scalar indicating factor by which adjacent grid
 values should differ; close to 1 for fine grid}
