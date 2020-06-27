@@ -1,4 +1,4 @@
-pandoc: 1.19.2.4
+pandoc: '2.5'
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
@@ -11,5 +11,5 @@ articles:
   intro_mashnobaseline: intro_mashnobaseline.html
   mash_sampling: mash_sampling.html
   simulate_noncanon: simulate_noncanon.html
-last_built: 2020-05-18T04:22Z
+last_built: 2020-06-27T13:38Z
 

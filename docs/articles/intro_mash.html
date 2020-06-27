@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>Introduction to mashr</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2020-05-18</h4>
+            <h4 class="date">2020-06-27</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mash.Rmd"><code>vignettes/intro_mash.Rmd</code></a></small>
       <div class="hidden name"><code>intro_mash.Rmd</code></div>
@@ -105,7 +105,7 @@
 <h1 class="hasAnchor">
 <a href="#simulate-some-data" class="anchor"></a>Simulate some data</h1>
 <p>First we simulate some data for illustration.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">simdata</span> <span class="kw">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span>(<span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span>)</pre></body></html></div>
@@ -117,14 +117,14 @@
 <p>To run <code>mash</code> you need data consisting of a matrix of effects (<code>Bhat</code>) and a matrix of standard errors (<code>Shat</code>), for <span class="math inline">\(J\)</span> effects (rows) in <span class="math inline">\(R\)</span> conditions (columns).</p>
 <p>[If you have only access to <span class="math inline">\(Z\)</span> scores, you can set <code>Bhat</code> to the Z scores, and set <code>Shat</code> to be the matrix with all 1s].</p>
 <p>The simulation above created both these matrices for us (in <code>simdata$Bhat</code> and <code>simdata$Shat</code>). To get these ready for applying <code>mash</code> you must first use <code>mash_set_data</code> to create a data object with those two pieces of information:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">data</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)</pre></body></html></div>
 </div>
 <div id="step-2-set-up-the-covariance-matrices" class="section level1">
 <h1 class="hasAnchor">
 <a href="#step-2-set-up-the-covariance-matrices" class="anchor"></a>Step 2: Set up the covariance matrices</h1>
 <p>There are two types of covariance matrix you can use in <code>mash</code>: “canonical” and “data-driven”. The canonical ones are very easy to set up and so we use those here for illustration. However, in applications you will likely also want to use data-driven matrices, and this is an important feature of <code>mash</code>. See <a href="intro_mash_dd.html">the data-driven vignette</a> for more details on how to do this.</p>
 <p>The function to set up canonical covariance matries is <code>cov_canonical</code>. The following sets up canonical covariances in <code>U.c</code> (we used <code>.c</code> to indicate canonical), which is a named list of matrices.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">U.c</span>))</pre></body></html></div>
 <pre><code>#  [1] "identity"      "condition_1"   "condition_2"   "condition_3"  
 #  [5] "condition_4"   "condition_5"   "equal_effects" "simple_het_1" 
@@ -134,13 +134,13 @@
 <h1 class="hasAnchor">
 <a href="#step-3-fit-the-model" class="anchor"></a>Step 3: fit the model</h1>
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">m.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data</span>, <span class="no">U.c</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">m.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data</span>, <span class="no">U.c</span>)</pre></body></html></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.16 seconds.
+#  - Likelihood calculations took 0.06 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.47 seconds.
+#  - Model fitting took 0.51 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.05 seconds.</code></pre>
+#  - Computation allocated took 0.02 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
 <p>Remember the Crucial Rule! This step must be peformed using all the tests (or a large random subset), because this is where <code>mash</code> learns that many tests are null and corrects for it.</p>
 </div>
@@ -148,46 +148,46 @@
 <h1 class="hasAnchor">
 <a href="#step-4-extract-posterior-summaries" class="anchor"></a>Step 4: Extract Posterior Summaries</h1>
 <p>You can extract estimates (posterior means and posterior standard deviations) and measures of significance (local false sign rates) using functions like <code>get_pm</code> (posterior mean), <code>get_psd</code> (posteriore standard deviation) and <code>get_lfsr</code> (local false sign rate):</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.7561458   0.7705833   0.8052784   0.8111106   0.8189440
-# effect_2   0.7245445   0.6905871   0.7760428   0.6922674   0.7012653
-# effect_3   0.7387335   0.7514386   0.8104767   0.8390446   0.8501584
-# effect_4   0.7855682   0.8454469   0.8360452   0.8660075   0.8503394
-# effect_5   0.8044530   0.8371033   0.8808419   0.8785890   0.8758291
+# effect_1   0.7561458   0.7705832   0.8052784   0.8111106   0.8189440
+# effect_2   0.7245445   0.6905870   0.7760427   0.6922674   0.7012652
+# effect_3   0.7387335   0.7514386   0.8104767   0.8390446   0.8501583
+# effect_4   0.7855681   0.8454469   0.8360452   0.8660075   0.8503394
+# effect_5   0.8044530   0.8371033   0.8808419   0.8785889   0.8758291
 # effect_6   0.7206973   0.6833578   0.7894008   0.7002639   0.7569357</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_pm</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
-<pre><code>#          condition_1 condition_2   condition_3  condition_4  condition_5
-# effect_1  0.07387924 -0.12489892 -0.0763266680  0.092636122 -0.045368333
-# effect_2 -0.02353728 -0.17604903 -0.0324348883 -0.201656884 -0.170553647
-# effect_3 -0.10218378  0.18092245 -0.0846361804  0.022525113 -0.002684966
-# effect_4 -0.06238618  0.02794225  0.0654499923  0.008113534  0.032179633
-# effect_5  0.03341406 -0.06059792  0.0001472221 -0.003887722 -0.004665907
-# effect_6 -0.09934823  0.21556824 -0.0791530346  0.213031211  0.079063543</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_psd</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_pm</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<pre><code>#          condition_1 condition_2  condition_3  condition_4  condition_5
+# effect_1  0.07387923 -0.12489893 -0.076326658  0.092636092 -0.045368333
+# effect_2 -0.02353733 -0.17604905 -0.032434944 -0.201656877 -0.170553662
+# effect_3 -0.10218377  0.18092247 -0.084636159  0.022525110 -0.002684964
+# effect_4 -0.06238616  0.02794226  0.065449986  0.008113548  0.032179641
+# effect_5  0.03341405 -0.06059793  0.000147215 -0.003887728 -0.004665912
+# effect_6 -0.09934820  0.21556825 -0.079152999  0.213031189  0.079063550</code></pre>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_psd</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.4592858   0.4210499   0.3544674   0.4062428   0.3365922
-# effect_2   0.4861870   0.4277966   0.4047004   0.4447897   0.4149876
-# effect_3   0.4679453   0.5082149   0.3799464   0.3269399   0.3283911
-# effect_4   0.4389151   0.2964004   0.3082095   0.2749191   0.2809670
-# effect_5   0.4033380   0.3286542   0.2608065   0.2597960   0.2656089
-# effect_6   0.5226691   0.4981609   0.4482801   0.4906789   0.3899259</code></pre>
+# effect_1   0.4592858   0.4210500   0.3544674   0.4062428   0.3365922
+# effect_2   0.4861870   0.4277966   0.4047004   0.4447896   0.4149876
+# effect_3   0.4679453   0.5082149   0.3799463   0.3269399   0.3283911
+# effect_4   0.4389151   0.2964005   0.3082095   0.2749191   0.2809671
+# effect_5   0.4033381   0.3286543   0.2608065   0.2597960   0.2656089
+# effect_6   0.5226691   0.4981609   0.4482801   0.4906789   0.3899258</code></pre>
 <p>Each of these are <span class="math inline">\(J \times R\)</span> matrices.</p>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are “significant”, which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is ordered from most significant to least significant.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code># effect_1800 effect_1812 effect_1857 effect_1953 effect_1915 effect_1950 
 #        1800        1812        1857        1953        1915        1950</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>)))</pre></body></html></div>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>)))</pre></body></html></div>
 <pre><code># [1] 150</code></pre>
 <p>You can also get the significant results in just a subset of conditions. For example</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>, <span class="kw">conditions</span><span class="kw">=</span><span class="fl">1</span>)))</pre></body></html></div>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>, <span class="kw">conditions</span><span class="kw">=</span><span class="fl">1</span>)))</pre></body></html></div>
 <pre><code># effect_1812 effect_1726 effect_1800 effect_1501 effect_1953 effect_1993 
 #        1812        1726        1800        1501        1953        1993</code></pre>
 <div id="sharing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sharing" class="anchor"></a>Sharing</h2>
 <p>Use <code>get_pairwise_sharing</code> to assess sharing of significant signals among each pair of conditions. Here the default definition of shared is “the same sign and within a factor 0.5 of each other”.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#             condition_1 condition_2 condition_3 condition_4 condition_5
 # condition_1   1.0000000   0.7761194   0.8015267   0.7727273   0.7777778
 # condition_2   0.7761194   1.0000000   0.9142857   0.8971963   0.8611111
@@ -195,7 +195,7 @@
 # condition_4   0.7727273   0.8971963   0.9108911   1.0000000   0.8679245
 # condition_5   0.7777778   0.8611111   0.8962264   0.8679245   1.0000000</code></pre>
 <p>You can change the factor if you like. For example, here by setting the factor to be 0 you assess only if they are the same sign:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(<span class="no">m.c</span>, <span class="kw">factor</span><span class="kw">=</span><span class="fl">0</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span>(<span class="no">m.c</span>, <span class="kw">factor</span><span class="kw">=</span><span class="fl">0</span>))</pre></body></html></div>
 <pre><code>#             condition_1 condition_2 condition_3 condition_4 condition_5
 # condition_1   1.0000000   0.8880597   0.9236641   0.8863636   0.9111111
 # condition_2   0.8880597   1.0000000   0.9333333   0.9252336   0.9444444
@@ -207,21 +207,21 @@
 <h2 class="hasAnchor">
 <a href="#measure-of-fit-log-likelihood" class="anchor"></a>Measure of fit (log-likelihood)</h2>
 <p>Use <code>get_loglik</code> to find the log-likelihood of the fit (this will only be useful when you have other fits to compare it with!)</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code># [1] -16120.32</code></pre>
 </div>
 <div id="estimated-mixture-proportions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#estimated-mixture-proportions" class="anchor"></a>Estimated mixture proportions</h2>
 <p>Use <code>get_estimated_pi</code> to extract the estimates of the mixture proportions for different types of covariance matrix:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#          null      identity   condition_1   condition_2   condition_3 
-#  3.711961e-01  2.208687e-01  1.365259e-01  2.097879e-02  0.000000e+00 
+#  3.711960e-01  2.208688e-01  1.365259e-01  2.097881e-02  0.000000e+00 
 #   condition_4   condition_5 equal_effects  simple_het_1  simple_het_2 
-#  0.000000e+00  4.959624e-03  2.264402e-01  8.758478e-05  0.000000e+00 
+#  0.000000e+00  4.959635e-03  2.264404e-01  8.763027e-05  0.000000e+00 
 #  simple_het_3 
-#  1.894312e-02</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="fu"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(<span class="no">m.c</span>),<span class="kw">las</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
+#  1.894289e-02</code></pre>
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="fu"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(<span class="no">m.c</span>),<span class="kw">las</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
 <p><img src="intro_mash_files/figure-html/unnamed-chunk-11-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>Here we can see most of the mass is on the null, identity, <code>singletons_1</code> (which corresponds to effects that are specific to condition 1) and <code>equal_effects</code>. This reassuringly matches the way that these data were generated.</p>
 </div>
@@ -229,17 +229,17 @@
 <h2 class="hasAnchor">
 <a href="#metaplot" class="anchor"></a>Metaplot</h2>
 <p>The following produces a meta-plot based on the posterior means and posterior variances of an effect. Here we look at the most significant result.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="../reference/mash_plot_meta.html">mash_plot_meta</a></span>(<span class="no">m.c</span>,<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>)[<span class="fl">1</span>])</pre></body></html></div>
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="../reference/mash_plot_meta.html">mash_plot_meta</a></span>(<span class="no">m.c</span>,<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>)[<span class="fl">1</span>])</pre></body></html></div>
 <p><img src="intro_mash_files/figure-html/unnamed-chunk-12-1.png" width="480" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="session-information-" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-information-" class="anchor"></a>Session information.</h1>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>())</pre></body></html></div>
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>())</pre></body></html></div>
 <pre><code># R version 3.6.3 (2020-02-29)
 # Platform: x86_64-pc-linux-gnu (64-bit)
-# Running under: Zorin OS 15.2
+# Running under: Linux Mint 20
 # 
 # Matrix products: default
 # BLAS:   /usr/lib/x86_64-linux-gnu/atlas/libblas.so.3.10.3
@@ -257,18 +257,18 @@
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.2.21.0719 ashr_2.2-50      
+# [1] mashr_0.2.38 ashr_2.2-50 
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_1.0.4.6     knitr_1.28       magrittr_1.5     MASS_7.3-51.6   
-#  [5] SQUAREM_2020.2   lattice_0.20-41  R6_2.4.1         rlang_0.4.6     
+#  [1] Rcpp_1.0.4.6     knitr_1.28       magrittr_1.5     MASS_7.3-51.5   
+#  [5] SQUAREM_2020.2   lattice_0.20-40  R6_2.4.1         rlang_0.4.6     
 #  [9] plyr_1.8.6       stringr_1.4.0    tools_3.6.3      grid_3.6.3      
 # [13] xfun_0.13        rmeta_3.0        irlba_2.3.3      invgamma_1.1    
 # [17] htmltools_0.4.0  abind_1.4-5      yaml_2.2.1       assertthat_0.2.1
 # [21] digest_0.6.25    rprojroot_1.3-2  pkgdown_1.5.1    crayon_1.3.4    
 # [25] mixsqp_0.3-43    Matrix_1.2-18    fs_1.3.2         memoise_1.1.0   
 # [29] evaluate_0.14    rmarkdown_2.1    stringi_1.4.6    compiler_3.6.3  
-# [33] desc_1.2.0       backports_1.1.5  mvtnorm_1.1-0    truncnorm_1.0-8</code></pre>
+# [33] desc_1.2.0       backports_1.1.5  mvtnorm_1.1-1    truncnorm_1.0-8</code></pre>
 </div>
   </div>
 

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>Using flashr for mashr prior specification</h1>
                         <h4 class="author">Gao Wang and others</h4>
             
-            <h4 class="date">2020-05-18</h4>
+            <h4 class="date">2020-06-27</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/flash_mash.Rmd"><code>vignettes/flash_mash.Rmd</code></a></small>
       <div class="hidden name"><code>flash_mash.Rmd</code></div>
@@ -88,7 +88,7 @@
 <h1 class="hasAnchor">
 <a href="#dataset-simulation" class="anchor"></a>Dataset simulation</h1>
 <p>Same as the <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html">eQTL analysis vignette</a> we simulate a toy data-set,</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">simdata</span> <span class="kw">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span>(<span class="fl">10000</span>,<span class="fl">5</span>,<span class="fl">1</span>) <span class="co"># simulates data on 40k tests</span>
@@ -100,7 +100,7 @@
 <span class="co"># identify a random subset of 5000 tests</span>
 <span class="no">random.subset</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>),<span class="fl">5000</span>)</pre></body></html></div>
 <p>and create <code>random</code> and <code>strong</code> sets,</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">data.temp</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>[<span class="no">random.subset</span>,],<span class="no">simdata</span>$<span class="no">Shat</span>[<span class="no">random.subset</span>,])
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data.temp</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>[<span class="no">random.subset</span>,],<span class="no">simdata</span>$<span class="no">Shat</span>[<span class="no">random.subset</span>,])
 <span class="no">Vhat</span> <span class="kw">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span>(<span class="no">data.temp</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(<span class="no">data.temp</span>)
 <span class="no">data.random</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>[<span class="no">random.subset</span>,],<span class="no">simdata</span>$<span class="no">Shat</span>[<span class="no">random.subset</span>,],<span class="kw">V</span><span class="kw">=</span><span class="no">Vhat</span>)
@@ -114,7 +114,7 @@
 <li>(we can review the code here and possibly implement <code>cov_flash</code> for future releases)</li>
 <li>(For the time being we remove the additional decomposition on FLASH loading because there are issues needs to be figured out. <span class="citation">@yuxin</span>)</li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">flashr</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">flashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)
 
 <span class="no">my_init_fn</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">Y</span>, <span class="no">K</span> <span class="kw">=</span> <span class="fl">1</span>) {
@@ -182,7 +182,7 @@
 
   <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="no">U.flash</span>)
 }</pre></body></html></div>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">U.f</span> <span class="kw">=</span> <span class="fu">cov_flash</span>(<span class="no">data.strong</span>, <span class="kw">non_canonical</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">U.f</span> <span class="kw">=</span> <span class="fu">cov_flash</span>(<span class="no">data.strong</span>, <span class="kw">non_canonical</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <pre><code># Fitting factor/loading 1 (stop when max factor change is &lt; 1.00e-03):</code></pre>
 <pre><code>#   Iteration  Max Chg (f)      Objective   Obj Diff</code></pre>
 <pre><code>#           1     8.26e-03      -15489.36        Inf</code></pre>
@@ -193,9 +193,8 @@
 <pre><code>#   Iteration  Max Chg (f)      Objective   Obj Diff</code></pre>
 <pre><code>#           1     3.33e-01      -15716.95        Inf</code></pre>
 <pre><code>#           2     1.48e-03      -15429.69   2.87e+02</code></pre>
-<pre><code>#           3     1.20e-03      -15416.64   1.31e+01</code></pre>
-<pre><code>#           4     1.72e-03      -15416.03   6.06e-01</code></pre>
-<pre><code>#           5     3.79e-05      -15415.92   1.14e-01</code></pre>
+<pre><code>#           3     1.17e-03      -15416.70   1.30e+01</code></pre>
+<pre><code>#           4     2.19e-04      -15415.96   7.39e-01</code></pre>
 <pre><code># Backfitting 1 factor/loading(s) (stop when max factor change is &lt; 1.00e-03):</code></pre>
 <pre><code>#   Iteration  Max Chg (f)      Objective   Obj Diff</code></pre>
 <pre><code>#           1     3.86e-04      -15412.95        Inf</code></pre>
@@ -203,7 +202,7 @@
 <div id="finalize-covariances" class="section level1">
 <h1 class="hasAnchor">
 <a href="#finalize-covariances" class="anchor"></a>Finalize covariances</h1>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">U.pca</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span>(<span class="no">data.strong</span>, <span class="fl">5</span>)
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">U.pca</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span>(<span class="no">data.strong</span>, <span class="fl">5</span>)
 <span class="no">U.ed</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span>(<span class="no">data.strong</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">U.f</span>, <span class="no">U.pca</span>))
 <span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data.random</span>)</pre></body></html></div>
 </div>
@@ -211,29 +210,29 @@
 <h1 class="hasAnchor">
 <a href="#fit-mash-model-estimate-mixture-proportions" class="anchor"></a>Fit mash model (estimate mixture proportions)</h1>
 <p>Now we fit mash to the random tests using both data-driven and canonical covariances.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">m</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.random</span>, <span class="kw">Ulist</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">U.ed</span>,<span class="no">U.c</span>), <span class="kw">outputlevel</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">m</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.random</span>, <span class="kw">Ulist</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">U.ed</span>,<span class="no">U.c</span>), <span class="kw">outputlevel</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
 <pre><code>#  - Computing 5000 x 256 likelihood matrix.
-#  - Likelihood calculations took 0.52 seconds.
+#  - Likelihood calculations took 0.24 seconds.
 #  - Fitting model with 256 mixture components.
-#  - Model fitting took 2.32 seconds.</code></pre>
+#  - Model fitting took 2.94 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level1">
 <h1 class="hasAnchor">
 <a href="#compute-posterior-summaries" class="anchor"></a>Compute posterior summaries</h1>
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">m2</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.strong</span>, <span class="kw">g</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span>(<span class="no">m</span>), <span class="kw">fixg</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">m2</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.strong</span>, <span class="kw">g</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span>(<span class="no">m</span>), <span class="kw">fixg</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
 <pre><code>#  - Computing 1428 x 256 likelihood matrix.
-#  - Likelihood calculations took 0.13 seconds.
+#  - Likelihood calculations took 0.07 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.04 seconds.</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span>(<span class="no">m2</span>))</pre></body></html></div>
+#  - Computation allocated took 0.02 seconds.</code></pre>
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span>(<span class="no">m2</span>))</pre></body></html></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4  condition_5
-# effect_13096 9.837623e-06 5.072703e-01 4.243008e-01 3.957439e-01 6.073769e-01
-# effect_29826 6.567269e-05 6.639270e-01 5.839536e-01 6.359985e-01 5.770485e-01
-# effect_14042 6.994622e-02 6.496970e-03 2.483995e-03 5.562672e-02 6.838102e-06
+# effect_13096 9.837650e-06 5.072688e-01 4.242991e-01 3.957421e-01 6.073757e-01
+# effect_29826 6.567289e-05 6.639259e-01 5.839522e-01 6.359973e-01 5.770471e-01
+# effect_14042 6.994621e-02 6.496970e-03 2.483995e-03 5.562671e-02 6.838103e-06
 # effect_12524 1.119206e-01 4.107522e-01 2.985502e-02 2.578511e-05 1.001812e-01
-# effect_15456 4.911824e-05 4.382100e-01 2.735435e-01 5.167382e-01 3.611065e-01
-# effect_35844 2.619730e-09 4.563935e-09 1.862137e-07 1.012570e-09 4.090217e-11</code></pre>
+# effect_15456 4.911831e-05 4.382092e-01 2.735424e-01 5.167375e-01 3.611056e-01
+# effect_35844 2.619729e-09 4.563933e-09 1.862136e-07 1.012569e-09 4.090228e-11</code></pre>
 </div>
   </div>
 

@@ -12,7 +12,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Multivariate Adaptive Shrinkage ">
-<meta property="og:description" content="Empirical Bayes shrinkage of multivariate effects.">
+<meta property="og:description" content="Implements the multivariate adaptive shrinkage (mash)
+    method of Urbut et al (2019) &lt;DOI:10.1038/s41588-018-0268-8&gt; for
+    estimating and testing large numbers of effects in many conditions
+    (or many outcomes). Mash takes an empirical Bayes approach to
+    testing and effect estimation; it estimates patterns of similarity
+    among conditions, then exploits these patterns to improve accuracy
+    of the effect estimates. The core linear algebra is implemented in
+    C++ for fast model fitting and posterior computation.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -31,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -72,12 +79,12 @@
 
 <p>This package implements methods to estimate and test many effects in many conditions (or many effects on many outcomes).</p>
 <p>Empirical Bayes methods are used to estimate patterns of similarity among conditions, then exploit these patterns of similarity among conditions to improve accuracy of effect estimates. See <a href="https://doi.org/10.1038/s41588-018-0268-8">Urbut et al</a> for details.</p>
-<p><em>Note:</em> the R package used to generate the results for the manuscript is <a href="http://github.com/stephenslab/mashr-paper">here</a>.</p>
+<p><strong>Note:</strong> the R package used to generate the results for the manuscript is <a href="http://github.com/stephenslab/mashr-paper">here</a>.</p>
 <div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quick-start" class="anchor"></a>Quick Start</h2>
 <ol>
-<li><p>Follow the setup instructions below.</p></li>
+<li><p>Install mashr from CRAN: <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("mashr")</a></code>. For more detailed setup instructions, see below.</p></li>
 <li><p>See the <a href="https://stephenslab.github.io/mashr/articles/intro_mash.html">introductory vignette</a> for an introduction to mashr.</p></li>
 <li><p>Then walk through these vignettes to learn more about mashr: <a href="https://stephenslab.github.io/mashr/articles/intro_mash_dd.html">Introduction to mash: data-driven covariances</a> and <a href="https://stephenslab.github.io/mashr/articles/simulate_noncanon.html">Simulation with non-canonical matrices</a>.</p></li>
 </ol>
@@ -85,7 +92,7 @@
 <div id="citing-this-work" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citing-this-work" class="anchor"></a>Citing this work</h2>
-<p>If you find the masr package or any of the source code in this repository useful for your work, please cite:</p>
+<p>If you find the mashr package or any of the source code in this repository useful for your work, please cite:</p>
 <blockquote>
 <p>Sarah Urbut, Gao Wang, Peter Carbonetto and Matthew Stephens (2019). <a href="https://doi.org/10.1038/s41588-018-0268-8">Flexible statistical methods for estimating and testing effects in genomic studies with multiple conditions.</a> <em>Nature Genetics</em> <strong>51</strong>, 187-195.</p>
 </blockquote>
@@ -93,34 +100,29 @@
 <div id="setup" class="section level2">
 <h2 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h2>
-<p>Please follow these steps to install mashr.</p>
-<ol>
-<li><p>Unlike most packages available on CRAN, mashr is not precompiled, and therefore to install mashr you will need to make sure that your R installation is properly set up to compile packages with C++ source; in particular, the C++ compiler programs supported by your version of R should be installed on your computer, and R should be correctly configured to call these compilers when installing packages from source. For more information, see the <a href="https://cran.r-project.org/manuals.html">CRAN documentation</a>.</p></li>
-<li>
-<p>Install the <a href="https://github.com/stephenslab/mashr/releases/tag/v0.2-11">latest release</a> of the mashr package using <a href="https://github.com/r-lib/devtools">devtools</a>:</p>
-<div class="sourceCode"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"devtools"</span>)
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"stephenslab/mashr@v0.2-11"</span>)</pre></div>
-</li>
-</ol>
-<p>This command should automatically install any missing dependencies that are available from CRAN. This command should also automatically retrieve and install the latest version of the ashr package from Github. If it does not, you can install the ashr package separately using devtools:</p>
-<p><code>R    devtools::install_github("stephens999/ashr")</code></p>
-<ol>
-<li>By default, the <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github</a></code> function does not build the vignettes. If you would like to build the vignettes as well, you will need to several additional packages, including <a href="https://github.com/stephenslab/flashr">flashr</a>, that are used only in the vignettes:</li>
-</ol>
-<p><code>R    install.packages(c("kableExtra","corrplot"))    devtools::install_github("stephenslab/flashr")    devtools::install_github("stephenslab/mashr@v0.2-11",build_vignettes = TRUE)</code></p>
+<p>The simplest and quickest to obtain mashr is to install it from <a href="https://cran.r-project.org/package=mashr">CRAN</a>:</p>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"mashr"</span>)</pre></div>
+<p>For Mac and Windows, usually the package is precompiled, so no additional compiler setup is required. If you have Linux, and in some other rare cases, you will need to make sure that your R installation is properly set up to compile packages with C++ source; in particular, the C++ compiler programs supported by your version of R should be installed on your computer, and R should be correctly configured to call these compilers when installing packages from source. For more information, see the <a href="https://cran.r-project.org/manuals.html">CRAN documentation</a>.</p>
+<p>Alternatively, you may use <a href="https://github.com/r-lib/devtools">devtools</a> to install the latest version of mashr from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"devtools"</span>)
+<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"stephenslab/mashr"</span>)</pre></div>
+<p>This command should automatically install any missing dependencies that are available from CRAN and GitHub.</p>
 </div>
 <div id="developer-notes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#developer-notes" class="anchor"></a>Developer notes</h2>
 <ul>
-<li><p>When any changes are made to <code>roxygen2</code> markup or the C++ code in the src directory, simply run <code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code> to update the <a href="src/RcppExports.cpp">RcppExports.cpp</a>, the package namespaces (see <a href="NAMESPACE" class="uri">NAMESPACE</a>), and the package documentation files (in the man directory),</p></li>
-<li><p>These are the R commands to build the website (make sure you are connected to Internet while running these commands):</p></li>
+<li><p>When any changes are made to <code>roxygen2</code> markup or the C++ code in the src directory, run <code><a href="https://devtools.r-lib.org//reference/document.html">devtools::document()</a></code> to update the <a href="src/RcppExports.cpp">RcppExports.cpp</a>, the package namespaces (see <a href="NAMESPACE">NAMESPACE</a>), and the package documentation files (in the “man” subdirectory),</p></li>
+<li>
+<p>These are the R commands to build the website (make sure you are connected to Internet while running these commands):</p>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="kw pkg">pkgdown</span><span class="kw ns">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site</a></span>(<span class="kw">lazy</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">examples</span><span class="kw">=</span><span class="fl">FALSE</span>)</pre></div>
+</li>
+<li>
+<p>After editing C++ code in the <code>src</code> directory, please use <a href="http://uncrustify.sourceforge.net">uncrustify</a> to format the code using configuration file <code>inst/misc/uncrustify_default.cfg</code>. For example:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="ex">uncrustify</span> -c uncrustify_default.cfg --replace --no-backup -l CPP mash.cpp</a></code></pre></div>
+</li>
+<li><p>Prior to submitting the package to CRAN, the following modifications need to be made: (1) remove the <code>Remotes:</code> entry in <code>DESCRIPTION</code>; (2) remove the <code>flash_mash.Rmd</code> vignette; (3) remove “flashr” from <code>Suggests:</code> in <code>DESCRIPTION</code>; (4) Make sure version number is of the form x.y.z.</p></li>
 </ul>
-<p><code>R    pkgdown::build_site(lazy=TRUE, examples=FALSE)</code></p>
-<ul>
-<li>After editing C++ codes under <code>src</code> please use <a href="http://uncrustify.sourceforge.net/"><code>uncrustify</code></a> to format the code using configuration file <code>inst/misc/uncrustify_default.cfg</code>. For example:</li>
-</ul>
-<p><code>bash    uncrustify -c uncrustify_default.cfg --replace --no-backup -l CPP mash.cpp</code></p>
 </div>
 </div>
   </div>
@@ -129,6 +131,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=mashr">https://​cloud.r-project.org/​package=mashr</a>
+</li>
 <li>Browse source code at <br><a href="http://github.com/stephenslab/mashr/">http://​github.com/​stephenslab/​mashr/​</a>
 </li>
 <li>Report a bug at <br><a href="http://github.com/stephenslab/mashr/issues">http://​github.com/​stephenslab/​mashr/​issues</a>
@@ -138,9 +142,8 @@
 <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/BSD-3-Clause">BSD_3_clause</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/BSD-3-Clause">BSD_3_clause</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 <div class="citation">
@@ -164,6 +167,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=mashr"><img src="https://www.r-pkg.org/badges/version/mashr" alt="CRAN_Status_Badge"></a></li>
 <li><a href="https://travis-ci.org/stephenslab/mashr"><img src="https://travis-ci.org/stephenslab/mashr.svg?branch=master" alt="Travis Build Status"></a></li>
 <li><a href="https://codecov.io/gh/stephenslab/mashr"><img src="https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg" alt="codecov"></a></li>
 </ul>

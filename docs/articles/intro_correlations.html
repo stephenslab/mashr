@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>Accounting for correlations among measurements</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2020-05-18</h4>
+            <h4 class="date">2020-06-27</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_correlations.Rmd"><code>vignettes/intro_correlations.Rmd</code></a></small>
       <div class="hidden name"><code>intro_correlations.Rmd</code></div>
@@ -90,35 +90,35 @@
 <h1 class="hasAnchor">
 <a href="#illustration" class="anchor"></a>Illustration</h1>
 <p>Here we simulate data for illustration. The data does not have any correlation, but we will analyze it as if we did not know that.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">simdata</span> <span class="kw">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span>(<span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span>)</pre></body></html></div>
 <p>Read in the data, and estimate correlations:</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">data</span>   <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data</span>   <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)
 <span class="no">V</span> <span class="kw">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span>(<span class="no">data</span>)
 <span class="no">data.V</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_update_data.html">mash_update_data</a></span>(<span class="no">data</span>, <span class="kw">V</span><span class="kw">=</span><span class="no">V</span>)</pre></body></html></div>
 <p>Now we have two mash data objects, one (<code>data.V</code>) with correlations specified, and one without (<code>data</code>). So analyses using <code>data.V</code> will allow for correlations, whereas analyses using <code>data</code> will assume measurements are independent.</p>
 <p>Here, for illustration purposes, we proceed to analyze the data with correlations, using just the simple canonical covariances as in the initial <a href="intro_mash.html">introductory vignette</a>.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data.V</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data.V</span>)
 <span class="no">m.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.V</span>, <span class="no">U.c</span>) <span class="co"># fits with correlations because data.V includes correlation information </span></pre></body></html></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.16 seconds.
+#  - Likelihood calculations took 0.06 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.46 seconds.
+#  - Model fitting took 0.51 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.05 seconds.</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span>(<span class="no">m.c</span>),<span class="kw">digits</span><span class="kw">=</span><span class="fl">10</span>) <span class="co"># log-likelihood of the fit with correlations set to V</span></pre></body></html></div>
+#  - Computation allocated took 0.02 seconds.</code></pre>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span>(<span class="no">m.c</span>),<span class="kw">digits</span><span class="kw">=</span><span class="fl">10</span>) <span class="co"># log-likelihood of the fit with correlations set to V</span></pre></body></html></div>
 <pre><code># [1] -16121.11177</code></pre>
 <p>We can also compare with the original analysis. (Note that the canonical covariances do not depend on the correlations, so we can use the same <code>U.c</code> here for both analyses. If we used data-driven covariances we might prefer to estimate these separately for each analysis as the correlations would affect them.)</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">m.c.orig</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data</span>, <span class="no">U.c</span>) <span class="co"># fits without correlations because data object was set up without correlations</span></pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">m.c.orig</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data</span>, <span class="no">U.c</span>) <span class="co"># fits without correlations because data object was set up without correlations</span></pre></body></html></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.12 seconds.
+#  - Likelihood calculations took 0.05 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.40 seconds.
+#  - Model fitting took 0.50 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.05 seconds.</code></pre>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span>(<span class="no">m.c.orig</span>),<span class="kw">digits</span><span class="kw">=</span><span class="fl">10</span>)</pre></body></html></div>
+#  - Computation allocated took 0.02 seconds.</code></pre>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span>(<span class="no">m.c.orig</span>),<span class="kw">digits</span><span class="kw">=</span><span class="fl">10</span>)</pre></body></html></div>
 <pre><code># [1] -16120.32142</code></pre>
 <p>The log-likelihoods with and without correlations are similar here, which is expected since there are no actual correlations in the data.</p>
 </div>

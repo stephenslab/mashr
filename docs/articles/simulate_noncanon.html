@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>Simulation with non-canonical matrices</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2020-05-18</h4>
+            <h4 class="date">2020-06-27</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/simulate_noncanon.Rmd"><code>vignettes/simulate_noncanon.Rmd</code></a></small>
       <div class="hidden name"><code>simulate_noncanon.Rmd</code></div>
@@ -92,7 +92,7 @@
 <li><p>shared effects only in the first two conditions; and</p></li>
 <li><p>shared effects only in the last three conditions.</p></li>
 </ol>
-<div class="sourceCode"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
 <span class="no">simdata</span> <span class="kw">=</span> <span class="fu"><a href="../reference/simple_sims2.html">simple_sims2</a></span>(<span class="fl">1000</span>,<span class="fl">1</span>)
@@ -104,7 +104,7 @@
 <h2 class="hasAnchor">
 <a href="#simple-simulation-1" class="anchor"></a>Simple simulation</h2>
 <p>Run 1-by-1 to add the strong signals and ED covariances.</p>
-<div class="sourceCode"><html><body><pre class="r"><span class="no">data</span>   <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data</span>   <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)
 <span class="no">m.1by1</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_1by1.html">mash_1by1</a></span>(<span class="no">data</span>)
 <span class="no">strong</span> <span class="kw">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.1by1</span>)
 <span class="no">U.c</span>    <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data</span>)

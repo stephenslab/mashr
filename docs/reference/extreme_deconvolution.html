@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Density estimation using Gaussian mixtures in the presence of noisy,
-heterogeneous and incomplete data — extreme_deconvolution • mashr</title>
+<title>Density estimation using Gaussian mixtures in the presence
+of noisy, heterogeneous and incomplete data — extreme_deconvolution • mashr</title>
 
 
 <!-- jquery -->
@@ -40,20 +40,22 @@ heterogeneous and incomplete data — extreme_deconvolution • mashr</title>
 
 
 
-<meta property="og:title" content="Density estimation using Gaussian mixtures in the presence of noisy,
-heterogeneous and incomplete data — extreme_deconvolution" />
-<meta property="og:description" content="We present a general algorithm to infer a d-dimensional distribution
-function given a set of heterogeneous, noisy observations or samples. This
-algorithm reconstructs the error-deconvolved or 'underlying' distribution
-function common to all samples, even when the individual samples have unique
-error and missing-data properties. The underlying distribution is modeled as
-a mixture of Gaussians, which is completely general. Model parameters are
-chosen to optimize a justified, scalar objective function: the logarithm of
-the probability of the data under the error-convolved model, where the error
-convolution is different for each data point. Optimization is performed by
-an Expectation Maximization (EM) algorithm, extended by a regularization
-technique and 'split-and-merge' procedure. These extensions mitigate
-problems with singularities and local maxima, which are often encountered
+<meta property="og:title" content="Density estimation using Gaussian mixtures in the presence
+of noisy, heterogeneous and incomplete data — extreme_deconvolution" />
+<meta property="og:description" content="We present a general algorithm to infer a
+d-dimensional distribution function given a set of heterogeneous,
+noisy observations or samples. This algorithm reconstructs the
+error-deconvolved or 'underlying' distribution function common to
+all samples, even when the individual samples have unique error and
+missing-data properties. The underlying distribution is modeled as
+a mixture of Gaussians, which is completely general. Model
+parameters are chosen to optimize a justified, scalar objective
+function: the logarithm of the probability of the data under the
+error-convolved model, where the error convolution is different for
+each data point. Optimization is performed by an Expectation
+Maximization (EM) algorithm, extended by a regularization technique
+and 'split-and-merge' procedure. These extensions mitigate problems
+with singularities and local maxima, which are often encountered
 when using the EM algorithm to estimate Gaussian density mixtures." />
 
 
@@ -86,7 +88,7 @@ when using the EM algorithm to estimate Gaussian density mixtures." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -122,32 +124,50 @@ when using the EM algorithm to estimate Gaussian density mixtures." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Density estimation using Gaussian mixtures in the presence of noisy,
-heterogeneous and incomplete data</h1>
+    <h1>Density estimation using Gaussian mixtures in the presence
+of noisy, heterogeneous and incomplete data</h1>
     <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/extreme_deconvolution.R'><code>R/extreme_deconvolution.R</code></a></small>
     <div class="hidden name"><code>extreme_deconvolution.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>We present a general algorithm to infer a d-dimensional distribution
-function given a set of heterogeneous, noisy observations or samples. This
-algorithm reconstructs the error-deconvolved or 'underlying' distribution
-function common to all samples, even when the individual samples have unique
-error and missing-data properties. The underlying distribution is modeled as
-a mixture of Gaussians, which is completely general. Model parameters are
-chosen to optimize a justified, scalar objective function: the logarithm of
-the probability of the data under the error-convolved model, where the error
-convolution is different for each data point. Optimization is performed by
-an Expectation Maximization (EM) algorithm, extended by a regularization
-technique and 'split-and-merge' procedure. These extensions mitigate
-problems with singularities and local maxima, which are often encountered
+    <p>We present a general algorithm to infer a
+d-dimensional distribution function given a set of heterogeneous,
+noisy observations or samples. This algorithm reconstructs the
+error-deconvolved or 'underlying' distribution function common to
+all samples, even when the individual samples have unique error and
+missing-data properties. The underlying distribution is modeled as
+a mixture of Gaussians, which is completely general. Model
+parameters are chosen to optimize a justified, scalar objective
+function: the logarithm of the probability of the data under the
+error-convolved model, where the error convolution is different for
+each data point. Optimization is performed by an Expectation
+Maximization (EM) algorithm, extended by a regularization technique
+and 'split-and-merge' procedure. These extensions mitigate problems
+with singularities and local maxima, which are often encountered
 when using the EM algorithm to estimate Gaussian density mixtures.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extreme_deconvolution</span>(<span class='no'>ydata</span>,<span class='no'>ycovar</span>,<span class='no'>xamp</span>,<span class='no'>xmean</span>,<span class='no'>xcovar</span>,
-<span class='kw'>projection</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>weight</span><span class='kw'>=</span><span class='kw'>NULL</span>, <span class='kw'>fixamp</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>fixmean</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>fixcovar</span><span class='kw'>=</span><span class='kw'>NULL</span>,
-<span class='kw'>tol</span><span class='kw'>=</span><span class='fl'>1.e-6</span>,<span class='kw'>maxiter</span><span class='kw'>=</span><span class='fl'>1e9</span>,<span class='kw'>w</span><span class='kw'>=</span><span class='fl'>0</span>,<span class='kw'>logfile</span><span class='kw'>=</span><span class='kw'>NULL</span>,
-<span class='kw'>splitnmerge</span><span class='kw'>=</span><span class='fl'>0</span>,<span class='kw'>maxsnm</span><span class='kw'>=</span><span class='fl'>FALSE</span>,<span class='kw'>likeonly</span><span class='kw'>=</span><span class='fl'>FALSE</span>, <span class='kw'>logweight</span><span class='kw'>=</span><span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>extreme_deconvolution</span>(
+  <span class='no'>ydata</span>,
+  <span class='no'>ycovar</span>,
+  <span class='no'>xamp</span>,
+  <span class='no'>xmean</span>,
+  <span class='no'>xcovar</span>,
+  <span class='kw'>projection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>weight</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fixamp</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fixmean</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fixcovar</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>,
+  <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>1e+09</span>,
+  <span class='kw'>w</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>logfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>splitnmerge</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>maxsnm</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>likeonly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>logweight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,9 +178,9 @@ when using the EM algorithm to estimate Gaussian density mixtures.</p>
     </tr>
     <tr>
       <th>ycovar</th>
-      <td><p>[ndata,dy] / [ndata,dy,dy] / [dy,dy,ndata] matrix, list or 3D
-array of observational error covariances (if [ndata,dy] then the error
-correlations are assumed to vanish)</p></td>
+      <td><p>[ndata,dy] / [ndata,dy,dy] / [dy,dy,ndata] matrix,
+list or 3D array of observational error covariances (if [ndata,dy]
+then the error correlations are assumed to vanish)</p></td>
     </tr>
     <tr>
       <th>xamp</th>
@@ -210,10 +230,10 @@ conjugate prior)</p></td>
     </tr>
     <tr>
       <th>logfile</th>
-      <td><p>basename for several logfiles (_c.log has output from the
-c-routine; _loglike.log has the log likelihood path of all the accepted
-routes, i.e. only parts which increase the likelihood are included, during
-splitnmerge)</p></td>
+      <td><p>basename for several logfiles (_c.log has output
+from the c-routine; _loglike.log has the log likelihood path of all
+the accepted routes, i.e. only parts which increase the likelihood
+are included, during splitnmerge)</p></td>
     </tr>
     <tr>
       <th>splitnmerge</th>
@@ -226,8 +246,8 @@ merge steps, K*(K-1)*(K-2)/2</p></td>
     </tr>
     <tr>
       <th>likeonly</th>
-      <td><p>(Bool, default=False) only compute the total log likelihood
-of the data</p></td>
+      <td><p>(Bool, default=False) only compute the total log
+likelihood of the data</p></td>
     </tr>
     <tr>
       <th>logweight</th>
@@ -241,8 +261,8 @@ log(weight)</p></td>
     
 
 <dt>avgloglikedata</dt><dd><p>avgloglikedata after convergence</p></dd>
-<dt>xamp</dt><dd><p>updated xamp</p></dd> <dt>xmean</dt><dd><p>updated xmean</p></dd> <dt>xcovar</dt><dd><p>updated
-xcovar</p></dd>
+<dt>xamp</dt><dd><p>updated xamp</p></dd> <dt>xmean</dt><dd><p>updated xmean</p></dd>
+<dt>xcovar</dt><dd><p>updated xcovar</p></dd>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

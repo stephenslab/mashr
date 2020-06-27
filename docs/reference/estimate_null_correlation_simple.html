@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Estimate null correlations (simple) — estimate_null_correlation_simple" />
-<meta property="og:description" content="Estimates a null correlation matrix from data using simple z score threshold" />
+<meta property="og:description" content="Estimates a null correlation matrix from data using
+simple z score threshold" />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -114,7 +115,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Estimates a null correlation matrix from data using simple z score threshold</p>
+    <p>Estimates a null correlation matrix from data using
+simple z score threshold</p>
     </div>
 
     <pre class="usage"><span class='fu'>estimate_null_correlation_simple</span>(<span class='no'>data</span>, <span class='kw'>z_thresh</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>est_cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -132,16 +134,23 @@
     </tr>
     <tr>
       <th>est_cor</th>
-      <td><p>whether to estimate correlation matrix (TRUE) or the covariance matrix (FALSE).</p></td>
+      <td><p>whether to estimate correlation matrix (TRUE) or the
+covariance matrix (FALSE).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Returns a simple estimate of the correlation matrix (or covariance matrix) among conditions under the null.
-Specifically, the simple estimate is the empirical correlation (or covariance) matrix of the z scores
-for those effects that have (absolute) z score &lt; z_thresh in all conditions.</p>
+    <p>Returns a simple estimate of the correlation matrix (or
+covariance matrix) among conditions under the null.  Specifically,
+the simple estimate is the empirical correlation (or covariance)
+matrix of the z scores for those effects that have (absolute) z
+score &lt; z_thresh in all conditions.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
+<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
+<span class='fu'>estimate_null_correlation_simple</span>(<span class='no'>data</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -40,7 +40,12 @@
 
 
 <meta property="og:title" content="calc_lik_matrix_common_cov — calc_lik_matrix_common_cov" />
-<meta property="og:description" content="computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances; special case when standard errors and variances are all same across j;" />
+<meta property="og:description" content="computes matrix of likelihoods for each of J rows of
+  Bhat for each of P prior covariances; special case when standard
+  errors and variances are all same across j.
+This is an internal (non-exported) function. This help page
+  provides additional documentation mainly intended for developers
+  and expert users." />
 
 
 
@@ -72,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -114,7 +119,12 @@
     </div>
 
     <div class="ref-description">
-    <p>computes matrix of likelihoods for each of J rows of Bhat for each of P prior covariances; special case when standard errors and variances are all same across j;</p>
+    <p>computes matrix of likelihoods for each of J rows of
+  Bhat for each of P prior covariances; special case when standard
+  errors and variances are all same across j.</p>
+<p>This is an internal (non-exported) function. This help page
+  provides additional documentation mainly intended for developers
+  and expert users.</p>
     </div>
 
     <pre class="usage"><span class='fu'>calc_lik_matrix_common_cov</span>(<span class='no'>data</span>, <span class='no'>Ulist</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -138,11 +148,14 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>J x P vector of multivariate normal likelihoods, p(bhat | Ulist[p], V), where V is same for each bhat</p>
+    <p>J x P vector of multivariate normal likelihoods, p(bhat |
+Ulist[p], V), where V is same for each bhat</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Compared with <code>calc_lik_matrix</code> this function exploits fact that observations are iid in this case,
-so the inverse covariance matrices only need to be done once, reducing computation to R^3 + JR^2 instead of JR^3</p>
+    <p>Compared with <code>calc_lik_matrix</code> this function
+exploits fact that observations are iid in this case, so the
+inverse covariance matrices only need to be done once, reducing
+computation to R^3 + JR^2 instead of JR^3</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

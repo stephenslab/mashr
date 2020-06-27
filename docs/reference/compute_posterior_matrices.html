@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -152,11 +152,13 @@ probability of each mixture component in Ulist for the data.</p></td>
     </tr>
     <tr>
       <th>A</th>
-      <td><p>the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.</p></td>
+      <td><p>the linear transformation matrix, Q x R matrix. This is
+used to compute the posterior for Ab.</p></td>
     </tr>
     <tr>
       <th>output_posterior_cov</th>
-      <td><p>whether or not to output posterior covariance matrices for all effects.</p></td>
+      <td><p>whether or not to output posterior
+covariance matrices for all effects.</p></td>
     </tr>
     <tr>
       <th>mc.cores</th>
@@ -166,11 +168,13 @@ to use. Note that this is only has an effect for the Rcpp version.</p></td>
     </tr>
     <tr>
       <th>posterior_samples</th>
-      <td><p>the number of samples to be drawn from the posterior distribution of each effect.</p></td>
+      <td><p>the number of samples to be drawn from the
+posterior distribution of each effect.</p></td>
     </tr>
     <tr>
       <th>seed</th>
-      <td><p>a random number seed to use when sampling from the posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
+      <td><p>a random number seed to use when sampling from the
+posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
     </tr>
     </table>
 
@@ -192,9 +196,11 @@ to use. Note that this is only has an effect for the Rcpp version.</p></td>
 
    <dt>lfsr</dt><dd><p>J x Q matrix of local false sign rates.</p></dd>
 
-   <dt>PosteriorCov</dt><dd><p>Q x Q x J array of posterior covariance matrices, if the <code>output_posterior_cov = TRUE</code>.</p></dd>
+   <dt>PosteriorCov</dt><dd><p>Q x Q x J array of posterior covariance
+     matrices, if the <code>output_posterior_cov = TRUE</code>.</p></dd>
 
-   <dt>PosteriorSamples</dt><dd><p>M x Q x J array of samples, if the <code>posterior_samples = M &gt; 0</code>.</p></dd>
+   <dt>PosteriorSamples</dt><dd><p>M x Q x J array of samples, if the
+     <code>posterior_samples = M &gt; 0</code>.</p></dd>
 
 
   </div>

@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="Fit extreme deconvolution to mash data using Bovy et al 2011 — bovy_wrapper" />
-<meta property="og:description" content="Fit extreme deconvolution to mash data using Bovy et al 2011" />
+<meta property="og:description" content="This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users." />
 
 
 
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -114,7 +116,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Fit extreme deconvolution to mash data using Bovy et al 2011</p>
+    <p>This is an internal (non-exported) function. This help
+  page provides additional documentation mainly intended for
+  developers and expert users.</p>
     </div>
 
     <pre class="usage"><span class='fu'>bovy_wrapper</span>(<span class='no'>data</span>, <span class='no'>Ulist_init</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
@@ -132,17 +136,20 @@
     </tr>
     <tr>
       <th>subset</th>
-      <td><p>the indices of the observations to be used (defaults to all of them)</p></td>
+      <td><p>the indices of the observations to be used (defaults
+to all of them)</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>arguments to be passed to <code>extreme_deconvolution</code> function, such as <code>tol</code>, <code>maxiter</code>.</p></td>
+      <td><p>arguments to be passed to <code>extreme_deconvolution</code>
+function, such as <code>tol</code>, <code>maxiter</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the fitted mixture: a list of mixture proportions and covariance matrices</p>
+    <p>the fitted mixture: a list of mixture proportions and
+covariance matrices</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This is a wrapper to ExtremeDeconvolution::extreme_deconvolution

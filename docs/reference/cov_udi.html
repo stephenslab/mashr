@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Compute a list of covariance matrices corresponding to the
-"Unassociated", "Directly associated" and "Indirectly associated" models — cov_udi • mashr</title>
+"Unassociated", "Directly associated" and "Indirectly associated"
+models — cov_udi • mashr</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@
 
 
 <meta property="og:title" content="Compute a list of covariance matrices corresponding to the
-"Unassociated", "Directly associated" and "Indirectly associated" models — cov_udi" />
+"Unassociated", "Directly associated" and "Indirectly associated"
+models — cov_udi" />
 <meta property="og:description" content="Compute a list of covariance matrices corresponding to the
-&quot;Unassociated&quot;, &quot;Directly associated&quot; and &quot;Indirectly associated&quot; models" />
+&quot;Unassociated&quot;, &quot;Directly associated&quot; and &quot;Indirectly associated&quot;
+models" />
 
 
 
@@ -75,7 +78,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -112,14 +115,16 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute a list of covariance matrices corresponding to the
-"Unassociated", "Directly associated" and "Indirectly associated" models</h1>
+"Unassociated", "Directly associated" and "Indirectly associated"
+models</h1>
     <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/cov_udi.R'><code>R/cov_udi.R</code></a></small>
     <div class="hidden name"><code>cov_udi.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Compute a list of covariance matrices corresponding to the
-"Unassociated", "Directly associated" and "Indirectly associated" models</p>
+"Unassociated", "Directly associated" and "Indirectly associated"
+models</p>
     </div>
 
     <pre class="usage"><span class='fu'>cov_udi</span>(<span class='no'>data</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='fu'><a href='udi_model_matrix.html'>udi_model_matrix</a></span>(<span class='fu'>n_conditions</span>(<span class='no'>data</span>)))</pre>
@@ -133,9 +138,10 @@
     </tr>
     <tr>
       <th>model</th>
-      <td><p>a model matrix with R columns, where R is the number of conditions in the data;
-each row should be a vector of length R with elements "U","D" and "I" indicating whether each effect
-is Unassociated, Directly associated or Indirectly associated</p></td>
+      <td><p>a model matrix with R columns, where R is the number
+of conditions in the data; each row should be a vector of length R
+with elements "U","D" and "I" indicating whether each effect is
+Unassociated, Directly associated or Indirectly associated</p></td>
     </tr>
     </table>
 
@@ -146,9 +152,15 @@ is Unassociated, Directly associated or Indirectly associated</p></td>
 
     <p>If model is specified then this returns the covariance
 matrices for those models. The default creates all possible models.
-For a desription of the "Unassociated", "Directly associated" and "Indirectly associated" models
-see Stephens M (2013), A unified framework for Association Analysis with Multiple Related Phenotypes, PloS ONE.</p>
+For a desription of the "Unassociated", "Directly associated" and
+"Indirectly associated" models see Stephens M (2013), A unified
+framework for Association Analysis with Multiple Related
+Phenotypes, PloS ONE.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='kw'>Bhat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>),<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>4</span>)), <span class='kw'>Shat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>),<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>)))
+<span class='fu'>cov_udi</span>(<span class='no'>data</span>)
+<span class='fu'>cov_udi</span>(<span class='no'>data</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>'I'</span>,<span class='st'>'D'</span>))</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
