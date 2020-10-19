@@ -4,9 +4,6 @@
 #include <cmath>
 #include <armadillo>
 #include <iostream>
-#ifdef _OPENMP
-# include <omp.h>
-#endif
 
 using std::log;
 using std::exp;
@@ -380,9 +377,6 @@ PosteriorMASH(const mat &  b_mat,
 	post_cov.zeros();
 	neg_prob.zeros();
 	zero_prob.zeros();
-	#ifdef _OPENMP
-	omp_set_num_threads(1);
-	#endif
 }
 
 ~PosteriorMASH(){
@@ -433,9 +427,6 @@ set_U0(const cube & value)
 int
 set_thread(const int & value)
 {
-	#ifdef _OPENMP
-	omp_set_num_threads(value);
-	#endif
 	return 0;
 }
 
@@ -633,9 +624,6 @@ MVSERMix(const mat &  b_mat,
 	zero_prob.zeros();
 	prior_scalar.set_size(U_cube.n_slices);
 	prior_invertable = false;
-	#ifdef _OPENMP
-	omp_set_num_threads(1);
-	#endif
 }
 
 ~MVSERMix(){
@@ -702,9 +690,6 @@ set_Uinv(const cube & value)
 int
 set_thread(const int & value)
 {
-	#ifdef _OPENMP
-	omp_set_num_threads(value);
-	#endif
 	return 0;
 }
 
@@ -948,19 +933,13 @@ calc_lik(const mat &  b_mat,
 	mat lik(b_mat.n_cols, U_cube.n_slices, arma::fill::zeros);
 	vec mean(b_mat.n_rows, arma::fill::zeros);
 	mat sigma;
-    #ifdef _OPENMP
-	omp_set_num_threads(n_thread);
-    #endif
 	if (common_cov) {
 		if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(0);
 		else sigma = get_cov(s_mat.col(0), v_mat, l_mat);
-	#pragma omp parallel for default(none) schedule(static) shared(lik, U_cube, mean, sigma, logd, b_mat)
 		for (uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, sigma + U_cube.slice(p), logd);
 		}
 	} else {
-	#pragma \
-		omp parallel for default(none) schedule(static) shared(lik, mean, logd, U_cube, b_mat, sigma_cube, l_mat, v_mat, s_mat) private(sigma)
 		for (uword j = 0; j < lik.n_rows; ++j) {
 			if (!sigma_cube.is_empty()) sigma = sigma_cube.slice(j);
 			else sigma = get_cov(s_mat.col(j), v_mat, l_mat);
@@ -984,9 +963,6 @@ calc_lik(const mat & b_mat,
          const cube & rooti_cube,
          bool logd, bool common_cov, int n_thread = 1)
 {
-    #ifdef _OPENMP
-	omp_set_num_threads(n_thread);
-    #endif
 	// In armadillo data are stored with column-major ordering
 	// slicing columns are therefore faster than rows
 	// lik is a J by P matrix
@@ -997,12 +973,10 @@ calc_lik(const mat & b_mat,
 	mat lik(b_mat.n_cols, P, arma::fill::zeros);
 	vec mean(b_mat.n_rows, arma::fill::zeros);
 	if (common_cov) {
-	#pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
 		for (uword p = 0; p < lik.n_cols; ++p) {
 			lik.col(p) = dmvnorm_mat(b_mat, mean, rooti_cube.slice(p), logd, true);
 		}
 	} else {
-	#pragma omp parallel for default(none) schedule(static) shared(lik, mean, logd, rooti_cube, b_mat)
 		for (uword j = 0; j < lik.n_rows; ++j) {
 			for (uword p = 0; p < lik.n_cols; ++p) {
 				lik.at(j, p) = dmvnorm(b_mat.col(j), mean, rooti_cube.slice(j * lik.n_cols + p), logd, true);
@@ -1053,8 +1027,6 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 	vec mean(post_mean.n_rows);
 	mean.fill(0);
 	
-    #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
 	for (uword j = 0; j < post_mean.n_cols; ++j) {
 		// FIXME: improved math may help here
 		mat Vinv_j;
@@ -1156,8 +1128,6 @@ mash_compute_posterior_comcov(const mat&   b_mat,
 	ones.fill(1);
 	zeros.fill(0);
 	
-    #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, Vinv, ones, zeros, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, a_mat, U_cube, U0_cube)
 	for (uword p = 0; p < U_cube.n_slices; ++p) {
 		mat zero_mat(post_mean.n_rows, post_mean.n_cols);
 		// R X R
@@ -1197,7 +1167,6 @@ mash_compute_posterior_comcov(const mat&   b_mat,
 			}
 		}
 		// compute weighted means of posterior arrays
-	#pragma omp critical
 		{
 			post_mean += mu1_mat.each_row() % posterior_weights.row(p);
 			post_var  += diag_mu2_mat.each_row() % posterior_weights.row(p);
@@ -1214,7 +1183,6 @@ mash_compute_posterior_comcov(const mat&   b_mat,
 	post_var -= pow(post_mean, 2.0);
 	//
 	if (report_type == 4) {
-	#pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
 		for (uword j = 0; j < post_mean.n_cols; ++j) {
 			post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 		}
@@ -1256,8 +1224,6 @@ mvsermix_compute_posterior(const mat&  b_mat,
 		Eb2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
 		Eb2_cube.zeros();
 	}
-    #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
 	for (uword j = 0; j < post_mean.n_cols; ++j) {
 		// FIXME: improved math may help here
 		mat Vinv_j;
@@ -1309,7 +1275,6 @@ mvsermix_compute_posterior(const mat&  b_mat,
 		zero_prob.col(j)   = zero_mat * posterior_weights.col(j);
 		post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 		if (to_estimate_prior) {
-	    #pragma omp critical
 			{
 				for (uword p = 0; p < U_cube.n_slices; ++p) {
 					// we will compute some quantity to provide for
@@ -1378,8 +1343,6 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 	ones.fill(1);
 	zeros.fill(0);
 	
-    #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, sigma0, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, prior_invertable, b_mat, U_cube, U0_cube, Uinv_cube)
 	for (uword p = 0; p < U_cube.n_slices; ++p) {
 		mat zero_mat(post_mean.n_rows, post_mean.n_cols);
 		// R X R
@@ -1429,7 +1392,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 				neg_mat.row(r)  = zeros;
 			}
 		}
-	#pragma omp critical
+
 		{
 			// compute weighted means of posterior arrays
 			post_mean += mu1_mat.each_row() % posterior_weights.row(p);
@@ -1442,7 +1405,6 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 		}
 	}
 	post_var -= pow(post_mean, 2.0);
-    #pragma omp parallel for schedule(static) default(none) shared(post_cov, post_mean)
 	for (uword j = 0; j < post_mean.n_cols; ++j) {
 		post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 	}

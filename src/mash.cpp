@@ -2,9 +2,6 @@
 // Gao Wang (c) 2017-2020 wang.gao@columbia.edu
 #include <iostream>
 #include <stdexcept>
-#ifdef _OPENMP
-# include <omp.h>
-#endif
 #include "RcppArmadillo.h"
 #include "mash.h"
 

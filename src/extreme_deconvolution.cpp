@@ -8,10 +8,6 @@
 #include <gsl/gsl_linalg.h>
 #include <cmath>
 
-#ifdef _OPENMP
-# include <omp.h>
-#endif
-
 #define CHUNKSIZE 1
 
 // GLOBAL VARIABLES
@@ -690,16 +686,9 @@ proj_EM_step(struct datapoint * data, int N,
 	double sumSV;
 	int chunk;
 	chunk = CHUNKSIZE;
-    #pragma omp parallel for schedule(static,chunk) \
-	private(tid,di,signum,exponent,ii,jj,ll,kk,Tij,Tij_inv,wminusRm,p,VRTTinv,sumSV,VRT,TinvwminusRm,Rtrans,thisgaussian,thisdata,thisbs,thisnewgaussian,currqij) \
-	shared(newgaussians,gaussians,bs,allfixed,K,d,data,avgloglikedata)
 	for (ii = 0; ii < N; ++ii) {
 		thisdata = data + ii;
-	#ifdef _OPENMP
-		tid = omp_get_thread_num();
-	#else
 		tid = 0;
-	#endif
 		di = (thisdata->SS)->size1;
 		p            = gsl_permutation_alloc(di);
 		wminusRm     = gsl_vector_alloc(di);
@@ -785,7 +774,6 @@ proj_EM_step(struct datapoint * data, int N,
 		gsl_matrix_free(VRTTinv);
 		if (!noproj) gsl_matrix_free(Rtrans);
 		// Again loop over the gaussians to update the model(can this be more efficient? in any case this is not so bad since generally K << N)
-	#pragma omp critical
 		{
 			// Normalize qij properly
 			*avgloglikedata += normalize_row(qij, ii, true, noweight, thisdata->logweight);
@@ -808,8 +796,6 @@ proj_EM_step(struct datapoint * data, int N,
 
 	// gather newgaussians
 	if (nthreads != 1)
-			    #pragma omp parallel for schedule(static,chunk) \
-		private(ll,jj)
 		for (jj = 0; jj < K; ++jj)
 			for (ll = 1; ll != nthreads; ++ll) {
 				gsl_vector_add((newgaussians + jj)->mm, (newgaussians + ll * K + jj)->mm);
@@ -819,8 +805,6 @@ proj_EM_step(struct datapoint * data, int N,
 	// Now update the parameters
 	// Thus, loop over gaussians again!
 	double qj;
-    #pragma omp parallel for schedule(dynamic,chunk) \
-	private(jj,qj)
 	for (jj = 0; jj < K; ++jj) {
 		if (*(allfixed + jj)) {
 			continue;
@@ -949,11 +933,7 @@ proj_gauss_mixtures(struct datapoint * data, int N,
 	fixcovar     -= K;
 	fixcovar_tmp -= K;
 	// allocate the newalpha, newmm and newVV matrices
-    #ifdef _OPENMP
-	nthreads = omp_get_max_threads();
-    #else
 	nthreads = 1;
-    #endif
 	newgaussians      = (struct gaussian *) malloc(K * nthreads * sizeof(struct gaussian) );
 	startnewgaussians = newgaussians;
 	int ll;
