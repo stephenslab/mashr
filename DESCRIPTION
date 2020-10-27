@@ -56,7 +56,7 @@ Suggests:
 VignetteBuilder: knitr
 NeedsCompilation: yes
 Biarch: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Remotes: 
     stephens999/ashr,
     stephenslab/flashr
