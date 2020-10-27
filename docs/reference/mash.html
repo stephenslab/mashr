@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -117,62 +117,72 @@
     <p>Apply mash method to data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mash</span>(
-  <span class='no'>data</span>,
-  <span class='kw'>Ulist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>gridmult</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fl'>2</span>),
-  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>normalizeU</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>usepointmass</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>g</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>fixg</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span>),
-  <span class='kw'>optmethod</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mixSQP"</span>, <span class='st'>"mixIP"</span>, <span class='st'>"mixEM"</span>, <span class='st'>"cxxMixSquarem"</span>),
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>add.mem.profile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>),
-  <span class='kw'>pi_thresh</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>,
-  <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>posterior_samples</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>123</span>,
-  <span class='kw'>outputlevel</span> <span class='kw'>=</span> <span class='fl'>2</span>
-)</pre>
+    <pre class="usage"><span class='fu'>mash</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  Ulist <span class='op'>=</span> <span class='cn'>NULL</span>,
+  gridmult <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>,
+  grid <span class='op'>=</span> <span class='cn'>NULL</span>,
+  normalizeU <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  usepointmass <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  g <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fixg <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  prior <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span><span class='op'>)</span>,
+  optmethod <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mixSQP"</span>, <span class='st'>"mixIP"</span>, <span class='st'>"mixEM"</span>, <span class='st'>"cxxMixSquarem"</span><span class='op'>)</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  add.mem.profile <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  algorithm.version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Rcpp"</span>, <span class='st'>"R"</span><span class='op'>)</span>,
+  pi_thresh <span class='op'>=</span> <span class='fl'>1e-10</span>,
+  A <span class='op'>=</span> <span class='cn'>NULL</span>,
+  posterior_samples <span class='op'>=</span> <span class='fl'>0</span>,
+  seed <span class='op'>=</span> <span class='fl'>123</span>,
+  outputlevel <span class='op'>=</span> <span class='fl'>2</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a mash data object containing the Bhat matrix, standard errors, alpha value; created using <code>mash_set_data</code> or <code>mash_set_data_contrast</code></p></td>
+      <td><p>a mash data object containing the Bhat matrix, standard
+errors, alpha value; created using <code>mash_set_data</code> or
+<code>mash_set_data_contrast</code></p></td>
     </tr>
     <tr>
       <th>Ulist</th>
-      <td><p>a list of covariance matrices to use</p></td>
+      <td><p>a list of covariance matrices to use 
+(see <code>normalizeU</code> for rescaling these matrices)</p></td>
     </tr>
     <tr>
       <th>gridmult</th>
-      <td><p>scalar indicating factor by which adjacent grid values should differ; close to 1 for fine grid</p></td>
+      <td><p>scalar indicating factor by which adjacent grid
+values should differ; close to 1 for fine grid</p></td>
     </tr>
     <tr>
       <th>grid</th>
-      <td><p>vector of grid values to use (scaling factors omega in paper)</p></td>
+      <td><p>vector of grid values to use (scaling factors omega in
+paper)</p></td>
     </tr>
     <tr>
       <th>normalizeU</th>
-      <td><p>whether or not to normalize the U covariances to have maximum of 1 on diagonal</p></td>
+      <td><p>whether or not to normalize the U covariances to
+have maximum of 1 on diagonal</p></td>
     </tr>
     <tr>
       <th>usepointmass</th>
-      <td><p>whether to include a point mass at 0, corresponding to null in every condition</p></td>
+      <td><p>whether to include a point mass at 0,
+corresponding to null in every condition</p></td>
     </tr>
     <tr>
       <th>g</th>
-      <td><p>the value of g obtained from a previous mash fit - an alternative to supplying Ulist, grid and usepointmass</p></td>
+      <td><p>the value of g obtained from a previous mash fit - an
+alternative to supplying Ulist, grid and usepointmass</p></td>
     </tr>
     <tr>
       <th>fixg</th>
-      <td><p>if g is supplied, allows the mixture proportions to be fixed rather than estimated - e.g. useful for fitting mash to test data after fitting it to training data</p></td>
+      <td><p>if g is supplied, allows the mixture proportions to be
+fixed rather than estimated; e.g., useful for fitting mash to test
+data after fitting it to training data</p></td>
     </tr>
     <tr>
       <th>prior</th>
@@ -192,7 +202,8 @@
     </tr>
     <tr>
       <th>add.mem.profile</th>
-      <td><p>If <code>TRUE</code>, print memory usage to R console (requires R library `profmem`).</p></td>
+      <td><p>If <code>TRUE</code>, print memory usage to R
+console (requires R library `profmem`).</p></td>
     </tr>
     <tr>
       <th>algorithm.version</th>
@@ -200,23 +211,31 @@
     </tr>
     <tr>
       <th>pi_thresh</th>
-      <td><p>threshold below which mixture components are ignored in computing posterior summaries (to speed calculations by ignoring negligible components)</p></td>
+      <td><p>threshold below which mixture components are
+ignored in computing posterior summaries (to speed calculations by
+ignoring negligible components)</p></td>
     </tr>
     <tr>
       <th>A</th>
-      <td><p>the linear transformation matrix, Q x R matrix. This is used to compute the posterior for Ab.</p></td>
+      <td><p>the linear transformation matrix, Q x R matrix. This is
+used to compute the posterior for Ab.</p></td>
     </tr>
     <tr>
       <th>posterior_samples</th>
-      <td><p>the number of samples to be drawn from the posterior distribution of each effect.</p></td>
+      <td><p>the number of samples to be drawn from the
+posterior distribution of each effect.</p></td>
     </tr>
     <tr>
       <th>seed</th>
-      <td><p>A random number seed to use when sampling from the posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
+      <td><p>A random number seed to use when sampling from the
+posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
     </tr>
     <tr>
       <th>outputlevel</th>
-      <td><p>controls amount of computation / output; 1: output only estimated mixture component proportions, 2: and posterior estimates, 3: and posterior covariance matrices, 4: and likelihood matrices</p></td>
+      <td><p>controls amount of computation / output; 1:
+output only estimated mixture component proportions, 2: and
+posterior estimates, 3: and posterior covariance matrices, 4: and
+likelihood matrices</p></td>
     </tr>
     </table>
 
@@ -225,11 +244,18 @@
     <p>a list with elements result, loglik and fitted_g</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='no'>Bhat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>),<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>5</span>) <span class='co'># create some simulated data</span>
-<span class='no'>Shat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='fl'>100</span>),<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>5</span>)
-<span class='no'>data</span> <span class='kw'>=</span> <span class='kw pkg'>mashr</span><span class='kw ns'>::</span><span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>Bhat</span>,<span class='no'>Shat</span>, <span class='kw'>alpha</span><span class='kw'>=</span><span class='fl'>1</span>)
-<span class='no'>U.c</span> <span class='kw'>=</span> <span class='kw pkg'>mashr</span><span class='kw ns'>::</span><span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>)
-<span class='no'>res.mash</span> <span class='kw'>=</span> <span class='kw pkg'>mashr</span><span class='kw ns'>::</span><span class='fu'>mash</span>(<span class='no'>data</span>,<span class='no'>U.c</span>)</pre>
+    <pre class="examples"><div class='input'><span class='va'>Bhat</span>     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span> <span class='co'># create some simulated data</span>
+<span class='va'>Shat</span>     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>100</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>data</span>     <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>Bhat</span>,<span class='va'>Shat</span>, alpha<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>U.c</span>      <span class='op'>=</span> <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
+<span class='va'>res.mash</span> <span class='op'>=</span> <span class='fu'>mash</span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>U.c</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  - Computing 20 x 121 likelihood matrix.
+#&gt;  - Likelihood calculations took 0.00 seconds.
+#&gt;  - Fitting model with 121 mixture components.
+#&gt;  - Model fitting took 0.05 seconds.
+#&gt;  - Computing posterior matrices.
+#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -245,7 +271,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

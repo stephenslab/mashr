@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean — get_pairwise_sharing • mashr</title>
+<title>Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean — get_pairwise_sharing • mashr</title>
 
 
 <!-- jquery -->
@@ -39,8 +40,10 @@
 
 
 
-<meta property="og:title" content="Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean — get_pairwise_sharing" />
-<meta property="og:description" content="Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean" />
+<meta property="og:title" content="Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean — get_pairwise_sharing" />
+<meta property="og:description" content="Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean" />
 
 
 
@@ -72,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.21.0719</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
       </span>
     </div>
 
@@ -108,16 +111,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean</h1>
+    <h1>Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean</h1>
     <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
     <div class="hidden name"><code>get_pairwise_sharing.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute the proportion of (significant) signals shared by magnitude in each pair of conditions, based on the poterior mean</p>
+    <p>Compute the proportion of (significant) signals shared by
+magnitude in each pair of conditions, based on the poterior mean</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_pairwise_sharing</span>(<span class='no'>m</span>, <span class='kw'>factor</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>lfsr_thresh</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>FUN</span> <span class='kw'>=</span> <span class='no'>identity</span>)</pre>
+    <pre class="usage"><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, factor <span class='op'>=</span> <span class='fl'>0.5</span>, lfsr_thresh <span class='op'>=</span> <span class='fl'>0.05</span>, FUN <span class='op'>=</span> <span class='va'>identity</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,31 +133,59 @@
     </tr>
     <tr>
       <th>factor</th>
-      <td><p>a number in [0,1] the factor within which effects are considered to be shared</p></td>
+      <td><p>a number in [0,1] the factor within which effects are
+considered to be shared</p></td>
     </tr>
     <tr>
       <th>lfsr_thresh</th>
-      <td><p>the lfsr threshold for including an effect in the assessment</p></td>
+      <td><p>the lfsr threshold for including an effect in
+the assessment</p></td>
     </tr>
     <tr>
       <th>FUN</th>
-      <td><p>a function to be applied to the estimated effect sizes before assessing sharing. The most obvious choice beside the default
-'FUN=identity' would be 'FUN=abs' if you want to ignore the sign of the effects when assesing sharing.</p></td>
+      <td><p>a function to be applied to the estimated effect sizes
+before assessing sharing. The most obvious choice beside the
+default 'FUN=identity' would be 'FUN=abs' if you want to ignore the
+sign of the effects when assesing sharing.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>For each pair of tissues, first identify the effects that are significant (by lfsr&lt;lfsr_thresh)
- in at least one of the two tissues. Then compute what fraction of these have an estimated (posterior mean) effect size within
- a factor `factor` of one another. The results are returned as an R by R matrix.</p>
+    <p>For each pair of tissues, first identify the effects that
+are significant (by lfsr&lt;lfsr_thresh) in at least one of the two
+tissues. Then compute what fraction of these have an estimated
+(posterior mean) effect size within a factor `factor` of one
+another. The results are returned as an R by R matrix.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'>get_pairwise_sharing</span>(<span class='no'>m</span>) <span class='co'># sharing by magnitude (same sign)</span>
-<span class='fu'>get_pairwise_sharing</span>(<span class='no'>m</span>, <span class='kw'>factor</span><span class='kw'>=</span><span class='fl'>0</span>) <span class='co'># sharing by sign</span>
-<span class='fu'>get_pairwise_sharing</span>(<span class='no'>m</span>, <span class='kw'>FUN</span><span class='kw'>=</span><span class='no'>abs</span>) <span class='co'># sharing by magnitude when sign is ignored</span>
-}</pre>
+    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  - Computing 200 x 141 likelihood matrix.
+#&gt;  - Likelihood calculations took 0.01 seconds.
+#&gt;  - Fitting model with 141 mixture components.
+#&gt;  - Model fitting took 0.15 seconds.
+#&gt;  - Computing posterior matrices.
+#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span> <span class='co'># sharing by magnitude (same sign)</span>
+</div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
+#&gt; condition_1   1.0000000   0.9473684   1.0000000   0.9000000   0.9500000
+#&gt; condition_2   0.9473684   1.0000000   0.9473684   0.9473684   1.0000000
+#&gt; condition_3   1.0000000   0.9473684   1.0000000   0.8947368   0.9473684
+#&gt; condition_4   0.9000000   0.9473684   0.8947368   1.0000000   1.0000000
+#&gt; condition_5   0.9500000   1.0000000   0.9473684   1.0000000   1.0000000</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, factor<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='co'># sharing by sign</span>
+</div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
+#&gt; condition_1   1.0000000   0.9473684           1        0.95        0.95
+#&gt; condition_2   0.9473684   1.0000000           1        1.00        1.00
+#&gt; condition_3   1.0000000   1.0000000           1        1.00        1.00
+#&gt; condition_4   0.9500000   1.0000000           1        1.00        1.00
+#&gt; condition_5   0.9500000   1.0000000           1        1.00        1.00</div><div class='input'><span class='fu'>get_pairwise_sharing</span><span class='op'>(</span><span class='va'>m</span>, FUN<span class='op'>=</span><span class='va'>abs</span><span class='op'>)</span> <span class='co'># sharing by magnitude when sign is ignored</span>
+</div><div class='output co'>#&gt;             condition_1 condition_2 condition_3 condition_4 condition_5
+#&gt; condition_1   1.0000000   0.9473684   1.0000000   0.9000000   0.9500000
+#&gt; condition_2   0.9473684   1.0000000   0.9473684   0.9473684   1.0000000
+#&gt; condition_3   1.0000000   0.9473684   1.0000000   0.8947368   0.9473684
+#&gt; condition_4   0.9000000   0.9473684   0.8947368   1.0000000   1.0000000
+#&gt; condition_5   0.9500000   1.0000000   0.9473684   1.0000000   1.0000000</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -168,7 +201,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

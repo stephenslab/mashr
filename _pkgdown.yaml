@@ -21,4 +21,4 @@ articles:
     - intro_correlations
     - mash_sampling
     - intro_mashcommonbaseline
-    - intro_mashnobaseline
+    - intro_mashbaselinemean

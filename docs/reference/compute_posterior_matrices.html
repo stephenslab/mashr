@@ -117,17 +117,17 @@
     <p>Compute posterior matrices.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>compute_posterior_matrices</span>(
-  <span class='no'>data</span>,
-  <span class='no'>Ulist</span>,
-  <span class='no'>posterior_weights</span>,
-  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>),
-  <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>output_posterior_cov</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>mc.cores</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>posterior_samples</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>123</span>
-)</pre>
+    <pre class="usage"><span class='fu'>compute_posterior_matrices</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>Ulist</span>,
+  <span class='va'>posterior_weights</span>,
+  algorithm.version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Rcpp"</span>, <span class='st'>"R"</span><span class='op'>)</span>,
+  A <span class='op'>=</span> <span class='cn'>NULL</span>,
+  output_posterior_cov <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  mc.cores <span class='op'>=</span> <span class='fl'>1</span>,
+  posterior_samples <span class='op'>=</span> <span class='fl'>0</span>,
+  seed <span class='op'>=</span> <span class='fl'>123</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -218,7 +218,7 @@ posteriors. It is used when <code>posterior_samples &gt; 0</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

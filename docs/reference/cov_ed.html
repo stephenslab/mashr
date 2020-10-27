@@ -122,7 +122,7 @@ the data</h1>
 the data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cov_ed</span>(<span class='no'>data</span>, <span class='no'>Ulist_init</span>, <span class='kw'>subset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bovy"</span>, <span class='st'>"teem"</span>), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>cov_ed</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>Ulist_init</span>, subset <span class='op'>=</span> <span class='cn'>NULL</span>, algorithm <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"bovy"</span>, <span class='st'>"teem"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,15 +157,36 @@ NULL for all the data)</p></td>
 
     <p>Runs the extreme deconvolution algorithm from Bovy et al
 (Annals of Applied Statistics) to estimate data-driven covariance
-matrices The default is to initialize the EM algorithm from
-data2cov_pca with 5 PCs</p>
+matrices. It can be initialized with, for example running <code>cov_pca</code> with, 
+say, 5 PCs.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='kw'>Bhat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>2</span>),<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>3</span>,<span class='fl'>4</span>)), <span class='kw'>Shat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>),<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>1</span>)))
-<span class='no'>U_pca</span> <span class='kw'>=</span> <span class='fu'><a href='cov_pca.html'>cov_pca</a></span>(<span class='no'>data</span>,<span class='fl'>2</span>)
-<span class='no'>U_x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span>(<span class='no'>data</span>$<span class='no'>Bhat</span>, <span class='fl'>2</span>, <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span> - <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>x</span>))
-<span class='no'>U_xx</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span>(<span class='no'>U_x</span>) <span class='kw'>%*%</span> <span class='no'>U_x</span> / <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>U_x</span>)
-<span class='fu'>cov_ed</span>(<span class='no'>data</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>U_pca</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>xx</span> <span class='kw'>=</span> <span class='no'>U_xx</span>)))</pre>
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span>Bhat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, Shat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>U_pca</span> <span class='op'>=</span> <span class='fu'><a href='cov_pca.html'>cov_pca</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>U_x</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='fl'>2</span>, <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>x</span> <span class='op'>-</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>U_xx</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>U_x</span><span class='op'>)</span> <span class='op'>%*%</span> <span class='va'>U_x</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>U_x</span><span class='op'>)</span>
+<span class='fu'>cov_ed</span><span class='op'>(</span><span class='va'>data</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>U_pca</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>xx <span class='op'>=</span> <span class='va'>U_xx</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $ED_PCA_1
+#&gt;          [,1]      [,2]
+#&gt; [1,] 2.280332  5.154809
+#&gt; [2,] 5.154809 11.652713
+#&gt; 
+#&gt; $ED_PCA_2
+#&gt;             [,1]         [,2]
+#&gt; [1,]  0.00512510 -0.002267190
+#&gt; [2,] -0.00226719  0.001002936
+#&gt; 
+#&gt; $ED_tPCA
+#&gt;          [,1]      [,2]
+#&gt; [1,] 2.281962  5.154337
+#&gt; [2,] 5.154337 11.652792
+#&gt; 
+#&gt; $ED_xx
+#&gt;          [,1]     [,2]
+#&gt; [1,] 5.904371 5.904371
+#&gt; [2,] 5.904371 5.904371
+#&gt; </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -181,7 +202,7 @@ data2cov_pca with 5 PCs</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

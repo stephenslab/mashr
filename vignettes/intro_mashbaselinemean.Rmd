@@ -1,5 +1,5 @@
 ---
-title: "mashr with no common baseline"
+title: "mashr with common baseline at mean"
 author: "Yuxin Zou"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -22,7 +22,7 @@ library(kableExtra)
 
 # Introduction
 
-In the previous vignette [mash common baseline](intro_mashcommonbaseline.html), we estimate the change in some quantity computed in multiple conditions over a **common** control condition. However, there might be no **common** control condition in a study. In this case, we define the reference condition as the mean over different conditions. Deviation in any condition is defined as a difference in the quantity over the mean. We want to estimate the change in some quantity computed in multiple conditions over their mean.
+In the previous vignette [mash common baseline](intro_mashcommonbaseline.html), we estimate the change in some quantity computed in multiple conditions over a **common control** condition. However, there might be **no common control** condition in a study. In this case, we define the reference condition as the **mean** over different conditions. Deviation in any condition is defined as a difference in the quantity over the mean. We want to estimate the change in some quantity computed in multiple conditions over their mean.
 
 For example, we measure the gene expression under multiple conditions. We want to estimate the change in expression in multiple conditions over their mean.
 
