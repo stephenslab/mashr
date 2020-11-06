@@ -135,11 +135,10 @@ calc_sermix_rcpp(const arma::mat &   b_mat,
                  const arma::mat &   v_mat,
                  NumericVector vinv_3d,
                  NumericVector U_3d,
-                 NumericVector Uinv_3d,
+                 NumericVector Uinv_3d_drank,
                  NumericVector U0_3d,
                  const arma::mat &   posterior_mixture_weights,
                  const arma::mat &   posterior_variable_weights,
-                 double              sigma0,
                  bool                common_cov,
                  int                 n_thread = 1)
 {
@@ -170,16 +169,16 @@ calc_sermix_rcpp(const arma::mat &   b_mat,
 		cube vinv_cube(vinv_3d.begin(), dimV[0], dimV[1], dimV[2]);
 		pc.set_Vinv(vinv_cube);
 	}
-	if (!Rf_isNull(Uinv_3d.attr("dim"))) {
+	if (!Rf_isNull(Uinv_3d_drank.attr("dim"))) {
 		// inverse of prior matrices
 		// relevent to computing updated scalar for prior variances
 		// a feature used in mmbr package
-		cube Uinv_cube(Uinv_3d.begin(), dimU[0], dimU[1], dimU[2]);
-		pc.set_Uinv(Uinv_cube);
+		cube Uinv_cube_drank(Uinv_3d_drank.begin(), dimU[0], dimU[1], dimU[2]);
+		pc.set_Uinv(Uinv_cube_drank);
 	}
-	if (!common_cov) pc.compute_posterior(posterior_mixture_weights, posterior_variable_weights, sigma0);
+	if (!common_cov) pc.compute_posterior(posterior_mixture_weights, posterior_variable_weights);
 	else pc.compute_posterior_comcov(posterior_mixture_weights,
-		                         posterior_variable_weights, sigma0);
+		                         posterior_variable_weights);
 	List res = List::create(
 		Named("post_mean") = pc.PosteriorMean(),
 		Named("post_sd")   = pc.PosteriorSD(),
