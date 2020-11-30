@@ -30,7 +30,6 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
   z = data$Bhat/data$Shat
   max_absz = apply(abs(z),1, max)
   nullish = which(max_absz < z_thresh)
-  browser()
   if(length(nullish)<n_conditions(data)){
     stop("not enough null data to estimate null correlation")
   }
