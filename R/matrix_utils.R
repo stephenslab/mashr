@@ -35,7 +35,7 @@ check_positive_definite = function(x) {
 
 ## @title check for positive semi-definite of covariance matrices
 ## @param X input matrix
-issemidef = function (X, minval = -1e-12){
+issemidef = function (X, minval = -1e-8){
   all(eigen(X)$values > minval)
 }
 
