@@ -4,8 +4,8 @@
 #' errors, alpha value; created using \code{mash_set_data} or
 #' \code{mash_set_data_contrast}
 #'
-#' @param Ulist a list of covariance matrices to use 
-#' (see \code{normalizeU} for rescaling these matrices) 
+#' @param Ulist a list of covariance matrices to use
+#' (see \code{normalizeU} for rescaling these matrices)
 #'
 #' @param gridmult scalar indicating factor by which adjacent grid
 #' values should differ; close to 1 for fine grid
@@ -120,6 +120,8 @@ mash = function(data,
 
   for (i in 1:length(Ulist)) {
     check_covmat_basics(Ulist[[i]])
+    if (!issemidef(Ulist[[i]]))
+      stop("All U_scaled matrices should be positive semi-definite")
     if (nrow(Ulist[[i]]) != R)
       stop(paste("Matrices in Ulist must be of dimension", R, "by", R))
   }
