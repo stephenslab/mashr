@@ -307,7 +307,7 @@ mvsermix_compute_posterior(const mat&  b_mat,
                            cube &      U_cube,
                            cube &      Vinv_cube,
                            cube &      U0_cube,
-                           cube &      Uinv_cube_drank,
+                           cube &      Uinv_cube,
                            mat &       post_mean,
                            mat &       post_var,
                            mat &       neg_prob,
@@ -324,7 +324,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
                                   const cube & U_cube,
                                   const cube & Vinv_cube,
                                   const cube & U0_cube,
-                                  const cube & Uinv_cube_drank,
+                                  const cube & Uinv_cube,
                                   mat &        post_mean,
                                   mat &        post_var,
                                   mat &        neg_prob,
@@ -645,7 +645,7 @@ compute_posterior(const mat & posterior_weights,
                   const mat & posterior_variable_weights)
 {
 	return mvsermix_compute_posterior(b_mat, s_mat, v_mat, U_cube, Vinv_cube,
-	                                  U0_cube, Uinv_cube_drank, post_mean, post_var,
+	                                  U0_cube, Uinv_cube, post_mean, post_var,
 	                                  neg_prob, zero_prob, post_cov,
 	                                  prior_scalar,
 	                                  posterior_weights,
@@ -660,7 +660,7 @@ compute_posterior_comcov(const mat & posterior_weights,
                          const mat & posterior_variable_weights)
 {
 	return mvsermix_compute_posterior_comcov(b_mat, s_mat, v_mat, U_cube,
-	                                         Vinv_cube, U0_cube, Uinv_cube_drank,
+	                                         Vinv_cube, U0_cube, Uinv_cube,
 	                                         post_mean, post_var, neg_prob,
 	                                         zero_prob, post_cov, prior_scalar,
 	                                         posterior_weights,
@@ -685,7 +685,7 @@ set_U0(const cube & value)
 int
 set_Uinv(const cube & value)
 {
-	Uinv_cube_drank        = value;
+	Uinv_cube        = value;
 	return 0;
 }
 
@@ -740,7 +740,7 @@ mat v_mat;
 cube U_cube;
 cube Vinv_cube;
 cube U0_cube;
-cube Uinv_cube_drank;
+cube Uinv_cube;
 // output
 // all R X J mat
 mat post_mean;
@@ -1220,7 +1220,7 @@ mvsermix_compute_posterior(const mat&  b_mat,
                            cube &      U_cube,
                            cube &      Vinv_cube,
                            cube &      U0_cube,
-                           cube &      Uinv_cube_drank,
+                           cube &      Uinv_cube,
                            mat &       post_mean,
                            mat &       post_var,
                            mat &       neg_prob,
@@ -1244,7 +1244,7 @@ mvsermix_compute_posterior(const mat&  b_mat,
 		Eb2_cube.zeros();
 	}
     #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, to_estimate_prior, mean, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube_drank)
+	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, to_estimate_prior, mean, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, b_mat, s_mat, v_mat, U_cube, Vinv_cube, U0_cube, Uinv_cube)
 	for (uword j = 0; j < post_mean.n_cols; ++j) {
 		// FIXME: improved math may help here
 		mat Vinv_j;
@@ -1307,7 +1307,7 @@ mvsermix_compute_posterior(const mat&  b_mat,
 	if (to_estimate_prior) {
 		// now compute \mathrm{tr}(U_p^{-1} E[bb^T \,|\, \gamma_p])/r for each p
 		for (uword p = 0; p < U_cube.n_slices; ++p) {
-			prior_scalar.at(p) = trace(Uinv_cube_drank.slice(p) * Eb2_cube.slice(p));
+			prior_scalar.at(p) = trace(Uinv_cube.slice(p) * Eb2_cube.slice(p));
 		}
 	}
 	return 0;
@@ -1322,7 +1322,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
                                   const cube & U_cube,
                                   const cube & Vinv_cube,
                                   const cube & U0_cube,
-                                  const cube & Uinv_cube_drank,
+                                  const cube & Uinv_cube,
                                   mat &        post_mean,
                                   mat &        post_var,
                                   mat &        neg_prob,
@@ -1354,7 +1354,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 	zeros.fill(0);
 	
     #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, b_mat, U_cube, U0_cube, Uinv_cube_drank)
+	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, b_mat, U_cube, U0_cube, Uinv_cube)
 	for (uword p = 0; p < U_cube.n_slices; ++p) {
 		mat zero_mat(post_mean.n_rows, post_mean.n_cols);
 		// R X R
@@ -1372,7 +1372,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 			mu2_cube.slice(j) = U1 + mu1_mat.col(j) * mu1_mat.col(j).t();
 			if (to_estimate_prior) Eb2_cube.slice(p) += posterior_variable_weights.at(p, j) * mu2_cube.slice(j);
 		}
-		if (to_estimate_prior) prior_scalar.at(p) = trace(Uinv_cube_drank.slice(p) * Eb2_cube.slice(p));
+		if (to_estimate_prior) prior_scalar.at(p) = trace(Uinv_cube.slice(p) * Eb2_cube.slice(p));
 		// R X J
 		mat diag_mu2_mat = pow(mu1_mat, 2.0);
 		diag_mu2_mat.each_col() += U1.diag();

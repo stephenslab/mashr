@@ -105,8 +105,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // calc_sermix_rcpp
-List calc_sermix_rcpp(const arma::mat& b_mat, const arma::mat& s_mat, const arma::mat& v_mat, NumericVector vinv_3d, NumericVector U_3d, NumericVector Uinv_3d_drank, NumericVector U0_3d, const arma::mat& posterior_mixture_weights, const arma::mat& posterior_variable_weights, bool common_cov, int n_thread);
-RcppExport SEXP _mashr_calc_sermix_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP v_matSEXP, SEXP vinv_3dSEXP, SEXP U_3dSEXP, SEXP Uinv_3d_drankSEXP, SEXP U0_3dSEXP, SEXP posterior_mixture_weightsSEXP, SEXP posterior_variable_weightsSEXP, SEXP common_covSEXP, SEXP n_threadSEXP) {
+List calc_sermix_rcpp(const arma::mat& b_mat, const arma::mat& s_mat, const arma::mat& v_mat, NumericVector vinv_3d, NumericVector U_3d, NumericVector Uinv_3d, NumericVector U0_3d, const arma::mat& posterior_mixture_weights, const arma::mat& posterior_variable_weights, bool common_cov, int n_thread);
+RcppExport SEXP _mashr_calc_sermix_rcpp(SEXP b_matSEXP, SEXP s_matSEXP, SEXP v_matSEXP, SEXP vinv_3dSEXP, SEXP U_3dSEXP, SEXP Uinv_3dSEXP, SEXP U0_3dSEXP, SEXP posterior_mixture_weightsSEXP, SEXP posterior_variable_weightsSEXP, SEXP common_covSEXP, SEXP n_threadSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -115,13 +115,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type v_mat(v_matSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type vinv_3d(vinv_3dSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type U_3d(U_3dSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Uinv_3d_drank(Uinv_3d_drankSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Uinv_3d(Uinv_3dSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type U0_3d(U0_3dSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type posterior_mixture_weights(posterior_mixture_weightsSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type posterior_variable_weights(posterior_variable_weightsSEXP);
     Rcpp::traits::input_parameter< bool >::type common_cov(common_covSEXP);
     Rcpp::traits::input_parameter< int >::type n_thread(n_threadSEXP);
-    rcpp_result_gen = Rcpp::wrap(calc_sermix_rcpp(b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d_drank, U0_3d, posterior_mixture_weights, posterior_variable_weights, common_cov, n_thread));
+    rcpp_result_gen = Rcpp::wrap(calc_sermix_rcpp(b_mat, s_mat, v_mat, vinv_3d, U_3d, Uinv_3d, U0_3d, posterior_mixture_weights, posterior_variable_weights, common_cov, n_thread));
     return rcpp_result_gen;
 END_RCPP
 }
