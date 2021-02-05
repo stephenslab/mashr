@@ -93,9 +93,12 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   return(U.flash)
 }
 
+#' @title non-negative factor initialization
+#' @importFrom softImpute softImpute
+#' @keywords internal
 nonneg <- function(Y, K = 1) {
-    # FIXME: we want to implement this in flashr, or export from flashr udv_si and implement it here?
-    ret = flashr:::udv_si(Y, K)
+    # this is the flashr:::udv_si function
+    suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
     pos_sum = sum(ret$v[ret$v > 0])
     neg_sum = -sum(ret$v[ret$v < 0])
     if (neg_sum > pos_sum) {
