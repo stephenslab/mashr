@@ -41,8 +41,7 @@ Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
 candidate covariance matrices
 }
 \examples{
-data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
-cov_flash(data)
-cov_flash(data, factors = 'nonneg')
+# See https://stephenslab.github.io/mashr/articles/flash_mash.html
+# for an example
 
 }

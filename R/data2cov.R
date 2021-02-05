@@ -50,9 +50,8 @@ cov_pca = function(data,npc,subset = NULL){
 #' @param \dots additional parameters passed to \code{flashr::flash}
 #' @return Returns a list of covariance matrices
 #' @examples
-#' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
-#' cov_flash(data)
-#' cov_flash(data, factors = 'nonneg')
+#' # See https://stephenslab.github.io/mashr/articles/flash_mash.html
+#' # for an example
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom flashr flash flash_set_data
