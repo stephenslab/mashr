@@ -1,6 +1,6 @@
 ---
-title: "Using Emperical Bayes matrix factorization for data driven prior"
-author: "Gao Wang and Yuxin Zou"
+title: "Emperical Bayes matrix factorization for data driven prior"
+author: "Gao Wang" 
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

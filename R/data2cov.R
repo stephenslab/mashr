@@ -93,8 +93,9 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   return(U.flash)
 }
 
-#' @title non-negative factor initialization
+#' @title non-negative factor initialization for \code{cov_flash}
 #' @importFrom softImpute softImpute
+#' @export
 nonneg <- function(Y, K = 1) {
     # this is the flashr:::udv_si function
     suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
