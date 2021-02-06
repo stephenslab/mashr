@@ -32,6 +32,81 @@ cov_pca = function(data,npc,subset = NULL){
   return(Ulist)
 }
 
+#' @title Perform Empirical Bayes Matrix Factorization via FLASH and return a list of 
+#' candidate covariance matrices
+#'
+#' @param data a mash data object
+#'
+#' @param factors "default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}. 
+#' "nonneg" to implement a non-negative constraint on the factors
+#'
+#' @param subset indices of the subset of data to use (set to NULL for
+#' all data)
+#' @param remove_singleton whether or not factors corresponding to singleton matrices should be removed from output
+#' @param tag specific a tag to name the contents in the return objects. You may want to choose different tags for 
+#' different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.
+#' @param output_model if specified a filename, the FLASH model will be saved to that file in RDS format.
+#' 
+#' @param \dots additional parameters passed to \code{flashr::flash}
+#' @return Returns a list of covariance matrices
+#' @examples
+#' # See https://stephenslab.github.io/mashr/articles/flash_mash.html
+#' # for an example
+#'
+#' @importFrom assertthat assert_that
+#' @importFrom flashr flash flash_set_data
+#' @export
+#'
+cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
+  # Only keep factors with at least two values greater than 1 / sqrt(n)
+  find_nonunique_effects <- function(fl) {
+    thresh <- 1/sqrt(ncol(fl$fitted_values))
+    vals_above_avg <- colSums(fl$ldf$f > thresh)
+    nonuniq_effects <- which(vals_above_avg > 1)
+    return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
+  }
+  # extract a subset of data
+  if(is.null(subset)){subset = 1:n_effects(data)}
+  factors = match.arg(factors)
+  # set default parameters
+  args = list(...)
+  args$data = flash_set_data(as.matrix(data$Bhat[subset,]))
+  init_fn = ifelse(factors == 'default', "udv_si", factors)
+  if (!exists("init_fn", args)) args$init_fn = init_fn
+  if (!exists("greedy", args)) args$greedy = T
+  if (!exists("backfit", args)) args$backfit = T
+  if (factors == "nonneg") {
+    args$ebnm_fn = "ebnm_ash"
+    args$ebnm_param = list(l = list(mixcompdist = "normal",
+                               optmethod = "mixSQP"),
+                           f = list(mixcompdist = "+uniform",
+                               optmethod = "mixSQP"))
+  }
+  f = do.call(flash, args)
+  if (remove_singleton) flash_factors = find_nonunique_effects(f)
+  else flash_factors = as.matrix(f$ldf$f)
+  if (!is.null(output_model)) saveRDS(list(model=f, factors=flash_factors), output_model)
+  if (missing(tag)) tag = args$init_fn
+  U.flash = list()
+  U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
+  if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
+  return(U.flash)
+}
+
+#' @title non-negative factor initialization for \code{cov_flash}
+#' @importFrom softImpute softImpute
+#' @export
+nonneg <- function(Y, K = 1) {
+    # this is the flashr:::udv_si function
+    suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
+    pos_sum = sum(ret$v[ret$v > 0])
+    neg_sum = -sum(ret$v[ret$v < 0])
+    if (neg_sum > pos_sum) {
+      return(list(u = -ret$u, d = ret$d, v = -ret$v))
+    } else
+    return(ret)
+}
+
 #' @title Perform "extreme deconvolution" (Bovy et al) on a subset of
 #' the data
 #'

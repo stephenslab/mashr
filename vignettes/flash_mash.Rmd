@@ -1,10 +1,10 @@
 ---
-title: "Using flashr for mashr prior specification"
-author: "Gao Wang and others"
+title: "Emperical Bayes matrix factorization for data driven prior"
+author: "Gao Wang" 
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{using flashr for mashr}
+  %\VignetteIndexEntry{EBMN for prior}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -51,85 +51,22 @@ data.strong = mash_set_data(simdata$Bhat[strong.subset,],simdata$Shat[strong.sub
 
 # FLASH analysis
 
-**FIXME**
-
-1. (we can review the code here and possibly implement `cov_flash` for future releases)
-2. (For the time being we remove the additional decomposition on FLASH loading because there are issues needs to be figured out. @yuxin)
+We first perform the empirical Bayes matrix factorization via `flashr` using its default settings,
 
 ```{r}
-library(flashr)
-library(mashr)
-    
-my_init_fn <- function(Y, K = 1) {
-  ret = flashr:::udv_si(Y, K)
-  pos_sum = sum(ret$v[ret$v > 0]^2)
-  neg_sum = sum(ret$v[ret$v < 0]^2)
-  if (neg_sum > pos_sum) {
-    return(list(u = -ret$u, d = ret$d, v = -ret$v))
-  } else
-    return(ret)
-}
-
-flash_pipeline = function(data, ...) {
-  ## current state-of-the art
-  ## suggested by Jason Willwerscheid
-  ## cf: discussion section of
-  ## https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html
-  ebnm_fn = "ebnm_ash"
-  ebnm_param = list(l = list(mixcompdist = "normal"),
-                    f = list(mixcompdist = "+uniform"))
-  ##
-  fl_g <- flashr:::flash_greedy_workhorse(data,
-                                          var_type = "constant",
-                                          ebnm_fn = ebnm_fn,
-                                          ebnm_param = ebnm_param,
-                                          init_fn = "my_init_fn",
-                                          stopping_rule = "factors",
-                                          tol = 1e-3,
-                                          verbose_output = "odF")
-  fl_b <- flashr:::flash_backfit_workhorse(data,
-                                           f_init = fl_g,
-                                           var_type = "constant",
-                                           ebnm_fn = ebnm_fn,
-                                           ebnm_param = ebnm_param,
-                                           stopping_rule = "factors",
-                                           tol = 1e-3,
-                                           verbose_output = "odF")
-  return(fl_b)
-}
-
-cov_flash = function(data, subset = NULL, non_canonical = FALSE, save_model = NULL) {
-  if(is.null(subset)) subset = 1:mashr:::n_effects(data)
-  b.center = apply(data$Bhat, 2, function(x) x - mean(x))
-  ## Only keep factors with at least two values greater than 1 / sqrt(n)
-  find_nonunique_effects <- function(fl) {
-    thresh <- 1/sqrt(ncol(fl$fitted_values))
-    vals_above_avg <- colSums(fl$ldf$f > thresh)
-    nonuniq_effects <- which(vals_above_avg > 1)
-    return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
-  }
-
-  fmodel = flash_pipeline(b.center)
-  if (non_canonical)
-    flash_f = find_nonunique_effects(fmodel)
-  else 
-    flash_f = fmodel$ldf$f
-  ## row.names(flash_f) = colnames(b)
-  if (!is.null(save_model)) saveRDS(list(model=fmodel, factors=flash_f), save_model)
-  if(ncol(flash_f) == 0){
-    U.flash = list("tFLASH" = t(fmodel$fitted_values) %*% fmodel$fitted_values / nrow(fmodel$fitted_values))
-  } else{
-    U.flash = c(cov_from_factors(t(as.matrix(flash_f)), "FLASH"),
-  list("tFLASH" = t(fmodel$fitted_values) %*% fmodel$fitted_values / nrow(fmodel$fitted_values)))
-  }
-  
-  return(U.flash)
-}
+U.f = cov_flash(data.strong)
+U.f
 ```
+
+Alternatively, as [suggested by Jason Willwerscheid for multi-tissue QTL studies][willwerscheid],
+constrain factors to non-negative values. We can use `tag` parameter to customize the names in the output list:
 
 ```{r}
-U.f = cov_flash(data.strong, non_canonical = TRUE)
+U.f = cov_flash(data.strong, factors="nonneg", tag="non_neg", var_type="constant")
+U.f
 ```
+
+`var_type="constant"` is an additional parameter passed to `flash` function, as suggested in the post above.
 
 # Finalize covariances
 
@@ -154,3 +91,4 @@ m2 = mash(data.strong, g=get_fitted_g(m), fixg=TRUE)
 head(get_lfsr(m2))
 ```
 [eqtl]: https://stephenslab.github.io/mashr/articles/eQTL_outline.html
+[willwerscheid]: https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html

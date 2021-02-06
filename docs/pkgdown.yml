@@ -1,5 +1,5 @@
-pandoc: 1.19.2.1
-pkgdown: 1.6.1
+pandoc: '2.5'
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   eQTL_outline: eQTL_outline.html
@@ -11,5 +11,5 @@ articles:
   intro_mashcommonbaseline: intro_mashcommonbaseline.html
   mash_sampling: mash_sampling.html
   simulate_noncanon: simulate_noncanon.html
-last_built: 2020-10-27T00:50Z
+last_built: 2021-02-06T13:38Z
 

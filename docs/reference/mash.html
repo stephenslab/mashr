@@ -117,27 +117,27 @@
     <p>Apply mash method to data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mash</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  Ulist <span class='op'>=</span> <span class='cn'>NULL</span>,
-  gridmult <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>,
-  grid <span class='op'>=</span> <span class='cn'>NULL</span>,
-  normalizeU <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  usepointmass <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  g <span class='op'>=</span> <span class='cn'>NULL</span>,
-  fixg <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  prior <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span><span class='op'>)</span>,
-  optmethod <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mixSQP"</span>, <span class='st'>"mixIP"</span>, <span class='st'>"mixEM"</span>, <span class='st'>"cxxMixSquarem"</span><span class='op'>)</span>,
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
-  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  add.mem.profile <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  algorithm.version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Rcpp"</span>, <span class='st'>"R"</span><span class='op'>)</span>,
-  pi_thresh <span class='op'>=</span> <span class='fl'>1e-10</span>,
-  A <span class='op'>=</span> <span class='cn'>NULL</span>,
-  posterior_samples <span class='op'>=</span> <span class='fl'>0</span>,
-  seed <span class='op'>=</span> <span class='fl'>123</span>,
-  outputlevel <span class='op'>=</span> <span class='fl'>2</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>mash</span>(
+  <span class='no'>data</span>,
+  <span class='kw'>Ulist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>gridmult</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='fl'>2</span>),
+  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>normalizeU</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>usepointmass</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>g</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>fixg</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span>),
+  <span class='kw'>optmethod</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mixSQP"</span>, <span class='st'>"mixIP"</span>, <span class='st'>"mixEM"</span>, <span class='st'>"cxxMixSquarem"</span>),
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>add.mem.profile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>),
+  <span class='kw'>pi_thresh</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>,
+  <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>posterior_samples</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>123</span>,
+  <span class='kw'>outputlevel</span> <span class='kw'>=</span> <span class='fl'>2</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,7 +150,7 @@ errors, alpha value; created using <code>mash_set_data</code> or
     </tr>
     <tr>
       <th>Ulist</th>
-      <td><p>a list of covariance matrices to use 
+      <td><p>a list of covariance matrices to use
 (see <code>normalizeU</code> for rescaling these matrices)</p></td>
     </tr>
     <tr>
@@ -244,18 +244,11 @@ likelihood matrices</p></td>
     <p>a list with elements result, loglik and fitted_g</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>Bhat</span>     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span> <span class='co'># create some simulated data</span>
-<span class='va'>Shat</span>     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>100</span><span class='op'>)</span>,ncol<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
-<span class='va'>data</span>     <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>Bhat</span>,<span class='va'>Shat</span>, alpha<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>U.c</span>      <span class='op'>=</span> <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
-<span class='va'>res.mash</span> <span class='op'>=</span> <span class='fu'>mash</span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>U.c</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  - Computing 20 x 121 likelihood matrix.
-#&gt;  - Likelihood calculations took 0.00 seconds.
-#&gt;  - Fitting model with 121 mixture components.
-#&gt;  - Model fitting took 0.05 seconds.
-#&gt;  - Computing posterior matrices.
-#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='no'>Bhat</span>     <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>),<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>5</span>) <span class='co'># create some simulated data</span>
+<span class='no'>Shat</span>     <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='fl'>100</span>),<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>5</span>)
+<span class='no'>data</span>     <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>Bhat</span>,<span class='no'>Shat</span>, <span class='kw'>alpha</span><span class='kw'>=</span><span class='fl'>1</span>)
+<span class='no'>U.c</span>      <span class='kw'>=</span> <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>)
+<span class='no'>res.mash</span> <span class='kw'>=</span> <span class='fu'>mash</span>(<span class='no'>data</span>,<span class='no'>U.c</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -271,7 +264,7 @@ likelihood matrices</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

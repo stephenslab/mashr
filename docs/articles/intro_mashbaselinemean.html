@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.41</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>mashr with common baseline at mean</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2020-10-26</h4>
+            <h4 class="date">2021-02-06</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mashbaselinemean.Rmd"><code>vignettes/intro_mashbaselinemean.Rmd</code></a></small>
       <div class="hidden name"><code>intro_mashbaselinemean.Rmd</code></div>
@@ -79,9 +79,8 @@
 
     
     
-<div class="sourceCode"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">kableExtra</span>)</pre></body></html></div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -92,50 +91,46 @@
 <div id="illustration" class="section level1">
 <h1 class="hasAnchor">
 <a href="#illustration" class="anchor"></a>Illustration</h1>
-<div class="sourceCode"><pre class="downlit">
-<span class="va">generate_data</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">V</span>, <span class="va">Utrue</span>, <span class="va">err_sd</span><span class="op">=</span><span class="fl">0.01</span>, <span class="va">pi</span><span class="op">=</span><span class="cn">NULL</span><span class="op">)</span><span class="op">{</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">pi</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Utrue</span><span class="op">)</span><span class="op">)</span> <span class="co"># default to uniform distribution</span>
-  <span class="op">}</span>
-  <span class="fu">assertthat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/assertthat/man/are_equal.html">are_equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">pi</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Utrue</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">generate_data</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">n</span>, <span class="no">p</span>, <span class="no">V</span>, <span class="no">Utrue</span>, <span class="no">err_sd</span><span class="kw">=</span><span class="fl">0.01</span>, <span class="no">pi</span><span class="kw">=</span><span class="kw">NULL</span>){
+  <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">pi</span>)) {
+    <span class="no">pi</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">Utrue</span>)) <span class="co"># default to uniform distribution</span>
+  }
+  <span class="kw pkg">assertthat</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/assertthat/man/are_equal.html">are_equal</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">pi</span>), <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">Utrue</span>))
 
-  <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">Utrue</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu">assertthat</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/assertthat/man/are_equal.html">are_equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">Utrue</span><span class="op">[</span><span class="va">j</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">p</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">}</span>
+  <span class="kw">for</span> (<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">Utrue</span>)) {
+    <span class="kw pkg">assertthat</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/assertthat/man/are_equal.html">are_equal</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">Utrue</span>[<span class="no">j</span>]), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">p</span>, <span class="no">p</span>))
+  }
 
-  <span class="va">pi</span> <span class="op">&lt;-</span> <span class="va">pi</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pi</span><span class="op">)</span> <span class="co"># normalize pi to sum to one</span>
-  <span class="va">which_U</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">pi</span><span class="op">)</span>, <span class="va">n</span>, replace<span class="op">=</span><span class="cn">TRUE</span>, prob<span class="op">=</span><span class="va">pi</span><span class="op">)</span>
+  <span class="no">pi</span> <span class="kw">&lt;-</span> <span class="no">pi</span> / <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">pi</span>) <span class="co"># normalize pi to sum to one</span>
+  <span class="no">which_U</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">pi</span>), <span class="no">n</span>, <span class="kw">replace</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">prob</span><span class="kw">=</span><span class="no">pi</span>)
 
-  <span class="va">Beta</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, nrow<span class="op">=</span><span class="va">n</span>, ncol<span class="op">=</span><span class="va">p</span><span class="op">)</span>
-  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span><span class="op">{</span>
-    <span class="va">Beta</span><span class="op">[</span><span class="va">i</span>,<span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, <span class="va">Utrue</span><span class="op">[[</span><span class="va">which_U</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-  <span class="op">}</span>
-  <span class="va">Shat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="va">err_sd</span>, nrow<span class="op">=</span><span class="va">n</span>, ncol<span class="op">=</span><span class="va">p</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="va">E</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, <span class="va">Shat</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">V</span><span class="op">)</span>
-  <span class="va">Bhat</span> <span class="op">=</span> <span class="va">Beta</span> <span class="op">+</span> <span class="va">E</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B <span class="op">=</span> <span class="va">Beta</span>, Bhat<span class="op">=</span><span class="va">Bhat</span>, Shat <span class="op">=</span> <span class="va">Shat</span>, whichU <span class="op">=</span> <span class="va">which_U</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></pre></div>
+  <span class="no">Beta</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>, <span class="kw">nrow</span><span class="kw">=</span><span class="no">n</span>, <span class="kw">ncol</span><span class="kw">=</span><span class="no">p</span>)
+  <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">n</span>){
+    <span class="no">Beta</span>[<span class="no">i</span>,] <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>, <span class="no">p</span>), <span class="no">Utrue</span><span class="kw">[[</span><span class="no">which_U</span>[<span class="no">i</span>]]])
+  }
+  <span class="no">Shat</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="no">err_sd</span>, <span class="kw">nrow</span><span class="kw">=</span><span class="no">n</span>, <span class="kw">ncol</span><span class="kw">=</span><span class="no">p</span>, <span class="kw">byrow</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+  <span class="no">E</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="no">n</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>, <span class="no">p</span>), <span class="no">Shat</span>[<span class="fl">1</span>,]^<span class="fl">2</span> * <span class="no">V</span>)
+  <span class="no">Bhat</span> <span class="kw">=</span> <span class="no">Beta</span> + <span class="no">E</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">B</span> <span class="kw">=</span> <span class="no">Beta</span>, <span class="kw">Bhat</span><span class="kw">=</span><span class="no">Bhat</span>, <span class="kw">Shat</span> <span class="kw">=</span> <span class="no">Shat</span>, <span class="kw">whichU</span> <span class="kw">=</span> <span class="no">which_U</span>))
+}</pre></body></html></div>
 <p>Here we simulate data for illustration. This simulation routine creates a dataset with 5 conditions and 2000 samples. Half of the samples have equal expression among conditions. In the rest samples, half have higher and equal expression in the first 2 conditions, half have higher expression in the last condition.</p>
-<div class="sourceCode"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">n</span> <span class="op">=</span> <span class="fl">2000</span>
-<span class="va">R</span> <span class="op">=</span> <span class="fl">5</span>
-<span class="va">V</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span>
-<span class="va">U0</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">R</span>, <span class="va">R</span><span class="op">)</span>
-<span class="va">U1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">R</span>, <span class="va">R</span><span class="op">)</span>
-<span class="va">U2</span> <span class="op">=</span> <span class="va">U0</span>; <span class="va">U2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span> <span class="op">=</span> <span class="fl">4</span>
-<span class="va">U3</span> <span class="op">=</span> <span class="va">U0</span>; <span class="va">U3</span><span class="op">[</span><span class="fl">5</span>,<span class="fl">5</span><span class="op">]</span> <span class="op">=</span> <span class="fl">4</span>
-<span class="va">simdata</span> <span class="op">=</span> <span class="fu">generate_data</span><span class="op">(</span><span class="va">n</span>, <span class="va">R</span>, <span class="va">V</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>U0<span class="op">=</span><span class="va">U0</span>, U1<span class="op">=</span><span class="va">U1</span>, U2<span class="op">=</span><span class="va">U2</span>, U3 <span class="op">=</span> <span class="va">U3</span><span class="op">)</span>, err_sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
+<span class="no">n</span> <span class="kw">=</span> <span class="fl">2000</span>
+<span class="no">R</span> <span class="kw">=</span> <span class="fl">5</span>
+<span class="no">V</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span>(<span class="no">R</span>)
+<span class="no">U0</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>, <span class="no">R</span>, <span class="no">R</span>)
+<span class="no">U1</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">1</span>, <span class="no">R</span>, <span class="no">R</span>)
+<span class="no">U2</span> <span class="kw">=</span> <span class="no">U0</span>; <span class="no">U2</span>[<span class="fl">1</span>:<span class="fl">2</span>,<span class="fl">1</span>:<span class="fl">2</span>] <span class="kw">=</span> <span class="fl">4</span>
+<span class="no">U3</span> <span class="kw">=</span> <span class="no">U0</span>; <span class="no">U3</span>[<span class="fl">5</span>,<span class="fl">5</span>] <span class="kw">=</span> <span class="fl">4</span>
+<span class="no">simdata</span> <span class="kw">=</span> <span class="fu">generate_data</span>(<span class="no">n</span>, <span class="no">R</span>, <span class="no">V</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">U0</span><span class="kw">=</span><span class="no">U0</span>, <span class="kw">U1</span><span class="kw">=</span><span class="no">U1</span>, <span class="kw">U2</span><span class="kw">=</span><span class="no">U2</span>, <span class="kw">U3</span> <span class="kw">=</span> <span class="no">U3</span>), <span class="kw">err_sd</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
 <ol style="list-style-type: decimal">
 <li>Read in the data, and set the reference condition as mean</li>
 </ol>
-<div class="sourceCode"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)</pre></body></html></div>
 <pre><code># Loading required package: ashr</code></pre>
-<div class="sourceCode"><pre class="downlit">
-<span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">data</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>, <span class="no">simdata</span>$<span class="no">Shat</span>)
 
-<span class="va">data.L</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_update_data.html">mash_update_data</a></span><span class="op">(</span><span class="va">data</span>, ref <span class="op">=</span> <span class="st">'mean'</span><span class="op">)</span></pre></div>
+<span class="no">data.L</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_update_data.html">mash_update_data</a></span>(<span class="no">data</span>, <span class="kw">ref</span> <span class="kw">=</span> <span class="st">'mean'</span>)</pre></body></html></div>
 <p>The updated mash data object (data.L) includes the induced correlation internally.</p>
 <ol start="2" style="list-style-type: decimal">
 <li>We proceed the analysis using the simple canonical covariances as in the <a href="intro_mash.html">initial introductory</a> vignette, and the data driven covariances as in the <a href="intro_mash_dd.html">Introduction to mash: data-driven covariances</a>.</li>
@@ -143,34 +138,29 @@
 <ul>
 <li>Canonical covariances</li>
 </ul>
-<div class="sourceCode"><pre class="downlit">
-<span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.L</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data.L</span>)</pre></body></html></div>
 <ul>
 <li>Data-driven covariances</li>
 </ul>
-<div class="sourceCode"><pre class="downlit">
-<span class="va">m.1by1</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_1by1.html">mash_1by1</a></span><span class="op">(</span><span class="va">data.L</span><span class="op">)</span>
-<span class="va">strong</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.1by1</span><span class="op">)</span>
-<span class="va">U.pca</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span><span class="op">(</span><span class="va">data.L</span>,<span class="fl">2</span>,subset<span class="op">=</span><span class="va">strong</span><span class="op">)</span>
-<span class="va">U.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span><span class="op">(</span><span class="va">data.L</span>, <span class="va">U.pca</span>, subset<span class="op">=</span><span class="va">strong</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">m.1by1</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_1by1.html">mash_1by1</a></span>(<span class="no">data.L</span>)
+<span class="no">strong</span> <span class="kw">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.1by1</span>)
+<span class="no">U.pca</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span>(<span class="no">data.L</span>,<span class="fl">2</span>,<span class="kw">subset</span><span class="kw">=</span><span class="no">strong</span>)
+<span class="no">U.ed</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span>(<span class="no">data.L</span>, <span class="no">U.pca</span>, <span class="kw">subset</span><span class="kw">=</span><span class="no">strong</span>)</pre></body></html></div>
 <ol start="3" style="list-style-type: decimal">
 <li>Fit mash model</li>
 </ol>
-<div class="sourceCode"><pre class="downlit">
-<span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.L</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.c</span>,<span class="va">U.ed</span><span class="op">)</span>, algorithm.version <span class="op">=</span> <span class="st">'R'</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">m</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.L</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">U.c</span>,<span class="no">U.ed</span>), <span class="kw">algorithm.version</span> <span class="kw">=</span> <span class="st">'R'</span>)</pre></body></html></div>
 <pre><code>#  - Computing 2000 x 181 likelihood matrix.
-#  - Likelihood calculations took 0.14 seconds.
+#  - Likelihood calculations took 0.33 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 0.93 seconds.
+#  - Model fitting took 2.07 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.02 seconds.</code></pre>
 <p>The log likelihood is</p>
-<div class="sourceCode"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu">get_loglik</span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span></pre></div>
-<pre><code># [1] -10891.72213</code></pre>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu">get_loglik</span>(<span class="no">m</span>),<span class="kw">digits</span><span class="kw">=</span><span class="fl">10</span>)</pre></body></html></div>
+<pre><code># [1] -10891.9189</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
-<div class="sourceCode"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m</span>))</pre></body></html></div>
 <pre><code># [1] 141</code></pre>
 <p>The number of false positive is 1.</p>
 </div>
@@ -191,7 +181,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
