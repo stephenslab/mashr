@@ -38,7 +38,8 @@ Imports:
     rmeta,
     Rcpp (>= 0.12.11),
     mvtnorm,
-    abind
+    abind,
+    flashr (>= 0.6.7)
 LinkingTo:
     Rcpp, 
     RcppArmadillo,
@@ -46,7 +47,6 @@ LinkingTo:
 Suggests:
     MASS,
     REBayes,
-    flashr,
     corrplot,
     testthat,
     kableExtra,
