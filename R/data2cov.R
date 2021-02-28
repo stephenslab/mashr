@@ -55,6 +55,7 @@ cov_pca = function(data,npc,subset = NULL){
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom flashr flash flash_set_data
+#' @importFrom softImpute softImpute
 #' @export
 #'
 cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
@@ -65,14 +66,27 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
     nonuniq_effects <- which(vals_above_avg > 1)
     return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
   }
+  nonneg <- function(Y, K = 1) {
+    # this is the flashr:::udv_si function
+    suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
+    pos_sum = sum(ret$v[ret$v > 0])
+    neg_sum = -sum(ret$v[ret$v < 0])
+    if (neg_sum > pos_sum) {
+      return(list(u = -ret$u, d = ret$d, v = -ret$v))
+    } else
+    return(ret)
+  }
   # extract a subset of data
   if(is.null(subset)){subset = 1:n_effects(data)}
   factors = match.arg(factors)
   # set default parameters
   args = list(...)
   args$data = flash_set_data(as.matrix(data$Bhat[subset,]))
-  init_fn = ifelse(factors == 'default', "udv_si", factors)
-  if (!exists("init_fn", args)) args$init_fn = init_fn
+  if (!exists("init_fn", args)) {
+    args$init_fn = factors
+    if (factors == 'default') args$init_fn = "udv_si"
+    if (factors == 'nonneg') args$init_fn = nonneg
+  } 
   if (!exists("greedy", args)) args$greedy = T
   if (!exists("backfit", args)) args$backfit = T
   if (factors == "nonneg") {
@@ -91,20 +105,6 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
   if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
   return(U.flash)
-}
-
-#' @title non-negative factor initialization for \code{cov_flash}
-#' @importFrom softImpute softImpute
-#' @export
-nonneg <- function(Y, K = 1) {
-    # this is the flashr:::udv_si function
-    suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
-    pos_sum = sum(ret$v[ret$v > 0])
-    neg_sum = -sum(ret$v[ret$v < 0])
-    if (neg_sum > pos_sum) {
-      return(list(u = -ret$u, d = ret$d, v = -ret$v))
-    } else
-    return(ret)
 }
 
 #' @title Perform "extreme deconvolution" (Bovy et al) on a subset of
