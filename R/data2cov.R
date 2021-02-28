@@ -100,7 +100,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   if (remove_singleton) flash_factors = find_nonunique_effects(f)
   else flash_factors = as.matrix(f$ldf$f)
   if (!is.null(output_model)) saveRDS(list(model=f, factors=flash_factors), output_model)
-  if (missing(tag)) tag = args$init_fn
+  if (missing(tag)) tag = factors
   U.flash = list()
   U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
   if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
