@@ -42,7 +42,10 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
                                  xcovar = Ulist_init,
                                  fixmean = TRUE,
                                  ...)
-  return(list(pi = ed.res$xamp, Ulist = ed.res$xcovar, av_loglik = ed.res$avgloglikedata))
+  # issue https://github.com/stephenslab/mashr/issues/91
+  epsilon = diag(1/sqrt(n_effects(data)))
+  Ulist = lapply(1:length(ed.res$xcovar), function(i) ed.res$xcovar[[i]] + epsilon)
+  return(list(pi = ed.res$xamp, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
 }
 
 #' @title Fit extreme deconvolution to mash data using TEEM method

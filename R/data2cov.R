@@ -64,6 +64,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
     thresh <- 1/sqrt(ncol(fl$fitted_values))
     vals_above_avg <- colSums(fl$ldf$f > thresh)
     nonuniq_effects <- which(vals_above_avg > 1)
+    message(paste("Removing", length(vals_above_avg) - length(nonuniq_effects), "singleton effect vectors"))
     return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
   }
   nonneg <- function(Y, K = 1) {
