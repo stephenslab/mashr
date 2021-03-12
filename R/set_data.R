@@ -287,7 +287,7 @@ mash_set_data_contrast = function(mashdata, L){
   mashdata$L = L
 
   # get standard error for delta
-  if(is_common_cov_Shat(mashdata)){
+  if(mashdata$commonV && is_common_cov_Shat(mashdata)){
     V = get_cov(mashdata,1) # all covariances are same
     Shat = matrix(rep(sqrt(diag(V)), each=nrow(Bhat)), nrow = nrow(Bhat))
     V = cov2cor(V)

@@ -30,6 +30,8 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   D = ncol(data$V)
   if(!is.null(data$L)){
     ycovar = lapply(subset, function(i) data$L %*% (data$Shat_orig[i,] * t(data$V * data$Shat_orig[i,])) %*% t(data$L) )
+  }else if(!data$commonV){
+    ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V[,,i] * data$Shat[i,]) )
   }else if(!all(data$V==diag(D))){
     ycovar = lapply(subset, function(i) data$Shat[i,] * t(data$V * data$Shat[i,]) )
   }else{
