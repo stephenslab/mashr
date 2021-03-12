@@ -290,17 +290,22 @@ mash_set_data_contrast = function(mashdata, L){
   if(is_common_cov_Shat(mashdata)){
     V = get_cov(mashdata,1) # all covariances are same
     Shat = matrix(rep(sqrt(diag(V)), each=nrow(Bhat)), nrow = nrow(Bhat))
+    V = cov2cor(V)
   } else{
-    Shat = t(sapply(1:nrow(Bhat), function(j){
-      V = get_cov(mashdata,j)
-      return(sqrt(diag(V)))
-    }))
+    V = array(0,c(ncol(Bhat), ncol(Bhat), nrow(Bhat)))
+    Shat = matrix(0, nrow(Bhat), ncol(Bhat))
+    for(j in 1:nrow(Bhat)){
+      tmp = get_cov(mashdata,j)
+      Shat[j,] = sqrt(diag(tmp))
+      V[,,j] = cov2cor(tmp)
+    }
   }
 
   data = list(Bhat = Bhat, Shat=Shat,
               Shat_orig = mashdata$Shat_orig,
               Shat_alpha = matrix(1, nrow(Shat), ncol(Shat)),
-              V = mashdata$V, commonV = mashdata$commonV, alpha = 0, L = L)
+              V = mashdata$V, commonV = mashdata$commonV, alpha = 0, L = L,
+              LSVSLt = V)
   class(data) = 'mash'
   return(data)
 }
