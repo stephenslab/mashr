@@ -47,7 +47,7 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   # issue https://github.com/stephenslab/mashr/issues/91
   epsilon = diag(rep(1/sqrt(length(subset)), n_conditions(data)))
   Ulist = lapply(1:length(ed.res$xcovar), function(i) ed.res$xcovar[[i]] + epsilon)
-  names(Ulist) = names(ed.res$xcovar)
+  names(Ulist) = names(Ulist_init)
   return(list(pi = ed.res$xamp, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
 }
 
