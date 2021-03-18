@@ -48,7 +48,9 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   epsilon = diag(rep(1/sqrt(length(subset)), n_conditions(data)))
   Ulist = lapply(1:length(ed.res$xcovar), function(i) ed.res$xcovar[[i]] + epsilon)
   names(Ulist) = names(Ulist_init)
-  return(list(pi = ed.res$xamp, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
+  w = ed.res$xamp
+  names(w) = names(Ulist_init)
+  return(list(pi = w, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
 }
 
 #' @title Fit extreme deconvolution to mash data using TEEM method
