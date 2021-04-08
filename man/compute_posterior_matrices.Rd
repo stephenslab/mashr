@@ -58,7 +58,10 @@ The return value is a list containing the following
    \item{ZeroProb}{J x Q matrix of posterior (marginal) probability
     of being zero.}
 
-   \item{lfsr}{J x Q matrix of local false sign rates.}
+   \item{lfsr}{J x Q matrix of local false sign rate estimates.}
+
+   \item{lfdr}{J x Q matrix of local false discovery rate
+     estimates.}
 
    \item{PosteriorCov}{Q x Q x J array of posterior covariance
      matrices, if the \code{output_posterior_cov = TRUE}.}

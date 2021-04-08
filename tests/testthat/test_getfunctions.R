@@ -5,7 +5,8 @@ test_that("ashr get functions work",{
   Shat = rbind(c(1,1,1),c(2,2,2))
   data = mash_set_data(Bhat,Shat)
   Ulist = cov_canonical(data)
-  out <- capture.output(m <- mash(data,Ulist,grid = c(0.5,1,2)))
+  out <- capture.output(m <- mash(data,Ulist,grid = c(0.5,1,2),
+                                  output_lfdr = TRUE))
   expect_length(get_lfsr(m),6)
   expect_length(get_lfdr(m),6)
   expect_length(get_pm(m),6)

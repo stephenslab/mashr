@@ -16,7 +16,7 @@ test_that("get same result as ash, EE model", {
   U  = list(first_singleton = cov_first_singleton(data))
   out <- capture.output(
     res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
-                usepointmass = FALSE))
+                usepointmass = FALSE,output_lfdr = TRUE))
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)
@@ -44,7 +44,7 @@ test_that("get same result as ash, EZ model", {
   U  = list(first_singleton = cov_first_singleton(data))
   out <- capture.output(
     res <- mash(data,U,grid = get_fitted_g(ashres)$sd,prior = "nullbiased",
-                usepointmass = FALSE))
+                usepointmass = FALSE,output_lfdr = TRUE))
 
   expect_equal(ashr::get_pm(res)[,1],ashr::get_pm(ashres),tolerance = 1e-5)
   expect_equal(ashr::get_psd(res)[,1],ashr::get_psd(ashres),tolerance = 1e-5)

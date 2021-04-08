@@ -23,7 +23,8 @@ mash(
   A = NULL,
   posterior_samples = 0,
   seed = 123,
-  outputlevel = 2
+  outputlevel = 2,
+  output_lfdr = FALSE
 )
 }
 \arguments{
@@ -83,6 +84,9 @@ posteriors. It is used when \code{posterior_samples > 0}.}
 output only estimated mixture component proportions, 2: and
 posterior estimates, 3: and posterior covariance matrices, 4: and
 likelihood matrices}
+
+\item{output_lfdr}{If \code{output_lfdr = TRUE}, output
+local false discovery rate estimates.}
 }
 \value{
 a list with elements result, loglik and fitted_g

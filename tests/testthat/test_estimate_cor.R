@@ -23,7 +23,8 @@ test_that("Estimate null correlation properly: alpha = 0", {
   data = mash_set_data(simdata$Bhat, simdata$Shat, alpha = 0)
   U.c = cov_canonical(data)
 
-  V.est <- estimate_null_correlation(data, U.c, max_iter = 3, details = TRUE)
+  V.est <- estimate_null_correlation(data, U.c, max_iter = 3, details = TRUE,
+                                     output_lfdr = TRUE)
   expect_equal(V.est$V, original.null.cor$V, tolerance = 5e-4)
   expect_equal(V.est$mash.model, original.null.cor$mash.model, tolerance = 5e-4)
 })
@@ -52,7 +53,8 @@ test_that("Estimate null correlation properly: alpha = 1", {
   data = mash_set_data(simdata$Bhat, simdata$Shat, alpha=1)
   U.c = cov_canonical(data)
 
-  V.est <- estimate_null_correlation(data, U.c, max_iter = 3, details = TRUE)
+  V.est <- estimate_null_correlation(data, U.c, max_iter = 3, details = TRUE,
+                                     output_lfdr = TRUE)
   expect_equal(V.est$V, original.null.cor$V, tolerance = 5e-4)
   expect_equal(V.est$mash.model, original.null.cor$mash.model, tolerance = 5e-4)
 })
