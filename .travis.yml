@@ -23,6 +23,7 @@ r_packages:
   - rmeta
   - plyr
   - testthat
+  - softImpute
 
 r_github_packages: stephens999/ashr
 
