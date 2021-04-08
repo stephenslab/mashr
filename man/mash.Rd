@@ -85,8 +85,12 @@ output only estimated mixture component proportions, 2: and
 posterior estimates, 3: and posterior covariance matrices, 4: and
 likelihood matrices}
 
-\item{output_lfdr}{If \code{output_lfdr = TRUE}, output
-local false discovery rate estimates.}
+\item{output_lfdr}{If \code{output_lfdr = TRUE}, output local false
+discovery rate estimates. The lfdr tends to be sensitive to
+mis-estimated covariance matrices, and generally we do not
+recommend using them; we recommend using the local false sign rate
+(lfsr) instead, which is always returned, even when
+\code{output_lfdr = TRUE}.}
 }
 \value{
 a list with elements result, loglik and fitted_g
