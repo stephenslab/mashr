@@ -88,7 +88,7 @@ calc_post_rcpp(const arma::mat &   b_mat,
                const arma::mat &   v_mat,
                const arma::mat &   l_mat,
                const arma::mat &   a_mat,
-               NumericVector U_3d,
+               NumericVector       U_3d,
                const arma::mat &   posterior_weights,
                bool                common_cov,
                int                 report_type,
@@ -100,10 +100,13 @@ calc_post_rcpp(const arma::mat &   b_mat,
 		// set cube data from R 3D array
 		IntegerVector dimU = U_3d.attr("dim");
 		cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
-		PosteriorMASH pc(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_cube);
+		PosteriorMASH pc(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat,
+				 l_mat, a_mat, U_cube);
 		pc.set_thread(n_thread);
-		if (!common_cov) pc.compute_posterior(posterior_weights, report_type);
-		else pc.compute_posterior_comcov(posterior_weights, report_type);
+		if (!common_cov)
+		  pc.compute_posterior(posterior_weights,report_type);
+		else
+		  pc.compute_posterior_comcov(posterior_weights,report_type);
 		return List::create(
 			Named("post_mean") = pc.PosteriorMean(),
 			Named("post_sd")   = pc.PosteriorSD(),
@@ -117,7 +120,6 @@ calc_post_rcpp(const arma::mat &   b_mat,
 		                vectorise(s_alpha_mat),
 		                v_mat(0, 0),
 		                Rcpp::as<arma::vec>(U_3d));
-
 		pc.compute_posterior(posterior_weights);
 		return List::create(
 			Named("post_mean") = pc.PosteriorMean(),

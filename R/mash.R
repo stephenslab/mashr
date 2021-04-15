@@ -298,7 +298,8 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
   }
 
   xUlist = expand_cov(g$Ulist,g$grid,g$usepointmass)
-  lm_res = calc_relative_lik_matrix(data, xUlist, algorithm.version = algorithm.version)
+  lm_res <- calc_relative_lik_matrix(data, xUlist,
+              algorithm.version = algorithm.version)
   which.comp = (g$pi > pi_thresh)
 
   posterior_weights <-
@@ -309,7 +310,7 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
                                posterior_weights,algorithm.version, A=A,
                                output_posterior_cov=output_posterior_cov,
                                posterior_samples = posterior_samples,
-                               seed=seed)
+                               seed = seed)
   names(posterior_weights) = which(which.comp)
   return(posterior_matrices)
 }

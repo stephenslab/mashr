@@ -189,17 +189,17 @@ compute_posterior_matrices <-
     if(posterior_samples > 0){
       stop('The sampling method is not implemented in C++. Please use option algorithm = "R".')
     }
-    if(!data$commonV){
+    if(!data$commonV)
       stop('effect specific V has not implemented in Rcpp')
-    }
     # Run the C implementation using the Rcpp interface.
-    if (is_null_A) A = matrix(0,0,0)
-    if (is.null(data$L))
-      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), matrix(0,0,0),
-                           data$V, matrix(0,0,0), A,
-                           simplify2array(Ulist), t(posterior_weights),
-                           is_common_cov, output_type, mc.cores)
-    else
+    if (is_null_A)
+      A <- matrix(0,0,0)
+    if (is.null(data$L)) {
+      res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha),
+                            matrix(0,0,0), data$V, matrix(0,0,0), A,
+                            simplify2array(Ulist), t(posterior_weights),
+                            is_common_cov, output_type, mc.cores)
+    } else
       res <- calc_post_rcpp(t(data$Bhat), t(data$Shat), t(data$Shat_alpha), t(data$Shat_orig),
                            data$V, data$L, A,
                            simplify2array(Ulist), t(posterior_weights),

@@ -253,14 +253,31 @@ set_original(const mat & value)
 mat
 get_original() const
 {
-	if (is_orig_empty) return (s);
-	else return (s_orig);
+	if (is_orig_empty) 
+	  return (s);
+	else 
+	  return (s_orig);
+}
+
+mat
+get_original_col (unsigned int j) const
+{
+	if (is_orig_empty) 
+	  return (s.col(j));
+	else 
+	  return (s_orig.col(j));
 }
 
 mat
 get() const
 {
 	return (s_alpha);
+}
+
+mat
+getcol(unsigned int j) const
+{
+        return (s_alpha.col(j));
 }
 
 private:
@@ -1041,17 +1058,16 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 {
 	vec mean(post_mean.n_rows);
 	mean.fill(0);
-	
-    #pragma \
-	omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
+
+	#pragma omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
 	for (uword j = 0; j < post_mean.n_cols; ++j) {
 		// FIXME: improved math may help here
 		mat Vinv_j;
 		if (Vinv_cube.is_empty())
-			Vinv_j = inv_sympd(get_cov(s_obj.get_original().col(j),
-			                                 v_mat, l_mat));
+	          Vinv_j = inv_sympd(get_cov(s_obj.get_original_col(j),v_mat,
+					     l_mat));
 		else
-			Vinv_j = Vinv_cube.slice(j);
+	          Vinv_j = Vinv_cube.slice(j);
 
 		// R X P matrices
 		mat mu1_mat(post_mean.n_rows, U_cube.n_slices);
@@ -1070,20 +1086,20 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 			U1.fill(0);
 			
 			if (U0_cube.is_empty())
-				U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
+			  U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
 			else
-				U0 = U0_cube.slice(j * U_cube.n_slices + p);
+			  U0 = U0_cube.slice(j * U_cube.n_slices + p);
 			if (a_mat.is_empty()) {
-				mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j);
-				U1 = (U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t();
+			  mu1_mat.col(p) = get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.getcol(j);
+			  U1 = (U0.each_col() % s_obj.getcol(j)).each_row() % s_obj.getcol(j).t();
 			} else {
-				mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.get().col(j));
-				U1 = a_mat * (((U0.each_col() % s_obj.get().col(j)).each_row() % s_obj.get().col(j).t()) * a_mat.t());
+			  mu1_mat.col(p) = a_mat * (get_posterior_mean(b_mat.col(j), Vinv_j, U0) % s_obj.getcol(j));
+			  U1 = a_mat * (((U0.each_col() % s_obj.getcol(j)).each_row() % s_obj.getcol(j).t()) * a_mat.t());
 			}
 
-			if (report_type == 2 || report_type == 4) {
-				post_cov.slice(j) += posterior_weights.at(p, j) * (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
-			}
+			if (report_type == 2 || report_type == 4)
+			  post_cov.slice(j) += posterior_weights.at(p, j) * 
+			    (U1 + mu1_mat.col(p) * mu1_mat.col(p).t());
 
 			vec sigma = sqrt(U1.diag()); // U1.diag() is the posterior covariance
 			diag_mu2_mat.col(p) = pow(mu1_mat.col(p), 2.0) + U1.diag();
@@ -1101,12 +1117,11 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 		post_var.col(j)  = diag_mu2_mat * posterior_weights.col(j);
 		neg_prob.col(j)  = neg_mat * posterior_weights.col(j);
 		zero_prob.col(j) = zero_mat * posterior_weights.col(j);
-		//
+		
 		if (report_type == 4)
-			post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
+		  post_cov.slice(j) -= post_mean.col(j) * post_mean.col(j).t();
 	}
 	post_var -= pow(post_mean, 2.0);
-
 	return 0;
 } // mash_compute_posterior
 
