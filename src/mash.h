@@ -53,11 +53,11 @@ inline vec
 dnorm(const vec & x,
       const vec & mu,
       const vec & sigma2,
-      bool              logd = false)
+      bool        logd = false)
 {
 	vec res = LOG_INV_SQRT_2PI
-	                - log(sqrt(sigma2))
-	                - pow(x - mu, 2.0) / (2.0 * sigma2);
+	          - log(sqrt(sigma2))
+	          - pow(x - mu, 2.0) / (2.0 * sigma2);
 
 	if (logd) return res;
 	else return exp(res);
@@ -67,8 +67,8 @@ inline vec
 dmvnorm_mat(const mat & x,
             const vec & mean,
             const mat & sigma,
-            bool              logd     = false,
-            bool              inversed = false)
+            bool        logd     = false,
+            bool        inversed = false)
 {
 	double xdim = static_cast<double>(x.n_rows);
 
@@ -106,8 +106,8 @@ inline double
 dmvnorm(const vec & x,
         const vec & mean,
         const mat & sigma,
-        bool              logd     = false,
-        bool              inversed = false)
+        bool        logd     = false,
+        bool        inversed = false)
 {
 	mat rooti;
 
@@ -250,14 +250,14 @@ set_original(const mat & value)
 	is_orig_empty = s_orig.is_empty();
 }
 
-mat
+const mat &
 get_original() const
 {
 	if (is_orig_empty) return (s);
 	else return (s_orig);
 }
 
-mat
+const mat &
 get() const
 {
 	return (s_alpha);
@@ -285,7 +285,7 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 
 int
 mash_compute_posterior_comcov(const mat&   b_mat,
-                              const SE &         s_obj,
+                              const SE &   s_obj,
                               const mat &  v_mat,
                               const mat &  l_mat,
                               const mat &  a_mat,
@@ -298,7 +298,7 @@ mash_compute_posterior_comcov(const mat&   b_mat,
                               mat &        zero_prob,
                               cube &       post_cov,
                               const mat &  posterior_weights,
-                              const int &        report_type);
+                              const int &  report_type);
 
 int
 mvsermix_compute_posterior(const mat&  b_mat,
@@ -439,27 +439,27 @@ set_thread(const int & value)
 // @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
 // @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 mat
-PosteriorMean(){
+PosteriorMean() {
 	return post_mean.t();
 }
 
 mat
-PosteriorSD(){
+PosteriorSD() {
 	return sqrt(post_var).t();
 }
 
-cube
-PosteriorCov(){
+const cube &
+PosteriorCov() const {
 	return post_cov;
 }
 
 mat
-NegativeProb(){
+NegativeProb() {
 	return neg_prob.t();
 }
 
 mat
-ZeroProb(){
+ZeroProb() {
 	return zero_prob.t();
 }
 
@@ -496,7 +496,7 @@ public:
 PosteriorASH(const vec & b_vec,
              const vec & s_vec,
              const vec & s_alpha,
-             double            v,
+             double      v,
              const vec & U_vec) :
 	b_vec(b_vec), s_vec(s_vec), v(v), U_vec(U_vec)
 {
@@ -559,28 +559,28 @@ compute_posterior(const mat & posterior_weights)
 // @return PosteriorSD J vec of posterior (marginal) standard deviations
 // @return NegativeProb J vec of posterior (marginal) probability of being negative
 // @return ZeroProb J vec of posterior (marginal) probability of being zero
-vec
-PosteriorMean(){
+const vec &
+PosteriorMean() const {
 	return post_mean;
 }
 
 vec
-PosteriorSD(){
+PosteriorSD() {
 	return sqrt(post_var);
 }
 
-vec
-PosteriorCov(){
+const vec &
+PosteriorCov() const {
 	return post_var;
 }
 
-vec
-NegativeProb(){
+const vec &
+NegativeProb() const {
 	return neg_prob;
 }
 
-vec
-ZeroProb(){
+const vec &
+ZeroProb() const {
 	return zero_prob;
 }
 
@@ -703,32 +703,32 @@ set_thread(const int & value)
 // @return NegativeProb JxR matrix of posterior (marginal) probability of being negative
 // @return ZeroProb JxR matrix of posterior (marginal) probability of being zero
 mat
-PosteriorMean(){
+PosteriorMean() {
 	return post_mean.t();
 }
 
 mat
-PosteriorSD(){
+PosteriorSD() {
 	return sqrt(post_var).t();
 }
 
-cube
-PosteriorCov(){
+const cube &
+PosteriorCov() const {
 	return post_cov;
 }
 
 mat
-NegativeProb(){
+NegativeProb() {
 	return neg_prob.t();
 }
 
 mat
-ZeroProb(){
+ZeroProb() {
 	return zero_prob.t();
 }
 
-vec
-PriorScalar(){
+const vec &
+PriorScalar() const {
 	return prior_scalar;
 }
 
@@ -805,23 +805,23 @@ TEEM(const mat &  X_mat,
 ~TEEM(){
 }
 
-vec
+const vec &
 get_objective() const {
 	return objective;
 }
 
-vec
+const vec &
 get_maxd() const {
 	return maxd;
 }
 
-vec
+const vec &
 get_w() const {
 	return w_vec;
 }
 
 cube
-get_U() const
+get_U()
 {
 	cube U_cube = T_cube;
 	for (unsigned j = 0; j < U_cube.n_slices; ++j) {
@@ -927,9 +927,9 @@ calc_lik(const mat &  b_mat,
          const mat &  l_mat,
          const cube & U_cube,
          const cube & sigma_cube,
-         bool               logd,
-         bool               common_cov,
-         int                n_thread = 1)
+         bool         logd,
+         bool         common_cov,
+         int          n_thread = 1)
 {
 	// In armadillo data are stored with column-major ordering
 	// slicing columns are therefore faster than rows
@@ -1012,9 +1012,9 @@ calc_lik(const mat & b_mat,
 mat
 calc_lik(const vec & b_vec,
          const vec & s_vec,
-         double            v,
+         double      v,
          const vec & U_vec,
-         bool              logd)
+         bool        logd)
 {
 	mat lik(b_vec.n_elem, U_vec.n_elem, arma::fill::zeros);
 	vec sigma = s_vec % s_vec * v;
@@ -1041,7 +1041,7 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 {
 	vec mean(post_mean.n_rows);
 	mean.fill(0);
-	
+
     #pragma \
 	omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, l_mat, v_mat, a_mat, U_cube, Vinv_cube, U0_cube)
 	for (uword j = 0; j < post_mean.n_cols; ++j) {
@@ -1049,7 +1049,7 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 		mat Vinv_j;
 		if (Vinv_cube.is_empty())
 			Vinv_j = inv_sympd(get_cov(s_obj.get_original().col(j),
-			                                 v_mat, l_mat));
+			                           v_mat, l_mat));
 		else
 			Vinv_j = Vinv_cube.slice(j);
 
@@ -1062,13 +1062,13 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 		mu1_mat.fill(0);
 		diag_mu2_mat.fill(0);
 		zero_mat.fill(0);
-		
+
 		for (uword p = 0; p < U_cube.n_slices; ++p) {
 			//
 			mat U1(post_mean.n_rows, post_mean.n_rows);
 			mat U0;
 			U1.fill(0);
-			
+
 			if (U0_cube.is_empty())
 				U0 = get_posterior_cov(Vinv_j, U_cube.slice(p));
 			else
@@ -1114,7 +1114,7 @@ mash_compute_posterior(const mat& b_mat, const SE& s_obj,
 // the PosteriorMASH class.
 int
 mash_compute_posterior_comcov(const mat&   b_mat,
-                              const SE &         s_obj,
+                              const SE &   s_obj,
                               const mat &  v_mat,
                               const mat &  l_mat,
                               const mat &  a_mat,
@@ -1127,11 +1127,11 @@ mash_compute_posterior_comcov(const mat&   b_mat,
                               mat &        zero_prob,
                               cube &       post_cov,
                               const mat &  posterior_weights,
-                              const int &        report_type)
+                              const int &  report_type)
 {
 	mat mean(post_mean.n_rows, post_mean.n_cols);
 	mean.fill(0);
-	
+
 	// R X R
 	mat Vinv;
 
@@ -1144,7 +1144,7 @@ mash_compute_posterior_comcov(const mat&   b_mat,
 	rowvec zeros(post_mean.n_cols);
 	ones.fill(1);
 	zeros.fill(0);
-	
+
     #pragma \
 	omp parallel for schedule(static) default(none) shared(posterior_weights, report_type, mean, Vinv, ones, zeros, post_mean, post_var, neg_prob, zero_prob, post_cov, b_mat, s_obj, a_mat, U_cube, U0_cube)
 	for (uword p = 0; p < U_cube.n_slices; ++p) {
@@ -1157,7 +1157,7 @@ mash_compute_posterior_comcov(const mat&   b_mat,
 		zero_mat.fill(0);
 		U1.fill(0);
 		mu1_mat.fill(0);
-		
+
 		if (U0_cube.is_empty()) U0 = get_posterior_cov(Vinv, U_cube.slice(p));
 		else U0 = U0_cube.slice(p);
 		if (a_mat.is_empty()) {
@@ -1176,7 +1176,7 @@ mash_compute_posterior_comcov(const mat&   b_mat,
 		// FIXME: any better way to init sigma?
 		mat sigma(post_mean.n_rows, post_mean.n_cols);
 		sigma.fill(0);
-		
+
 		sigma.each_col() += sqrt(U1.diag()); // U1.diag() is the posterior covariance
 		mat neg_mat = pnorm(mu1_mat, mean, sigma);
 		for (uword r = 0; r < sigma.n_rows; ++r) {
@@ -1232,7 +1232,7 @@ mvsermix_compute_posterior(const mat&  b_mat,
 {
 	vec mean(post_mean.n_rows);
 	mean.fill(0);
-	
+
 	// This is meant to store a length P of 2nd moment matrices,
 	// each element is \sum_j posterior_{p,j} * mu2_{p,j}
 	cube Eb2_cube;
@@ -1260,7 +1260,7 @@ mvsermix_compute_posterior(const mat&  b_mat,
 		diag_mu2_mat.fill(0);
 		zero_mat.fill(0);
 		neg_mat.fill(0);
-		
+
 		// R X R X P
 		cube mu2_cube;
 		mu2_cube.set_size(post_mean.n_rows, post_mean.n_rows, U_cube.n_slices);
@@ -1334,7 +1334,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 {
 	mat mean(post_mean.n_rows, post_mean.n_cols);
 	mean.fill(0);
-	
+
 	// for Eb2_cube see compute_posterior() for detailed documentations.
 	cube Eb2_cube;
 	bool to_estimate_prior = !posterior_variable_weights.is_empty();
@@ -1352,7 +1352,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 	rowvec zeros(post_mean.n_cols);
 	ones.fill(1);
 	zeros.fill(0);
-	
+
     #pragma \
 	omp parallel for schedule(static) default(none) shared(posterior_weights, posterior_variable_weights, to_estimate_prior, mean, Vinv, zeros, ones, Eb2_cube, post_mean, post_var, neg_prob, zero_prob, post_cov, prior_scalar, b_mat, U_cube, U0_cube, Uinv_cube)
 	for (uword p = 0; p < U_cube.n_slices; ++p) {
@@ -1362,7 +1362,7 @@ mvsermix_compute_posterior_comcov(const mat&   b_mat,
 		// R X J
 		mat mu1_mat;
 		zero_mat.fill(0);
-		
+
 		if (U0_cube.is_empty()) U1 = get_posterior_cov(Vinv, U_cube.slice(p));
 		else U1 = U0_cube.slice(p);
 		mu1_mat = get_posterior_mean_mat(b_mat, Vinv, U1);

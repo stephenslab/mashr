@@ -23,20 +23,20 @@ inv_chol_tri_rcpp(const arma::mat & x_mat)
 	mat res = trans(inv(trimatu(chol(x_mat))));
 
 	return List::create(Named("data") = res,
-	                          Named("status") = 0);
+	                    Named("status") = 0);
 }
 
 // [[Rcpp::export]]
 List
-calc_lik_rcpp(const arma::mat &   b_mat,
-              const arma::mat &   s_mat,
-              const arma::mat &   v_mat,
-              const arma::mat &   l_mat,
-              NumericVector U_3d,
-              NumericVector sigma_3d,
-              bool                logd,
-              bool                common_cov,
-              int                 n_thread = 1)
+calc_lik_rcpp(const arma::mat & b_mat,
+              const arma::mat & s_mat,
+              const arma::mat & v_mat,
+              const arma::mat & l_mat,
+              NumericVector     U_3d,
+              NumericVector     sigma_3d,
+              bool              logd,
+              bool              common_cov,
+              int               n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	mat res;
@@ -57,16 +57,16 @@ calc_lik_rcpp(const arma::mat &   b_mat,
 		res = calc_lik(vectorise(b_mat), vectorise(s_mat), v_mat(0, 0), Rcpp::as<arma::vec>(U_3d), logd);
 	}
 	return List::create(Named("data") = res,
-	                          Named("status") = 0);
+	                    Named("status") = 0);
 } // calc_lik_rcpp
 
 // [[Rcpp::export]]
 List
-calc_lik_precomputed_rcpp(const arma::mat &   b_mat,
-                          NumericVector rooti_3d,
-                          bool                logd,
-                          bool                common_cov,
-                          int                 n_thread = 1)
+calc_lik_precomputed_rcpp(const arma::mat & b_mat,
+                          NumericVector     rooti_3d,
+                          bool              logd,
+                          bool              common_cov,
+                          int               n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	mat res;
@@ -76,23 +76,23 @@ calc_lik_precomputed_rcpp(const arma::mat &   b_mat,
 
 	res = calc_lik(b_mat, rooti_cube, logd, common_cov, n_thread);
 	return List::create(Named("data") = res,
-	                          Named("status") = 0);
+	                    Named("status") = 0);
 }
 
 // [[Rcpp::export]]
 List
-calc_post_rcpp(const arma::mat &   b_mat,
-               const arma::mat &   s_mat,
-               const arma::mat &   s_alpha_mat,
-               const arma::mat &   s_orig_mat,
-               const arma::mat &   v_mat,
-               const arma::mat &   l_mat,
-               const arma::mat &   a_mat,
-               NumericVector U_3d,
-               const arma::mat &   posterior_weights,
-               bool                common_cov,
-               int                 report_type,
-               int                 n_thread = 1)
+calc_post_rcpp(const arma::mat & b_mat,
+               const arma::mat & s_mat,
+               const arma::mat & s_alpha_mat,
+               const arma::mat & s_orig_mat,
+               const arma::mat & v_mat,
+               const arma::mat & l_mat,
+               const arma::mat & a_mat,
+               NumericVector     U_3d,
+               const arma::mat & posterior_weights,
+               bool              common_cov,
+               int               report_type,
+               int               n_thread = 1)
 {
 	// hide armadillo warning / error messages
 
@@ -130,17 +130,17 @@ calc_post_rcpp(const arma::mat &   b_mat,
 
 // [[Rcpp::export]]
 List
-calc_sermix_rcpp(const arma::mat &   b_mat,
-                 const arma::mat &   s_mat,
-                 const arma::mat &   v_mat,
-                 NumericVector vinv_3d,
-                 NumericVector U_3d,
-                 NumericVector Uinv_3d,
-                 NumericVector U0_3d,
-                 const arma::mat &   posterior_mixture_weights,
-                 const arma::mat &   posterior_variable_weights,
-                 bool                common_cov,
-                 int                 n_thread = 1)
+calc_sermix_rcpp(const arma::mat & b_mat,
+                 const arma::mat & s_mat,
+                 const arma::mat & v_mat,
+                 NumericVector     vinv_3d,
+                 NumericVector     U_3d,
+                 NumericVector     Uinv_3d,
+                 NumericVector     U0_3d,
+                 const arma::mat & posterior_mixture_weights,
+                 const arma::mat & posterior_variable_weights,
+                 bool              common_cov,
+                 int               n_thread = 1)
 {
 	// hide armadillo warning / error messages
 	if (Rf_isNull(U_3d.attr("dim")) && Rf_isNull(U0_3d.attr("dim"))) {
@@ -191,13 +191,13 @@ calc_sermix_rcpp(const arma::mat &   b_mat,
 
 // [[Rcpp::export]]
 List
-fit_teem_rcpp(const arma::mat &   x_mat,
-              const arma::vec &   w_vec,
-              NumericVector U_3d,
-              int                 maxiter,
-              double              converge_tol,
-              double              eigen_tol,
-              bool                verbose)
+fit_teem_rcpp(const arma::mat & x_mat,
+              const arma::vec & w_vec,
+              NumericVector     U_3d,
+              int               maxiter,
+              double            converge_tol,
+              double            eigen_tol,
+              bool              verbose)
 {
 	// Convert R 3d array to Rcpp cube
 	if (Rf_isNull(U_3d.attr("dim"))) {
