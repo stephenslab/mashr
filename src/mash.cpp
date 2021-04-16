@@ -15,6 +15,8 @@ using Rcpp::IntegerVector;
 
 using arma::vectorise;
 
+// [[Rcpp::plugins(openmp)]]
+
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 List
