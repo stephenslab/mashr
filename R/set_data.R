@@ -120,10 +120,11 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     ## Shat = Bhat/Z where Z is the Z score corresponding to a p value from a t test done on (Bhat,Shat_orig,df)
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
-  if (!isTRUE(all.equal(is.na(Bhat), is.na(Shat), check.attributes=FALSE))) {
+  na_idx = which(is.na(Bhat))
+  na_sbhat_idx = which(is.na(Shat))
+  if (!isTRUE(all.equal(na_idx, na_sbhat_idx, check.attributes=FALSE)) && length(na_sbhat_idx) > 0) {
     stop("Missing data pattern is inconsistent between Bhat and Shat")
   }
-  na_idx = which(is.na(Bhat))
   # transform data according to alpha
   if (alpha != 0 && !all(Shat == 1)) {
     ## alpha models dependence of effect size on standard error
