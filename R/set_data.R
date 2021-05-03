@@ -121,12 +121,12 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     Shat = Bhat / p2z(2 * pt(-abs(Bhat/Shat), df), Bhat)
   }
   na_idx = which(is.na(Bhat))
-  na_sbhat_idx = which(is.na(Shat))
-  if (!isTRUE(all.equal(na_idx, na_sbhat_idx, check.attributes=FALSE)) && length(na_sbhat_idx) > 0) {
+  sbhat_not_null = !all(Shat == 1)
+  if (!isTRUE(all.equal(na_idx, which(is.na(Shat)), check.attributes=FALSE)) && sbhat_not_null) {
     stop("Missing data pattern is inconsistent between Bhat and Shat")
   }
   # transform data according to alpha
-  if (alpha != 0 && !all(Shat == 1)) {
+  if (alpha != 0 && sbhat_not_null) {
     ## alpha models dependence of effect size on standard error
     ## alpha > 0 implies larger effects has large standard error
     ## a special case when alpha = 1 is the EZ model
