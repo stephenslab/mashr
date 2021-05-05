@@ -50,6 +50,7 @@ bovy_wrapper = function(data, Ulist_init, subset=NULL, ...){
   names(Ulist) = names(Ulist_init)
   w = ed.res$xamp
   names(w) = names(Ulist_init)
+  Ulist <- lapply(Ulist, function(U){ rownames(U) = colnames(U) = colnames(data$Bhat); U})
   return(list(pi = w, Ulist = Ulist, av_loglik = ed.res$avgloglikedata))
 }
 
