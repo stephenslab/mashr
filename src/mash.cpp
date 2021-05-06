@@ -34,8 +34,8 @@ calc_lik_rcpp(const arma::mat & b_mat,
               const arma::mat & s_mat,
               const arma::mat & v_mat,
               const arma::mat & l_mat,
-              NumericVector     U_3d,
-              NumericVector     sigma_3d,
+              NumericVector  &   U_3d,
+              NumericVector  &   sigma_3d,
               bool              logd,
               bool              common_cov,
               int               n_thread = 1)
@@ -46,11 +46,11 @@ calc_lik_rcpp(const arma::mat & b_mat,
 		// matrix version
 		// set cube data from R 3D array
 		IntegerVector dimU = U_3d.attr("dim");
-		cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+		cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2], false, true, false);
 		cube sigma_cube;
 		if (!Rf_isNull(sigma_3d.attr("dim"))) {
 			IntegerVector dimSigma = sigma_3d.attr("dim");
-			cube tmp_cube(sigma_3d.begin(), dimSigma[0], dimSigma[1], dimSigma[2]);
+			cube tmp_cube(sigma_3d.begin(), dimSigma[0], dimSigma[1], dimSigma[2], false, true, false);
 			sigma_cube = tmp_cube;
 		}
 		res = calc_lik(b_mat, s_mat, v_mat, l_mat, U_cube, sigma_cube, logd, common_cov, n_thread);
@@ -65,7 +65,7 @@ calc_lik_rcpp(const arma::mat & b_mat,
 // [[Rcpp::export]]
 List
 calc_lik_precomputed_rcpp(const arma::mat & b_mat,
-                          NumericVector     rooti_3d,
+                          NumericVector   &  rooti_3d,
                           bool              logd,
                           bool              common_cov,
                           int               n_thread = 1)
@@ -74,7 +74,7 @@ calc_lik_precomputed_rcpp(const arma::mat & b_mat,
 	mat res;
 	// set cube data from R 3D array
 	IntegerVector dimR = rooti_3d.attr("dim");
-	cube rooti_cube(rooti_3d.begin(), dimR[0], dimR[1], dimR[2]);
+	cube rooti_cube(rooti_3d.begin(), dimR[0], dimR[1], dimR[2], false, true, false);
 
 	res = calc_lik(b_mat, rooti_cube, logd, common_cov, n_thread);
 	return List::create(Named("data") = res,
@@ -90,7 +90,7 @@ calc_post_rcpp(const arma::mat & b_mat,
                const arma::mat & v_mat,
                const arma::mat & l_mat,
                const arma::mat & a_mat,
-               NumericVector     U_3d,
+               NumericVector   &  U_3d,
                const arma::mat & posterior_weights,
                bool              common_cov,
                int               report_type,
@@ -101,7 +101,7 @@ calc_post_rcpp(const arma::mat & b_mat,
 	if (!Rf_isNull(U_3d.attr("dim"))) {
 		// set cube data from R 3D array
 		IntegerVector dimU = U_3d.attr("dim");
-		cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+		cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2], false, true, false);
 		PosteriorMASH pc(b_mat, s_mat, s_alpha_mat, s_orig_mat, v_mat, l_mat, a_mat, U_cube);
 		pc.set_thread(n_thread);
 		if (!common_cov) pc.compute_posterior(posterior_weights, report_type);
@@ -135,10 +135,10 @@ List
 calc_sermix_rcpp(const arma::mat & b_mat,
                  const arma::mat & s_mat,
                  const arma::mat & v_mat,
-                 NumericVector     vinv_3d,
-                 NumericVector     U_3d,
-                 NumericVector     Uinv_3d,
-                 NumericVector     U0_3d,
+                 NumericVector &  vinv_3d,
+                 NumericVector &  U_3d,
+                 NumericVector &  Uinv_3d,
+                 NumericVector &  U0_3d,
                  const arma::mat & posterior_mixture_weights,
                  const arma::mat & posterior_variable_weights,
                  bool              common_cov,
@@ -156,26 +156,26 @@ calc_sermix_rcpp(const arma::mat & b_mat,
 		if (!common_cov) U_cube.resize(dimU[0], dimU[1], dimU[2] / b_mat.n_cols);
 		else U_cube.resize(dimU[0], dimU[1], dimU[2]);
 	} else {
-		U_cube = cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+		U_cube = cube(U_3d.begin(), dimU[0], dimU[1], dimU[2], false, true, false);
 	}
 	MVSERMix pc(b_mat, s_mat, v_mat, U_cube);
 	pc.set_thread(n_thread);
 	if (!Rf_isNull(U0_3d.attr("dim"))) {
 		IntegerVector dimU0 = U0_3d.attr("dim");
-		cube U0_cube(U0_3d.begin(), dimU0[0], dimU0[1], dimU0[2]);
+		cube U0_cube(U0_3d.begin(), dimU0[0], dimU0[1], dimU0[2], false, true, false);
 		pc.set_U0(U0_cube);
 	}
 	if (!Rf_isNull(vinv_3d.attr("dim"))) {
 		// should be dimV = dimU
 		IntegerVector dimV = vinv_3d.attr("dim");
-		cube vinv_cube(vinv_3d.begin(), dimV[0], dimV[1], dimV[2]);
+		cube vinv_cube(vinv_3d.begin(), dimV[0], dimV[1], dimV[2], false, true, false);
 		pc.set_Vinv(vinv_cube);
 	}
 	if (!Rf_isNull(Uinv_3d.attr("dim"))) {
 		// inverse of prior matrices
 		// relevent to computing updated scalar for prior variances
 		// a feature used in mmbr package
-		cube Uinv_cube(Uinv_3d.begin(), dimU[0], dimU[1], dimU[2]);
+		cube Uinv_cube(Uinv_3d.begin(), dimU[0], dimU[1], dimU[2], false, true, false);
 		pc.set_Uinv(Uinv_cube);
 	}
 	if (!common_cov) pc.compute_posterior(posterior_mixture_weights, posterior_variable_weights);
@@ -195,7 +195,7 @@ calc_sermix_rcpp(const arma::mat & b_mat,
 List
 fit_teem_rcpp(const arma::mat & x_mat,
               const arma::vec & w_vec,
-              NumericVector     U_3d,
+              NumericVector  &  U_3d,
               int               maxiter,
               double            converge_tol,
               double            eigen_tol,
@@ -207,7 +207,7 @@ fit_teem_rcpp(const arma::mat & x_mat,
 			      "U_3d has to be a 3D array");
 	}
 	IntegerVector dimU = U_3d.attr("dim");
-	cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2]);
+	cube U_cube(U_3d.begin(), dimU[0], dimU[1], dimU[2], false, true, false);
 	TEEM teem(x_mat, w_vec, U_cube);
 	teem.fit(maxiter, converge_tol, eigen_tol, verbose);
 	List res = List::create(
