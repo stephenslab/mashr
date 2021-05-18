@@ -53,7 +53,7 @@ Suggests:
     rmarkdown,
     profmem,
     flashr (>= 0.6.7)
-Additional_repositories: https://github.com/stephenslab/flashr
+Additional_repositories: https://stephenslab.github.io/flashr-drat
 VignetteBuilder: knitr
 NeedsCompilation: yes
 Biarch: true
