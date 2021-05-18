@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.41</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>mashr with common baseline</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2021-02-06</h4>
+            <h4 class="date">2021-05-18</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mashcommonbaseline.Rmd"><code>vignettes/intro_mashcommonbaseline.Rmd</code></a></small>
       <div class="hidden name"><code>intro_mashcommonbaseline.Rmd</code></div>
@@ -111,11 +111,11 @@
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data.L</span>)
 <span class="no">mashcontrast.model</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.L</span>, <span class="no">U.c</span>, <span class="kw">algorithm.version</span> <span class="kw">=</span> <span class="st">'R'</span>)</pre></body></html></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 1.82 seconds.
+#  - Likelihood calculations took 1.10 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 4.17 seconds.
+#  - Model fitting took 6.13 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.34 seconds.</code></pre>
+#  - Computation allocated took 0.18 seconds.</code></pre>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu">get_loglik</span>(<span class="no">mashcontrast.model</span>),<span class="kw">digits</span><span class="kw">=</span><span class="fl">10</span>)</pre></body></html></div>
 <pre><code># [1] -105525.1372</code></pre>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are ‘significant’:</p>
@@ -131,11 +131,11 @@
 <span class="no">data.wrong</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="kw">Bhat</span> <span class="kw">=</span> <span class="no">simdata</span>$<span class="no">Chat</span> <span class="kw">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="no">L</span>), <span class="kw">Shat</span> <span class="kw">=</span> <span class="fl">1</span>)
 <span class="no">m</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.wrong</span>, <span class="no">U.c</span>)</pre></body></html></div>
 <pre><code>#  - Computing 12000 x 181 likelihood matrix.
-#  - Likelihood calculations took 1.23 seconds.
+#  - Likelihood calculations took 0.31 seconds.
 #  - Fitting model with 181 mixture components.
-#  - Model fitting took 3.67 seconds.
+#  - Model fitting took 6.03 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.35 seconds.</code></pre>
+#  - Computation allocated took 0.06 seconds.</code></pre>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu">get_loglik</span>(<span class="no">m</span>),<span class="kw">digits</span> <span class="kw">=</span> <span class="fl">10</span>)</pre></body></html></div>
 <pre><code># [1] -111355.197</code></pre>
 <p>We can see that the log likelihood is lower, since it does not consider the induced correlation.</p>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@
     <p>Find effects that are significant in at least one condition</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_significant_results</span><span class='op'>(</span><span class='va'>m</span>, thresh <span class='op'>=</span> <span class='fl'>0.05</span>, conditions <span class='op'>=</span> <span class='cn'>NULL</span>, sig_fn <span class='op'>=</span> <span class='va'>get_lfsr</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_significant_results</span>(<span class='no'>m</span>, <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>conditions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sig_fn</span> <span class='kw'>=</span> <span class='no'>get_lfsr</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,19 +149,10 @@ ashr::get_lfdr. (Small values must indicate significant.)</p></td>
 by order of most significant to least</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  - Computing 200 x 141 likelihood matrix.
-#&gt;  - Likelihood calculations took 0.01 seconds.
-#&gt;  - Fitting model with 141 mixture components.
-#&gt;  - Model fitting took 0.19 seconds.
-#&gt;  - Computing posterior matrices.
-#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_significant_results</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; effect_155 effect_199 effect_189 effect_186 effect_182 effect_175 effect_162 
-#&gt;        155        199        189        186        182        175        162 
-#&gt; effect_173 effect_133 
-#&gt;        173        133 </div></pre>
+    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
+<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mash.html'>mash</a></span>(<span class='no'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>))
+<span class='fu'>get_significant_results</span>(<span class='no'>m</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -177,7 +168,7 @@ by order of most significant to least</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

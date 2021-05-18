@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@
   new data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mash_compute_vloglik</span><span class='op'>(</span><span class='va'>g</span>, <span class='va'>data</span>, algorithm.version <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Rcpp"</span>, <span class='st'>"R"</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>mash_compute_vloglik</span>(<span class='no'>g</span>, <span class='no'>data</span>, <span class='kw'>algorithm.version</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rcpp"</span>, <span class='st'>"R"</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,217 +161,10 @@ the "true" g. When used in this way the user is responsible for
 making sure that the g makes sense with the alpha set in data.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  - Computing 200 x 151 likelihood matrix.
-#&gt;  - Likelihood calculations took 0.01 seconds.
-#&gt;  - Fitting model with 151 mixture components.
-#&gt;  - Model fitting took 0.24 seconds.
-#&gt;  - Computing posterior matrices.
-#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>mash_compute_vloglik</span><span class='op'>(</span><span class='va'>m</span>,<span class='va'>data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              [,1]
-#&gt;   [1,]  -7.027611
-#&gt;   [2,]  -5.812846
-#&gt;   [3,]  -7.626172
-#&gt;   [4,]  -6.668309
-#&gt;   [5,]  -7.779117
-#&gt;   [6,]  -6.783343
-#&gt;   [7,]  -6.582163
-#&gt;   [8,]  -8.336149
-#&gt;   [9,]  -9.214998
-#&gt;  [10,]  -6.527840
-#&gt;  [11,]  -8.120010
-#&gt;  [12,]  -9.104838
-#&gt;  [13,]  -5.890772
-#&gt;  [14,]  -6.189159
-#&gt;  [15,]  -6.744802
-#&gt;  [16,]  -7.015579
-#&gt;  [17,]  -8.445995
-#&gt;  [18,]  -6.931939
-#&gt;  [19,]  -5.737807
-#&gt;  [20,]  -8.547905
-#&gt;  [21,]  -7.577505
-#&gt;  [22,]  -7.089976
-#&gt;  [23,]  -7.982560
-#&gt;  [24,]  -6.766300
-#&gt;  [25,]  -8.819751
-#&gt;  [26,]  -9.371521
-#&gt;  [27,]  -6.879826
-#&gt;  [28,]  -6.843746
-#&gt;  [29,]  -8.633388
-#&gt;  [30,]  -6.215024
-#&gt;  [31,]  -7.372323
-#&gt;  [32,]  -7.595365
-#&gt;  [33,]  -5.215759
-#&gt;  [34,]  -7.926896
-#&gt;  [35,]  -7.422224
-#&gt;  [36,]  -5.625876
-#&gt;  [37,]  -6.321028
-#&gt;  [38,]  -6.987519
-#&gt;  [39,]  -8.893687
-#&gt;  [40,]  -9.327638
-#&gt;  [41,]  -6.460185
-#&gt;  [42,]  -6.513613
-#&gt;  [43,]  -6.917951
-#&gt;  [44,] -10.450891
-#&gt;  [45,]  -8.003720
-#&gt;  [46,]  -7.139056
-#&gt;  [47,]  -5.838496
-#&gt;  [48,]  -9.787047
-#&gt;  [49,]  -9.264248
-#&gt;  [50,]  -7.409157
-#&gt;  [51,]  -7.225479
-#&gt;  [52,] -10.578102
-#&gt;  [53,]  -7.051115
-#&gt;  [54,]  -9.025170
-#&gt;  [55,] -11.317808
-#&gt;  [56,] -13.022716
-#&gt;  [57,]  -7.760782
-#&gt;  [58,]  -6.646233
-#&gt;  [59,]  -6.115202
-#&gt;  [60,]  -7.889375
-#&gt;  [61,]  -9.513240
-#&gt;  [62,]  -5.791676
-#&gt;  [63,]  -7.294013
-#&gt;  [64,]  -5.881337
-#&gt;  [65,]  -8.782177
-#&gt;  [66,]  -5.779122
-#&gt;  [67,] -10.110078
-#&gt;  [68,]  -6.810964
-#&gt;  [69,]  -6.593569
-#&gt;  [70,]  -7.006462
-#&gt;  [71,]  -7.609117
-#&gt;  [72,]  -9.346864
-#&gt;  [73,] -11.050513
-#&gt;  [74,]  -7.536360
-#&gt;  [75,] -12.524433
-#&gt;  [76,]  -6.065222
-#&gt;  [77,]  -5.946739
-#&gt;  [78,] -12.123988
-#&gt;  [79,] -11.202676
-#&gt;  [80,] -10.144814
-#&gt;  [81,]  -8.356665
-#&gt;  [82,] -13.512703
-#&gt;  [83,] -13.501200
-#&gt;  [84,]  -8.227008
-#&gt;  [85,]  -5.305226
-#&gt;  [86,]  -7.429725
-#&gt;  [87,]  -8.796181
-#&gt;  [88,]  -7.558324
-#&gt;  [89,]  -7.924670
-#&gt;  [90,]  -9.487733
-#&gt;  [91,] -10.836992
-#&gt;  [92,]  -9.022745
-#&gt;  [93,] -11.632588
-#&gt;  [94,] -10.797779
-#&gt;  [95,]  -8.425979
-#&gt;  [96,]  -9.097896
-#&gt;  [97,] -10.526667
-#&gt;  [98,]  -6.256865
-#&gt;  [99,] -14.753004
-#&gt; [100,]  -8.556410
-#&gt; [101,]  -7.454835
-#&gt; [102,]  -7.508546
-#&gt; [103,]  -8.638529
-#&gt; [104,]  -7.339573
-#&gt; [105,]  -9.975747
-#&gt; [106,] -10.670240
-#&gt; [107,]  -9.908750
-#&gt; [108,]  -7.396658
-#&gt; [109,]  -7.893595
-#&gt; [110,]  -7.564907
-#&gt; [111,]  -8.199804
-#&gt; [112,]  -7.619226
-#&gt; [113,]  -5.636659
-#&gt; [114,]  -7.056053
-#&gt; [115,]  -8.412844
-#&gt; [116,]  -9.038855
-#&gt; [117,]  -6.230733
-#&gt; [118,]  -7.746510
-#&gt; [119,]  -7.375245
-#&gt; [120,]  -5.395044
-#&gt; [121,]  -5.712229
-#&gt; [122,]  -5.981072
-#&gt; [123,]  -7.439986
-#&gt; [124,]  -6.598617
-#&gt; [125,]  -5.709740
-#&gt; [126,]  -7.740995
-#&gt; [127,]  -9.297799
-#&gt; [128,] -11.697780
-#&gt; [129,]  -9.079946
-#&gt; [130,]  -9.686895
-#&gt; [131,]  -5.236579
-#&gt; [132,]  -6.545652
-#&gt; [133,]  -9.558261
-#&gt; [134,]  -6.525520
-#&gt; [135,]  -8.362699
-#&gt; [136,]  -9.465349
-#&gt; [137,]  -8.746998
-#&gt; [138,]  -8.030056
-#&gt; [139,]  -6.520367
-#&gt; [140,]  -6.894828
-#&gt; [141,]  -6.257207
-#&gt; [142,]  -7.176918
-#&gt; [143,]  -7.248034
-#&gt; [144,] -12.131604
-#&gt; [145,]  -8.479165
-#&gt; [146,]  -8.724996
-#&gt; [147,]  -5.386772
-#&gt; [148,]  -6.957259
-#&gt; [149,]  -6.972187
-#&gt; [150,]  -7.884825
-#&gt; [151,]  -9.022666
-#&gt; [152,]  -5.153938
-#&gt; [153,]  -9.145288
-#&gt; [154,]  -9.850873
-#&gt; [155,]  -5.980968
-#&gt; [156,]  -6.232105
-#&gt; [157,]  -9.566865
-#&gt; [158,] -12.177852
-#&gt; [159,]  -9.136081
-#&gt; [160,]  -6.172690
-#&gt; [161,]  -6.255079
-#&gt; [162,]  -9.729408
-#&gt; [163,]  -8.354035
-#&gt; [164,]  -5.865908
-#&gt; [165,]  -7.354794
-#&gt; [166,] -10.462029
-#&gt; [167,]  -8.683848
-#&gt; [168,]  -5.844887
-#&gt; [169,]  -8.742861
-#&gt; [170,] -10.026364
-#&gt; [171,]  -7.622983
-#&gt; [172,]  -9.927304
-#&gt; [173,]  -6.141099
-#&gt; [174,]  -9.390516
-#&gt; [175,]  -8.314923
-#&gt; [176,]  -5.897488
-#&gt; [177,]  -6.023723
-#&gt; [178,]  -6.078851
-#&gt; [179,]  -8.723958
-#&gt; [180,]  -9.345781
-#&gt; [181,]  -7.774184
-#&gt; [182,]  -9.538046
-#&gt; [183,]  -7.770719
-#&gt; [184,]  -5.655319
-#&gt; [185,]  -9.070714
-#&gt; [186,]  -6.757757
-#&gt; [187,]  -7.099987
-#&gt; [188,] -11.177394
-#&gt; [189,]  -6.866456
-#&gt; [190,]  -8.941568
-#&gt; [191,]  -6.262627
-#&gt; [192,]  -8.376490
-#&gt; [193,]  -5.438174
-#&gt; [194,]  -9.656386
-#&gt; [195,] -10.139088
-#&gt; [196,]  -6.757871
-#&gt; [197,]  -8.016783
-#&gt; [198,]  -8.136674
-#&gt; [199,]  -8.745585
-#&gt; [200,]  -8.146456</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
+<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mash.html'>mash</a></span>(<span class='no'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>))
+<span class='fu'>mash_compute_vloglik</span>(<span class='no'>m</span>,<span class='no'>data</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -387,7 +180,7 @@ making sure that the g makes sense with the alpha set in data.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -117,12 +117,12 @@
     <p>Count number of conditions each effect is significant in</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_n_significant_conditions</span><span class='op'>(</span>
-  <span class='va'>m</span>,
-  thresh <span class='op'>=</span> <span class='fl'>0.05</span>,
-  conditions <span class='op'>=</span> <span class='cn'>NULL</span>,
-  sig_fn <span class='op'>=</span> <span class='va'>get_lfsr</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_n_significant_conditions</span>(
+  <span class='no'>m</span>,
+  <span class='kw'>thresh</span> <span class='kw'>=</span> <span class='fl'>0.05</span>,
+  <span class='kw'>conditions</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>sig_fn</span> <span class='kw'>=</span> <span class='no'>get_lfsr</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,73 +154,10 @@ ashr::get_lfdr</p></td>
     <p>a vector containing the number of significant conditions</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  - Computing 200 x 151 likelihood matrix.
-#&gt;  - Likelihood calculations took 0.01 seconds.
-#&gt;  - Fitting model with 151 mixture components.
-#&gt;  - Model fitting took 0.20 seconds.
-#&gt;  - Computing posterior matrices.
-#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_n_significant_conditions</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   effect_1   effect_2   effect_3   effect_4   effect_5   effect_6   effect_7 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;   effect_8   effect_9  effect_10  effect_11  effect_12  effect_13  effect_14 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_15  effect_16  effect_17  effect_18  effect_19  effect_20  effect_21 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_22  effect_23  effect_24  effect_25  effect_26  effect_27  effect_28 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_29  effect_30  effect_31  effect_32  effect_33  effect_34  effect_35 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_36  effect_37  effect_38  effect_39  effect_40  effect_41  effect_42 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_43  effect_44  effect_45  effect_46  effect_47  effect_48  effect_49 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_50  effect_51  effect_52  effect_53  effect_54  effect_55  effect_56 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_57  effect_58  effect_59  effect_60  effect_61  effect_62  effect_63 
-#&gt;          1          0          1          0          0          0          0 
-#&gt;  effect_64  effect_65  effect_66  effect_67  effect_68  effect_69  effect_70 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_71  effect_72  effect_73  effect_74  effect_75  effect_76  effect_77 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_78  effect_79  effect_80  effect_81  effect_82  effect_83  effect_84 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_85  effect_86  effect_87  effect_88  effect_89  effect_90  effect_91 
-#&gt;          0          0          0          0          1          0          0 
-#&gt;  effect_92  effect_93  effect_94  effect_95  effect_96  effect_97  effect_98 
-#&gt;          0          0          0          0          0          0          0 
-#&gt;  effect_99 effect_100 effect_101 effect_102 effect_103 effect_104 effect_105 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_106 effect_107 effect_108 effect_109 effect_110 effect_111 effect_112 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_113 effect_114 effect_115 effect_116 effect_117 effect_118 effect_119 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_120 effect_121 effect_122 effect_123 effect_124 effect_125 effect_126 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_127 effect_128 effect_129 effect_130 effect_131 effect_132 effect_133 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_134 effect_135 effect_136 effect_137 effect_138 effect_139 effect_140 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_141 effect_142 effect_143 effect_144 effect_145 effect_146 effect_147 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_148 effect_149 effect_150 effect_151 effect_152 effect_153 effect_154 
-#&gt;          0          0          0          2          0          0          0 
-#&gt; effect_155 effect_156 effect_157 effect_158 effect_159 effect_160 effect_161 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_162 effect_163 effect_164 effect_165 effect_166 effect_167 effect_168 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_169 effect_170 effect_171 effect_172 effect_173 effect_174 effect_175 
-#&gt;          0          0          3          0          0          1          0 
-#&gt; effect_176 effect_177 effect_178 effect_179 effect_180 effect_181 effect_182 
-#&gt;          0          0          0          0          0          2          0 
-#&gt; effect_183 effect_184 effect_185 effect_186 effect_187 effect_188 effect_189 
-#&gt;          0          0          0          0          0          0          5 
-#&gt; effect_190 effect_191 effect_192 effect_193 effect_194 effect_195 effect_196 
-#&gt;          0          0          0          0          0          0          0 
-#&gt; effect_197 effect_198 effect_199 effect_200 
-#&gt;          0          0          0          0 </div></pre>
+    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
+<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mash.html'>mash</a></span>(<span class='no'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>))
+<span class='fu'>get_n_significant_conditions</span>(<span class='no'>m</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -236,7 +173,7 @@ ashr::get_lfdr</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>Introduction to mashr</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2020-06-27</h4>
+            <h4 class="date">2021-05-18</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/intro_mash.Rmd"><code>vignettes/intro_mash.Rmd</code></a></small>
       <div class="hidden name"><code>intro_mash.Rmd</code></div>
@@ -136,9 +136,9 @@
 <p>Having set up the data and covariance matrices you are ready to fit the model using the <code>mash</code> function:</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">m.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data</span>, <span class="no">U.c</span>)</pre></body></html></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.06 seconds.
+#  - Likelihood calculations took 0.05 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.51 seconds.
+#  - Model fitting took 0.60 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.02 seconds.</code></pre>
 <p>This can take a little time. What this does is to fit a mixture model to the data, estimating the mixture proportions. Specifically the model is that the true effects follow a mixture of multivariate normal distributions: <span class="math inline">\(B \sim \sum_k \sum_l \pi_{kl} N(0, \omega_l U_k)\)</span> where the <span class="math inline">\(\omega_l\)</span> are scaling factors set by the “grid” parameter in <code>mash</code> and the <span class="math inline">\(U_k\)</span> are the covariance matrices (here specified by <code>U.c</code>).</p>
@@ -150,28 +150,28 @@
 <p>You can extract estimates (posterior means and posterior standard deviations) and measures of significance (local false sign rates) using functions like <code>get_pm</code> (posterior mean), <code>get_psd</code> (posteriore standard deviation) and <code>get_lfsr</code> (local false sign rate):</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.7561458   0.7705832   0.8052784   0.8111106   0.8189440
-# effect_2   0.7245445   0.6905870   0.7760427   0.6922674   0.7012652
-# effect_3   0.7387335   0.7514386   0.8104767   0.8390446   0.8501583
-# effect_4   0.7855681   0.8454469   0.8360452   0.8660075   0.8503394
-# effect_5   0.8044530   0.8371033   0.8808419   0.8785889   0.8758291
+# effect_1   0.7561458   0.7705833   0.8052784   0.8111106   0.8189440
+# effect_2   0.7245445   0.6905871   0.7760428   0.6922674   0.7012653
+# effect_3   0.7387335   0.7514386   0.8104767   0.8390446   0.8501584
+# effect_4   0.7855682   0.8454469   0.8360452   0.8660075   0.8503394
+# effect_5   0.8044530   0.8371033   0.8808419   0.8785890   0.8758291
 # effect_6   0.7206973   0.6833578   0.7894008   0.7002639   0.7569357</code></pre>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_pm</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
-<pre><code>#          condition_1 condition_2  condition_3  condition_4  condition_5
-# effect_1  0.07387923 -0.12489893 -0.076326658  0.092636092 -0.045368333
-# effect_2 -0.02353733 -0.17604905 -0.032434944 -0.201656877 -0.170553662
-# effect_3 -0.10218377  0.18092247 -0.084636159  0.022525110 -0.002684964
-# effect_4 -0.06238616  0.02794226  0.065449986  0.008113548  0.032179641
-# effect_5  0.03341405 -0.06059793  0.000147215 -0.003887728 -0.004665912
-# effect_6 -0.09934820  0.21556825 -0.079152999  0.213031189  0.079063550</code></pre>
+<pre><code>#          condition_1 condition_2   condition_3  condition_4  condition_5
+# effect_1  0.07387924 -0.12489892 -0.0763266677  0.092636122 -0.045368333
+# effect_2 -0.02353728 -0.17604903 -0.0324348873 -0.201656883 -0.170553647
+# effect_3 -0.10218378  0.18092246 -0.0846361802  0.022525113 -0.002684966
+# effect_4 -0.06238618  0.02794225  0.0654499922  0.008113534  0.032179633
+# effect_5  0.03341406 -0.06059792  0.0001472222 -0.003887722 -0.004665907
+# effect_6 -0.09934823  0.21556824 -0.0791530347  0.213031210  0.079063543</code></pre>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_psd</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#          condition_1 condition_2 condition_3 condition_4 condition_5
-# effect_1   0.4592858   0.4210500   0.3544674   0.4062428   0.3365922
-# effect_2   0.4861870   0.4277966   0.4047004   0.4447896   0.4149876
-# effect_3   0.4679453   0.5082149   0.3799463   0.3269399   0.3283911
-# effect_4   0.4389151   0.2964005   0.3082095   0.2749191   0.2809671
-# effect_5   0.4033381   0.3286543   0.2608065   0.2597960   0.2656089
-# effect_6   0.5226691   0.4981609   0.4482801   0.4906789   0.3899258</code></pre>
+# effect_1   0.4592858   0.4210499   0.3544674   0.4062428   0.3365922
+# effect_2   0.4861870   0.4277966   0.4047004   0.4447897   0.4149876
+# effect_3   0.4679453   0.5082149   0.3799464   0.3269399   0.3283911
+# effect_4   0.4389151   0.2964005   0.3082095   0.2749191   0.2809670
+# effect_5   0.4033380   0.3286542   0.2608065   0.2597960   0.2656089
+# effect_6   0.5226691   0.4981609   0.4482801   0.4906789   0.3899259</code></pre>
 <p>Each of these are <span class="math inline">\(J \times R\)</span> matrices.</p>
 <p>Use <code>get_significant_results</code> to find the indices of effects that are “significant”, which here means they have lfsr less than t in at least one condition, where t is a threshold you specify (default 0.05). The output is ordered from most significant to least significant.</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
@@ -216,11 +216,11 @@
 <p>Use <code>get_estimated_pi</code> to extract the estimates of the mixture proportions for different types of covariance matrix:</p>
 <div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(<span class="no">m.c</span>))</pre></body></html></div>
 <pre><code>#          null      identity   condition_1   condition_2   condition_3 
-#  3.711960e-01  2.208688e-01  1.365259e-01  2.097881e-02  0.000000e+00 
+#  3.711961e-01  2.208687e-01  1.365259e-01  2.097879e-02  0.000000e+00 
 #   condition_4   condition_5 equal_effects  simple_het_1  simple_het_2 
-#  0.000000e+00  4.959635e-03  2.264404e-01  8.763027e-05  0.000000e+00 
+#  0.000000e+00  4.959624e-03  2.264402e-01  8.758416e-05  0.000000e+00 
 #  simple_het_3 
-#  1.894289e-02</code></pre>
+#  1.894312e-02</code></pre>
 <div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="fu"><a href="../reference/get_estimated_pi.html">get_estimated_pi</a></span>(<span class="no">m.c</span>),<span class="kw">las</span> <span class="kw">=</span> <span class="fl">2</span>)</pre></body></html></div>
 <p><img src="intro_mash_files/figure-html/unnamed-chunk-11-1.png" width="480" style="display: block; margin: auto;"></p>
 <p>Here we can see most of the mass is on the null, identity, <code>singletons_1</code> (which corresponds to effects that are specific to condition 1) and <code>equal_effects</code>. This reassuringly matches the way that these data were generated.</p>
@@ -237,38 +237,34 @@
 <h1 class="hasAnchor">
 <a href="#session-information-" class="anchor"></a>Session information.</h1>
 <div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>())</pre></body></html></div>
-<pre><code># R version 3.6.3 (2020-02-29)
-# Platform: x86_64-pc-linux-gnu (64-bit)
-# Running under: Linux Mint 20
+<pre><code># R version 3.6.2 (2019-12-12)
+# Platform: x86_64-apple-darwin15.6.0 (64-bit)
+# Running under: macOS Catalina 10.15.7
 # 
 # Matrix products: default
-# BLAS:   /usr/lib/x86_64-linux-gnu/atlas/libblas.so.3.10.3
-# LAPACK: /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3.10.3
+# BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+# LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
 # 
 # locale:
-#  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-#  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-#  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-#  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-#  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-# [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 # 
 # attached base packages:
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] mashr_0.2.38 ashr_2.2-50 
+# [1] mashr_0.2.48 ashr_2.2-51 
 # 
 # loaded via a namespace (and not attached):
-#  [1] Rcpp_1.0.4.6     knitr_1.28       magrittr_1.5     MASS_7.3-51.5   
-#  [5] SQUAREM_2020.2   lattice_0.20-40  R6_2.4.1         rlang_0.4.6     
-#  [9] plyr_1.8.6       stringr_1.4.0    tools_3.6.3      grid_3.6.3      
-# [13] xfun_0.13        rmeta_3.0        irlba_2.3.3      invgamma_1.1    
-# [17] htmltools_0.4.0  abind_1.4-5      yaml_2.2.1       assertthat_0.2.1
-# [21] digest_0.6.25    rprojroot_1.3-2  pkgdown_1.5.1    crayon_1.3.4    
-# [25] mixsqp_0.3-43    Matrix_1.2-18    fs_1.3.2         memoise_1.1.0   
-# [29] evaluate_0.14    rmarkdown_2.1    stringi_1.4.6    compiler_3.6.3  
-# [33] desc_1.2.0       backports_1.1.5  mvtnorm_1.1-1    truncnorm_1.0-8</code></pre>
+#  [1] Rcpp_1.0.5        knitr_1.26        magrittr_1.5      MASS_7.3-51.4    
+#  [5] SQUAREM_2017.10-1 lattice_0.20-38   R6_2.4.1          rlang_0.4.5      
+#  [9] plyr_1.8.5        stringr_1.4.0     tools_3.6.2       grid_3.6.2       
+# [13] xfun_0.11         rmeta_3.0         irlba_2.3.3       invgamma_1.1     
+# [17] htmltools_0.4.0   abind_1.4-5       yaml_2.2.0        assertthat_0.2.1 
+# [21] digest_0.6.23     rprojroot_1.3-2   softImpute_1.4    pkgdown_1.5.1    
+# [25] crayon_1.3.4      mixsqp_0.3-46     Matrix_1.2-18     fs_1.3.1         
+# [29] memoise_1.1.0     evaluate_0.14     rmarkdown_2.3     stringi_1.4.3    
+# [33] compiler_3.6.2    desc_1.2.0        backports_1.1.5   mvtnorm_1.0-11   
+# [37] truncnorm_1.0-8</code></pre>
 </div>
   </div>
 

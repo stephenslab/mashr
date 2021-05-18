@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -117,17 +117,17 @@
     <p>Create a data object for mash analysis.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mash_set_data</span><span class='op'>(</span>
-  <span class='va'>Bhat</span>,
-  Shat <span class='op'>=</span> <span class='cn'>NULL</span>,
-  alpha <span class='op'>=</span> <span class='fl'>0</span>,
-  df <span class='op'>=</span> <span class='cn'>Inf</span>,
-  pval <span class='op'>=</span> <span class='cn'>NULL</span>,
-  V <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>Bhat</span><span class='op'>)</span><span class='op'>)</span>,
-  zero_check_tol <span class='op'>=</span> <span class='va'>.Machine</span><span class='op'>$</span><span class='va'>double.eps</span>,
-  zero_Bhat_Shat_reset <span class='op'>=</span> <span class='fl'>0</span>,
-  zero_Shat_reset <span class='op'>=</span> <span class='fl'>0</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>mash_set_data</span>(
+  <span class='no'>Bhat</span>,
+  <span class='kw'>Shat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
+  <span class='kw'>pval</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>V</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>Bhat</span>)),
+  <span class='kw'>zero_check_tol</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>,
+  <span class='kw'>zero_Bhat_Shat_reset</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>zero_Shat_reset</span> <span class='kw'>=</span> <span class='fl'>0</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,10 +192,8 @@ value if the corresponding Bhat are also zeros.</p></td>
     <p>A data object for passing into mash functions.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'>mash_set_data</span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
-
-</div></pre>
+    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
+<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'>mash_set_data</span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -211,7 +209,7 @@ value if the corresponding Bhat are also zeros.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@
     <p>Return the Bayes Factor for each effect</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_log10bf</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_log10bf</span>(<span class='no'>m</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,217 +138,10 @@ where ghat-nonnull is the non-null part of ghat.  Otherwise returns
 NULL.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  - Computing 200 x 141 likelihood matrix.
-#&gt;  - Likelihood calculations took 0.01 seconds.
-#&gt;  - Fitting model with 141 mixture components.
-#&gt;  - Model fitting took 0.15 seconds.
-#&gt;  - Computing posterior matrices.
-#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_log10bf</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                [,1]
-#&gt;   [1,] -0.222106661
-#&gt;   [2,] -0.262363281
-#&gt;   [3,] -0.309926279
-#&gt;   [4,] -0.319058363
-#&gt;   [5,] -0.032827929
-#&gt;   [6,] -0.169989558
-#&gt;   [7,] -0.227957437
-#&gt;   [8,] -0.283236932
-#&gt;   [9,] -0.145851843
-#&gt;  [10,] -0.039504746
-#&gt;  [11,] -0.175959851
-#&gt;  [12,] -0.339102850
-#&gt;  [13,] -0.168521424
-#&gt;  [14,] -0.100733308
-#&gt;  [15,] -0.166648494
-#&gt;  [16,] -0.033406040
-#&gt;  [17,] -0.308114841
-#&gt;  [18,] -0.159668284
-#&gt;  [19,]  0.684469496
-#&gt;  [20,] -0.374577964
-#&gt;  [21,] -0.056302062
-#&gt;  [22,]  0.055860311
-#&gt;  [23,] -0.347219638
-#&gt;  [24,] -0.161747236
-#&gt;  [25,] -0.121760029
-#&gt;  [26,] -0.198662260
-#&gt;  [27,] -0.322122505
-#&gt;  [28,] -0.247066206
-#&gt;  [29,] -0.267659095
-#&gt;  [30,] -0.241670493
-#&gt;  [31,] -0.207590424
-#&gt;  [32,] -0.247286159
-#&gt;  [33,] -0.318276744
-#&gt;  [34,] -0.326085143
-#&gt;  [35,] -0.124295456
-#&gt;  [36,] -0.283686484
-#&gt;  [37,] -0.369799206
-#&gt;  [38,] -0.303013547
-#&gt;  [39,]  0.215829386
-#&gt;  [40,]  0.117450709
-#&gt;  [41,] -0.357510793
-#&gt;  [42,] -0.234964849
-#&gt;  [43,] -0.297957825
-#&gt;  [44,] -0.291972787
-#&gt;  [45,] -0.283619162
-#&gt;  [46,] -0.363758152
-#&gt;  [47,] -0.280794885
-#&gt;  [48,] -0.085753807
-#&gt;  [49,] -0.175369823
-#&gt;  [50,] -0.052134382
-#&gt;  [51,] -0.167881757
-#&gt;  [52,] -0.271956540
-#&gt;  [53,]  0.397683168
-#&gt;  [54,]  0.891742680
-#&gt;  [55,] -0.272534061
-#&gt;  [56,] -0.138939986
-#&gt;  [57,] -0.312680493
-#&gt;  [58,]  0.376207645
-#&gt;  [59,]  0.107852217
-#&gt;  [60,] -0.274181498
-#&gt;  [61,]  0.059794607
-#&gt;  [62,]  0.517532097
-#&gt;  [63,] -0.314264126
-#&gt;  [64,]  0.179441196
-#&gt;  [65,] -0.326925699
-#&gt;  [66,] -0.291895340
-#&gt;  [67,] -0.260049683
-#&gt;  [68,]  0.310092949
-#&gt;  [69,] -0.109949903
-#&gt;  [70,] -0.134509934
-#&gt;  [71,] -0.133791373
-#&gt;  [72,]  0.317954245
-#&gt;  [73,]  0.449373850
-#&gt;  [74,] -0.039308841
-#&gt;  [75,] -0.150985812
-#&gt;  [76,] -0.227097371
-#&gt;  [77,]  1.397225454
-#&gt;  [78,] -0.215152710
-#&gt;  [79,]  0.045639355
-#&gt;  [80,] -0.335793473
-#&gt;  [81,]  0.287186424
-#&gt;  [82,]  0.006840095
-#&gt;  [83,] -0.136341874
-#&gt;  [84,] -0.079530414
-#&gt;  [85,] -0.248024535
-#&gt;  [86,] -0.314588970
-#&gt;  [87,]  2.145874832
-#&gt;  [88,] -0.261411095
-#&gt;  [89,]  0.004086366
-#&gt;  [90,] -0.265732670
-#&gt;  [91,]  2.865824796
-#&gt;  [92,] -0.253531246
-#&gt;  [93,]  0.037325369
-#&gt;  [94,]  1.849689566
-#&gt;  [95,]  0.745240797
-#&gt;  [96,] -0.009597952
-#&gt;  [97,]  1.682942647
-#&gt;  [98,]  1.518659639
-#&gt;  [99,] -0.268525752
-#&gt; [100,]  0.045637312
-#&gt; [101,] -0.011966406
-#&gt; [102,] -0.135544693
-#&gt; [103,] -0.365398707
-#&gt; [104,] -0.344228172
-#&gt; [105,] -0.053599164
-#&gt; [106,]  0.095096033
-#&gt; [107,] -0.071615614
-#&gt; [108,]  1.001365257
-#&gt; [109,] -0.033713184
-#&gt; [110,]  0.479292136
-#&gt; [111,] -0.267522893
-#&gt; [112,] -0.268312330
-#&gt; [113,] -0.321101941
-#&gt; [114,] -0.100508689
-#&gt; [115,]  0.413580858
-#&gt; [116,] -0.194102223
-#&gt; [117,] -0.181417199
-#&gt; [118,]  0.036037211
-#&gt; [119,]  0.028576391
-#&gt; [120,] -0.247607166
-#&gt; [121,] -0.356767471
-#&gt; [122,] -0.094123850
-#&gt; [123,]  0.267071424
-#&gt; [124,] -0.276418375
-#&gt; [125,] -0.322561596
-#&gt; [126,] -0.298419275
-#&gt; [127,] -0.341656342
-#&gt; [128,] -0.059930008
-#&gt; [129,] -0.048560344
-#&gt; [130,]  0.163627210
-#&gt; [131,] -0.278885475
-#&gt; [132,]  0.474448870
-#&gt; [133,] -0.335935172
-#&gt; [134,] -0.353398349
-#&gt; [135,] -0.286902265
-#&gt; [136,] -0.173861944
-#&gt; [137,]  0.462705592
-#&gt; [138,]  0.347547818
-#&gt; [139,] -0.207961124
-#&gt; [140,]  0.434105603
-#&gt; [141,]  0.492687405
-#&gt; [142,]  0.080748487
-#&gt; [143,] -0.214760189
-#&gt; [144,]  0.102871652
-#&gt; [145,]  0.280944975
-#&gt; [146,] -0.118135149
-#&gt; [147,]  0.120915953
-#&gt; [148,] -0.345881242
-#&gt; [149,] -0.315492355
-#&gt; [150,] -0.329531393
-#&gt; [151,] -0.272871168
-#&gt; [152,] -0.025502923
-#&gt; [153,]  1.012184324
-#&gt; [154,]  1.069064637
-#&gt; [155,]  0.206275638
-#&gt; [156,] -0.149821319
-#&gt; [157,]  0.688373147
-#&gt; [158,] -0.153698028
-#&gt; [159,]  0.917929350
-#&gt; [160,] -0.261985472
-#&gt; [161,]  0.514475268
-#&gt; [162,] -0.105416566
-#&gt; [163,]  0.143736657
-#&gt; [164,] -0.254686252
-#&gt; [165,] -0.058870598
-#&gt; [166,]  3.157674224
-#&gt; [167,]  2.329431485
-#&gt; [168,]  0.540214201
-#&gt; [169,] -0.308738248
-#&gt; [170,] -0.348060696
-#&gt; [171,]  0.447343052
-#&gt; [172,]  0.033045898
-#&gt; [173,]  1.047528122
-#&gt; [174,] -0.184035348
-#&gt; [175,]  0.187195077
-#&gt; [176,]  0.909821186
-#&gt; [177,]  3.191408422
-#&gt; [178,] -0.141383888
-#&gt; [179,] -0.294408538
-#&gt; [180,] -0.247949527
-#&gt; [181,]  0.065290290
-#&gt; [182,]  1.703274451
-#&gt; [183,]  0.991382597
-#&gt; [184,]  5.097835492
-#&gt; [185,] -0.347135723
-#&gt; [186,]  0.219801777
-#&gt; [187,]  0.395912677
-#&gt; [188,]  0.596779095
-#&gt; [189,]  1.474007974
-#&gt; [190,]  0.324331458
-#&gt; [191,] -0.289925834
-#&gt; [192,] -0.330449914
-#&gt; [193,]  0.065752813
-#&gt; [194,] -0.072350542
-#&gt; [195,] -0.256878206
-#&gt; [196,]  1.306435524
-#&gt; [197,]  0.691054292
-#&gt; [198,] -0.343223671
-#&gt; [199,]  3.840632794
-#&gt; [200,] -0.138545740</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
+<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mash.html'>mash</a></span>(<span class='no'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>))
+<span class='fu'>get_log10bf</span>(<span class='no'>m</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -364,7 +157,7 @@ NULL.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

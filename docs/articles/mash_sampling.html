@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.40</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
       </span>
     </div>
 
@@ -70,7 +70,7 @@
       <h1 data-toc-skip>Sample from mash posteriors</h1>
                         <h4 class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2020-06-27</h4>
+            <h4 class="date">2021-05-18</h4>
       
       <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/mash_sampling.Rmd"><code>vignettes/mash_sampling.Rmd</code></a></small>
       <div class="hidden name"><code>mash_sampling.Rmd</code></div>
@@ -98,11 +98,11 @@
 <p>Here, we draw 100 samples from the posteriors of each effect.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">m</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data</span>, <span class="no">U.c</span>, <span class="kw">algorithm.version</span> <span class="kw">=</span> <span class="st">'R'</span>, <span class="kw">posterior_samples</span> <span class="kw">=</span> <span class="fl">100</span>)</pre></body></html></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.21 seconds.
+#  - Likelihood calculations took 0.12 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.50 seconds.
+#  - Model fitting took 0.61 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 5.30 seconds.</code></pre>
+#  - Computation allocated took 3.08 seconds.</code></pre>
 <p>Using <code><a href="../reference/get_samples.html">get_samples(m)</a></code>, we have a <span class="math inline">\(2000 \times 5 \times 100\)</span> array for samples.</p>
 <p>If we fit the mash model without the posterior samples, we could use <code>mash_compute_posterior_matrices</code> to sample from the mash object.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">m</span>$<span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_compute_posterior_matrices.html">mash_compute_posterior_matrices</a></span>(<span class="no">m</span>, <span class="no">data</span>, <span class="kw">algorithm.version</span> <span class="kw">=</span> <span class="st">'R'</span>,
