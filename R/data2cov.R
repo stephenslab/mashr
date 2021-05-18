@@ -54,11 +54,12 @@ cov_pca = function(data,npc,subset = NULL){
 #' # for an example
 #'
 #' @importFrom assertthat assert_that
-#' @importFrom flashr flash flash_set_data
 #' @importFrom softImpute softImpute
 #' @export
 #'
 cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
+  if (!requireNamespace("flashr",quietly = TRUE))
+    stop("cov_flash requires package flashr")
   # Only keep factors with at least two values greater than 1 / sqrt(n)
   find_nonunique_effects <- function(fl) {
     thresh <- 1/sqrt(ncol(fl$fitted_values))
@@ -82,7 +83,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   factors = match.arg(factors)
   # set default parameters
   args = list(...)
-  args$data = flash_set_data(as.matrix(data$Bhat[subset,]))
+  args$data = flashr::flash_set_data(as.matrix(data$Bhat[subset,]))
   if (!exists("init_fn", args)) {
     args$init_fn = factors
     if (factors == 'default') args$init_fn = "udv_si"
@@ -97,7 +98,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
                            f = list(mixcompdist = "+uniform",
                                optmethod = "mixSQP"))
   }
-  f = do.call(flash, args)
+  f = do.call(flashr::flash, args)
   if (remove_singleton) flash_factors = find_nonunique_effects(f)
   else flash_factors = as.matrix(f$ldf$f)
   if (!is.null(output_model)) saveRDS(list(model=f, factors=flash_factors), output_model)

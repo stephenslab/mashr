@@ -2,8 +2,8 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.46
-Date: 2021-05-17
+Version: 0.2.47
+Date: 2021-05-18
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
@@ -38,8 +38,7 @@ Imports:
     Rcpp (>= 0.12.11),
     mvtnorm,
     abind,
-    softImpute,
-    flashr (>= 0.6.7)
+    softImpute
 LinkingTo:
     Rcpp, 
     RcppArmadillo,
@@ -52,11 +51,11 @@ Suggests:
     kableExtra,
     knitr,
     rmarkdown,
-    profmem
+    profmem,
+    flashr (>= 0.6.7)
+Additional_repositories: https://github.com/stephenslab/flashr
 VignetteBuilder: knitr
 NeedsCompilation: yes
 Biarch: true
 RoxygenNote: 7.1.1
-Remotes: 
-    stephens999/ashr,
-    stephenslab/flashr
+Remotes: stephens999/ashr

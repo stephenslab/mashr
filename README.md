@@ -54,12 +54,12 @@ installed on your computer, and R should be correctly configured to
 call these compilers when installing packages from source. For more
 information, see the [CRAN documentation][cran-docs].
 
-Alternatively, you may use [devtools][devtools] to install the latest
+Alternatively, you may use [remotes][remotes] to install the latest
 version of mashr from GitHub:
 
 ```R
-install.packages("devtools")
-devtools::install_github("stephenslab/mashr")
+install.packages("remotes")
+remotes::install_github("stephenslab/mashr")
 ```
    
 This command should automatically install any missing dependencies
@@ -98,7 +98,7 @@ form x.y.z.
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
 [mashr-release]: https://github.com/stephenslab/mashr/releases/tag/v0.2-11
-[devtools]: https://github.com/r-lib/devtools
+[remotes]: https://github.com/r-lib/remotes
 [flashr]: https://github.com/stephenslab/flashr
 [vignette-intro]: https://stephenslab.github.io/mashr/articles/intro_mash.html
 [vignette-data-driven-cov]: https://stephenslab.github.io/mashr/articles/intro_mash_dd.html
