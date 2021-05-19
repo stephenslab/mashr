@@ -41,11 +41,15 @@ to learn about the amount of signal in the data, and to "correct" estimates
 for the fact that many tests are null (analagous to a kind of multiple
 testing correction.)
 
-We will call the data from these two sets of tests `strong` and `random` respectively.
+We will call the data from these two sets of tests `strong` and
+`random` respectively.
 
-To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in [Urbut et al](https://www.biorxiv.org/content/early/2017/05/09/096552),
-the `strong` data contained about 16k tests (the top
-eQTL per gene), and for the `random` data we used 20k randomly-selected tests. (If you suspect true effects are very sparse then you might want to increase the size of the random subset, say to 200k).
+To give some sense of the potential appropriate sizes of these
+datasets: in our eQTL application in [Urbut et al][urbut-biorxiv], the
+`strong` data contained about 16k tests (the top eQTL per gene), and
+for the `random` data we used 20k randomly-selected tests. (If you
+suspect true effects are very sparse then you might want to increase
+the size of the random subset, say to 200k).
 
 ## Analysis strategy outline
 
@@ -135,4 +139,4 @@ m2 = mash(data.strong, g=get_fitted_g(m), fixg=TRUE)
 head(get_lfsr(m2))
 ```
 
-
+[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v2

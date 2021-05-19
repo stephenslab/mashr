@@ -2,8 +2,8 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.48
-Date: 2021-05-18
+Version: 0.2.49
+Date: 2021-05-19
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
@@ -22,8 +22,8 @@ Description: Implements the multivariate adaptive shrinkage (mash)
     among conditions, then exploits these patterns to improve accuracy
     of the effect estimates. The core linear algebra is implemented in
     C++ for fast model fitting and posterior computation.
-URL: http://github.com/stephenslab/mashr
-BugReports: http://github.com/stephenslab/mashr/issues
+URL: https://github.com/stephenslab/mashr
+BugReports: https://github.com/stephenslab/mashr/issues
 License: BSD_3_clause + file LICENSE
 Copyright: file COPYRIGHTS
 SystemRequirements: C++11

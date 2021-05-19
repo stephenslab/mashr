@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
 # Goal
 
 This vignette introduces the `mashr` software for someone who is
-familiar with the basic idea in [Urbut et al.](https://www.biorxiv.org/content/early/2017/05/09/096552), which
+familiar with the basic idea in [Urbut et al.][urbut-biorxiv], which
 we strongly recommend reading before proceeding.
 
 In this first vignette we
@@ -32,7 +32,7 @@ in your data measurements then also look at how to incorporate [correlations](in
 # Outline
 
 This package implements the "multivariate adaptive shrinkage" (mash) 
-method from [Urbut et al.](https://www.biorxiv.org/content/early/2017/05/09/096552).
+method from [Urbut et al.][urbut-biorxiv].
 
 Mash is a method for dealing
 with large numbers of tests in many (e.g. dozens) different conditions.
@@ -228,3 +228,5 @@ mash_plot_meta(m.c,get_significant_results(m.c)[1])
 ```{r info}
 print(sessionInfo())
 ```
+
+[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v2

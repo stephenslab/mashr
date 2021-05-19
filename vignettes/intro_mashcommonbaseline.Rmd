@@ -17,22 +17,25 @@ knitr::opts_chunk$set(echo = TRUE,comment = "#",fig.width = 5,
 
 # Introduction
 
-This vignette illustrates how to use `mashr` to estimate the change in some quantity measured in multiple conditions compared with a **common** control condition. 
+This vignette illustrates how to use `mashr` to estimate the change in
+some quantity measured in multiple conditions compared with a
+**common** control condition.
 
-We assume that we have measurements in multiple conditions, and want to
-estimate the deviation in each condition from the control: that is, the difference
-in mean between that condition and the control condition. 
-When we compare every condition to the same control then the observed
-deviations are correlated with one another (even under the null where
-there are no true differences among conditions). These correlations, if 
-not properly accounted
-for, can lead to many false positives in a multivariate analysis. 
-This vignette illustrates how to properly account for such correlations.
+We assume that we have measurements in multiple conditions, and want
+to estimate the deviation in each condition from the control: that is,
+the difference in mean between that condition and the control
+condition.  When we compare every condition to the same control then
+the observed deviations are correlated with one another (even under
+the null where there are no true differences among conditions). These
+correlations, if not properly accounted for, can lead to many false
+positives in a multivariate analysis.  This vignette illustrates how
+to properly account for such correlations.
 
-Here is the [write-up](MASH_baseline.pdf) for the details of the
+Here is the [write-up][mash-baseline] for the details of the/
 model. When there is no control condition in the study, we can compare
 the quantity in different conditions with the mean. We illustrate an
-example in the [common baseline at the mean vignette](intro_mashbaselinemean.html).
+example in the
+[common baseline at the mean vignette](intro_mashbaselinemean.html).
 
 To deal with these correlations, mashr allows the user to specify the reference condition using `mash_update_data`, after setting up the data in `mash_set_data`. 
 

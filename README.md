@@ -89,12 +89,10 @@ connected to Internet while running these commands):
    ```
 
 + Prior to submitting the package to CRAN, the following modifications
-need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; (2)
-remove the `flash_mash.Rmd` vignette; (3) remove "flashr" from
-`Suggests:` in `DESCRIPTION`; (4) Make sure version number is of the
-form x.y.z.
+need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; and
+(2) set `eval = FALSE` in the `flash_mash.Rmd` vignette.
 
-[mashr-pkg-for-paper]: http://github.com/stephenslab/mashr-paper
+[mashr-pkg-for-paper]: https://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
 [mash-paper]: https://doi.org/10.1038/s41588-018-0268-8
 [mashr-release]: https://github.com/stephenslab/mashr/releases/tag/v0.2-11
