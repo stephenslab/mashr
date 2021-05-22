@@ -32,21 +32,21 @@ cov_pca = function(data,npc,subset = NULL){
   return(Ulist)
 }
 
-#' @title Perform Empirical Bayes Matrix Factorization via FLASH and return a list of 
+#' @title Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
 #' candidate covariance matrices
 #'
 #' @param data a mash data object
 #'
-#' @param factors "default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}. 
+#' @param factors "default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}.
 #' "nonneg" to implement a non-negative constraint on the factors
 #'
 #' @param subset indices of the subset of data to use (set to NULL for
 #' all data)
 #' @param remove_singleton whether or not factors corresponding to singleton matrices should be removed from output
-#' @param tag specific a tag to name the contents in the return objects. You may want to choose different tags for 
+#' @param tag specific a tag to name the contents in the return objects. You may want to choose different tags for
 #' different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.
 #' @param output_model if specified a filename, the FLASH model will be saved to that file in RDS format.
-#' 
+#'
 #' @param \dots additional parameters passed to \code{flashr::flash}
 #' @return Returns a list of covariance matrices
 #' @examples
@@ -63,7 +63,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   # Only keep factors with at least two values greater than 1 / sqrt(n)
   find_nonunique_effects <- function(fl) {
     thresh <- 1/sqrt(ncol(fl$fitted_values))
-    vals_above_avg <- colSums(fl$ldf$f > thresh)
+    vals_above_avg <- colSums(abs(fl$ldf$f) > thresh)
     nonuniq_effects <- which(vals_above_avg > 1)
     message(paste("Removing", length(vals_above_avg) - length(nonuniq_effects), "singleton effect vectors"))
     return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
@@ -88,7 +88,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
     args$init_fn = factors
     if (factors == 'default') args$init_fn = "udv_si"
     if (factors == 'nonneg') args$init_fn = nonneg
-  } 
+  }
   if (!exists("greedy", args)) args$greedy = T
   if (!exists("backfit", args)) args$backfit = T
   if (factors == "nonneg") {
@@ -128,7 +128,7 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
 #'
 #' @details Runs the extreme deconvolution algorithm from Bovy et al
 #' (Annals of Applied Statistics) to estimate data-driven covariance
-#' matrices. It can be initialized with, for example running \code{cov_pca} with, 
+#' matrices. It can be initialized with, for example running \code{cov_pca} with,
 #' say, 5 PCs.
 #' @examples
 #' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
