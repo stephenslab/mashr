@@ -3,7 +3,7 @@ Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
 Version: 0.2.50
-Date: 2021-05-19
+Date: 2021-06-14
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),

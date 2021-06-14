@@ -29,6 +29,10 @@ cov_pca = function(data,npc,subset = NULL){
   Ulist = cov_from_factors(t(f), "PCA")
   d = diag(res.svd$d[1:npc])
   Ulist = c(Ulist, list("tPCA"= f %*% d^2 %*% t(f)/length(subset)))
+  for (i in 1:length(Ulist)) {
+    rownames(Ulist[[i]]) <- colnames(data$Bhat)
+    colnames(Ulist[[i]]) <- colnames(data$Bhat)
+  }
   return(Ulist)
 }
 
@@ -106,6 +110,10 @@ cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_s
   U.flash = list()
   U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
   if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
+  for (i in 1:length(U.flash)) {
+    rownames(U.flash[[i]]) <- colnames(data$Bhat)
+    colnames(U.flash[[i]]) <- colnames(data$Bhat)
+  }
   return(U.flash)
 }
 
