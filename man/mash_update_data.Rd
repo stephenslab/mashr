@@ -14,7 +14,7 @@ standard errors, V; created using \code{mash_set_data}}
 R, R is number of conditions, or the name of reference group. If
 there is no reference group, it can be the string 'mean'.}
 
-\item{V}{an R by R matrix / [R x R x J] array of correlation matrix
+\item{V}{an R by R matrix / [R x R x N] array of correlation matrix
 of error correlations}
 }
 \value{
