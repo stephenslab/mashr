@@ -29,9 +29,11 @@ a correlation matrix $V$ when setting up the data in `mash_set_data`.
 The easiest way to specify this correlation
 matrix is to estimate it using `estimate_null_correlation_simple`, which,
 as its name suggests, uses the null tests (specifically, tests 
-without a strong $z$ score) to estimate the correlations.
+without a strong $z$ score) to estimate the correlations. 
+Another way to estimate the correlations is 
+using `estimate_null_correlation`, which uses an ad hoc em algorithm.
 
-# Illustration
+# Illustration 1
 
 Here we simulate data for illustration. The data does not have any correlation,
 but we will analyze it as if we did not know that.
@@ -78,5 +80,54 @@ print(get_loglik(m.c.orig),digits=10)
 
 The log-likelihoods with and without correlations are similar here,
  which is expected since there are no actual correlations in the data.
+
+# Ilustration 2
+
+Here we simulate data with correlations.
+
+```{r}
+library(ashr)
+library(mashr)
+set.seed(1)
+simdata = simple_sims(500,5,1)
+V = matrix(0.5,5,5)
+diag(V) = 1
+simdata$Bhat = simdata$B + mvtnorm::rmvnorm(2000, sigma = V)
+```
+
+To estimate the residual correlations using EM method, it requires 
+covariance matrices for the signals. We proceed with the simple canonical 
+covariances. With `details = TRUE` in `estimate_null_correlation`, it returns 
+the estimates residual correlation matrix with the mash fit.
+```{r}
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+U.c = cov_canonical(data)
+V.em = estimate_null_correlation(data, U.c, details = TRUE)
+m.Vem = V.em$mash.model
+print(get_loglik(m.Vem),digits=10) # log-likelihood of the fit
+```
+
+We compare with the original analysis, and the analysis using `estimate_null_correlation_simple`. 
+
+```{r}
+V.simple = estimate_null_correlation_simple(data)
+data.V.simple = mash_update_data(data, V=V.simple)
+m.simple = mash(data.V.simple, U.c) # fits with correlations 
+print(get_loglik(m.simple),digits=10) 
+
+m = mash(data, U.c) # fits without correlations
+print(get_loglik(m),digits=10) 
+```
+
+The log-likelihoods from the EM updates is higher.
+
+The EM updates in `estimate_null_correlation` needs some time to converge.
+There are several things we can do to reduce the running time. 
+First of all, we can set the number of iterations to a small number. 
+Because there is a large improvement in the log-likelihood within 
+the first few iterations, running the algorithm with small number of 
+iterations provides estimates of correlation matrix that is better 
+than the initial value. Moreover, we can estimate the correlation matrix 
+using a random subset of genes, not the whole observed genes.
 
 

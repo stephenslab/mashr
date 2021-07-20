@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Estimate null correlations — estimate_null_correlation" />
-<meta property="og:description" content="Estimates a null correlation matrix from data" />
+<meta property="og:description" content="Estimates a residual correlation matrix from data" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -90,8 +90,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -109,26 +109,26 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Estimate null correlations</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/est_cor.R'><code>R/est_cor.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/est_cor.R'><code>R/est_cor.R</code></a></small>
     <div class="hidden name"><code>estimate_null_correlation.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Estimates a null correlation matrix from data</p>
+    <p>Estimates a residual correlation matrix from data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>estimate_null_correlation</span>(
-  <span class='no'>data</span>,
-  <span class='no'>Ulist</span>,
-  <span class='no'>init</span>,
-  <span class='kw'>max_iter</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>est_cor</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>track_fit</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>prior</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span>),
-  <span class='kw'>details</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>estimate_null_correlation</span><span class='op'>(</span>
+  <span class='va'>data</span>,
+  <span class='va'>Ulist</span>,
+  <span class='va'>init</span>,
+  max_iter <span class='op'>=</span> <span class='fl'>30</span>,
+  tol <span class='op'>=</span> <span class='fl'>1</span>,
+  est_cor <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  track_fit <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  prior <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"nullbiased"</span>, <span class='st'>"uniform"</span><span class='op'>)</span>,
+  details <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -143,9 +143,9 @@
     </tr>
     <tr>
       <th>init</th>
-      <td><p>the initial value for the null correlation. If it is
+      <td><p>the initial value for the residual correlation. If it is
 not given, we use result from
-<code>estimate_null_correlation_adhoc</code></p></td>
+<code>estimate_null_correlation_simple</code></p></td>
     </tr>
     <tr>
       <th>max_iter</th>
@@ -172,8 +172,8 @@ current values of all iterations</p></td>
     <tr>
       <th>details</th>
       <td><p>whether to return details of the model, if it is
-TRUE, the number of iterations and the value of objective functions
-will be returned</p></td>
+TRUE, the mash model, the number of iterations and the value of
+objective functions will be returned</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -183,36 +183,35 @@ will be returned</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the estimated correlation (or covariance) matrix and the
+    <p>the estimated correlation matrix and the
 fitted mash model <br /></p>
-<dt>V</dt><dd><p>estimated correlation (or covariance) matrix</p></dd>
+<dt>V</dt><dd><p>estimated residual correlation matrix</p></dd>
 
 <dt>mash.model</dt><dd><p>fitted mash model</p></dd>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Returns the estimated correlation matrix (or covariance
-matrix) among conditions under the null.  The correlation (or
-covariance) matrix is estimated by maximum likelihood.
-Specifically, the unknown correlation/covariance matrix V and the
-unknown weights are estimated iteratively.  The unknown
-correlation/covariance matrix V is estimated using the posterior
-second moment of the noise.  The unknown weights pi is estimated by
-maximum likelihood, which is a convex problem.</p>
+    <p>Returns the estimated residual correlation matrix among conditions.
+We estimate the residual correlation matrix using an ad hoc em algorithm.
+The update in the ad hoc M step is not guaranteed to increase the likelihood,
+therefore, the EM algorithm is stopped before the likelihood drops.
+The residual correlation matrix V is estimated using the posterior
+second moment of the noise.</p>
 <p>Warning: This method could take some time.  The
 <code><a href='estimate_null_correlation_simple.html'>estimate_null_correlation_simple</a></code> gives a quick
-approximation for the null correlation (or covariance) matrix.</p>
+approximation for the null correlation matrix.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>100</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
-<span class='no'>m.1by1</span> <span class='kw'>=</span> <span class='fu'><a href='mash_1by1.html'>mash_1by1</a></span>(<span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>,<span class='no'>simdata</span>$<span class='no'>Shat</span>))
-<span class='no'>strong.subset</span> <span class='kw'>=</span> <span class='fu'><a href='get_significant_results.html'>get_significant_results</a></span>(<span class='no'>m.1by1</span>,<span class='fl'>0.05</span>)
-<span class='no'>random.subset</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>),<span class='fl'>20</span>)
-<span class='no'>data.strong</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>[<span class='no'>strong.subset</span>,], <span class='no'>simdata</span>$<span class='no'>Shat</span>[<span class='no'>strong.subset</span>,])
-<span class='no'>data.tmp</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>[<span class='no'>random.subset</span>,], <span class='no'>simdata</span>$<span class='no'>Shat</span>[<span class='no'>random.subset</span>,])
-<span class='no'>U_pca</span> <span class='kw'>=</span> <span class='fu'><a href='cov_pca.html'>cov_pca</a></span>(<span class='no'>data.strong</span>, <span class='fl'>3</span>)
-<span class='no'>U_ed</span> <span class='kw'>=</span> <span class='fu'><a href='cov_ed.html'>cov_ed</a></span>(<span class='no'>data.strong</span>, <span class='no'>U_pca</span>)
-<span class='no'>Vhat</span> <span class='kw'>=</span> <span class='fu'>estimate_null_correlation</span>(<span class='no'>data.tmp</span>, <span class='no'>U_ed</span>)</pre>
+    <pre class="examples"><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>100</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>m.1by1</span> <span class='op'>=</span> <span class='fu'><a href='mash_1by1.html'>mash_1by1</a></span><span class='op'>(</span><span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>,<span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>strong.subset</span> <span class='op'>=</span> <span class='fu'><a href='get_significant_results.html'>get_significant_results</a></span><span class='op'>(</span><span class='va'>m.1by1</span>,<span class='fl'>0.05</span><span class='op'>)</span>
+<span class='va'>random.subset</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span><span class='op'>)</span>,<span class='fl'>20</span><span class='op'>)</span>
+<span class='va'>data.strong</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span><span class='op'>[</span><span class='va'>strong.subset</span>,<span class='op'>]</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>[</span><span class='va'>strong.subset</span>,<span class='op'>]</span><span class='op'>)</span>
+<span class='va'>data.tmp</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span><span class='op'>[</span><span class='va'>random.subset</span>,<span class='op'>]</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>[</span><span class='va'>random.subset</span>,<span class='op'>]</span><span class='op'>)</span>
+<span class='va'>U_pca</span> <span class='op'>=</span> <span class='fu'><a href='cov_pca.html'>cov_pca</a></span><span class='op'>(</span><span class='va'>data.strong</span>, <span class='fl'>3</span><span class='op'>)</span>
+<span class='va'>U_ed</span> <span class='op'>=</span> <span class='fu'><a href='cov_ed.html'>cov_ed</a></span><span class='op'>(</span><span class='va'>data.strong</span>, <span class='va'>U_pca</span><span class='op'>)</span>
+<span class='va'>Vhat</span> <span class='op'>=</span> <span class='fu'>estimate_null_correlation</span><span class='op'>(</span><span class='va'>data.tmp</span>, <span class='va'>U_ed</span><span class='op'>)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -228,7 +227,7 @@ approximation for the null correlation (or covariance) matrix.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

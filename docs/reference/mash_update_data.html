@@ -75,7 +75,7 @@ updating the null correlation matrix." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -93,8 +93,8 @@ updating the null correlation matrix." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -112,7 +112,7 @@ updating the null correlation matrix." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Update the data object for mash analysis.</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/set_data.R'><code>R/set_data.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/set_data.R'><code>R/set_data.R</code></a></small>
     <div class="hidden name"><code>mash_update_data.Rd</code></div>
     </div>
 
@@ -123,7 +123,7 @@ data can be used for commonbaseline analysis. The other one is
 updating the null correlation matrix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mash_update_data</span>(<span class='no'>mashdata</span>, <span class='kw'>ref</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>V</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>mash_update_data</span><span class='op'>(</span><span class='va'>mashdata</span>, ref <span class='op'>=</span> <span class='cn'>NULL</span>, V <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,7 +141,7 @@ there is no reference group, it can be the string 'mean'.</p></td>
     </tr>
     <tr>
       <th>V</th>
-      <td><p>an R by R matrix / [R x R x J] array of correlation matrix
+      <td><p>an R by R matrix / [R x R x N] array of correlation matrix
 of error correlations</p></td>
     </tr>
     </table>
@@ -151,9 +151,11 @@ of error correlations</p></td>
     <p>a updated mash data object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
-<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
-<span class='fu'>mash_update_data</span>(<span class='no'>data</span>, <span class='st'>'mean'</span>)</pre>
+    <pre class="examples"><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
+<span class='fu'>mash_update_data</span><span class='op'>(</span><span class='va'>data</span>, <span class='st'>'mean'</span><span class='op'>)</span>
+
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -169,7 +171,7 @@ of error correlations</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

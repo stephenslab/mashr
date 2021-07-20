@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -49,8 +49,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -64,15 +64,15 @@
 
       
 
-      </header><div class="row">
+      </header><script src="eQTL_outline_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>eQTL analysis outline</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2021-05-18</h4>
+            <h4 class="date">2021-07-20</h4>
       
-      <small class="dont-index">Source: <a href="http://github.com/stephenslab/mashr/blob/master/vignettes/eQTL_outline.Rmd"><code>vignettes/eQTL_outline.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/eQTL_outline.Rmd"><code>vignettes/eQTL_outline.Rmd</code></a></small>
       <div class="hidden name"><code>eQTL_outline.Rmd</code></div>
 
     </div>
@@ -90,7 +90,7 @@
 <li><p>Results from a <em>random subset</em> of all tests. It is important that these be an unbiased representation of all the tests you are considering, including null and non-null tests, because <code>mashr</code> uses these tests to learn about the amount of signal in the data, and to “correct” estimates for the fact that many tests are null (analagous to a kind of multiple testing correction.)</p></li>
 </ol>
 <p>We will call the data from these two sets of tests <code>strong</code> and <code>random</code> respectively.</p>
-<p>To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in <a href="https://www.biorxiv.org/content/early/2017/05/09/096552">Urbut et al</a>, the <code>strong</code> data contained about 16k tests (the top eQTL per gene), and for the <code>random</code> data we used 20k randomly-selected tests. (If you suspect true effects are very sparse then you might want to increase the size of the random subset, say to 200k).</p>
+<p>To give some sense of the potential appropriate sizes of these datasets: in our eQTL application in <a href="https://www.biorxiv.org/content/10.1101/096552v2">Urbut et al</a>, the <code>strong</code> data contained about 16k tests (the top eQTL per gene), and for the <code>random</code> data we used 20k randomly-selected tests. (If you suspect true effects are very sparse then you might want to increase the size of the random subset, say to 200k).</p>
 <div id="analysis-strategy-outline" class="section level2">
 <h2 class="hasAnchor">
 <a href="#analysis-strategy-outline" class="anchor"></a>Analysis strategy outline</h2>
@@ -107,64 +107,71 @@
 <h1 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h1>
 <p>First we simulate some data to illustrate the ideas. To make this convenient to run we simulate a small data. And we identify the strong hits using <code>mash_1by1</code>. But in practice you may want to use methods outside of R to extract the matrices of data corresponding to strong and random tests, and then read them in as you need them. For example, see <a href="https://github.com/stephenslab/gtexresults/blob/master/workflows/fastqtl_to_mash.ipynb">here</a> for scripts we use for processing fastQTL output.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ashr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mashr</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1</span>)
-<span class="no">simdata</span> <span class="kw">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span>(<span class="fl">10000</span>,<span class="fl">5</span>,<span class="fl">1</span>) <span class="co"># simulates data on 40k tests</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr">ashr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">10000</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span> <span class="co"># simulates data on 40k tests</span>
 
 <span class="co"># identify a subset of strong tests</span>
-<span class="no">m.1by1</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_1by1.html">mash_1by1</a></span>(<span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>,<span class="no">simdata</span>$<span class="no">Shat</span>))
-<span class="no">strong.subset</span> <span class="kw">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span>(<span class="no">m.1by1</span>,<span class="fl">0.05</span>)
+<span class="va">m.1by1</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_1by1.html">mash_1by1</a></span><span class="op">(</span><span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span><span class="op">)</span>
+<span class="va">strong.subset</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.1by1</span>,<span class="fl">0.05</span><span class="op">)</span>
 
 <span class="co"># identify a random subset of 5000 tests</span>
-<span class="no">random.subset</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>),<span class="fl">5000</span>)</pre></body></html></div>
+<span class="va">random.subset</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">)</span>,<span class="fl">5000</span><span class="op">)</span></code></pre></div>
 <div id="correlation-structure" class="section level2">
 <h2 class="hasAnchor">
 <a href="#correlation-structure" class="anchor"></a>Correlation structure</h2>
 <p>We estimate the correlation structure in the null tests from the <code>random</code> data (not the <code>strong</code> data because they will not necessarily contain any null tests).</p>
 <p>To do this we set up a temporary data object <code>data.temp</code> from the random tests and use <code>estimate_null_correlation_simple</code> as in <a href="intro_correlations.html">this vignette</a>.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">data.temp</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>[<span class="no">random.subset</span>,],<span class="no">simdata</span>$<span class="no">Shat</span>[<span class="no">random.subset</span>,])
-<span class="no">Vhat</span> <span class="kw">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span>(<span class="no">data.temp</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(<span class="no">data.temp</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data.temp</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span><span class="op">)</span>
+<span class="va">Vhat</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span><span class="op">(</span><span class="va">data.temp</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span><span class="va">data.temp</span><span class="op">)</span></code></pre></div>
 <p>Now we can set up our main data objects with this correlation structure in place:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">data.random</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>[<span class="no">random.subset</span>,],<span class="no">simdata</span>$<span class="no">Shat</span>[<span class="no">random.subset</span>,],<span class="kw">V</span><span class="kw">=</span><span class="no">Vhat</span>)
-<span class="no">data.strong</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span>(<span class="no">simdata</span>$<span class="no">Bhat</span>[<span class="no">strong.subset</span>,],<span class="no">simdata</span>$<span class="no">Shat</span>[<span class="no">strong.subset</span>,], <span class="kw">V</span><span class="kw">=</span><span class="no">Vhat</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data.random</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span>,V<span class="op">=</span><span class="va">Vhat</span><span class="op">)</span>
+<span class="va">data.strong</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">[</span><span class="va">strong.subset</span>,<span class="op">]</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">[</span><span class="va">strong.subset</span>,<span class="op">]</span>, V<span class="op">=</span><span class="va">Vhat</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="data-driven-covariances" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-driven-covariances" class="anchor"></a>Data driven covariances</h2>
 <p>Now we use the strong tests to set up data-driven covariances.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">U.pca</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span>(<span class="no">data.strong</span>,<span class="fl">5</span>)
-<span class="no">U.ed</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span>(<span class="no">data.strong</span>, <span class="no">U.pca</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">U.pca</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span><span class="op">(</span><span class="va">data.strong</span>,<span class="fl">5</span><span class="op">)</span>
+<span class="va">U.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span><span class="op">(</span><span class="va">data.strong</span>, <span class="va">U.pca</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="fit-mash-model-estimate-mixture-proportions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fit-mash-model-estimate-mixture-proportions" class="anchor"></a>Fit mash model (estimate mixture proportions)</h2>
 <p>Now we fit mash to the random tests using both data-driven and canonical covariances. (Remember the Crucial Rule! We have to fit using a random set of tests, and not a dataset that is enriched for strong tests.) The <code>outputlevel=1</code> option means that it will not compute posterior summaries for these tests (which saves time).</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">U.c</span> <span class="kw">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span>(<span class="no">data.random</span>)
-<span class="no">m</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.random</span>, <span class="kw">Ulist</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">U.ed</span>,<span class="no">U.c</span>), <span class="kw">outputlevel</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.random</span><span class="op">)</span>
+<span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.random</span>, Ulist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.ed</span>,<span class="va">U.c</span><span class="op">)</span>, outputlevel <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code>#  - Computing 5000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.25 seconds.
+#  - Likelihood calculations took 0.16 seconds.
 #  - Fitting model with 241 mixture components.
-#  - Model fitting took 3.67 seconds.</code></pre>
+#  - Model fitting took 3.99 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level2">
 <h2 class="hasAnchor">
 <a href="#compute-posterior-summaries" class="anchor"></a>Compute posterior summaries</h2>
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests. We do this using the same <code>mash</code> function as above, but we specify to use the fit from the previous run of mash by specifying<br><code>g=get_fitted_g(m), fixg=TRUE</code>. (In <code>mash</code> the parameter <code>g</code> is used to denote the mixture model which we learned above.)</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">m2</span> <span class="kw">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span>(<span class="no">data.strong</span>, <span class="kw">g</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span>(<span class="no">m</span>), <span class="kw">fixg</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.strong</span>, g<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, fixg<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>#  - Computing 1428 x 241 likelihood matrix.
 #  - Likelihood calculations took 0.04 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.</code></pre>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span>(<span class="no">m2</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4  condition_5
-# effect_13096 9.815945e-06 5.056808e-01 4.229107e-01 3.944224e-01 6.055467e-01
-# effect_29826 6.571537e-05 6.637417e-01 5.837333e-01 6.358124e-01 5.768253e-01
-# effect_14042 6.994353e-02 6.495479e-03 2.483348e-03 5.562270e-02 6.836385e-06
-# effect_12524 1.119195e-01 4.107543e-01 2.985565e-02 2.579205e-05 1.001824e-01
-# effect_15456 4.913414e-05 4.380260e-01 2.733414e-01 5.166882e-01 3.610422e-01
-# effect_35844 2.623221e-09 4.570036e-09 1.864892e-07 1.013875e-09 4.094924e-11</code></pre>
+# effect_13096 9.815912e-06 5.056826e-01 4.229128e-01 3.944246e-01 6.055482e-01
+# effect_29826 6.571513e-05 6.637431e-01 5.837350e-01 6.358138e-01 5.768270e-01
+# effect_14042 6.994350e-02 6.495477e-03 2.483347e-03 5.562268e-02 6.836382e-06
+# effect_12524 1.119195e-01 4.107543e-01 2.985564e-02 2.579204e-05 1.001824e-01
+# effect_15456 4.913406e-05 4.380271e-01 2.733428e-01 5.166892e-01 3.610434e-01
+# effect_35844 2.623217e-09 4.570029e-09 1.864889e-07 1.013873e-09 4.094902e-11</code></pre>
 </div>
 </div>
   </div>
@@ -184,7 +191,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
