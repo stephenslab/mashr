@@ -2,7 +2,7 @@
 % Please edit documentation in R/data2cov.R
 \name{cov_flash}
 \alias{cov_flash}
-\title{Perform Empirical Bayes Matrix Factorization via FLASH and return a list of 
+\title{Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
 candidate covariance matrices}
 \usage{
 cov_flash(
@@ -18,7 +18,7 @@ cov_flash(
 \arguments{
 \item{data}{a mash data object}
 
-\item{factors}{"default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}. 
+\item{factors}{"default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}.
 "nonneg" to implement a non-negative constraint on the factors}
 
 \item{subset}{indices of the subset of data to use (set to NULL for
@@ -26,7 +26,7 @@ all data)}
 
 \item{remove_singleton}{whether or not factors corresponding to singleton matrices should be removed from output}
 
-\item{tag}{specific a tag to name the contents in the return objects. You may want to choose different tags for 
+\item{tag}{specific a tag to name the contents in the return objects. You may want to choose different tags for
 different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.}
 
 \item{output_model}{if specified a filename, the FLASH model will be saved to that file in RDS format.}
@@ -37,7 +37,7 @@ different paramter combinations. Default is set to \code{init_fn} parameter in \
 Returns a list of covariance matrices
 }
 \description{
-Perform Empirical Bayes Matrix Factorization via FLASH and return a list of 
+Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
 candidate covariance matrices
 }
 \examples{

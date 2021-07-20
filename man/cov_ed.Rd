@@ -29,7 +29,7 @@ the data
 \details{
 Runs the extreme deconvolution algorithm from Bovy et al
 (Annals of Applied Statistics) to estimate data-driven covariance
-matrices. It can be initialized with, for example running \code{cov_pca} with, 
+matrices. It can be initialized with, for example running \code{cov_pca} with,
 say, 5 PCs.
 }
 \examples{

@@ -43,15 +43,15 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 
 #' @title Estimate null correlations
 #'
-#' @description Estimates a null correlation matrix from data
+#' @description Estimates a residual correlation matrix from data
 #'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #'
 #' @param Ulist a list of covariance matrices to use
 #'
-#' @param init the initial value for the null correlation. If it is
+#' @param init the initial value for the residual correlation. If it is
 #' not given, we use result from
-#' \code{estimate_null_correlation_adhoc}
+#' \code{estimate_null_correlation_simple}
 #'
 #' @param max_iter maximum number of iterations to perform
 #'
@@ -66,28 +66,26 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' @param prior indicates what penalty to use on the likelihood, if any
 #'
 #' @param details whether to return details of the model, if it is
-#' TRUE, the number of iterations and the value of objective functions
-#' will be returned
+#' TRUE, the mash model, the number of iterations and the value of
+#' objective functions will be returned
 #'
 #' @param ... other parameters pass to \code{mash}
 #'
-#' @details Returns the estimated correlation matrix (or covariance
-#' matrix) among conditions under the null.  The correlation (or
-#' covariance) matrix is estimated by maximum likelihood.
-#' Specifically, the unknown correlation/covariance matrix V and the
-#' unknown weights are estimated iteratively.  The unknown
-#' correlation/covariance matrix V is estimated using the posterior
-#' second moment of the noise.  The unknown weights pi is estimated by
-#' maximum likelihood, which is a convex problem.
+#' @details Returns the estimated residual correlation matrix among conditions.
+#' We estimate the residual correlation matrix using an ad hoc em algorithm.
+#' The update in the ad hoc M step is not guaranteed to increase the likelihood,
+#' therefore, the EM algorithm is stopped before the likelihood drops.
+#' The residual correlation matrix V is estimated using the posterior
+#' second moment of the noise.
 #'
 #' Warning: This method could take some time.  The
 #' \code{\link{estimate_null_correlation_simple}} gives a quick
-#' approximation for the null correlation (or covariance) matrix.
+#' approximation for the null correlation matrix.
 #'
-#' @return the estimated correlation (or covariance) matrix and the
+#' @return the estimated correlation matrix and the
 #' fitted mash model \cr
 #'
-#' \item{V}{estimated correlation (or covariance) matrix}
+#' \item{V}{estimated residual correlation matrix}
 #'
 #' \item{mash.model}{fitted mash model}
 #'
