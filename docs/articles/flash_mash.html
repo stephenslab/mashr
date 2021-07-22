@@ -64,13 +64,13 @@
 
       
 
-      </header><script src="flash_mash_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="flash_mash_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Empirical Bayes matrix factorization for data driven prior</h1>
                         <h4 class="author">Gao Wang</h4>
             
-            <h4 class="date">2021-07-20</h4>
+            <h4 class="date">2021-07-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/flash_mash.Rmd"><code>vignettes/flash_mash.Rmd</code></a></small>
       <div class="hidden name"><code>flash_mash.Rmd</code></div>
@@ -114,57 +114,74 @@
 <p>We first perform the empirical Bayes matrix factorization via <code>flashr</code> using its default settings,</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.f</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_flash.html">cov_flash</a></span><span class="op">(</span><span class="va">data.strong</span><span class="op">)</span></code></pre></div>
+<pre><code># ebnm package not installed. ebnm_ash will be used instead of ebnm_pn.</code></pre>
 <pre><code># Fitting factor/loading 1 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
 <pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15453.81        Inf</code></pre>
-<pre><code>#           2      -15330.86   1.23e+02</code></pre>
-<pre><code>#           3      -15305.34   2.55e+01</code></pre>
-<pre><code>#           4      -15296.59   8.76e+00</code></pre>
-<pre><code>#           5      -15294.04   2.54e+00</code></pre>
-<pre><code>#           6      -15293.41   6.31e-01</code></pre>
-<pre><code>#           7      -15293.27   1.45e-01</code></pre>
-<pre><code>#           8      -15293.24   3.24e-02</code></pre>
-<pre><code>#           9      -15293.23   7.33e-03</code></pre>
+<pre><code>#           1      -15463.59        Inf</code></pre>
+<pre><code>#           2      -15336.34   1.27e+02</code></pre>
+<pre><code>#           3      -15309.81   2.65e+01</code></pre>
+<pre><code>#           4      -15301.29   8.52e+00</code></pre>
+<pre><code>#           5      -15298.95   2.34e+00</code></pre>
+<pre><code>#           6      -15298.39   5.63e-01</code></pre>
+<pre><code>#           7      -15298.26   1.28e-01</code></pre>
+<pre><code>#           8      -15298.23   2.94e-02</code></pre>
+<pre><code>#           9      -15298.22   7.15e-03</code></pre>
 <pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 1 decreases objective by 6.50e+02. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15293.23</code></pre>
+<pre><code>#   Deleting factor 1 decreases objective by 6.45e+02. Factor retained.</code></pre>
+<pre><code>#   Nullcheck complete. Objective: -15298.22</code></pre>
 <pre><code># Fitting factor/loading 2 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
 <pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15880.00        Inf</code></pre>
-<pre><code>#           2      -15554.28   3.26e+02</code></pre>
-<pre><code>#           3      -15444.73   1.10e+02</code></pre>
-<pre><code>#           4      -15305.24   1.39e+02</code></pre>
-<pre><code>#           5      -14030.84   1.27e+03</code></pre>
-<pre><code>#           6      -14030.84   0.00e+00</code></pre>
+<pre><code>#           1      -15885.08        Inf</code></pre>
+<pre><code>#           2      -15559.74   3.25e+02</code></pre>
+<pre><code>#           3      -15456.68   1.03e+02</code></pre>
+<pre><code>#           4      -15406.52   5.02e+01</code></pre>
+<pre><code>#           5      -15369.54   3.70e+01</code></pre>
+<pre><code>#           6      -15343.28   2.63e+01</code></pre>
+<pre><code>#           7      -15332.01   1.13e+01</code></pre>
+<pre><code>#           8      -15327.69   4.32e+00</code></pre>
+<pre><code>#           9      -15320.43   7.26e+00</code></pre>
+<pre><code>#          10      -15314.53   5.90e+00</code></pre>
+<pre><code>#          11      -15312.52   2.02e+00</code></pre>
+<pre><code>#          12      -15309.61   2.91e+00</code></pre>
+<pre><code>#          13      -15307.66   1.94e+00</code></pre>
+<pre><code>#          14      -15302.88   4.79e+00</code></pre>
+<pre><code>#          15      -15301.01   1.86e+00</code></pre>
+<pre><code>#          16      -15299.12   1.90e+00</code></pre>
+<pre><code>#          17      -15298.88   2.31e-01</code></pre>
+<pre><code>#          18      -15298.85   3.06e-02</code></pre>
+<pre><code>#          19      -15298.45   4.09e-01</code></pre>
+<pre><code>#          20      -15298.34   1.05e-01</code></pre>
+<pre><code>#          21      -15298.34   6.49e-05</code></pre>
 <pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 2 decreases objective by 1.26e+03. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -14030.84</code></pre>
+<pre><code>#   Deleting factor 2 increases objective by 1.19e-01. Factor zeroed out.</code></pre>
+<pre><code>#   Nullcheck complete. Objective: -15298.22</code></pre>
+<pre><code># ebnm package not installed. ebnm_ash will be used instead of ebnm_pn.</code></pre>
 <pre><code># Backfitting 1 factor/loading(s) (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
 <pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15293.23        Inf</code></pre>
-<pre><code>#           2      -15293.23   4.22e-04</code></pre>
+<pre><code>#           1      -15298.22        Inf</code></pre>
+<pre><code>#           2      -15298.22   5.49e-04</code></pre>
 <pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 1 decreases objective by 6.50e+02. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15293.23</code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<pre><code>#   Deleting factor 1 decreases objective by 6.45e+02. Factor retained.</code></pre>
+<pre><code>#   Nullcheck complete. Objective: -15298.22</code></pre>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.f</span></code></pre></div>
 <pre><code># $tFLASH_default
 #             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1    1.619560    1.497297    1.464852    1.451546    1.446743
-# condition_2    1.497297    1.384264    1.354268    1.341967    1.337526
-# condition_3    1.464852    1.354268    1.324922    1.312887    1.308542
-# condition_4    1.451546    1.341967    1.312887    1.300962    1.296657
-# condition_5    1.446743    1.337526    1.308542    1.296657    1.292366
+# condition_1    1.594728    1.479546    1.447513    1.436520    1.431818
+# condition_2    1.479546    1.372683    1.342964    1.332765    1.328403
+# condition_3    1.447513    1.342964    1.313888    1.303910    1.299642
+# condition_4    1.436520    1.332765    1.303910    1.294007    1.289772
+# condition_5    1.431818    1.328403    1.299642    1.289772    1.285551
 # 
 # $FLASH_default_1
 #             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1   0.2339704   0.2163076   0.2116203   0.2096982   0.2090042
-# condition_2   0.2163076   0.1999782   0.1956448   0.1938677   0.1932262
-# condition_3   0.2116203   0.1956448   0.1914053   0.1896668   0.1890391
-# condition_4   0.2096982   0.1938677   0.1896668   0.1879440   0.1873220
-# condition_5   0.2090042   0.1932262   0.1890391   0.1873220   0.1867021</code></pre>
+# condition_1   0.2324386   0.2156503   0.2109813   0.2093791   0.2086938
+# condition_2   0.2156503   0.2000746   0.1957429   0.1942563   0.1936205
+# condition_3   0.2109813   0.1957429   0.1915049   0.1900505   0.1894285
+# condition_4   0.2093791   0.1942563   0.1900505   0.1886072   0.1879899
+# condition_5   0.2086938   0.1936205   0.1894285   0.1879899   0.1873746</code></pre>
 <p>Alternatively, as <a href="https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html">suggested by Jason Willwerscheid for multi-tissue QTL studies</a>, constrain factors to non-negative values. We can use <code>tag</code> parameter to customize the names in the output list:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.f</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_flash.html">cov_flash</a></span><span class="op">(</span><span class="va">data.strong</span>, factors<span class="op">=</span><span class="st">"nonneg"</span>, tag<span class="op">=</span><span class="st">"non_neg"</span>, var_type<span class="op">=</span><span class="st">"constant"</span><span class="op">)</span></code></pre></div>
 <pre><code># Fitting factor/loading 1 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
 <pre><code>#   Iteration      Objective   Obj Diff</code></pre>
@@ -205,7 +222,7 @@
 <pre><code># Performing nullcheck...</code></pre>
 <pre><code>#   Deleting factor 1 decreases objective by 6.52e+02. Factor retained.</code></pre>
 <pre><code>#   Nullcheck complete. Objective: -15419.08</code></pre>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.f</span></code></pre></div>
 <pre><code># $tFLASH_non_neg
 #             condition_1 condition_2 condition_3 condition_4 condition_5
@@ -227,7 +244,7 @@
 <div id="finalize-covariances" class="section level1">
 <h1 class="hasAnchor">
 <a href="#finalize-covariances" class="anchor"></a>Finalize covariances</h1>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.pca</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span><span class="op">(</span><span class="va">data.strong</span>, <span class="fl">5</span><span class="op">)</span>
 <span class="va">U.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span><span class="op">(</span><span class="va">data.strong</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.f</span>, <span class="va">U.pca</span><span class="op">)</span><span class="op">)</span>
 <span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.random</span><span class="op">)</span></code></pre></div>
@@ -236,24 +253,24 @@
 <h1 class="hasAnchor">
 <a href="#fit-mash-model-estimate-mixture-proportions" class="anchor"></a>Fit mash model (estimate mixture proportions)</h1>
 <p>Now we fit mash to the random tests using both data-driven and canonical covariances.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.random</span>, Ulist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.ed</span>,<span class="va">U.c</span><span class="op">)</span>, outputlevel <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code>#  - Computing 5000 x 271 likelihood matrix.
-#  - Likelihood calculations took 0.19 seconds.
+#  - Likelihood calculations took 0.17 seconds.
 #  - Fitting model with 271 mixture components.
-#  - Model fitting took 5.76 seconds.</code></pre>
+#  - Model fitting took 6.00 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level1">
 <h1 class="hasAnchor">
 <a href="#compute-posterior-summaries" class="anchor"></a>Compute posterior summaries</h1>
 <p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests.</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.strong</span>, g<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, fixg<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>#  - Computing 1428 x 271 likelihood matrix.
 #  - Likelihood calculations took 0.05 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.01 seconds.</code></pre>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4  condition_5
 # effect_13096 9.815870e-06 5.056797e-01 4.229104e-01 3.944224e-01 6.055447e-01

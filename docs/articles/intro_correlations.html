@@ -64,13 +64,13 @@
 
       
 
-      </header><script src="intro_correlations_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="intro_correlations_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Accounting for correlations among measurements</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2021-07-20</h4>
+            <h4 class="date">2021-07-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/intro_correlations.Rmd"><code>vignettes/intro_correlations.Rmd</code></a></small>
       <div class="hidden name"><code>intro_correlations.Rmd</code></div>
@@ -84,97 +84,96 @@
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>In some settings measurements and tests in different conditions may be correlated with one another. For example, in eQTL applications this can occur due to sample overlap among the different conditions.</p>
 <p>Failure to deal with such correlations can cause false positives in a <code>mashr</code> analysis.</p>
-<p>To deal with these correlations <code>mashr</code> allows the user to specify a correlation matrix <span class="math inline">\(V\)</span> when setting up the data in <code>mash_set_data</code>. The easiest way to specify this correlation matrix is to estimate it using <code>estimate_null_correlation_simple</code>, which, as its name suggests, uses the null tests (specifically, tests without a strong <span class="math inline">\(z\)</span> score) to estimate the correlations. Another way to estimate the correlations is using <code>estimate_null_correlation</code>, which uses an ad hoc em algorithm.</p>
+<p>To deal with these correlations <code>mashr</code> allows the user to specify a correlation matrix <span class="math inline">\(V\)</span> when setting up the data in <code>mash_set_data</code>. We introduce two methods to estimate this correlation matrix. The first method is simple and fast. It estimates the correlation matrix using <code>estimate_null_correlation_simple</code>, which, as its name suggests, uses the null tests (specifically, tests without a strong <span class="math inline">\(z\)</span> score) to estimate the correlations. The second method may provide a better <code>mash</code> fit. It estimates the correlations using <code>mash_estimate_corr_em</code>, which uses an ad hoc EM algorithm.</p>
 </div>
-<div id="illustration-1" class="section level1">
+<div id="method-1" class="section level1">
 <h1 class="hasAnchor">
-<a href="#illustration-1" class="anchor"></a>Illustration 1</h1>
-<p>Here we simulate data for illustration. The data does not have any correlation, but we will analyze it as if we did not know that.</p>
+<a href="#method-1" class="anchor"></a>Method 1</h1>
+<p>The method is described in <a href="https://www.biorxiv.org/content/10.1101/096552v2">Urbut et al.</a></p>
+<p>Here we simulate data with correlations.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr">ashr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p>Read in the data, and estimate correlations:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
-<span class="va">V</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="va">data.V</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_update_data.html">mash_update_data</a></span><span class="op">(</span><span class="va">data</span>, V<span class="op">=</span><span class="va">V</span><span class="op">)</span></code></pre></div>
-<p>Now we have two mash data objects, one (<code>data.V</code>) with correlations specified, and one without (<code>data</code>). So analyses using <code>data.V</code> will allow for correlations, whereas analyses using <code>data</code> will assume measurements are independent.</p>
-<p>Here, for illustration purposes, we proceed to analyze the data with correlations, using just the simple canonical covariances as in the initial <a href="intro_mash.html">introductory vignette</a>.</p>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span></code></pre></div>
+<pre><code># Loading required package: ashr</code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.V</span><span class="op">)</span> 
-<span class="va">m.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.V</span>, <span class="va">U.c</span><span class="op">)</span> <span class="co"># fits with correlations because data.V includes correlation information </span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span>
+<span class="va">V</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="op">=</span> <span class="fl">1</span>
+<span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span> <span class="op">=</span> <span class="va">simdata</span><span class="op">$</span><span class="va">B</span> <span class="op">+</span> <span class="fu">mvtnorm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mvtnorm/man/Mvnorm.html">rmvnorm</a></span><span class="op">(</span><span class="fl">2000</span>, sigma <span class="op">=</span> <span class="va">V</span><span class="op">)</span></code></pre></div>
+<p>Read in the data, and estimate correlations:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
+<span class="va">V.simple</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
+<span class="va">data.Vsimple</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_update_data.html">mash_update_data</a></span><span class="op">(</span><span class="va">data</span>, V<span class="op">=</span><span class="va">V.simple</span><span class="op">)</span></code></pre></div>
+<p>Now we have two mash data objects, one (<code>data.Vsimple</code>) with correlations specified, and one without (<code>data</code>). So analyses using <code>data.Vsimple</code> will allow for correlations, whereas analyses using <code>data</code> will assume measurements are independent.</p>
+<p>Here, for illustration purposes, we proceed to analyze the data with correlations, using just the simple canonical covariances as in the initial <a href="intro_mash.html">introductory vignette</a>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.Vsimple</span><span class="op">)</span> 
+<span class="va">m.Vsimple</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.Vsimple</span>, <span class="va">U.c</span><span class="op">)</span> <span class="co"># fits with correlations because data.V includes correlation information </span></code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
 #  - Likelihood calculations took 0.05 seconds.
 #  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.66 seconds.
+#  - Model fitting took 0.58 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.02 seconds.</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.c</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span> <span class="co"># log-likelihood of the fit with correlations set to V</span></code></pre></div>
-<pre><code># [1] -16121.11177</code></pre>
-<p>We can also compare with the original analysis. (Note that the canonical covariances do not depend on the correlations, so we can use the same <code>U.c</code> here for both analyses. If we used data-driven covariances we might prefer to estimate these separately for each analysis as the correlations would affect them.)</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m.c.orig</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span><span class="op">)</span> <span class="co"># fits without correlations because data object was set up without correlations</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span> <span class="co"># log-likelihood of the fit with correlations set to V</span></code></pre></div>
+<pre><code># [1] -14689.87712</code></pre>
+<p>We can also compare with the original analysis. (Note that the canonical covariances do not depend on the correlations, so we can use the same <code>U.c</code> here for both analyses. If we used data-driven covariances we might prefer to estimate these separately for each analysis as the correlations would affect them.)</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m.orig</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span><span class="op">)</span> <span class="co"># fits without correlations because data object was set up without correlations</span></code></pre></div>
 <pre><code>#  - Computing 2000 x 151 likelihood matrix.
 #  - Likelihood calculations took 0.04 seconds.
 #  - Fitting model with 151 mixture components.
 #  - Model fitting took 0.65 seconds.
 #  - Computing posterior matrices.
 #  - Computation allocated took 0.02 seconds.</code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.c.orig</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code># [1] -16120.32142</code></pre>
-<p>The log-likelihoods with and without correlations are similar here, which is expected since there are no actual correlations in the data.</p>
-</div>
-<div id="ilustration-2" class="section level1">
-<h1 class="hasAnchor">
-<a href="#ilustration-2" class="anchor"></a>Ilustration 2</h1>
-<p>Here we simulate data with correlations.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr">ashr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-<span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span>
-<span class="va">V</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">5</span>,<span class="fl">5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">V</span><span class="op">)</span> <span class="op">=</span> <span class="fl">1</span>
-<span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span> <span class="op">=</span> <span class="va">simdata</span><span class="op">$</span><span class="va">B</span> <span class="op">+</span> <span class="fu">mvtnorm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mvtnorm/man/Mvnorm.html">rmvnorm</a></span><span class="op">(</span><span class="fl">2000</span>, sigma <span class="op">=</span> <span class="va">V</span><span class="op">)</span></code></pre></div>
-<p>To estimate the residual correlations using EM method, it requires covariance matrices for the signals. We proceed with the simple canonical covariances. With <code>details = TRUE</code> in <code>estimate_null_correlation</code>, it returns the estimates residual correlation matrix with the mash fit.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
-<span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="va">V.em</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_null_correlation.html">estimate_null_correlation</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
+<pre><code># [1] -14904.79133</code></pre>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">loglik</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span><span class="op">)</span>
+<span class="va">significant</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">false_positive</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">501</span><span class="op">)</span>, 
+                   <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">501</span><span class="op">)</span><span class="op">)</span>
+<span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">loglik</span>, <span class="va">significant</span>, <span class="va">false_positive</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'without cor'</span>, <span class="st">'V simple'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'log likelihood'</span>, <span class="st">'# significance'</span>, <span class="st">'# False positive'</span><span class="op">)</span>
+<span class="va">tb</span></code></pre></div>
+<pre><code>#                  without cor  V simple
+# log likelihood     -14904.79 -14689.88
+# # significance        410.00     89.00
+# # False positive       62.00      2.00</code></pre>
+<p>The log-likelihood with correlations is higher than without correlations. The false positives reduce.</p>
+</div>
+<div id="method-2" class="section level1">
+<h1 class="hasAnchor">
+<a href="#method-2" class="anchor"></a>Method 2</h1>
+<p>The method is described in Yuxin Zou’s thesis.</p>
+<p>To estimate the residual correlations using EM method, it requires covariance matrices for the signals. We proceed with the simple canonical covariances.</p>
+<p>With <code>details = TRUE</code> in <code>mash_estimate_corr_em</code>, it returns the estimates residual correlation matrix with the mash fit.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">V.em</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_estimate_corr_em.html">mash_estimate_corr_em</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span>, details <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">m.Vem</span> <span class="op">=</span> <span class="va">V.em</span><span class="op">$</span><span class="va">mash.model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.Vem</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span> <span class="co"># log-likelihood of the fit</span></code></pre></div>
 <pre><code># [1] -14654.32361</code></pre>
-<p>We compare with the original analysis, and the analysis using <code>estimate_null_correlation_simple</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">V.simple</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="va">data.V.simple</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_update_data.html">mash_update_data</a></span><span class="op">(</span><span class="va">data</span>, V<span class="op">=</span><span class="va">V.simple</span><span class="op">)</span>
-<span class="va">m.simple</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.V.simple</span>, <span class="va">U.c</span><span class="op">)</span> <span class="co"># fits with correlations </span></code></pre></div>
-<pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.05 seconds.
-#  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.82 seconds.
-#  - Computing posterior matrices.
-#  - Computation allocated took 0.03 seconds.</code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.simple</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span> </code></pre></div>
-<pre><code># [1] -14689.87712</code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span><span class="op">)</span> <span class="co"># fits without correlations</span></code></pre></div>
-<pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.06 seconds.
-#  - Fitting model with 151 mixture components.
-#  - Model fitting took 1.05 seconds.
-#  - Computing posterior matrices.
-#  - Computation allocated took 0.03 seconds.</code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,digits<span class="op">=</span><span class="fl">10</span><span class="op">)</span> </code></pre></div>
-<pre><code># [1] -14904.79133</code></pre>
-<p>The log-likelihoods from the EM updates is higher.</p>
-<p>The EM updates in <code>estimate_null_correlation</code> needs some time to converge. There are several things we can do to reduce the running time. First of all, we can set the number of iterations to a small number. Because there is a large improvement in the log-likelihood within the first few iterations, running the algorithm with small number of iterations provides estimates of correlation matrix that is better than the initial value. Moreover, we can estimate the correlation matrix using a random subset of genes, not the whole observed genes.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">loglik</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.Vem</span><span class="op">)</span><span class="op">)</span>
+<span class="va">significant</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span><span class="op">)</span>,
+                <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.Vem</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">false_positive</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.orig</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">501</span><span class="op">)</span>, 
+                   <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.Vsimple</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">501</span><span class="op">)</span>,
+                   <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.Vem</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">501</span><span class="op">)</span><span class="op">)</span>
+<span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">loglik</span>, <span class="va">significant</span>, <span class="va">false_positive</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'without cor'</span>, <span class="st">'V simple'</span>, <span class="st">'V EM'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'log likelihood'</span>, <span class="st">'# significance'</span>, <span class="st">'# False positive'</span><span class="op">)</span>
+<span class="va">tb</span></code></pre></div>
+<pre><code>#                  without cor  V simple      V EM
+# log likelihood     -14904.79 -14689.88 -14654.32
+# # significance        410.00     89.00     95.00
+# # False positive       62.00      2.00      0.00</code></pre>
+<p>Comparing with Method 1, the log likelihood from Method 2 is higher.</p>
+<p>The EM updates in <code>mash_estimate_corr_em</code> needs some time to converge. There are several things we can do to reduce the running time. First of all, we can set the number of iterations to a small number. Because there is a large improvement in the log-likelihood within the first few iterations, running the algorithm with small number of iterations provides estimates of correlation matrix that is better than the initial value. Moreover, we can estimate the correlation matrix using a random subset of genes, not the whole observed genes.</p>
 </div>
   </div>
 

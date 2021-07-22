@@ -122,7 +122,7 @@
 </li>
 <li>
 <p>After editing C++ code in the <code>src</code> directory, please use <a href="http://uncrustify.sourceforge.net">uncrustify</a> to format the code using configuration file <code>inst/misc/uncrustify_default.cfg</code>. For example:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="ex">uncrustify</span> -c uncrustify_default.cfg --replace --no-backup -l CPP mash.cpp</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uncrustify</span> <span class="at">-c</span> uncrustify_default.cfg <span class="at">--replace</span> <span class="at">--no-backup</span> <span class="at">-l</span> CPP mash.cpp</span></code></pre></div>
 </li>
 <li><p>Prior to submitting the package to CRAN, the following modifications need to be made: (1) remove the <code>Remotes:</code> entry in <code>DESCRIPTION</code>; and</p></li>
 </ul>

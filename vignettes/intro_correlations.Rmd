@@ -26,34 +26,39 @@ in a `mashr` analysis.
 
 To deal with these correlations `mashr` allows the user to specify
 a correlation matrix $V$ when setting up the data in `mash_set_data`. 
-The easiest way to specify this correlation
-matrix is to estimate it using `estimate_null_correlation_simple`, which,
+We introduce two methods to estimate this correlation matrix.
+The first method is simple and fast. It estimates the correlation matrix
+using `estimate_null_correlation_simple`, which,
 as its name suggests, uses the null tests (specifically, tests 
 without a strong $z$ score) to estimate the correlations. 
-Another way to estimate the correlations is 
-using `estimate_null_correlation`, which uses an ad hoc em algorithm.
+The second method may provide a better `mash` fit. It estimates
+the correlations using `mash_estimate_corr_em`, which uses 
+an ad hoc EM algorithm.
 
-# Illustration 1
+# Method 1
 
-Here we simulate data for illustration. The data does not have any correlation,
-but we will analyze it as if we did not know that.
+The method is described in [Urbut et al.][urbut-biorxiv] 
+
+Here we simulate data with correlations.
 
 ```{r}
-library(ashr)
 library(mashr)
 set.seed(1)
 simdata = simple_sims(500,5,1)
+V = matrix(0.5,5,5)
+diag(V) = 1
+simdata$Bhat = simdata$B + mvtnorm::rmvnorm(2000, sigma = V)
 ```
 
 Read in the data, and estimate correlations:
 ```{r}
 data   = mash_set_data(simdata$Bhat, simdata$Shat)
-V = estimate_null_correlation_simple(data)
-data.V = mash_update_data(data, V=V)
+V.simple = estimate_null_correlation_simple(data)
+data.Vsimple = mash_update_data(data, V=V.simple)
 ```
 
-Now we have two mash data objects, one (`data.V`) with correlations specified,
-and one without (`data`). So analyses using `data.V` will allow for correlations,
+Now we have two mash data objects, one (`data.Vsimple`) with correlations specified,
+and one without (`data`). So analyses using `data.Vsimple` will allow for correlations,
 whereas analyses using `data` will assume measurements are independent.
 
 Here, for illustration purposes, 
@@ -62,9 +67,9 @@ using just the simple canonical covariances
 as in the initial [introductory vignette](intro_mash.html).
 
 ```{r}
-U.c = cov_canonical(data.V) 
-m.c = mash(data.V, U.c) # fits with correlations because data.V includes correlation information 
-print(get_loglik(m.c),digits=10) # log-likelihood of the fit with correlations set to V
+U.c = cov_canonical(data.Vsimple) 
+m.Vsimple = mash(data.Vsimple, U.c) # fits with correlations because data.V includes correlation information 
+print(get_loglik(m.Vsimple),digits=10) # log-likelihood of the fit with correlations set to V
 ```
 
 We can also compare with the original analysis. 
@@ -74,54 +79,57 @@ for both analyses. If we used data-driven covariances we might prefer to
 estimate these separately for each analysis as the correlations would
 affect them.)
 ```{r}
-m.c.orig = mash(data, U.c) # fits without correlations because data object was set up without correlations
-print(get_loglik(m.c.orig),digits=10)
+m.orig = mash(data, U.c) # fits without correlations because data object was set up without correlations
+print(get_loglik(m.orig),digits=10)
 ```
-
-The log-likelihoods with and without correlations are similar here,
- which is expected since there are no actual correlations in the data.
-
-# Ilustration 2
-
-Here we simulate data with correlations.
 
 ```{r}
-library(ashr)
-library(mashr)
-set.seed(1)
-simdata = simple_sims(500,5,1)
-V = matrix(0.5,5,5)
-diag(V) = 1
-simdata$Bhat = simdata$B + mvtnorm::rmvnorm(2000, sigma = V)
+loglik = c(get_loglik(m.orig), get_loglik(m.Vsimple))
+significant = c(length(get_significant_results(m.orig)), length(get_significant_results(m.Vsimple)))
+false_positive = c(sum(get_significant_results(m.orig) < 501), 
+                   sum(get_significant_results(m.Vsimple) < 501))
+tb = rbind(loglik, significant, false_positive)
+colnames(tb) = c('without cor', 'V simple')
+row.names(tb) = c('log likelihood', '# significance', '# False positive')
+tb
 ```
+
+The log-likelihood with correlations is higher than without correlations. 
+The false positives reduce.
+
+
+# Method 2
+
+The method is described in Yuxin Zou's thesis.
 
 To estimate the residual correlations using EM method, it requires 
 covariance matrices for the signals. We proceed with the simple canonical 
-covariances. With `details = TRUE` in `estimate_null_correlation`, it returns 
+covariances. 
+
+With `details = TRUE` in `mash_estimate_corr_em`, it returns 
 the estimates residual correlation matrix with the mash fit.
 ```{r}
-data = mash_set_data(simdata$Bhat, simdata$Shat)
-U.c = cov_canonical(data)
-V.em = estimate_null_correlation(data, U.c, details = TRUE)
+V.em = mash_estimate_corr_em(data, U.c, details = TRUE)
 m.Vem = V.em$mash.model
 print(get_loglik(m.Vem),digits=10) # log-likelihood of the fit
 ```
 
-We compare with the original analysis, and the analysis using `estimate_null_correlation_simple`. 
-
 ```{r}
-V.simple = estimate_null_correlation_simple(data)
-data.V.simple = mash_update_data(data, V=V.simple)
-m.simple = mash(data.V.simple, U.c) # fits with correlations 
-print(get_loglik(m.simple),digits=10) 
-
-m = mash(data, U.c) # fits without correlations
-print(get_loglik(m),digits=10) 
+loglik = c(get_loglik(m.orig), get_loglik(m.Vsimple), get_loglik(m.Vem))
+significant = c(length(get_significant_results(m.orig)), length(get_significant_results(m.Vsimple)),
+                length(get_significant_results(m.Vem)))
+false_positive = c(sum(get_significant_results(m.orig) < 501), 
+                   sum(get_significant_results(m.Vsimple) < 501),
+                   sum(get_significant_results(m.Vem) < 501))
+tb = rbind(loglik, significant, false_positive)
+colnames(tb) = c('without cor', 'V simple', 'V EM')
+row.names(tb) = c('log likelihood', '# significance', '# False positive')
+tb
 ```
 
-The log-likelihoods from the EM updates is higher.
+Comparing with Method 1, the log likelihood from Method 2 is higher.
 
-The EM updates in `estimate_null_correlation` needs some time to converge.
+The EM updates in `mash_estimate_corr_em` needs some time to converge.
 There are several things we can do to reduce the running time. 
 First of all, we can set the number of iterations to a small number. 
 Because there is a large improvement in the log-likelihood within 
@@ -130,4 +138,4 @@ iterations provides estimates of correlation matrix that is better
 than the initial value. Moreover, we can estimate the correlation matrix 
 using a random subset of genes, not the whole observed genes.
 
-
+[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v2

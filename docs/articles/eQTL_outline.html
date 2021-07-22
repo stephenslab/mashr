@@ -64,13 +64,13 @@
 
       
 
-      </header><script src="eQTL_outline_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="eQTL_outline_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>eQTL analysis outline</h1>
                         <h4 class="author">Matthew Stephens</h4>
             
-            <h4 class="date">2021-07-20</h4>
+            <h4 class="date">2021-07-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/eQTL_outline.Rmd"><code>vignettes/eQTL_outline.Rmd</code></a></small>
       <div class="hidden name"><code>eQTL_outline.Rmd</code></div>
@@ -149,9 +149,9 @@
 <code class="sourceCode R"><span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.random</span><span class="op">)</span>
 <span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.random</span>, Ulist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.ed</span>,<span class="va">U.c</span><span class="op">)</span>, outputlevel <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code>#  - Computing 5000 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.16 seconds.
+#  - Likelihood calculations took 0.15 seconds.
 #  - Fitting model with 241 mixture components.
-#  - Model fitting took 3.99 seconds.</code></pre>
+#  - Model fitting took 4.00 seconds.</code></pre>
 </div>
 <div id="compute-posterior-summaries" class="section level2">
 <h2 class="hasAnchor">
@@ -160,9 +160,9 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.strong</span>, g<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, fixg<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <pre><code>#  - Computing 1428 x 241 likelihood matrix.
-#  - Likelihood calculations took 0.04 seconds.
+#  - Likelihood calculations took 0.05 seconds.
 #  - Computing posterior matrices.
-#  - Computation allocated took 0.01 seconds.</code></pre>
+#  - Computation allocated took 0.02 seconds.</code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>#               condition_1  condition_2  condition_3  condition_4  condition_5

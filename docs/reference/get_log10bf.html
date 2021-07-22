@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.48</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
       </span>
     </div>
 
@@ -90,8 +90,8 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="http://github.com/stephenslab/mashr/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/stephenslab/mashr/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Return the Bayes Factor for each effect</h1>
-    <small class="dont-index">Source: <a href='http://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stephenslab/mashr/blob/master/R/get_functions.R'><code>R/get_functions.R</code></a></small>
     <div class="hidden name"><code>get_log10bf.Rd</code></div>
     </div>
 
@@ -117,7 +117,7 @@
     <p>Return the Bayes Factor for each effect</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_log10bf</span>(<span class='no'>m</span>)</pre>
+    <pre class="usage"><span class='fu'>get_log10bf</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,10 +138,217 @@ where ghat-nonnull is the non-null part of ghat.  Otherwise returns
 NULL.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='no'>simdata</span> <span class='kw'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span>(<span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span>)
-<span class='no'>data</span> <span class='kw'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span>(<span class='no'>simdata</span>$<span class='no'>Bhat</span>, <span class='no'>simdata</span>$<span class='no'>Shat</span>)
-<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mash.html'>mash</a></span>(<span class='no'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span>(<span class='no'>data</span>))
-<span class='fu'>get_log10bf</span>(<span class='no'>m</span>)</pre>
+    <pre class="examples"><div class='input'><span class='va'>simdata</span> <span class='op'>=</span> <span class='fu'><a href='simple_sims.html'>simple_sims</a></span><span class='op'>(</span><span class='fl'>50</span>,<span class='fl'>5</span>,<span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>data</span> <span class='op'>=</span> <span class='fu'><a href='mash_set_data.html'>mash_set_data</a></span><span class='op'>(</span><span class='va'>simdata</span><span class='op'>$</span><span class='va'>Bhat</span>, <span class='va'>simdata</span><span class='op'>$</span><span class='va'>Shat</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>=</span> <span class='fu'><a href='mash.html'>mash</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='fu'><a href='cov_canonical.html'>cov_canonical</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  - Computing 200 x 151 likelihood matrix.
+#&gt;  - Likelihood calculations took 0.01 seconds.
+#&gt;  - Fitting model with 151 mixture components.
+#&gt;  - Model fitting took 0.18 seconds.
+#&gt;  - Computing posterior matrices.
+#&gt;  - Computation allocated took 0.00 seconds.</div><div class='input'><span class='fu'>get_log10bf</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                [,1]
+#&gt;   [1,] -0.039886783
+#&gt;   [2,] -0.153505681
+#&gt;   [3,] -0.144772911
+#&gt;   [4,] -0.234789970
+#&gt;   [5,] -0.226329170
+#&gt;   [6,] -0.175555352
+#&gt;   [7,] -0.141823583
+#&gt;   [8,] -0.135341003
+#&gt;   [9,]  0.028777006
+#&gt;  [10,]  0.370331164
+#&gt;  [11,]  0.355966401
+#&gt;  [12,] -0.332493761
+#&gt;  [13,]  0.607371459
+#&gt;  [14,] -0.035401519
+#&gt;  [15,] -0.309023979
+#&gt;  [16,] -0.156396519
+#&gt;  [17,] -0.249313147
+#&gt;  [18,] -0.203707398
+#&gt;  [19,] -0.028567802
+#&gt;  [20,]  0.013651662
+#&gt;  [21,] -0.230610290
+#&gt;  [22,] -0.370631024
+#&gt;  [23,] -0.085176703
+#&gt;  [24,] -0.273501797
+#&gt;  [25,] -0.411004181
+#&gt;  [26,] -0.396428296
+#&gt;  [27,] -0.168641462
+#&gt;  [28,] -0.265612127
+#&gt;  [29,] -0.096498902
+#&gt;  [30,]  0.847015210
+#&gt;  [31,] -0.137413752
+#&gt;  [32,] -0.386925123
+#&gt;  [33,] -0.452570286
+#&gt;  [34,] -0.132675459
+#&gt;  [35,] -0.155182351
+#&gt;  [36,]  0.840166030
+#&gt;  [37,]  0.455298828
+#&gt;  [38,] -0.177040361
+#&gt;  [39,] -0.359183432
+#&gt;  [40,]  0.238408570
+#&gt;  [41,]  0.006692413
+#&gt;  [42,] -0.415420696
+#&gt;  [43,] -0.400844442
+#&gt;  [44,]  0.256440785
+#&gt;  [45,] -0.187255668
+#&gt;  [46,]  0.607405533
+#&gt;  [47,] -0.292461992
+#&gt;  [48,] -0.362930585
+#&gt;  [49,] -0.352571149
+#&gt;  [50,] -0.336172782
+#&gt;  [51,] -0.105529420
+#&gt;  [52,] -0.256425669
+#&gt;  [53,]  0.971394983
+#&gt;  [54,]  0.138775597
+#&gt;  [55,]  0.091994104
+#&gt;  [56,] -0.383636669
+#&gt;  [57,] -0.199120384
+#&gt;  [58,] -0.225176894
+#&gt;  [59,] -0.266586393
+#&gt;  [60,]  0.104042896
+#&gt;  [61,] -0.187605413
+#&gt;  [62,]  0.119913582
+#&gt;  [63,]  0.416831055
+#&gt;  [64,]  0.596832607
+#&gt;  [65,] -0.258448770
+#&gt;  [66,]  0.891252358
+#&gt;  [67,] -0.155657471
+#&gt;  [68,]  0.001590508
+#&gt;  [69,]  0.348239160
+#&gt;  [70,]  1.939153837
+#&gt;  [71,] -0.317138037
+#&gt;  [72,]  0.142222001
+#&gt;  [73,]  0.048110410
+#&gt;  [74,]  0.224187735
+#&gt;  [75,]  0.182459285
+#&gt;  [76,] -0.008140615
+#&gt;  [77,]  0.192037158
+#&gt;  [78,]  0.396348106
+#&gt;  [79,] -0.418823363
+#&gt;  [80,] -0.302506136
+#&gt;  [81,] -0.384656814
+#&gt;  [82,] -0.293649707
+#&gt;  [83,] -0.097952423
+#&gt;  [84,]  0.124652577
+#&gt;  [85,] -0.323243229
+#&gt;  [86,]  0.063325588
+#&gt;  [87,] -0.127935931
+#&gt;  [88,] -0.013653919
+#&gt;  [89,]  1.994892734
+#&gt;  [90,]  0.436528762
+#&gt;  [91,]  0.961558656
+#&gt;  [92,] -0.079854844
+#&gt;  [93,]  0.424702060
+#&gt;  [94,] -0.262058223
+#&gt;  [95,] -0.221880011
+#&gt;  [96,] -0.152162527
+#&gt;  [97,]  1.088915078
+#&gt;  [98,]  0.283675252
+#&gt;  [99,] -0.257177215
+#&gt; [100,]  0.032954247
+#&gt; [101,] -0.202494921
+#&gt; [102,] -0.350079995
+#&gt; [103,] -0.415394680
+#&gt; [104,] -0.141658124
+#&gt; [105,]  0.145920962
+#&gt; [106,]  0.909755810
+#&gt; [107,]  0.398235982
+#&gt; [108,]  0.533363556
+#&gt; [109,]  0.521070517
+#&gt; [110,] -0.453220344
+#&gt; [111,]  0.613326892
+#&gt; [112,] -0.112588599
+#&gt; [113,]  3.177135139
+#&gt; [114,] -0.372424364
+#&gt; [115,] -0.090028176
+#&gt; [116,] -0.469619401
+#&gt; [117,] -0.034036593
+#&gt; [118,]  0.099257649
+#&gt; [119,] -0.337782550
+#&gt; [120,]  0.384265322
+#&gt; [121,] -0.354984553
+#&gt; [122,] -0.084293711
+#&gt; [123,]  0.094161079
+#&gt; [124,]  0.055741002
+#&gt; [125,] -0.201831588
+#&gt; [126,]  0.012007687
+#&gt; [127,] -0.325349624
+#&gt; [128,] -0.297430324
+#&gt; [129,] -0.254835445
+#&gt; [130,] -0.297562242
+#&gt; [131,] -0.346999663
+#&gt; [132,]  0.117470243
+#&gt; [133,] -0.145330322
+#&gt; [134,] -0.009779781
+#&gt; [135,]  1.061496588
+#&gt; [136,]  0.418682280
+#&gt; [137,]  0.132200613
+#&gt; [138,] -0.331364245
+#&gt; [139,] -0.297504597
+#&gt; [140,] -0.417953212
+#&gt; [141,] -0.269697294
+#&gt; [142,] -0.350780133
+#&gt; [143,] -0.255827998
+#&gt; [144,] -0.310682618
+#&gt; [145,] -0.301757256
+#&gt; [146,] -0.296444577
+#&gt; [147,]  0.157463127
+#&gt; [148,] -0.272946225
+#&gt; [149,]  0.546417635
+#&gt; [150,]  0.395979577
+#&gt; [151,]  0.045083346
+#&gt; [152,]  1.761846752
+#&gt; [153,] -0.136129556
+#&gt; [154,] -0.244918982
+#&gt; [155,] -0.270188507
+#&gt; [156,] -0.040204204
+#&gt; [157,]  0.135940980
+#&gt; [158,]  0.097367536
+#&gt; [159,] -0.318592317
+#&gt; [160,]  1.056520709
+#&gt; [161,] -0.323850364
+#&gt; [162,]  0.203059796
+#&gt; [163,]  1.731816637
+#&gt; [164,] -0.295525627
+#&gt; [165,] -0.441088388
+#&gt; [166,]  0.318785103
+#&gt; [167,] -0.016449772
+#&gt; [168,]  0.931638636
+#&gt; [169,] -0.269109589
+#&gt; [170,]  0.589491959
+#&gt; [171,] -0.342860227
+#&gt; [172,]  0.975297392
+#&gt; [173,]  0.631245959
+#&gt; [174,] -0.375240148
+#&gt; [175,] -0.155346898
+#&gt; [176,] -0.408738020
+#&gt; [177,]  0.447711089
+#&gt; [178,]  0.060971253
+#&gt; [179,]  8.189596867
+#&gt; [180,]  0.555037222
+#&gt; [181,] -0.147975160
+#&gt; [182,]  4.167019409
+#&gt; [183,]  0.732051658
+#&gt; [184,]  1.100980514
+#&gt; [185,]  0.237001467
+#&gt; [186,] -0.260147813
+#&gt; [187,] -0.010227822
+#&gt; [188,] -0.432109569
+#&gt; [189,] -0.258596606
+#&gt; [190,]  0.183067478
+#&gt; [191,]  0.332177996
+#&gt; [192,]  0.092251318
+#&gt; [193,] -0.320227585
+#&gt; [194,]  0.815274205
+#&gt; [195,] -0.074617960
+#&gt; [196,] -0.124861071
+#&gt; [197,]  1.088407520
+#&gt; [198,] -0.096398635
+#&gt; [199,]  0.703240639
+#&gt; [200,]  2.280849878</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -157,7 +364,7 @@ NULL.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
