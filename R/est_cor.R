@@ -41,9 +41,10 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
   return(Vhat)
 }
 
-#' @title Estimate null correlations
+#' @title Fit mash model and estimate residual correlations using EM algorithm
 #'
-#' @description Estimates a residual correlation matrix from data
+#' @description Estimates a residual correlation matrix from data using an ad hoc EM
+#' algorithm.
 #'
 #' @param data a mash data object, eg as created by \code{mash_set_data}
 #'
@@ -98,13 +99,14 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 #' data.tmp = mash_set_data(simdata$Bhat[random.subset,], simdata$Shat[random.subset,])
 #' U_pca = cov_pca(data.strong, 3)
 #' U_ed = cov_ed(data.strong, U_pca)
-#' Vhat = estimate_null_correlation(data.tmp, U_ed)
+#' Vhat = mash_estimate_corr_em(data.tmp, U_ed)
 #' @importFrom stats cov2cor
 #'
 #' @export
 #'
-estimate_null_correlation = function(data, Ulist, init, max_iter = 30, tol=1,
-                                     est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'), details = FALSE, ...){
+mash_estimate_corr_em = function(data, Ulist, init, max_iter = 30, tol=1,
+                                 est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'),
+                                 details = TRUE, ...){
   if(class(data) != 'mash'){
     stop('data is not a "mash" object')
   }

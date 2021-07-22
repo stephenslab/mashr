@@ -7,6 +7,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // extreme_deconvolution_rcpp
 List extreme_deconvolution_rcpp(RcppGSL::matrix<double>& ydata, RcppGSL::vector<double>& ycovar, RcppGSL::vector<double>& projection, RcppGSL::vector<double>& logweights, RcppGSL::vector<double>& amp, RcppGSL::matrix<double>& xmean, RcppGSL::vector<double>& xcovar, RcppGSL::vector<int>& fixamp_int, RcppGSL::vector<int>& fixmean_int, RcppGSL::vector<int>& fixcovar_int, double tol, int maxiter, int likeonly, double w, RcppGSL::vector<int>& logfilename, int splitnmerge, RcppGSL::vector<int>& convlogfilename, bool noproj, bool diagerrs, bool noweight);
 RcppExport SEXP _mashr_extreme_deconvolution_rcpp(SEXP ydataSEXP, SEXP ycovarSEXP, SEXP projectionSEXP, SEXP logweightsSEXP, SEXP ampSEXP, SEXP xmeanSEXP, SEXP xcovarSEXP, SEXP fixamp_intSEXP, SEXP fixmean_intSEXP, SEXP fixcovar_intSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP likeonlySEXP, SEXP wSEXP, SEXP logfilenameSEXP, SEXP splitnmergeSEXP, SEXP convlogfilenameSEXP, SEXP noprojSEXP, SEXP diagerrsSEXP, SEXP noweightSEXP) {
