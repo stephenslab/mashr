@@ -5,6 +5,7 @@
 #ifdef _OPENMP
 # include <omp.h>
 #endif
+#define ARMA_64BIT_WORD 1
 #include "RcppArmadillo.h"
 #include "mash.h"
 
@@ -16,7 +17,7 @@ using Rcpp::IntegerVector;
 using arma::vectorise;
 
 // [[Rcpp::plugins(openmp)]]
-
+// [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::export]]
 List
