@@ -22,7 +22,7 @@ test_that("ashr get functions work",{
              cov_udi(data,c("I","D","U")))
   temp = calc_lik_matrix(data,Ulist2,log=TRUE)
   expect_equal(as.numeric(log10(exp(temp[,2]-temp[,1]))),
-               as.numeric(get_log10bf(m)),tol=1e-3)
+               as.numeric(get_log10bf(m)),tolerance = 1e-3)
 })
 
 test_that("get_estimated_pi works",{

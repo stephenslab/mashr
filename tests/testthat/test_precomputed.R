@@ -22,5 +22,5 @@ test_that("Precomputed precision matrix agrees with regular computations for log
   loglik2 = calc_lik_common_rcpp(t(data$Bhat),
                                  simplify2array(sigma_rooti),
                                  F)$data
-  expect_equal(loglik1, loglik2, tol=1E-4)
+  expect_equal(loglik1, loglik2, tolerance = 1e-4)
 })
