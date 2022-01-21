@@ -2,7 +2,7 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.54
+Version: 0.2.55
 Date: 2022-01-20
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
@@ -46,7 +46,7 @@ LinkingTo:
 Suggests:
     MASS,
     REBayes,
-    corrplot >= 0.90,
+    corrplot (>= 0.90),
     testthat,
     kableExtra,
     knitr,
