@@ -79,7 +79,7 @@ The last approximation is achieved by sampling.
 ```{r}
 library(corrplot)
 x = get_pairwise_sharing_from_samples(m, factor=0.5, lfsr_thresh = 1)
-corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
+corrplot(x, method='color', col.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
 ```
 
 We can also get the proportion of **significant** effects have the same sign and similar
@@ -87,7 +87,7 @@ magnitude for each pair of conditions. For each pair of conditions, first identi
 
 ```{r}
 x = get_pairwise_sharing_from_samples(m, factor=0.5, lfsr_thresh = 0.05)
-corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
+corrplot(x, method='color', col.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
 ```
 
 The pairwise sharing proportions are higher, since it is computed out of **significant signals** only.
@@ -96,7 +96,7 @@ There is another function in `mashr` package (`get_pairwise_sharing`) that compu
 
 ```{r}
 x = get_pairwise_sharing(m, factor=0.5)
-corrplot(x, method='color', cl.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
+corrplot(x, method='color', col.lim=c(0,1), type='upper', addCoef.col = "black", tl.col="black", tl.srt=45, title = 'Pairwise Sharing by Magnitude', mar = c(4,0,4,0))
 ```
 
 
