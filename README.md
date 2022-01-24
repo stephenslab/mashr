@@ -1,8 +1,8 @@
 # mashr: Multivariate Adaptive Shrinkage in R
 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mashr)](https://cran.r-project.org/package=mashr)
-[![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr)
-[![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://codecov.io/gh/stephenslab/mashr)
+[![Travis Build Status](https://travis-ci.org/stephenslab/mashr.svg?branch=master)](https://travis-ci.org/stephenslab/mashr/)
+[![codecov](https://codecov.io/gh/stephenslab/mashr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/stephenslab/mashr/)
 
 This package implements methods to estimate and test many effects in
 many conditions (or many effects on many outcomes).
