@@ -14,6 +14,7 @@ mash(
   g = NULL,
   fixg = FALSE,
   prior = c("nullbiased", "uniform"),
+  nullweight = 10,
   optmethod = c("mixSQP", "mixIP", "mixEM", "cxxMixSquarem"),
   control = list(),
   verbose = TRUE,
@@ -55,6 +56,9 @@ fixed rather than estimated; e.g., useful for fitting mash to test
 data after fitting it to training data}
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
+
+\item{nullweight}{scalar, the weight put on the prior under "nullbiased"
+specification, see \code{prior}.}
 
 \item{optmethod}{name of optimization method to use}
 
