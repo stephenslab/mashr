@@ -109,4 +109,9 @@ data     = mash_set_data(Bhat,Shat, alpha=1)
 U.c      = cov_canonical(data)
 res.mash = mash(data,U.c)
 
+# run mash with penalty exponent on null term equal to 100.
+# See "False disovery rates: a new deal" (M. Stephens 2017) supplementary
+# material S.2.5 for more details
+res.mash.nullbiased = mash(data, U.c, prior = "nullbiased", nullweight = 101)
+
 }

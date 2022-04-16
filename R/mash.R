@@ -76,6 +76,11 @@
 #' U.c      = cov_canonical(data)
 #' res.mash = mash(data,U.c)
 #'
+#' # run mash with penalty exponent on null term equal to 100.
+#' # See "False disovery rates: a new deal" (M. Stephens 2017) supplementary
+#' # material S.2.5 for more details
+#' res.mash.nullbiased = mash(data, U.c, prior = "nullbiased", nullweight = 101)
+#'
 #' @export
 #'
 mash = function(data,
@@ -320,7 +325,7 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
 
 # Sets prior to be a vector of length K depending on character string
 # prior can be "nullbiased" or "uniform".
-set_prior = function(K,prior,nullweight){
+set_prior = function(K,prior,nullweight = 10){
   if(is.character(prior)){
     if(prior=="uniform"){
       prior=rep(1,K)
