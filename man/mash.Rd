@@ -112,6 +112,12 @@ res.mash = mash(data,U.c)
 # run mash with penalty exponent on null term equal to 100.
 # See "False disovery rates: a new deal" (M. Stephens 2017) supplementary
 # material S.2.5 for more details
-res.mash.nullbiased = mash(data, U.c, prior = "nullbiased", nullweight = 101)
+set.seed(1)
+# generate sample data with 500 samples, 5 conditions, and a err_sd of 1
+simdata = simple_sims(500,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+U.c = cov_canonical(data)
+m.c.nb = mash(data, U.c)
+m.c.nb = mash(data, U.c, prior = "nullbiased", nullweight = 101)
 
 }
