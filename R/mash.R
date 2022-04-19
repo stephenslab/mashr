@@ -28,8 +28,8 @@
 #'
 #' @param prior indicates what penalty to use on the likelihood, if any
 #'
-#' @param nullweight scalar, the weight put on the prior under "nullbiased"
-#' specification, see \code{prior}.
+#' @param nullweight scalar, the weight put on the prior under
+#'   \dQuote{nullbiased} specification, see \dQuote{prior}.
 #'
 #' @param optmethod name of optimization method to use
 #'
@@ -76,16 +76,17 @@
 #' U.c      = cov_canonical(data)
 #' res.mash = mash(data,U.c)
 #'
-#' # run mash with penalty exponent on null term equal to 100.
-#' # See "False disovery rates: a new deal" (M. Stephens 2017) supplementary
-#' # material S.2.5 for more details
+#' # Run mash with penalty exponent on null term equal to 100.
+#' # See "False disovery rates: a new deal" (M. Stephens 2017),
+#' # supplementary material S.2.5 for more details.
 #' set.seed(1)
-#' # generate sample data with 500 samples, 5 conditions, and a err_sd of 1
 #' simdata = simple_sims(500,5,1)
-#' data = mash_set_data(simdata$Bhat, simdata$Shat)
-#' U.c = cov_canonical(data)
-#' m.c.nb = mash(data, U.c)
-#' m.c.nb = mash(data, U.c, prior = "nullbiased", nullweight = 101)
+#' data    = mash_set_data(simdata$Bhat,simdata$Shat)
+#' U.c     = cov_canonical(data)
+#' res0    = mash(data,U.c)
+#' res1    = mash(data,U.c,prior = "nullbiased",nullweight = 101)
+#' plot(res0$fitted_g$pi,res1$fitted_g$pi,pch = 20)
+#' abline(a = 0,b = 1,col = "skyblue",lty = "dashed")
 #'
 #' @export
 #'
@@ -97,8 +98,8 @@ mash = function(data,
                 usepointmass = TRUE,
                 g = NULL,
                 fixg = FALSE,
-                prior=c("nullbiased","uniform"),
-                nullweight=10,
+                prior = c("nullbiased","uniform"),
+                nullweight = 10,
                 optmethod = c("mixSQP","mixIP","mixEM","cxxMixSquarem"),
                 control = list(),
                 verbose = TRUE,
