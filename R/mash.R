@@ -28,6 +28,9 @@
 #'
 #' @param prior indicates what penalty to use on the likelihood, if any
 #'
+#' @param nullweight scalar, the weight put on the prior under "nullbiased"
+#' specification, see \code{prior}.
+#'
 #' @param optmethod name of optimization method to use
 #'
 #' @param control A list of control parameters passed to optmethod.
@@ -63,7 +66,7 @@
 #'   recommend using them; we recommend using the local false sign rate
 #'   (lfsr) instead, which is always returned, even when
 #'   \code{output_lfdr = TRUE}.
-#' 
+#'
 #' @return a list with elements result, loglik and fitted_g
 #'
 #' @examples
@@ -72,6 +75,17 @@
 #' data     = mash_set_data(Bhat,Shat, alpha=1)
 #' U.c      = cov_canonical(data)
 #' res.mash = mash(data,U.c)
+#'
+#' # run mash with penalty exponent on null term equal to 100.
+#' # See "False disovery rates: a new deal" (M. Stephens 2017) supplementary
+#' # material S.2.5 for more details
+#' set.seed(1)
+#' # generate sample data with 500 samples, 5 conditions, and a err_sd of 1
+#' simdata = simple_sims(500,5,1)
+#' data = mash_set_data(simdata$Bhat, simdata$Shat)
+#' U.c = cov_canonical(data)
+#' m.c.nb = mash(data, U.c)
+#' m.c.nb = mash(data, U.c, prior = "nullbiased", nullweight = 101)
 #'
 #' @export
 #'
@@ -84,6 +98,7 @@ mash = function(data,
                 g = NULL,
                 fixg = FALSE,
                 prior=c("nullbiased","uniform"),
+                nullweight=10,
                 optmethod = c("mixSQP","mixIP","mixEM","cxxMixSquarem"),
                 control = list(),
                 verbose = TRUE,
@@ -168,7 +183,7 @@ mash = function(data,
   if(!fixg){
     if (verbose)
       cat(sprintf(" - Fitting model with %d mixture components.\n",P))
-    prior <- set_prior(ncol(lm$loglik_matrix),prior)
+    prior <- set_prior(ncol(lm$loglik_matrix),prior,nullweight)
     if (add.mem.profile)
       out.time <- system.time(out.mem <- profmem::profmem({
         pi_s <- optimize_pi(exp(lm$loglik_matrix),prior=prior,optmethod=optmethod, control=control)
@@ -316,12 +331,12 @@ mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm
 
 # Sets prior to be a vector of length K depending on character string
 # prior can be "nullbiased" or "uniform".
-set_prior = function(K,prior){
+set_prior = function(K,prior,nullweight = 10){
   if(is.character(prior)){
     if(prior=="uniform"){
       prior=rep(1,K)
     } else if(prior=="nullbiased"){
-      prior=rep(1,K); prior[1]=10
+      prior=rep(1,K); prior[1]=nullweight
     }
   } else if(length(prior)!=K){
     stop("prior is wrong length")

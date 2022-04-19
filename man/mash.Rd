@@ -14,6 +14,7 @@ mash(
   g = NULL,
   fixg = FALSE,
   prior = c("nullbiased", "uniform"),
+  nullweight = 10,
   optmethod = c("mixSQP", "mixIP", "mixEM", "cxxMixSquarem"),
   control = list(),
   verbose = TRUE,
@@ -55,6 +56,9 @@ fixed rather than estimated; e.g., useful for fitting mash to test
 data after fitting it to training data}
 
 \item{prior}{indicates what penalty to use on the likelihood, if any}
+
+\item{nullweight}{scalar, the weight put on the prior under "nullbiased"
+specification, see \code{prior}.}
 
 \item{optmethod}{name of optimization method to use}
 
@@ -104,5 +108,16 @@ Shat     = matrix(rep(1,100),ncol=5)
 data     = mash_set_data(Bhat,Shat, alpha=1)
 U.c      = cov_canonical(data)
 res.mash = mash(data,U.c)
+
+# run mash with penalty exponent on null term equal to 100.
+# See "False disovery rates: a new deal" (M. Stephens 2017) supplementary
+# material S.2.5 for more details
+set.seed(1)
+# generate sample data with 500 samples, 5 conditions, and a err_sd of 1
+simdata = simple_sims(500,5,1)
+data = mash_set_data(simdata$Bhat, simdata$Shat)
+U.c = cov_canonical(data)
+m.c.nb = mash(data, U.c)
+m.c.nb = mash(data, U.c, prior = "nullbiased", nullweight = 101)
 
 }
