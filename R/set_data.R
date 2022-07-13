@@ -113,7 +113,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
     stop('dimension of correlation matrix does not match the number of conditions')
   }
 
-  if(!is.infinite(df)) {
+  if(any(!is.infinite(df))) {
     if (length(df)==1) {
       df = matrix(df,nrow=nrow(Bhat),ncol=ncol(Bhat))
     }
