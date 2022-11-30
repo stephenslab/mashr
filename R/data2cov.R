@@ -62,8 +62,8 @@ cov_pca = function(data,npc,subset = NULL){
 #' @export
 #'
 cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
-  if (!requireNamespace("flashr",quietly = TRUE))
-    stop("cov_flash requires package flashr")
+  if (!requireNamespace("flashier",quietly = TRUE))
+    stop("cov_flash requires package flashier")
   # Only keep factors with at least two values greater than 1 / sqrt(n)
   find_nonunique_effects <- function(fl) {
     thresh <- 1/sqrt(ncol(fl$fitted_values))
