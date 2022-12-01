@@ -11,6 +11,7 @@
 #' @return Returns a list of covariance matrices: the npc rank-one
 #' covariance matrices based on the first npc PCs, and the rank npc
 #' covariance matrix
+#' 
 #' @examples
 #' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #' cov_pca(data,2)
@@ -44,29 +45,27 @@ cov_pca = function(data,npc,subset = NULL) {
 #'
 #' @param data A \dQuote{mash} data object.
 #'
-#' @param factors "default" to use \code{flashr} default function to
-#' initialize factors, currently \code{udv_si}. "nonneg" to implement
-#' a non-negative constraint on the factors
+#' @param factors If \code{factors = "default"}, the factors are
+#'   unconstrained, and they are initialized using softImpute. If
+#'   \code{factors = "nonneg"}, the factors are constrained to be
+#'   ...
 #'
-#' @param subset Sample (rows) to use (set to \code{NULL} to use all
-#'   the data.
+#' @param subset Data samples (rows) to use to estimate the
+#'   covariances (set to \code{NULL} to use all the data).
 #' 
-#' @param remove_singleton whether or not factors corresponding to
-#' singleton matrices should be removed from output
+#' @param remove_singleton If \code{remove_singleton = TRUE}, factors
+#'   corresponding to singleton matrices will be removed from the output.
 #' 
-#' @param tag specific a tag to name the contents in the return
-#' objects. You may want to choose different tags for different
-#' paramter combinations. Default is set to \code{init_fn} parameter
-#' in \code{flashr::flash}.
+#' @param tag How to name the covariance matrices.
 #' 
-#' @param output_model If specified a filename, the flash model will
-#'   be saved to that file using \code{\link{saveRDS}}.
+#' @param output_model The flash model will be saved to this file
+#'   using \code{\link{saveRDS}}.
 #'
-#' @param greedy_param list containing additional parameters passed to
-#'    \code{flashier::flash.add.greedy}
+#' @param greedy_param List containing additional parameters passed to
+#'    \code{flashier::flash.add.greedy}.
 #' 
-#' @param backfit_param list containing additional parameters passed
-#'   to \code{flashier::flash.backfit}
+#' @param backfit_param List containing additional parameters passed
+#'   to \code{flashier::flash.backfit}.
 #' 
 #' @return A list of covariance matrices.
 #' 
