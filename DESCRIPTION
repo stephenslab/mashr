@@ -2,8 +2,8 @@ Package: mashr
 Type: Package
 Encoding: UTF-8
 Title: Multivariate Adaptive Shrinkage 
-Version: 0.2.61
-Date: 2022-11-29
+Version: 0.2.62
+Date: 2022-12-01
 Authors@R: c(person("Matthew","Stephens",role="aut"),
              person("Sarah","Urbut",role="aut"),
              person("Gao","Wang",role="aut"),
@@ -52,11 +52,13 @@ Suggests:
     knitr,
     rmarkdown,
     profmem,
-    flashier
+    flashier,
+    ebnm
 VignetteBuilder: knitr
 NeedsCompilation: yes
 Biarch: true
 Remotes:
     stephens999/ashr,
+    stephenslab/ebnm,
     willwerscheid/flashier
 RoxygenNote: 7.1.2

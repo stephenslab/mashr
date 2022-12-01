@@ -2,8 +2,8 @@
 % Please edit documentation in R/data2cov.R
 \name{cov_flash}
 \alias{cov_flash}
-\title{Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
-candidate covariance matrices}
+\title{Perform Empirical Bayes Matrix Factorization using flashr, and
+  return a list of candidate covariance matrices}
 \usage{
 cov_flash(
   data,
@@ -12,33 +12,43 @@ cov_flash(
   remove_singleton = FALSE,
   tag = NULL,
   output_model = NULL,
-  ...
+  greedy_args = list(),
+  backfit_args = list()
 )
 }
 \arguments{
-\item{data}{a mash data object}
+\item{data}{A mash data object.}
 
-\item{factors}{"default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}.
-"nonneg" to implement a non-negative constraint on the factors}
+\item{factors}{"default" to use \code{flashr} default function to
+initialize factors, currently \code{udv_si}. "nonneg" to implement
+a non-negative constraint on the factors}
 
 \item{subset}{indices of the subset of data to use (set to NULL for
 all data)}
 
-\item{remove_singleton}{whether or not factors corresponding to singleton matrices should be removed from output}
+\item{remove_singleton}{whether or not factors corresponding to
+singleton matrices should be removed from output}
 
-\item{tag}{specific a tag to name the contents in the return objects. You may want to choose different tags for
-different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.}
+\item{tag}{specific a tag to name the contents in the return
+objects. You may want to choose different tags for different
+paramter combinations. Default is set to \code{init_fn} parameter
+in \code{flashr::flash}.}
 
-\item{output_model}{if specified a filename, the FLASH model will be saved to that file in RDS format.}
+\item{output_model}{If specified a filename, the flash model will
+be saved to that file using \code{\link{saveRDS}}.}
 
-\item{\dots}{additional parameters passed to \code{flashr::flash}}
+\item{greedy_param}{list containing additional parameters passed to
+\code{flashier::flash.add.greedy}}
+
+\item{backfit_param}{list containing additional parameters passed
+to \code{flashier::flash.backfit}}
 }
 \value{
-Returns a list of covariance matrices
+A list of covariance matrices.
 }
 \description{
-Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
-candidate covariance matrices
+Perform Empirical Bayes Matrix Factorization using flashr, and
+  return a list of candidate covariance matrices
 }
 \examples{
 # See https://stephenslab.github.io/mashr/articles/flash_mash.html
