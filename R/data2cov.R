@@ -74,6 +74,7 @@ cov_pca = function(data,npc,subset = NULL) {
 #' # for an example
 #'
 #' @importFrom utils hasName
+#' @importFrom stats fitted
 #' 
 #' @export
 #'
