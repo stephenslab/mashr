@@ -42,14 +42,14 @@ cov_pca = function(data,npc,subset = NULL) {
 #' @title Perform Empirical Bayes Matrix Factorization using flashr, and
 #'   return a list of candidate covariance matrices
 #'
-#' @param data A mash data object.
+#' @param data A \dQuote{mash} data object.
 #'
 #' @param factors "default" to use \code{flashr} default function to
 #' initialize factors, currently \code{udv_si}. "nonneg" to implement
 #' a non-negative constraint on the factors
 #'
-#' @param subset indices of the subset of data to use (set to NULL for
-#' all data)
+#' @param subset Sample (rows) to use (set to \code{NULL} to use all
+#'   the data.
 #' 
 #' @param remove_singleton whether or not factors corresponding to
 #' singleton matrices should be removed from output
@@ -137,7 +137,7 @@ cov_flash = function (data, factors = c("default","nonneg"),
   if (remove_singleton)
     flash_factors <- find_nonunique_effects(f)
   else
-    flash_factors <- ldf(f)$F
+    flash_factors <- flashier::ldf(f)$F
   if (!is.null(output_model))
    saveRDS(list(model = f,factors = flash_factors),output_model)
   if (missing(tag))
