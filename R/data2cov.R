@@ -51,64 +51,59 @@ cov_pca = function(data,npc,subset = NULL){
 #' different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.
 #' @param output_model if specified a filename, the FLASH model will be saved to that file in RDS format.
 #'
-#' @param \dots additional parameters passed to \code{flashr::flash}
+#' @param greedy_param list containing additional parameters passed to \code{flashier::flash.add.greedy}
+#' @param backfit_param list containing additional parameters passed to \code{flashier::flash.backfit}
 #' @return Returns a list of covariance matrices
 #' @examples
 #' # See https://stephenslab.github.io/mashr/articles/flash_mash.html
 #' # for an example
 #'
-#' @importFrom assertthat assert_that
-#' @importFrom softImpute softImpute
 #' @export
 #'
-cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
+cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, greedy_args=list(), backfit_args=list()) {
   if (!requireNamespace("flashier",quietly = TRUE))
     stop("cov_flash requires package flashier")
   # Only keep factors with at least two values greater than 1 / sqrt(n)
   find_nonunique_effects <- function(fl) {
-    thresh <- 1/sqrt(ncol(fl$fitted_values))
-    vals_above_avg <- colSums(abs(fl$ldf$f) > thresh)
+    thresh <- 1/sqrt(nrow(fl$F.pm))
+    vals_above_avg <- colSums(abs(fl$F.pm) > thresh)
     nonuniq_effects <- which(vals_above_avg > 1)
     message(paste("Removing", length(vals_above_avg) - length(nonuniq_effects), "singleton effect vectors"))
-    return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
+    return(fl$F.pm[, nonuniq_effects, drop = FALSE])
   }
-  nonneg <- function(Y, K = 1) {
-    # this is the flashr:::udv_si function
-    suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
-    pos_sum = sum(ret$v[ret$v > 0])
-    neg_sum = -sum(ret$v[ret$v < 0])
+  nonneg_init <- function(fl) {
+    ret <- flashier::init.fn.softImpute(fl)
+    pos_sum = sum(ret[[2]][ret[[2]] > 0])
+    neg_sum = -sum(ret[[2]][ret[[2]] < 0])
     if (neg_sum > pos_sum) {
-      return(list(u = -ret$u, d = ret$d, v = -ret$v))
+      return(list(-ret[[1]], -ret[[2]]))
     } else
-    return(ret)
+      return(ret)
   }
   # extract a subset of data
   if(is.null(subset)){subset = 1:n_effects(data)}
+  f = flashier::flash.init(as.matrix(data$Bhat[subset,]), var.type = 2)
   factors = match.arg(factors)
-  # set default parameters
-  args = list(...)
-  args$data = flashr::flash_set_data(as.matrix(data$Bhat[subset,]))
-  if (!exists("init_fn", args)) {
-    args$init_fn = factors
-    if (factors == 'default') args$init_fn = "udv_si"
-    if (factors == 'nonneg') args$init_fn = nonneg
+  # set default greedy parameters
+  greedy_args$flash = f
+  greedy_args$Kmax = 100
+  if (!exists("init.fn", greedy_args)) {
+    if (factors == 'default') greedy_args$init.fn = flashier::init.fn.softImpute
+    if (factors == 'nonneg') greedy_args$init.fn = nonneg
   }
-  if (!exists("greedy", args)) args$greedy = T
-  if (!exists("backfit", args)) args$backfit = T
-  if (factors == "nonneg") {
-    args$ebnm_fn = "ebnm_ash"
-    args$ebnm_param = list(l = list(mixcompdist = "normal",
-                               optmethod = "mixSQP"),
-                           f = list(mixcompdist = "+uniform",
-                               optmethod = "mixSQP"))
-  }
-  f = do.call(flashr::flash, args)
+  if (factors == 'default') greedy_args$ebnm.fn = ebnm::ebnm_point_normal
+  if (factors == 'nonneg') greedy_args$ebnm.fn = c(
+    ebnm::ebnm_point_normal, ebnm::ebnm_point_exponential
+  )
+  f = do.call(flashier::flash.add.greedy, greedy_args)
+  backfit_args$flash = f
+  f = do.call(flashier::flash.backfit, backfit_args)
   if (remove_singleton) flash_factors = find_nonunique_effects(f)
-  else flash_factors = as.matrix(f$ldf$f)
+  else flash_factors = ldf(f)$F
   if (!is.null(output_model)) saveRDS(list(model=f, factors=flash_factors), output_model)
   if (missing(tag)) tag = factors
   U.flash = list()
-  U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
+  U.flash[[paste0("tFLASH_", tag)]] = t(fitted(f)) %*% fitted(f) / nrow(fitted(f))
   if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
   for (i in 1:length(U.flash)) {
     rownames(U.flash[[i]]) <- colnames(data$Bhat)
