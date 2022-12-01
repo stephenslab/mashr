@@ -24,21 +24,21 @@ unconstrained, and they are initialized using softImpute. If
 \code{factors = "nonneg"}, the factors are constrained to be
 ...}
 
-\item{subset}{Data samples (rows) to use to estimate the
-covariances (set to \code{NULL} to use all the data).}
+\item{subset}{Data samples (rows) used to estimate the
+covariances. Sset to \code{NULL} to use all the data.}
 
 \item{remove_singleton}{If \code{remove_singleton = TRUE}, factors
 corresponding to singleton matrices will be removed from the output.}
 
 \item{tag}{How to name the covariance matrices.}
 
-\item{output_model}{The flash model will be saved to this file
-using \code{\link{saveRDS}}.}
+\item{output_model}{The fitted flash model will be saved to this file
+(using \code{\link{saveRDS}}).}
 
-\item{greedy_param}{List containing additional parameters passed to
+\item{greedy_args}{List containing additional parameters passed to
 \code{flashier::flash.add.greedy}.}
 
-\item{backfit_param}{List containing additional parameters passed
+\item{backfit_args}{List containing additional parameters passed
 to \code{flashier::flash.backfit}.}
 }
 \value{

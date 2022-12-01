@@ -50,21 +50,21 @@ cov_pca = function(data,npc,subset = NULL) {
 #'   \code{factors = "nonneg"}, the factors are constrained to be
 #'   ...
 #'
-#' @param subset Data samples (rows) to use to estimate the
-#'   covariances (set to \code{NULL} to use all the data).
+#' @param subset Data samples (rows) used to estimate the
+#'   covariances. Sset to \code{NULL} to use all the data.
 #' 
 #' @param remove_singleton If \code{remove_singleton = TRUE}, factors
 #'   corresponding to singleton matrices will be removed from the output.
 #' 
 #' @param tag How to name the covariance matrices.
 #' 
-#' @param output_model The flash model will be saved to this file
-#'   using \code{\link{saveRDS}}.
+#' @param output_model The fitted flash model will be saved to this file
+#'   (using \code{\link{saveRDS}}).
 #'
-#' @param greedy_param List containing additional parameters passed to
+#' @param greedy_args List containing additional parameters passed to
 #'    \code{flashier::flash.add.greedy}.
 #' 
-#' @param backfit_param List containing additional parameters passed
+#' @param backfit_args List containing additional parameters passed
 #'   to \code{flashier::flash.backfit}.
 #' 
 #' @return A list of covariance matrices.
