@@ -45,10 +45,10 @@ cov_pca = function(data,npc,subset = NULL) {
 #'
 #' @param data A \dQuote{mash} data object.
 #'
-#' @param factors If \code{factors = "default"}, the factors are
-#'   unconstrained, and they are initialized using softImpute. If
-#'   \code{factors = "nonneg"}, the factors are constrained to be
-#'   ...
+#' @param factors If \code{factors = "default"}, the factors and
+#'   loadings are both unconstrained. If \code{factors = "nonneg"}, the
+#'   factors are constrained to be non-negative, and the loadings are
+#'   unconstrained.
 #'
 #' @param subset Data samples (rows) used to estimate the
 #'   covariances. Sset to \code{NULL} to use all the data.
