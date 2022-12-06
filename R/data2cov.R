@@ -11,6 +11,7 @@
 #' @return Returns a list of covariance matrices: the npc rank-one
 #' covariance matrices based on the first npc PCs, and the rank npc
 #' covariance matrix
+#' 
 #' @examples
 #' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #' cov_pca(data,2)
@@ -19,16 +20,19 @@
 #'
 #' @export
 #'
-cov_pca = function(data,npc,subset = NULL){
-  assert_that(npc>1)
-  assert_that(npc<=n_conditions(data))
-  if(is.null(subset)){subset = 1:n_effects(data)}
-  res.svd = svd(data$Bhat[subset,],nv=npc,nu=npc)
-  # FIXME: we need to think of for the EE case what to use for svd input: Bhat or Bhat/Shat
-  f = res.svd$v
-  Ulist = cov_from_factors(t(f), "PCA")
-  d = diag(res.svd$d[1:npc])
-  Ulist = c(Ulist, list("tPCA"= f %*% d^2 %*% t(f)/length(subset)))
+cov_pca = function(data,npc,subset = NULL) {
+  assert_that(npc > 1)
+  assert_that(npc <= n_conditions(data))
+  if (is.null(subset))
+    subset = 1:n_effects(data)
+  res.svd = svd(data$Bhat[subset,],nv = npc,nu = npc)
+  
+  # FIXME: we need to think of for the EE case what to use for svd
+  # input: Bhat or Bhat/Shat
+  f     = res.svd$v
+  Ulist = cov_from_factors(t(f),"PCA")
+  d     = diag(res.svd$d[1:npc])
+  Ulist = c(Ulist,list("tPCA" = f %*% d^2 %*% t(f)/length(subset)))
   for (i in 1:length(Ulist)) {
     rownames(Ulist[[i]]) <- colnames(data$Bhat)
     colnames(Ulist[[i]]) <- colnames(data$Bhat)
@@ -36,83 +40,118 @@ cov_pca = function(data,npc,subset = NULL){
   return(Ulist)
 }
 
-#' @title Perform Empirical Bayes Matrix Factorization via FLASH and return a list of
-#' candidate covariance matrices
+#' @title Perform Empirical Bayes Matrix Factorization using flashr, and
+#'   return a list of candidate covariance matrices
 #'
-#' @param data a mash data object
+#' @param data A \dQuote{mash} data object.
 #'
-#' @param factors "default" to use \code{flashr} default function to initialize factors, currently \code{udv_si}.
-#' "nonneg" to implement a non-negative constraint on the factors
+#' @param factors If \code{factors = "default"}, the factors and
+#'   loadings are both unconstrained. If \code{factors = "nonneg"}, the
+#'   factors are constrained to be non-negative, and the loadings are
+#'   unconstrained.
 #'
-#' @param subset indices of the subset of data to use (set to NULL for
-#' all data)
-#' @param remove_singleton whether or not factors corresponding to singleton matrices should be removed from output
-#' @param tag specific a tag to name the contents in the return objects. You may want to choose different tags for
-#' different paramter combinations. Default is set to \code{init_fn} parameter in \code{flashr::flash}.
-#' @param output_model if specified a filename, the FLASH model will be saved to that file in RDS format.
+#' @param subset Data samples (rows) used to estimate the
+#'   covariances. Sset to \code{NULL} to use all the data.
+#' 
+#' @param remove_singleton If \code{remove_singleton = TRUE}, factors
+#'   corresponding to singleton matrices will be removed from the output.
+#' 
+#' @param tag How to name the covariance matrices.
+#' 
+#' @param output_model The fitted flash model will be saved to this file
+#'   (using \code{\link{saveRDS}}).
 #'
-#' @param \dots additional parameters passed to \code{flashr::flash}
-#' @return Returns a list of covariance matrices
+#' @param greedy_args List containing additional parameters passed to
+#'    \code{flashier::flash.add.greedy}.
+#' 
+#' @param backfit_args List containing additional parameters passed
+#'   to \code{flashier::flash.backfit}.
+#' 
+#' @return A list of covariance matrices.
+#' 
 #' @examples
 #' # See https://stephenslab.github.io/mashr/articles/flash_mash.html
 #' # for an example
 #'
-#' @importFrom assertthat assert_that
-#' @importFrom softImpute softImpute
+#' @importFrom utils hasName
+#' @importFrom stats fitted
+#' 
 #' @export
 #'
-cov_flash = function(data, factors=c("default", "nonneg"), subset=NULL, remove_singleton=FALSE, tag=NULL, output_model=NULL, ...) {
-  if (!requireNamespace("flashr",quietly = TRUE))
-    stop("cov_flash requires package flashr")
-  # Only keep factors with at least two values greater than 1 / sqrt(n)
-  find_nonunique_effects <- function(fl) {
-    thresh <- 1/sqrt(ncol(fl$fitted_values))
-    vals_above_avg <- colSums(abs(fl$ldf$f) > thresh)
+cov_flash = function (data, factors = c("default","nonneg"),
+                      subset = NULL, remove_singleton = FALSE,
+                      tag = NULL, output_model = NULL,
+                      greedy_args = list(),
+                      backfit_args = list()) {
+  if (!requireNamespace("flashier",quietly = TRUE))
+    stop("cov_flash requires package flashier")
+  
+  # Only keep factors with at least two values greater than 1/sqrt(n)
+  find_nonunique_effects <- function (fl) {
+    thresh          <- 1/sqrt(nrow(fl$F.pm))
+    vals_above_avg  <- colSums(abs(fl$F.pm) > thresh)
     nonuniq_effects <- which(vals_above_avg > 1)
-    message(paste("Removing", length(vals_above_avg) - length(nonuniq_effects), "singleton effect vectors"))
-    return(fl$ldf$f[, nonuniq_effects, drop = FALSE])
+    message(paste("Removing",
+                  length(vals_above_avg) - length(nonuniq_effects),
+                  "singleton effect vectors"))
+    return(fl$F.pm[,nonuniq_effects,drop = FALSE])
   }
-  nonneg <- function(Y, K = 1) {
-    # this is the flashr:::udv_si function
-    suppressWarnings(ret <- softImpute(Y, rank.max = K, type = "als", lambda = 0))
-    pos_sum = sum(ret$v[ret$v > 0])
-    neg_sum = -sum(ret$v[ret$v < 0])
-    if (neg_sum > pos_sum) {
-      return(list(u = -ret$u, d = ret$d, v = -ret$v))
-    } else
-    return(ret)
+
+  # Function to initialize non-negative factors.
+  nonneg_init <- function (fl) {
+    ret     <- flashier::init.fn.softImpute(fl)
+    pos_sum <- sum(ret[[2]][ret[[2]] > 0])
+    neg_sum <- -sum(ret[[2]][ret[[2]] < 0])
+    if (neg_sum > pos_sum)
+      return(list(-ret[[1]],-ret[[2]]))
+    else
+      return(ret)
   }
-  # extract a subset of data
-  if(is.null(subset)){subset = 1:n_effects(data)}
-  factors = match.arg(factors)
-  # set default parameters
-  args = list(...)
-  args$data = flashr::flash_set_data(as.matrix(data$Bhat[subset,]))
-  if (!exists("init_fn", args)) {
-    args$init_fn = factors
-    if (factors == 'default') args$init_fn = "udv_si"
-    if (factors == 'nonneg') args$init_fn = nonneg
+
+  # Extract a subset of the data.
+  if (is.null(subset))
+    subset <- 1:n_effects(data)
+
+  # Initialize the flash object.
+  f       <- flashier::flash.init(as.matrix(data$Bhat[subset,]),var.type = 2)
+  factors <- match.arg(factors)
+
+  # Set defaults.
+  greedy_args$flash <- f
+  greedy_args$Kmax  <- 100
+  if (!hasName(greedy_args,"init.fn")) {
+    if (factors == "default")
+      greedy_args$init.fn <- flashier::init.fn.softImpute
+    else if (factors == "nonneg")
+      greedy_args$init.fn <- nonneg_init
   }
-  if (!exists("greedy", args)) args$greedy = T
-  if (!exists("backfit", args)) args$backfit = T
-  if (factors == "nonneg") {
-    args$ebnm_fn = "ebnm_ash"
-    args$ebnm_param = list(l = list(mixcompdist = "normal",
-                               optmethod = "mixSQP"),
-                           f = list(mixcompdist = "+uniform",
-                               optmethod = "mixSQP"))
-  }
-  f = do.call(flashr::flash, args)
-  if (remove_singleton) flash_factors = find_nonunique_effects(f)
-  else flash_factors = as.matrix(f$ldf$f)
-  if (!is.null(output_model)) saveRDS(list(model=f, factors=flash_factors), output_model)
-  if (missing(tag)) tag = factors
-  U.flash = list()
-  U.flash[[paste0("tFLASH_", tag)]] = t(f$fitted_values) %*% f$fitted_values / nrow(f$fitted_values)
-  if (ncol(flash_factors)>0) U.flash = c(U.flash, c(cov_from_factors(t(flash_factors), paste0("FLASH_", tag))))
+  if (factors == "default")
+    greedy_args$ebnm.fn <- ebnm::ebnm_point_normal
+  else if (factors == "nonneg")
+    greedy_args$ebnm.fn <- c(ebnm::ebnm_point_normal,
+                             ebnm::ebnm_point_exponential)
+
+  # Backfit the flash model.
+  backfit_args$flash <- do.call(flashier::flash.add.greedy,greedy_args)
+  f <- do.call(flashier::flash.backfit,backfit_args)
+  if (remove_singleton)
+    flash_factors <- find_nonunique_effects(f)
+  else
+    flash_factors <- flashier::ldf(f)$F
+  if (!is.null(output_model))
+   saveRDS(list(model = f,factors = flash_factors),output_model)
+  if (missing(tag))
+    tag <- factors
+  U.flash <- list()
+  U.flash[[paste0("tFLASH_",tag)]] <-
+    t(fitted(f)) %*% fitted(f) / nrow(fitted(f))
+  if (ncol(flash_factors) > 0)
+    U.flash <- c(U.flash,
+                 c(cov_from_factors(t(flash_factors),
+                                    paste0("FLASH_",tag))))
   for (i in 1:length(U.flash)) {
-    rownames(U.flash[[i]]) <- colnames(data$Bhat)
-    colnames(U.flash[[i]]) <- colnames(data$Bhat)
+    rownames(U.flash[[i]]) <- colnames(data$Bhat[subset,])
+    colnames(U.flash[[i]]) <- colnames(data$Bhat[subset,])
   }
   return(U.flash)
 }
