@@ -302,7 +302,7 @@ mash = function(data,
 mash_compute_posterior_matrices = function(g, data, pi_thresh = 1e-10, algorithm.version = c("Rcpp", "R"), A=NULL, output_posterior_cov=FALSE,
                                            posterior_samples = 0, seed = 123){
 
-  if (inherits(g,"mash") {
+  if (inherits(g,"mash")) {
     alpha = g$alpha
     g = g$fitted_g
     if(alpha != data$alpha){

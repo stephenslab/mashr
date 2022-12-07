@@ -171,9 +171,8 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 #' @export
 #'
 mash_update_data = function(mashdata, ref= NULL, V = NULL){
-  if(!inherits(mashdata,"mash"){
+  if (!inherits(mashdata,"mash"))
     stop('data is not a "mash" object')
-  }
 
   R = n_conditions(mashdata)
 
