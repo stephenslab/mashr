@@ -107,9 +107,8 @@ estimate_null_correlation_simple = function(data, z_thresh=2, est_cor = TRUE){
 mash_estimate_corr_em = function(data, Ulist, init, max_iter = 30, tol=1,
                                  est_cor = TRUE, track_fit = FALSE, prior = c('nullbiased', 'uniform'),
                                  details = TRUE, ...){
-  if(class(data) != 'mash'){
+  if (!inherits(data,"mash"))
     stop('data is not a "mash" object')
-  }
   if(!is.null(data$L)){
     stop('We cannot estimate the null correlation for the mash contrast data.')
   }

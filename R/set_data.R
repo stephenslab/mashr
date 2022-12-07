@@ -171,7 +171,7 @@ mash_set_data = function (Bhat, Shat = NULL, alpha = 0, df = Inf,
 #' @export
 #'
 mash_update_data = function(mashdata, ref= NULL, V = NULL){
-  if(class(mashdata) != 'mash'){
+  if(!inherits(mashdata,"mash"){
     stop('data is not a "mash" object')
   }
 
@@ -272,9 +272,8 @@ contrast_matrix = function(R, ref, name=1:R){
 #'
 mash_set_data_contrast = function(mashdata, L){
   # check data
-  if(class(mashdata) != 'mash'){
+  if (!inherits(mashdata,"mash"))
     stop('data is not a "mash" object')
-  }
 
   # check contrast
   R = ncol(mashdata$Bhat)
