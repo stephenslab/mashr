@@ -139,4 +139,4 @@ m2 = mash(data.strong, g=get_fitted_g(m), fixg=TRUE)
 head(get_lfsr(m2))
 ```
 
-[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v2
+[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v4

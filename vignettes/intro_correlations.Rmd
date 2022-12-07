@@ -138,4 +138,4 @@ iterations provides estimates of correlation matrix that is better
 than the initial value. Moreover, we can estimate the correlation matrix 
 using a random subset of genes, not the whole observed genes.
 
-[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v2
+[urbut-biorxiv]: https://www.biorxiv.org/content/10.1101/096552v4
