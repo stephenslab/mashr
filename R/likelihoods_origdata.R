@@ -32,7 +32,7 @@
 #' @export
 #'
 mash_compute_vloglik = function(g,data, algorithm.version= c("Rcpp","R")){
-  if (inherits(g,"mash") {
+  if (inherits(g,"mash")) {
     alpha = g$alpha
     g = g$fitted_g
     if(alpha != data$alpha){
