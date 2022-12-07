@@ -90,7 +90,7 @@ connected to Internet while running these commands):
 
 + Prior to submitting the package to CRAN, the following modifications
 need to be made: (1) remove the `Remotes:` entry in `DESCRIPTION`; and
-(2) set `eval = FALSE` in the `flash_mash.Rmd` vignette.
+(2) remove the `flash_mash.Rmd` vignette.
 
 [mashr-pkg-for-paper]: https://github.com/stephenslab/mashr-paper
 [cran-docs]: https://cran.r-project.org/manuals.html
