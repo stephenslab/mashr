@@ -9,8 +9,9 @@
 #' all data)
 #'
 #' @return Returns a list of covariance matrices: the npc rank-one
-#' covariance matrices based on the first npc PCs, and the rank npc
-#' covariance matrix
+#'   covariance matrices based on the first npc PCs, and the rank npc
+#'   covariance matrix. If flashier did not identify any factors,
+#'   \code{NULL} is returned.
 #' 
 #' @examples
 #' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
@@ -40,7 +41,7 @@ cov_pca = function(data,npc,subset = NULL) {
   return(Ulist)
 }
 
-#' @title Perform Empirical Bayes Matrix Factorization using flashr, and
+#' @title Perform Empirical Bayes Matrix Factorization using flashier, and
 #'   return a list of candidate covariance matrices
 #'
 #' @param data A \dQuote{mash} data object.
@@ -135,7 +136,7 @@ cov_flash = function (data, factors = c("default","nonneg"),
   backfit_args$flash <- do.call(flashier::flash.add.greedy,greedy_args)
   f <- do.call(flashier::flash.backfit,backfit_args)
   if (f$n.factors == 0) {
-    warning("Flash fit does not have any factors")
+    warning("Flashier did not find any factors; returning NULL")
     return(NULL)
   }
   if (remove_singleton)

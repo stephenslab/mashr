@@ -2,7 +2,7 @@
 % Please edit documentation in R/data2cov.R
 \name{cov_flash}
 \alias{cov_flash}
-\title{Perform Empirical Bayes Matrix Factorization using flashr, and
+\title{Perform Empirical Bayes Matrix Factorization using flashier, and
   return a list of candidate covariance matrices}
 \usage{
 cov_flash(
@@ -45,7 +45,7 @@ to \code{flashier::flash.backfit}.}
 A list of covariance matrices.
 }
 \description{
-Perform Empirical Bayes Matrix Factorization using flashr, and
+Perform Empirical Bayes Matrix Factorization using flashier, and
   return a list of candidate covariance matrices
 }
 \examples{

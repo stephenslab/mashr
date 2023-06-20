@@ -17,8 +17,9 @@ all data)}
 }
 \value{
 Returns a list of covariance matrices: the npc rank-one
-covariance matrices based on the first npc PCs, and the rank npc
-covariance matrix
+  covariance matrices based on the first npc PCs, and the rank npc
+  covariance matrix. If flashier did not identify any factors,
+  \code{NULL} is returned.
 }
 \description{
 Perform PCA on data and return list of candidate covariance
