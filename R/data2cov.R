@@ -134,10 +134,14 @@ cov_flash = function (data, factors = c("default","nonneg"),
   # Backfit the flash model.
   backfit_args$flash <- do.call(flashier::flash.add.greedy,greedy_args)
   f <- do.call(flashier::flash.backfit,backfit_args)
+  if (f$n.factors == 0) {
+    warning("Flash fit does not have any factors")
+    return(NULL)
+  }
   if (remove_singleton)
     flash_factors <- find_nonunique_effects(f)
   else
-    flash_factors <- flashier::ldf(f)$F
+   flash_factors <- flashier::ldf(f)$F
   if (!is.null(output_model))
    saveRDS(list(model = f,factors = flash_factors),output_model)
   if (missing(tag))
