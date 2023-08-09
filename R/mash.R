@@ -134,7 +134,9 @@ mash = function(data,
     if(!missing(optmethod)){stop("cannot supply optmethod if fixg is TRUE")}
   } else {
     optmethod = match.arg(optmethod)
-    prior = match.arg(prior)
+    if (!is.numeric(prior)) {
+      prior = match.arg(prior)
+      }
   }
 
   # Get the number of samples (J), the number of mixture components
