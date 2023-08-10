@@ -12,7 +12,7 @@
 #'   covariance matrices based on the first npc PCs, and the rank npc
 #'   covariance matrix. If flashier did not identify any factors,
 #'   \code{NULL} is returned.
-#' 
+#'
 #' @examples
 #' data = mash_set_data(Bhat = cbind(c(1,2),c(3,4)), Shat = cbind(c(1,1),c(1,1)))
 #' cov_pca(data,2)
@@ -27,7 +27,7 @@ cov_pca = function(data,npc,subset = NULL) {
   if (is.null(subset))
     subset = 1:n_effects(data)
   res.svd = svd(data$Bhat[subset,],nv = npc,nu = npc)
-  
+
   # FIXME: we need to think of for the EE case what to use for svd
   # input: Bhat or Bhat/Shat
   f     = res.svd$v
@@ -53,30 +53,30 @@ cov_pca = function(data,npc,subset = NULL) {
 #'
 #' @param subset Data samples (rows) used to estimate the
 #'   covariances. Sset to \code{NULL} to use all the data.
-#' 
+#'
 #' @param remove_singleton If \code{remove_singleton = TRUE}, factors
 #'   corresponding to singleton matrices will be removed from the output.
-#' 
+#'
 #' @param tag How to name the covariance matrices.
-#' 
+#'
 #' @param output_model The fitted flash model will be saved to this file
 #'   (using \code{\link{saveRDS}}).
 #'
 #' @param greedy_args List containing additional parameters passed to
-#'    \code{flashier::flash.add.greedy}.
-#' 
+#'    \code{flashier::flash_greedy}.
+#'
 #' @param backfit_args List containing additional parameters passed
-#'   to \code{flashier::flash.backfit}.
-#' 
+#'   to \code{flashier::flash_backfit}.
+#'
 #' @return A list of covariance matrices.
-#' 
+#'
 #' @examples
 #' # See https://stephenslab.github.io/mashr/articles/flash_mash.html
 #' # for an example
 #'
 #' @importFrom utils hasName
 #' @importFrom stats fitted
-#' 
+#'
 #' @export
 #'
 cov_flash = function (data, factors = c("default","nonneg"),
@@ -86,21 +86,21 @@ cov_flash = function (data, factors = c("default","nonneg"),
                       backfit_args = list()) {
   if (!requireNamespace("flashier",quietly = TRUE))
     stop("cov_flash requires package flashier")
-  
+
   # Only keep factors with at least two values greater than 1/sqrt(n)
   find_nonunique_effects <- function (fl) {
-    thresh          <- 1/sqrt(nrow(fl$F.pm))
-    vals_above_avg  <- colSums(abs(fl$F.pm) > thresh)
+    thresh          <- 1/sqrt(nrow(fl$F_pm))
+    vals_above_avg  <- colSums(abs(fl$F_pm) > thresh)
     nonuniq_effects <- which(vals_above_avg > 1)
     message(paste("Removing",
                   length(vals_above_avg) - length(nonuniq_effects),
                   "singleton effect vectors"))
-    return(fl$F.pm[,nonuniq_effects,drop = FALSE])
+    return(fl$F_pm[,nonuniq_effects,drop = FALSE])
   }
 
   # Function to initialize non-negative factors.
   nonneg_init <- function (fl) {
-    ret     <- flashier::init.fn.softImpute(fl)
+    ret     <- flashier::flash_greedy_init_softImpute(fl)
     pos_sum <- sum(ret[[2]][ret[[2]] > 0])
     neg_sum <- -sum(ret[[2]][ret[[2]] < 0])
     if (neg_sum > pos_sum)
@@ -114,28 +114,28 @@ cov_flash = function (data, factors = c("default","nonneg"),
     subset <- 1:n_effects(data)
 
   # Initialize the flash object.
-  f       <- flashier::flash.init(as.matrix(data$Bhat[subset,]),var.type = 2)
+  f       <- flashier::flash_init(as.matrix(data$Bhat[subset,]),var_type = 2)
   factors <- match.arg(factors)
 
   # Set defaults.
   greedy_args$flash <- f
   greedy_args$Kmax  <- 100
-  if (!hasName(greedy_args,"init.fn")) {
+  if (!hasName(greedy_args,"init_fn")) {
     if (factors == "default")
-      greedy_args$init.fn <- flashier::init.fn.softImpute
+      greedy_args$init_fn <- flashier::flash_greedy_init_softImpute
     else if (factors == "nonneg")
-      greedy_args$init.fn <- nonneg_init
+      greedy_args$init_fn <- nonneg_init
   }
   if (factors == "default")
-    greedy_args$ebnm.fn <- ebnm::ebnm_point_normal
+    greedy_args$ebnm_fn <- ebnm::ebnm_point_normal
   else if (factors == "nonneg")
-    greedy_args$ebnm.fn <- c(ebnm::ebnm_point_normal,
+    greedy_args$ebnm_fn <- c(ebnm::ebnm_point_normal,
                              ebnm::ebnm_point_exponential)
 
   # Backfit the flash model.
-  backfit_args$flash <- do.call(flashier::flash.add.greedy,greedy_args)
-  f <- do.call(flashier::flash.backfit,backfit_args)
-  if (f$n.factors == 0) {
+  backfit_args$flash <- do.call(flashier::flash_greedy,greedy_args)
+  f <- do.call(flashier::flash_backfit,backfit_args)
+  if (f$n_factors == 0) {
     warning("Flashier did not find any factors; returning NULL")
     return(NULL)
   }
