@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.73</span>
       </span>
     </div>
 
@@ -49,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/stephenslab/mashr/">
+  <a href="https://github.com/stephenslab/mashr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -64,34 +66,40 @@
 
       
 
-      </header><script src="flash_mash_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Empirical Bayes matrix factorization for data driven prior</h1>
-                        <h4 class="author">Gao Wang</h4>
+      <h1 data-toc-skip>Empirical Bayes matrix factorization for data
+driven prior</h1>
+                        <h4 data-toc-skip class="author">Gao Wang</h4>
             
-            <h4 class="date">2021-07-22</h4>
+            <h4 data-toc-skip class="date">2023-08-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/flash_mash.Rmd"><code>vignettes/flash_mash.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/HEAD/vignettes/flash_mash.Rmd" class="external-link"><code>vignettes/flash_mash.Rmd</code></a></small>
       <div class="hidden name"><code>flash_mash.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This is continuation of the <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html">eQTL analysis vignette</a>. In that vignette we have used PCA to compute data driven covariances. Here we demonstrate the use of additional data driven covariance, via <a href="https://github.com/stephenslab/flashr">flash</a> decomposition.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>This is continuation of the <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html" class="external-link">eQTL
+analysis vignette</a>. In that vignette we have used PCA to compute data
+driven covariances. Here we demonstrate the use of additional data
+driven covariance, via <a href="https://github.com/stephenslab/flashr" class="external-link">flash</a>
+decomposition.</p>
 </div>
-<div id="dataset-simulation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#dataset-simulation" class="anchor"></a>Dataset simulation</h1>
-<p>Same as the <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html">eQTL analysis vignette</a> we simulate a toy data-set,</p>
+<div class="section level2">
+<h2 id="dataset-simulation">Dataset simulation<a class="anchor" aria-label="anchor" href="#dataset-simulation"></a>
+</h2>
+<p>Same as the <a href="https://stephenslab.github.io/mashr/articles/eQTL_outline.html" class="external-link">eQTL
+analysis vignette</a> we simulate a toy data-set,</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr">ashr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr" class="external-link">ashr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr" class="external-link">mashr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">10000</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span> <span class="co"># simulates data on 40k tests</span>
 
 <span class="co"># identify a subset of strong tests</span>
@@ -99,186 +107,56 @@
 <span class="va">strong.subset</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.1by1</span>,<span class="fl">0.05</span><span class="op">)</span>
 
 <span class="co"># identify a random subset of 5000 tests</span>
-<span class="va">random.subset</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">)</span>,<span class="fl">5000</span><span class="op">)</span></code></pre></div>
+<span class="va">random.subset</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">)</span>,<span class="fl">5000</span><span class="op">)</span></code></pre></div>
 <p>and create <code>random</code> and <code>strong</code> sets,</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data.temp</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span><span class="op">)</span>
 <span class="va">Vhat</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_null_correlation_simple.html">estimate_null_correlation_simple</a></span><span class="op">(</span><span class="va">data.temp</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span><span class="va">data.temp</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">data.temp</span><span class="op">)</span>
 <span class="va">data.random</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">[</span><span class="va">random.subset</span>,<span class="op">]</span>,V<span class="op">=</span><span class="va">Vhat</span><span class="op">)</span>
 <span class="va">data.strong</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span><span class="op">[</span><span class="va">strong.subset</span>,<span class="op">]</span>,<span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">[</span><span class="va">strong.subset</span>,<span class="op">]</span>, V<span class="op">=</span><span class="va">Vhat</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="flash-analysis" class="section level1">
-<h1 class="hasAnchor">
-<a href="#flash-analysis" class="anchor"></a>FLASH analysis</h1>
-<p>We first perform the empirical Bayes matrix factorization via <code>flashr</code> using its default settings,</p>
+<div class="section level2">
+<h2 id="flash-analysis">FLASH analysis<a class="anchor" aria-label="anchor" href="#flash-analysis"></a>
+</h2>
+<p>We first perform the empirical Bayes matrix factorization via
+<code>flashr</code> using its default settings,</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U.f</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_flash.html">cov_flash</a></span><span class="op">(</span><span class="va">data.strong</span><span class="op">)</span></code></pre></div>
-<pre><code># ebnm package not installed. ebnm_ash will be used instead of ebnm_pn.</code></pre>
-<pre><code># Fitting factor/loading 1 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
-<pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15463.59        Inf</code></pre>
-<pre><code>#           2      -15336.34   1.27e+02</code></pre>
-<pre><code>#           3      -15309.81   2.65e+01</code></pre>
-<pre><code>#           4      -15301.29   8.52e+00</code></pre>
-<pre><code>#           5      -15298.95   2.34e+00</code></pre>
-<pre><code>#           6      -15298.39   5.63e-01</code></pre>
-<pre><code>#           7      -15298.26   1.28e-01</code></pre>
-<pre><code>#           8      -15298.23   2.94e-02</code></pre>
-<pre><code>#           9      -15298.22   7.15e-03</code></pre>
-<pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 1 decreases objective by 6.45e+02. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15298.22</code></pre>
-<pre><code># Fitting factor/loading 2 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
-<pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15885.08        Inf</code></pre>
-<pre><code>#           2      -15559.74   3.25e+02</code></pre>
-<pre><code>#           3      -15456.68   1.03e+02</code></pre>
-<pre><code>#           4      -15406.52   5.02e+01</code></pre>
-<pre><code>#           5      -15369.54   3.70e+01</code></pre>
-<pre><code>#           6      -15343.28   2.63e+01</code></pre>
-<pre><code>#           7      -15332.01   1.13e+01</code></pre>
-<pre><code>#           8      -15327.69   4.32e+00</code></pre>
-<pre><code>#           9      -15320.43   7.26e+00</code></pre>
-<pre><code>#          10      -15314.53   5.90e+00</code></pre>
-<pre><code>#          11      -15312.52   2.02e+00</code></pre>
-<pre><code>#          12      -15309.61   2.91e+00</code></pre>
-<pre><code>#          13      -15307.66   1.94e+00</code></pre>
-<pre><code>#          14      -15302.88   4.79e+00</code></pre>
-<pre><code>#          15      -15301.01   1.86e+00</code></pre>
-<pre><code>#          16      -15299.12   1.90e+00</code></pre>
-<pre><code>#          17      -15298.88   2.31e-01</code></pre>
-<pre><code>#          18      -15298.85   3.06e-02</code></pre>
-<pre><code>#          19      -15298.45   4.09e-01</code></pre>
-<pre><code>#          20      -15298.34   1.05e-01</code></pre>
-<pre><code>#          21      -15298.34   6.49e-05</code></pre>
-<pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 2 increases objective by 1.19e-01. Factor zeroed out.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15298.22</code></pre>
-<pre><code># ebnm package not installed. ebnm_ash will be used instead of ebnm_pn.</code></pre>
-<pre><code># Backfitting 1 factor/loading(s) (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
-<pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15298.22        Inf</code></pre>
-<pre><code>#           2      -15298.22   5.49e-04</code></pre>
-<pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 1 decreases objective by 6.45e+02. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15298.22</code></pre>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U.f</span></code></pre></div>
-<pre><code># $tFLASH_default
-#             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1    1.594728    1.479546    1.447513    1.436520    1.431818
-# condition_2    1.479546    1.372683    1.342964    1.332765    1.328403
-# condition_3    1.447513    1.342964    1.313888    1.303910    1.299642
-# condition_4    1.436520    1.332765    1.303910    1.294007    1.289772
-# condition_5    1.431818    1.328403    1.299642    1.289772    1.285551
-# 
-# $FLASH_default_1
-#             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1   0.2324386   0.2156503   0.2109813   0.2093791   0.2086938
-# condition_2   0.2156503   0.2000746   0.1957429   0.1942563   0.1936205
-# condition_3   0.2109813   0.1957429   0.1915049   0.1900505   0.1894285
-# condition_4   0.2093791   0.1942563   0.1900505   0.1886072   0.1879899
-# condition_5   0.2086938   0.1936205   0.1894285   0.1879899   0.1873746</code></pre>
-<p>Alternatively, as <a href="https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html">suggested by Jason Willwerscheid for multi-tissue QTL studies</a>, constrain factors to non-negative values. We can use <code>tag</code> parameter to customize the names in the output list:</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U.f</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_flash.html">cov_flash</a></span><span class="op">(</span><span class="va">data.strong</span>, factors<span class="op">=</span><span class="st">"nonneg"</span>, tag<span class="op">=</span><span class="st">"non_neg"</span>, var_type<span class="op">=</span><span class="st">"constant"</span><span class="op">)</span></code></pre></div>
-<pre><code># Fitting factor/loading 1 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
-<pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15496.57        Inf</code></pre>
-<pre><code>#           2      -15421.69   7.49e+01</code></pre>
-<pre><code>#           3      -15419.14   2.55e+00</code></pre>
-<pre><code>#           4      -15419.06   8.13e-02</code></pre>
-<pre><code># Warning in verbose_obj_decrease_warning(): An iteration decreased the objective.
-# This happens occasionally, perhaps due to numeric reasons. You could ignore this
-# warning, but you might like to check out https://github.com/stephenslab/flashr/
-# issues/26 for more details.</code></pre>
-<pre><code>#           5      -15419.07  -1.09e-02</code></pre>
-<pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 1 decreases objective by 6.52e+02. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15419.07</code></pre>
-<pre><code># Fitting factor/loading 2 (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
-<pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15932.37        Inf</code></pre>
-<pre><code>#           2      -15429.60   5.03e+02</code></pre>
-<pre><code>#           3      -15421.09   8.51e+00</code></pre>
-<pre><code>#           4      -15419.99   1.10e+00</code></pre>
-<pre><code># Warning in verbose_obj_decrease_warning(): An iteration decreased the objective.
-# This happens occasionally, perhaps due to numeric reasons. You could ignore this
-# warning, but you might like to check out https://github.com/stephenslab/flashr/
-# issues/26 for more details.</code></pre>
-<pre><code>#           5      -15421.16  -1.17e+00</code></pre>
-<pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 2 increases objective by 2.09e+00. Factor zeroed out.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15419.07</code></pre>
-<pre><code># Backfitting 1 factor/loading(s) (stop when difference in obj. is &lt; 1.00e-02):</code></pre>
-<pre><code>#   Iteration      Objective   Obj Diff</code></pre>
-<pre><code>#           1      -15419.08        Inf</code></pre>
-<pre><code># Warning in verbose_obj_decrease_warning(): An iteration decreased the objective.
-# This happens occasionally, perhaps due to numeric reasons. You could ignore this
-# warning, but you might like to check out https://github.com/stephenslab/flashr/
-# issues/26 for more details.</code></pre>
-<pre><code>#           2      -15419.08  -2.84e-03</code></pre>
-<pre><code># Performing nullcheck...</code></pre>
-<pre><code>#   Deleting factor 1 decreases objective by 6.52e+02. Factor retained.</code></pre>
-<pre><code>#   Nullcheck complete. Objective: -15419.08</code></pre>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">U.f</span></code></pre></div>
-<pre><code># $tFLASH_non_neg
-#             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1    2.805230    1.794791    1.731955    1.698738    1.758134
-# condition_2    1.794791    1.148310    1.108108    1.086856    1.124857
-# condition_3    1.731955    1.108108    1.069313    1.048805    1.085476
-# condition_4    1.698738    1.086856    1.048805    1.028690    1.064658
-# condition_5    1.758134    1.124857    1.085476    1.064658    1.101883
-# 
-# $FLASH_non_neg_1
-#             condition_1 condition_2 condition_3 condition_4 condition_5
-# condition_1   0.3921519   0.2508995   0.2421155   0.2374720   0.2457751
-# condition_2   0.2508995   0.1605259   0.1549059   0.1519350   0.1572473
-# condition_3   0.2421155   0.1549059   0.1494826   0.1466158   0.1517421
-# condition_4   0.2374720   0.1519350   0.1466158   0.1438038   0.1488319
-# condition_5   0.2457751   0.1572473   0.1517421   0.1488319   0.1540357</code></pre>
-<p><code>var_type="constant"</code> is an additional parameter passed to <code>flash</code> function, as suggested in the post above.</p>
+<code class="sourceCode R"><span class="va">U.f</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_flash.html">cov_flash</a></span><span class="op">(</span><span class="va">data.strong</span><span class="op">)</span>
+<span class="va">U.f</span></code></pre></div>
+<p>Alternatively, as <a href="https://willwerscheid.github.io/MASHvFLASH/MASHvFLASHnn2.html" class="external-link">suggested
+by Jason Willwerscheid for multi-tissue QTL studies</a>, constrain
+factors to non-negative values. We can use <code>tag</code> parameter to
+customize the names in the output list:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">U.f</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_flash.html">cov_flash</a></span><span class="op">(</span><span class="va">data.strong</span>, factors<span class="op">=</span><span class="st">"nonneg"</span>, tag<span class="op">=</span><span class="st">"non_neg"</span><span class="op">)</span>
+<span class="va">U.f</span></code></pre></div>
 </div>
-<div id="finalize-covariances" class="section level1">
-<h1 class="hasAnchor">
-<a href="#finalize-covariances" class="anchor"></a>Finalize covariances</h1>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="section level2">
+<h2 id="finalize-covariances">Finalize covariances<a class="anchor" aria-label="anchor" href="#finalize-covariances"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.pca</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span><span class="op">(</span><span class="va">data.strong</span>, <span class="fl">5</span><span class="op">)</span>
-<span class="va">U.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span><span class="op">(</span><span class="va">data.strong</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.f</span>, <span class="va">U.pca</span><span class="op">)</span><span class="op">)</span>
+<span class="va">U.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span><span class="op">(</span><span class="va">data.strong</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">U.f</span>, <span class="va">U.pca</span><span class="op">)</span><span class="op">)</span>
 <span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data.random</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="fit-mash-model-estimate-mixture-proportions" class="section level1">
-<h1 class="hasAnchor">
-<a href="#fit-mash-model-estimate-mixture-proportions" class="anchor"></a>Fit mash model (estimate mixture proportions)</h1>
-<p>Now we fit mash to the random tests using both data-driven and canonical covariances.</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.random</span>, Ulist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.ed</span>,<span class="va">U.c</span><span class="op">)</span>, outputlevel <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<pre><code>#  - Computing 5000 x 271 likelihood matrix.
-#  - Likelihood calculations took 0.17 seconds.
-#  - Fitting model with 271 mixture components.
-#  - Model fitting took 6.00 seconds.</code></pre>
+<div class="section level2">
+<h2 id="fit-mash-model-estimate-mixture-proportions">Fit mash model (estimate mixture proportions)<a class="anchor" aria-label="anchor" href="#fit-mash-model-estimate-mixture-proportions"></a>
+</h2>
+<p>Now we fit mash to the random tests using both data-driven and
+canonical covariances.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.random</span>, Ulist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">U.ed</span>,<span class="va">U.c</span><span class="op">)</span>, outputlevel <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="compute-posterior-summaries" class="section level1">
-<h1 class="hasAnchor">
-<a href="#compute-posterior-summaries" class="anchor"></a>Compute posterior summaries</h1>
-<p>Now we can compute posterior summaries etc for any subset of tests using the above mash fit. Here we do this for the <code>strong</code> tests.</p>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.strong</span>, g<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_fitted_g</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, fixg<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<pre><code>#  - Computing 1428 x 271 likelihood matrix.
-#  - Likelihood calculations took 0.05 seconds.
-#  - Computing posterior matrices.
-#  - Computation allocated took 0.01 seconds.</code></pre>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_lfsr</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>#               condition_1  condition_2  condition_3  condition_4  condition_5
-# effect_13096 9.815870e-06 5.056797e-01 4.229104e-01 3.944224e-01 6.055447e-01
-# effect_29826 6.571516e-05 6.637425e-01 5.837344e-01 6.358136e-01 5.768265e-01
-# effect_14042 6.994366e-02 6.495470e-03 2.483343e-03 5.562278e-02 6.836364e-06
-# effect_12524 1.119195e-01 4.107543e-01 2.985567e-02 2.579209e-05 1.001825e-01
-# effect_15456 4.913411e-05 4.380270e-01 2.733427e-01 5.166893e-01 3.610435e-01
-# effect_35844 2.623305e-09 4.570182e-09 1.864958e-07 1.013906e-09 4.095024e-11</code></pre>
+<div class="section level2">
+<h2 id="compute-posterior-summaries">Compute posterior summaries<a class="anchor" aria-label="anchor" href="#compute-posterior-summaries"></a>
+</h2>
+<p>Now we can compute posterior summaries etc for any subset of tests
+using the above mash fit. Here we do this for the <code>strong</code>
+tests.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m2</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data.strong</span>, g<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_fitted_g</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>, fixg<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_lfsr</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
@@ -293,11 +171,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
+  <p></p>
+<p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -305,6 +185,8 @@
 
   
 
+
+  
 
   </body>
 </html>

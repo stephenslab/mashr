@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.73</span>
       </span>
     </div>
 
@@ -49,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/stephenslab/mashr/">
+  <a href="https://github.com/stephenslab/mashr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -64,36 +66,44 @@
 
       
 
-      </header><script src="mash_sampling_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Sample from mash posteriors</h1>
-                        <h4 class="author">Yuxin Zou</h4>
+                        <h4 data-toc-skip class="author">Yuxin Zou</h4>
             
-            <h4 class="date">2021-07-22</h4>
+            <h4 data-toc-skip class="date">2023-08-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/mash_sampling.Rmd"><code>vignettes/mash_sampling.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/HEAD/vignettes/mash_sampling.Rmd" class="external-link"><code>vignettes/mash_sampling.Rmd</code></a></small>
       <div class="hidden name"><code>mash_sampling.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>Besides the point estimates from the posteriors of <code>mashr</code>, we also provide the option to sampling from the posteriors. Using the samples, we can answer many questions. For example, what proportion of effects have the same sign and similar magnitude for each pair of conditions?</p>
-<p>We use simulated data for illustration. The simulation routine creates a dataset with 5 conditions, and four different types of effect: null, independent among conditions, condition-specific in condition 1, and shared (equal effects in all conditions). It creates 500 effects of each type for a total of 2000 effects.</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Besides the point estimates from the posteriors of
+<code>mashr</code>, we also provide the option to sampling from the
+posteriors. Using the samples, we can answer many questions. For
+example, what proportion of effects have the same sign and similar
+magnitude for each pair of conditions?</p>
+<p>We use simulated data for illustration. The simulation routine
+creates a dataset with 5 conditions, and four different types of effect:
+null, independent among conditions, condition-specific in condition 1,
+and shared (equal effects in all conditions). It creates 500 effects of
+each type for a total of 2000 effects.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span></code></pre></div>
-<pre><code># Loading required package: ashr</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr" class="external-link">mashr</a></span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co"># Loading required package: ashr</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="fit-mash-model-with-samples-from-the-posteriors" class="section level1">
-<h1 class="hasAnchor">
-<a href="#fit-mash-model-with-samples-from-the-posteriors" class="anchor"></a>Fit mash model with samples from the posteriors</h1>
+<div class="section level2">
+<h2 id="fit-mash-model-with-samples-from-the-posteriors">Fit mash model with samples from the posteriors<a class="anchor" aria-label="anchor" href="#fit-mash-model-with-samples-from-the-posteriors"></a>
+</h2>
 <p>Read in the data and set up the covariance matrices:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
@@ -101,61 +111,70 @@
 <p>Here, we draw 100 samples from the posteriors of each effect.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span>, algorithm.version <span class="op">=</span> <span class="st">'R'</span>, posterior_samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
-<pre><code>#  - Computing 2000 x 151 likelihood matrix.
-#  - Likelihood calculations took 0.13 seconds.
-#  - Fitting model with 151 mixture components.
-#  - Model fitting took 0.59 seconds.
-#  - Computing posterior matrices.
-#  - Computation allocated took 3.36 seconds.</code></pre>
-<p>Using <code><a href="../reference/get_samples.html">get_samples(m)</a></code>, we have a <span class="math inline">\(2000 \times 5 \times 100\)</span> array for samples.</p>
-<p>If we fit the mash model without the posterior samples, we could use <code>mash_compute_posterior_matrices</code> to sample from the mash object.</p>
+<pre><code><span class="co">#  - Computing 2000 x 151 likelihood matrix.</span>
+<span class="co">#  - Likelihood calculations took 0.11 seconds.</span>
+<span class="co">#  - Fitting model with 151 mixture components.</span>
+<span class="co">#  - Model fitting took 0.55 seconds.</span>
+<span class="co">#  - Computing posterior matrices.</span>
+<span class="co">#  - Computation allocated took 2.79 seconds.</span></code></pre>
+<p>Using <code>get_samples(m)</code>, we have a <span class="math inline">\(2000 \times 5 \times 100\)</span> array for
+samples.</p>
+<p>If we fit the mash model without the posterior samples, we could use
+<code>mash_compute_posterior_matrices</code> to sample from the mash
+object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span><span class="op">$</span><span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_compute_posterior_matrices.html">mash_compute_posterior_matrices</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">data</span>, algorithm.version <span class="op">=</span> <span class="st">'R'</span>,
                                            posterior_samples <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="pairwise-sharing" class="section level1">
-<h1 class="hasAnchor">
-<a href="#pairwise-sharing" class="anchor"></a>Pairwise sharing</h1>
-<p>To answer ‘what proportion of effects have the same sign and similar magnitude for each pair of conditions?’, <code>mash</code> has a function to summarize the results from samples. Here, we define similar in magnitude to mean both the same sign and within a factor of 2 of one another.</p>
+<div class="section level2">
+<h2 id="pairwise-sharing">Pairwise sharing<a class="anchor" aria-label="anchor" href="#pairwise-sharing"></a>
+</h2>
+<p>To answer ‘what proportion of effects have the same sign and similar
+magnitude for each pair of conditions?’, <code>mash</code> has a
+function to summarize the results from samples. Here, we define similar
+in magnitude to mean both the same sign and within a factor of 2 of one
+another.</p>
 <p><span class="math display">\[
 \begin{align*}
-&amp;\text{Proportion of effects have the same sign and similar magnitude for condition r, r'} \\
-&amp;= \frac{1}{2000} \sum_{j=1}^{2000}\mathbb{E}\left(\mathbb{I}(b_{jr}, b_{jr'} \text{ have same sign and similar magnitude})  \right) \\
-&amp;\approx \frac{1}{2000} \sum_{j=1}^{2000} \frac{1}{100} \sum_{m=1}^{100} \mathbb{I}(b_{jr}^{(m)}, b_{jr'}^{(m)} \text{ have same sign and similar magnitude})
+&amp;\text{Proportion of effects have the same sign and similar
+magnitude for condition r, r'} \\
+&amp;= \frac{1}{2000}
+\sum_{j=1}^{2000}\mathbb{E}\left(\mathbb{I}(b_{jr}, b_{jr'} \text{
+have same sign and similar magnitude})  \right) \\
+&amp;\approx \frac{1}{2000} \sum_{j=1}^{2000} \frac{1}{100}
+\sum_{m=1}^{100} \mathbb{I}(b_{jr}^{(m)}, b_{jr'}^{(m)} \text{ have
+same sign and similar magnitude})
 \end{align*}
 \]</span> The last approximation is achieved by sampling.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/taiyun/corrplot">corrplot</a></span><span class="op">)</span></code></pre></div>
-<pre><code># corrplot 0.90 loaded</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/taiyun/corrplot" class="external-link">corrplot</a></span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co"># corrplot 0.92 loaded</span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_pairwise_sharing_from_samples.html">get_pairwise_sharing_from_samples</a></span><span class="op">(</span><span class="va">m</span>, factor<span class="op">=</span><span class="fl">0.5</span>, lfsr_thresh <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="va">x</span>, method<span class="op">=</span><span class="st">'color'</span>, cl.lim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'upper'</span>, addCoef.col <span class="op">=</span> <span class="st">"black"</span>, tl.col<span class="op">=</span><span class="st">"black"</span>, tl.srt<span class="op">=</span><span class="fl">45</span>, title <span class="op">=</span> <span class="st">'Pairwise Sharing by Magnitude'</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code># Warning in text.default(pos.xlabel[, 1], pos.xlabel[, 2], newcolnames, srt =
-# tl.srt, : "cl.lim" is not a graphical parameter</code></pre>
-<pre><code># Warning in text.default(pos.ylabel[, 1], pos.ylabel[, 2], newrownames, col =
-# tl.col, : "cl.lim" is not a graphical parameter</code></pre>
-<pre><code># Warning in title(title, ...): "cl.lim" is not a graphical parameter</code></pre>
+<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="va">x</span>, method<span class="op">=</span><span class="st">'color'</span>, col.lim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'upper'</span>, addCoef.col <span class="op">=</span> <span class="st">"black"</span>, tl.col<span class="op">=</span><span class="st">"black"</span>, tl.srt<span class="op">=</span><span class="fl">45</span>, title <span class="op">=</span> <span class="st">'Pairwise Sharing by Magnitude'</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="mash_sampling_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>We can also get the proportion of <strong>significant</strong> effects have the same sign and similar magnitude for each pair of conditions. For each pair of conditions, first identify the effects that are significant in at least one of the two conditions. Then compute the probability of sharing in sign and magnitude.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>We can also get the proportion of <strong>significant</strong>
+effects have the same sign and similar magnitude for each pair of
+conditions. For each pair of conditions, first identify the effects that
+are significant in at least one of the two conditions. Then compute the
+probability of sharing in sign and magnitude.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_pairwise_sharing_from_samples.html">get_pairwise_sharing_from_samples</a></span><span class="op">(</span><span class="va">m</span>, factor<span class="op">=</span><span class="fl">0.5</span>, lfsr_thresh <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="va">x</span>, method<span class="op">=</span><span class="st">'color'</span>, cl.lim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'upper'</span>, addCoef.col <span class="op">=</span> <span class="st">"black"</span>, tl.col<span class="op">=</span><span class="st">"black"</span>, tl.srt<span class="op">=</span><span class="fl">45</span>, title <span class="op">=</span> <span class="st">'Pairwise Sharing by Magnitude'</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code># Warning in text.default(pos.xlabel[, 1], pos.xlabel[, 2], newcolnames, srt =
-# tl.srt, : "cl.lim" is not a graphical parameter</code></pre>
-<pre><code># Warning in text.default(pos.ylabel[, 1], pos.ylabel[, 2], newrownames, col =
-# tl.col, : "cl.lim" is not a graphical parameter</code></pre>
-<pre><code># Warning in title(title, ...): "cl.lim" is not a graphical parameter</code></pre>
+<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="va">x</span>, method<span class="op">=</span><span class="st">'color'</span>, col.lim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'upper'</span>, addCoef.col <span class="op">=</span> <span class="st">"black"</span>, tl.col<span class="op">=</span><span class="st">"black"</span>, tl.srt<span class="op">=</span><span class="fl">45</span>, title <span class="op">=</span> <span class="st">'Pairwise Sharing by Magnitude'</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="mash_sampling_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>The pairwise sharing proportions are higher, since it is computed out of <strong>significant signals</strong> only.</p>
-<p>There is another function in <code>mashr</code> package (<code>get_pairwise_sharing</code>) that compute the proportion of <strong>significant signals</strong> shared by magnitude in the <strong>estimated effect sizes</strong>, for each pair of conditions. For each pair of conditions, first identify the effects that are significant in at least one of the two conditions. Then compute what fraction of these have an estimated (posterior mean) effect size within a factor <code>factor</code> of one another.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>The pairwise sharing proportions are higher, since it is computed out
+of <strong>significant signals</strong> only.</p>
+<p>There is another function in <code>mashr</code> package
+(<code>get_pairwise_sharing</code>) that compute the proportion of
+<strong>significant signals</strong> shared by magnitude in the
+<strong>estimated effect sizes</strong>, for each pair of conditions.
+For each pair of conditions, first identify the effects that are
+significant in at least one of the two conditions. Then compute what
+fraction of these have an estimated (posterior mean) effect size within
+a factor <code>factor</code> of one another.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_pairwise_sharing.html">get_pairwise_sharing</a></span><span class="op">(</span><span class="va">m</span>, factor<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html">corrplot</a></span><span class="op">(</span><span class="va">x</span>, method<span class="op">=</span><span class="st">'color'</span>, cl.lim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'upper'</span>, addCoef.col <span class="op">=</span> <span class="st">"black"</span>, tl.col<span class="op">=</span><span class="st">"black"</span>, tl.srt<span class="op">=</span><span class="fl">45</span>, title <span class="op">=</span> <span class="st">'Pairwise Sharing by Magnitude'</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code># Warning in text.default(pos.xlabel[, 1], pos.xlabel[, 2], newcolnames, srt =
-# tl.srt, : "cl.lim" is not a graphical parameter</code></pre>
-<pre><code># Warning in text.default(pos.ylabel[, 1], pos.ylabel[, 2], newrownames, col =
-# tl.col, : "cl.lim" is not a graphical parameter</code></pre>
-<pre><code># Warning in title(title, ...): "cl.lim" is not a graphical parameter</code></pre>
+<span class="fu"><a href="https://rdrr.io/pkg/corrplot/man/corrplot.html" class="external-link">corrplot</a></span><span class="op">(</span><span class="va">x</span>, method<span class="op">=</span><span class="st">'color'</span>, col.lim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, type<span class="op">=</span><span class="st">'upper'</span>, addCoef.col <span class="op">=</span> <span class="st">"black"</span>, tl.col<span class="op">=</span><span class="st">"black"</span>, tl.srt<span class="op">=</span><span class="fl">45</span>, title <span class="op">=</span> <span class="st">'Pairwise Sharing by Magnitude'</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="mash_sampling_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
   </div>
@@ -171,11 +190,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
+  <p></p>
+<p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -183,6 +204,8 @@
 
   
 
+
+  
 
   </body>
 </html>

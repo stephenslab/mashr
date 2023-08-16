@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.73</span>
       </span>
     </div>
 
@@ -49,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/stephenslab/mashr/">
+  <a href="https://github.com/stephenslab/mashr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -64,106 +66,157 @@
 
       
 
-      </header><script src="intro_mash_dd_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Introduction to mash: data-driven covariances</h1>
-                        <h4 class="author">Matthew Stephens</h4>
+      <h1 data-toc-skip>Introduction to mash: data-driven
+covariances</h1>
+                        <h4 data-toc-skip class="author">Matthew
+Stephens</h4>
             
-            <h4 class="date">2021-07-22</h4>
+            <h4 data-toc-skip class="date">2023-08-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/intro_mash_dd.Rmd"><code>vignettes/intro_mash_dd.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/HEAD/vignettes/intro_mash_dd.Rmd" class="external-link"><code>vignettes/intro_mash_dd.Rmd</code></a></small>
       <div class="hidden name"><code>intro_mash_dd.Rmd</code></div>
 
     </div>
 
     
     
-<div id="goal" class="section level2">
-<h2 class="hasAnchor">
-<a href="#goal" class="anchor"></a>Goal</h2>
-<p>This vignette introduces the important topic of using data-driven covariance matries in <code>mashr</code>. You should read <a href="intro_mash.html">the introductory vignette</a> before this.</p>
+<div class="section level2">
+<h2 id="goal">Goal<a class="anchor" aria-label="anchor" href="#goal"></a>
+</h2>
+<p>This vignette introduces the important topic of using data-driven
+covariance matries in <code>mashr</code>. You should read <a href="intro_mash.html">the introductory vignette</a> before this.</p>
 </div>
-<div id="outline" class="section level2">
-<h2 class="hasAnchor">
-<a href="#outline" class="anchor"></a>Outline</h2>
+<div class="section level2">
+<h2 id="outline">Outline<a class="anchor" aria-label="anchor" href="#outline"></a>
+</h2>
 <p>Recall the four major steps in a mash analysis:</p>
 <ul>
 <li><p>Read in the data</p></li>
 <li><p>Set up the covariance matrices to be used</p></li>
 <li><p>Fit the model</p></li>
-<li><p>Extract posterior summaries and other quantities of interest</p></li>
+<li><p>Extract posterior summaries and other quantities of
+interest</p></li>
 </ul>
-<p>Here we pay more attention to Step 2, which can be split into two steps:</p>
+<p>Here we pay more attention to Step 2, which can be split into two
+steps:</p>
 <ul>
 <li><p>Set up the “canonical” covariance matrices.</p></li>
 <li><p>Set up the “data-driven” covariance matrices.</p></li>
 </ul>
-<p>The first of these steps (“canonical” covariance matrices) is straightforward using <code>cov_canonical</code>, as illustrated in <a href="intro_mash.html">the introductory vignette</a>.</p>
-<p>Setting up the data-driven matrices is slightly more complex, and there are multiple possible approaches. This vignette illustrates one approach.</p>
-<p>First we simulate some data for illustration (see the <a href="intro_mash.html">the introductory vignette</a> for more details):</p>
+<p>The first of these steps (“canonical” covariance matrices) is
+straightforward using <code>cov_canonical</code>, as illustrated in <a href="intro_mash.html">the introductory vignette</a>.</p>
+<p>Setting up the data-driven matrices is slightly more complex, and
+there are multiple possible approaches. This vignette illustrates one
+approach.</p>
+<p>First we simulate some data for illustration (see the <a href="intro_mash.html">the introductory vignette</a> for more
+details):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr">ashr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr" class="external-link">ashr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr" class="external-link">mashr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="data-driven-covariances" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data-driven-covariances" class="anchor"></a>Data-driven covariances</h2>
-<p>Although the user is free to set up data driven covariance matrices using any method that they would like, typically we suggest the following three-step strategy:</p>
+<div class="section level2">
+<h2 id="data-driven-covariances">Data-driven covariances<a class="anchor" aria-label="anchor" href="#data-driven-covariances"></a>
+</h2>
+<p>Although the user is free to set up data driven covariance matrices
+using any method that they would like, typically we suggest the
+following three-step strategy:</p>
 <ol style="list-style-type: decimal">
-<li><p>Locate some strong signals. For example, here we do this within R by running a “condition-by-condition” using <code>mash_1by1</code>, but you could do this as a preprocessing step in other software - for example in eQTL studies you might instead put together a separate dataset containing the test results for only the “top” eQTL or eQTLs in each gene.</p></li>
-<li><p>Use methods such as PCA or factor analysis on these top signals to compute some initial data-driven covariance matrices (e.g. using <code>cov_pca</code>).</p></li>
-<li><p>Use these data-driven covariance matrices as initializations for the extreme deconvolution (ED) algorithm (using <code>cov_ed</code>), to get some refined data-driven covariance matrix estimates.</p></li>
+<li><p>Locate some strong signals. For example, here we do this within R
+by running a “condition-by-condition” using <code>mash_1by1</code>, but
+you could do this as a preprocessing step in other software - for
+example in eQTL studies you might instead put together a separate
+dataset containing the test results for only the “top” eQTL or eQTLs in
+each gene.</p></li>
+<li><p>Use methods such as PCA or factor analysis on these top signals
+to compute some initial data-driven covariance matrices (e.g. using
+<code>cov_pca</code>).</p></li>
+<li><p>Use these data-driven covariance matrices as initializations for
+the extreme deconvolution (ED) algorithm (using <code>cov_ed</code>), to
+get some refined data-driven covariance matrix estimates.</p></li>
 </ol>
-<p>The ED step is helpful primarily because the second step will often estimate the covariances of the observed data (Bhat) whereas what is required is the covariances of the actual underlying effects (B), and this is what ED estimates. However, ED can be quite sensitive to initialization, and so the goal of the second step is to provide a good initialization.</p>
-<div id="step-1-select-strong-signals" class="section level3">
-<h3 class="hasAnchor">
-<a href="#step-1-select-strong-signals" class="anchor"></a>Step 1: select strong signals</h3>
-<p>If your entire data set (matrix of <em>all</em> tests in all conditions) is not too big (eg &lt;100k tests say) then you can simply do this by setting up the entire data set as a mash data object (using <code>mash_set_data</code>), and then running a condition-by-condition (1by1) analysis on all the data. For example, here we select the strong signals as those with lfsr&lt;0.05 in any condition in the 1by1 analysis.</p>
+<p>The ED step is helpful primarily because the second step will often
+estimate the covariances of the observed data (Bhat) whereas what is
+required is the covariances of the actual underlying effects (B), and
+this is what ED estimates. However, ED can be quite sensitive to
+initialization, and so the goal of the second step is to provide a good
+initialization.</p>
+<div class="section level3">
+<h3 id="step-1-select-strong-signals">Step 1: select strong signals<a class="anchor" aria-label="anchor" href="#step-1-select-strong-signals"></a>
+</h3>
+<p>If your entire data set (matrix of <em>all</em> tests in all
+conditions) is not too big (eg &lt;100k tests say) then you can simply
+do this by setting up the entire data set as a mash data object (using
+<code>mash_set_data</code>), and then running a condition-by-condition
+(1by1) analysis on all the data. For example, here we select the strong
+signals as those with lfsr&lt;0.05 in any condition in the 1by1
+analysis.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
 <span class="va">m.1by1</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash_1by1.html">mash_1by1</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
 <span class="va">strong</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_significant_results.html">get_significant_results</a></span><span class="op">(</span><span class="va">m.1by1</span>,<span class="fl">0.05</span><span class="op">)</span></code></pre></div>
-<p>This sets up a vector <code>strong</code> containing the indices corresponding to the “significant” rows of the test results in <code>data</code>. This vector is used in subsequent functions below to specify which rows of <code>data</code> to use.</p>
+<p>This sets up a vector <code>strong</code> containing the indices
+corresponding to the “significant” rows of the test results in
+<code>data</code>. This vector is used in subsequent functions below to
+specify which rows of <code>data</code> to use.</p>
 </div>
-<div id="step-2-obtain-initial-data-driven-covariance-matrices" class="section level3">
-<h3 class="hasAnchor">
-<a href="#step-2-obtain-initial-data-driven-covariance-matrices" class="anchor"></a>Step 2: Obtain initial data-driven covariance matrices</h3>
-<p>There are various approaches to this; here we just illustrate the simplest and quickest (but probably not the best), which is to use PCA. Specifically here we use the function <code>cov_pca</code> to produce covariance matrices based on the top 5 PCs of the strong signals. The result is a list of 6 covariance matrices: one based on all 5 PCs, and the others each based on one PC.</p>
+<div class="section level3">
+<h3 id="step-2-obtain-initial-data-driven-covariance-matrices">Step 2: Obtain initial data-driven covariance matrices<a class="anchor" aria-label="anchor" href="#step-2-obtain-initial-data-driven-covariance-matrices"></a>
+</h3>
+<p>There are various approaches to this; here we just illustrate the
+simplest and quickest (but probably not the best), which is to use PCA.
+Specifically here we use the function <code>cov_pca</code> to produce
+covariance matrices based on the top 5 PCs of the strong signals. The
+result is a list of 6 covariance matrices: one based on all 5 PCs, and
+the others each based on one PC.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.pca</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_pca.html">cov_pca</a></span><span class="op">(</span><span class="va">data</span>,<span class="fl">5</span>,subset<span class="op">=</span><span class="va">strong</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">U.pca</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">U.pca</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="step-3-apply-extreme-deconvolution" class="section level3">
-<h3 class="hasAnchor">
-<a href="#step-3-apply-extreme-deconvolution" class="anchor"></a>Step 3: Apply Extreme Deconvolution</h3>
-<p>The function <code>cov_ed</code> is used to apply the ED algorithm from a specified initialization (here <code>U.pca</code>) and to a specified subset of signals.</p>
+<div class="section level3">
+<h3 id="step-3-apply-extreme-deconvolution">Step 3: Apply Extreme Deconvolution<a class="anchor" aria-label="anchor" href="#step-3-apply-extreme-deconvolution"></a>
+</h3>
+<p>The function <code>cov_ed</code> is used to apply the ED algorithm
+from a specified initialization (here <code>U.pca</code>) and to a
+specified subset of signals.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_ed.html">cov_ed</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.pca</span>, subset<span class="op">=</span><span class="va">strong</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div id="run-mash" class="section level2">
-<h2 class="hasAnchor">
-<a href="#run-mash" class="anchor"></a>Run mash</h2>
-<p>After all this we are ready to run <code>mash</code> using the data driven matrices. Remember the Crucial Rule that we must fit mash to <em>all</em> tests - do not use only the <code>strong</code> subset here!!</p>
+<div class="section level2">
+<h2 id="run-mash">Run mash<a class="anchor" aria-label="anchor" href="#run-mash"></a>
+</h2>
+<p>After all this we are ready to run <code>mash</code> using the data
+driven matrices. Remember the Crucial Rule that we must fit mash to
+<em>all</em> tests - do not use only the <code>strong</code> subset
+here!!</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.ed</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.ed</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p>From the fit we see that the fit using the data-driven covariances is not as good as when we used the canonical covariances (which was -16120.32; from <a href="intro_mash.html">the introductory vignette</a>). This is expected for this simulation because the simulation actually used the canonical covariances!</p>
-<p>In general we recommend running <code>mash</code> with both data-driven and canonical covariances. You could do this by combining the data-driven and canonical covariances as in this code:</p>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_loglik</a></span><span class="op">(</span><span class="va">m.ed</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<p>From the fit we see that the fit using the data-driven covariances is
+not as good as when we used the canonical covariances (which was
+-16120.32; from <a href="intro_mash.html">the introductory
+vignette</a>). This is expected for this simulation because the
+simulation actually used the canonical covariances!</p>
+<p>In general we recommend running <code>mash</code> with both
+data-driven and canonical covariances. You could do this by combining
+the data-driven and canonical covariances as in this code:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">U.c</span> <span class="op">=</span> <span class="fu"><a href="../reference/cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>  
-<span class="va">m</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.c</span>,<span class="va">U.ed</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p>For an example with simulations that do not follow the standard canonical matrices see <a href="simulate_noncanon.html">here</a>.</p>
+<span class="va">m</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">U.c</span>,<span class="va">U.ed</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_loglik</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<p>For an example with simulations that do not follow the standard
+canonical matrices see <a href="simulate_noncanon.html">here</a>.</p>
 </div>
-<div id="session-information-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#session-information-" class="anchor"></a>Session information.</h2>
+<div class="section level2">
+<h2 id="session-information-">Session information.<a class="anchor" aria-label="anchor" href="#session-information-"></a>
+</h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
@@ -178,11 +231,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
+  <p></p>
+<p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -190,6 +245,8 @@
 
   
 
+
+  
 
   </body>
 </html>

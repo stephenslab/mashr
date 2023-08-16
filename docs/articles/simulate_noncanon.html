@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.50</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.73</span>
       </span>
     </div>
 
@@ -49,7 +51,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/stephenslab/mashr/">
+  <a href="https://github.com/stephenslab/mashr/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -64,46 +66,49 @@
 
       
 
-      </header><script src="simulate_noncanon_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Simulation with non-canonical matrices</h1>
-                        <h4 class="author">Matthew Stephens</h4>
+                        <h4 data-toc-skip class="author">Matthew
+Stephens</h4>
             
-            <h4 class="date">2021-07-22</h4>
+            <h4 data-toc-skip class="date">2023-08-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/master/vignettes/simulate_noncanon.Rmd"><code>vignettes/simulate_noncanon.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/stephenslab/mashr/blob/HEAD/vignettes/simulate_noncanon.Rmd" class="external-link"><code>vignettes/simulate_noncanon.Rmd</code></a></small>
       <div class="hidden name"><code>simulate_noncanon.Rmd</code></div>
 
     </div>
 
     
     
-<div id="goal" class="section level2">
-<h2 class="hasAnchor">
-<a href="#goal" class="anchor"></a>Goal</h2>
-<p>To try out some simulations that don’t match the canonical covariance matrices and illustrate how the data driven matrices help.</p>
+<div class="section level2">
+<h2 id="goal">Goal<a class="anchor" aria-label="anchor" href="#goal"></a>
+</h2>
+<p>To try out some simulations that don’t match the canonical covariance
+matrices and illustrate how the data driven matrices help.</p>
 </div>
-<div id="simple-simulation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#simple-simulation" class="anchor"></a>Simple simulation</h2>
-<p>Here the function <code>simple_sims_2</code> simulates data in five conditions with just two types of effect:</p>
+<div class="section level2">
+<h2 id="simple-simulation">Simple simulation<a class="anchor" aria-label="anchor" href="#simple-simulation"></a>
+</h2>
+<p>Here the function <code>simple_sims_2</code> simulates data in five
+conditions with just two types of effect:</p>
 <ol style="list-style-type: decimal">
 <li><p>shared effects only in the first two conditions; and</p></li>
 <li><p>shared effects only in the last three conditions.</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr">ashr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr">mashr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephens999/ashr" class="external-link">ashr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stephenslab/mashr" class="external-link">mashr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/simple_sims2.html">simple_sims2</a></span><span class="op">(</span><span class="fl">1000</span>,<span class="fl">1</span><span class="op">)</span>
-<span class="va">true.U1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>
-<span class="va">true.U2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="va">U.true</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>true.U1 <span class="op">=</span> <span class="va">true.U1</span>, true.U2 <span class="op">=</span> <span class="va">true.U2</span><span class="op">)</span></code></pre></div>
+<span class="va">true.U1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>
+<span class="va">true.U2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">5</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="va">U.true</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>true.U1 <span class="op">=</span> <span class="va">true.U1</span>, true.U2 <span class="op">=</span> <span class="va">true.U2</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="simple-simulation-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#simple-simulation-1" class="anchor"></a>Simple simulation</h2>
+<div class="section level2">
+<h2 id="simple-simulation-1">Simple simulation<a class="anchor" aria-label="anchor" href="#simple-simulation-1"></a>
+</h2>
 <p>Run 1-by-1 to add the strong signals and ED covariances.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span>
@@ -117,14 +122,16 @@
 <span class="co"># initialized from PCA.</span>
 <span class="va">m.c</span>    <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.c</span><span class="op">)</span>
 <span class="va">m.ed</span>   <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.ed</span><span class="op">)</span>
-<span class="va">m.c.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">U.c</span>,<span class="va">U.ed</span><span class="op">)</span><span class="op">)</span>
+<span class="va">m.c.ed</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">U.c</span>,<span class="va">U.ed</span><span class="op">)</span><span class="op">)</span>
 <span class="va">m.true</span> <span class="op">=</span> <span class="fu"><a href="../reference/mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">U.true</span><span class="op">)</span>
   
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.c</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.ed</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.c.ed</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html">get_loglik</a></span><span class="op">(</span><span class="va">m.true</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p>The log-likelihood is much better from data-driven than canonical covariances. This is good! Indeed, here the data-driven fit is very slightly better fit than the true matrices, but only very slightly.</p>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_loglik</a></span><span class="op">(</span><span class="va">m.c</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_loglik</a></span><span class="op">(</span><span class="va">m.ed</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_loglik</a></span><span class="op">(</span><span class="va">m.c.ed</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ashr/man/get_lfdr.html" class="external-link">get_loglik</a></span><span class="op">(</span><span class="va">m.true</span><span class="op">)</span>,digits <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<p>The log-likelihood is much better from data-driven than canonical
+covariances. This is good! Indeed, here the data-driven fit is very
+slightly better fit than the true matrices, but only very slightly.</p>
 </div>
   </div>
 
@@ -139,11 +146,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
+  <p></p>
+<p>Developed by Matthew Stephens, Sarah Urbut, Gao Wang, Yuxin Zou, Peter Carbonetto.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -151,6 +160,8 @@
 
   
 
+
+  
 
   </body>
 </html>
