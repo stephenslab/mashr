@@ -36,10 +36,10 @@ corresponding to singleton matrices will be removed from the output.}
 (using \code{\link{saveRDS}}).}
 
 \item{greedy_args}{List containing additional parameters passed to
-\code{flashier::flash.add.greedy}.}
+\code{flashier::flash_greedy}.}
 
 \item{backfit_args}{List containing additional parameters passed
-to \code{flashier::flash.backfit}.}
+to \code{flashier::flash_backfit}.}
 }
 \value{
 A list of covariance matrices.
