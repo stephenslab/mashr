@@ -62,11 +62,9 @@ Alternatively, as [suggested by Jason Willwerscheid for multi-tissue QTL studies
 constrain factors to non-negative values. We can use `tag` parameter to customize the names in the output list:
 
 ```{r}
-U.f = cov_flash(data.strong, factors="nonneg", tag="non_neg", var_type="constant")
+U.f = cov_flash(data.strong, factors="nonneg", tag="non_neg")
 U.f
 ```
-
-`var_type="constant"` is an additional parameter passed to `flash` function, as suggested in the post above.
 
 # Finalize covariances
 
