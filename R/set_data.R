@@ -192,7 +192,7 @@ mash_update_data = function(mashdata, ref= NULL, V = NULL){
   }
 
   if(!is.null(mashdata$L)){
-    mashdata = mash_set_data_contrast(mashdata, L)
+    mashdata = mash_set_data_contrast(mashdata, mashdata$L)
   }
 
   if(!is.null(ref)){
