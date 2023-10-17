@@ -2,8 +2,7 @@
 % Please edit documentation in R/mash.R
 \name{expand_cov}
 \alias{expand_cov}
-\title{Create expanded list of covariance matrices expanded by
-  grid, Sigma_{lk} = omega_l U_k}
+\title{Create expanded list of covariance matrices expanded by grid}
 \usage{
 expand_cov(Ulist, grid, usepointmass = TRUE)
 }
