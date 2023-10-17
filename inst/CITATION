@@ -1,11 +1,13 @@
 citHeader("To cite the mashr package in publications use:")
 
-citEntry(entry   = "Article",
+bibentry(bibtype = "Article",
          title   = 
 	 paste("Flexible statistical methods for estimating and testing",
                "effects in genomic studies with multiple conditions"),
-         author  = paste("Sarah Urbut, Gao Wang, Peter Carbonetto and",
-                         "Matthew Stephens"),
+         author = c(person("Sarah Urbut"),
+                    person("Gao Wang"),
+                    person("Peter Carbonetto"),
+                    person("Matthew Stephens")),
          journal = "Nature Genetics",
          volume  = 51,
          number  = 1,
