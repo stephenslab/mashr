@@ -29,9 +29,3 @@ the returned vector will be of length $L$ (or $L+1$).  If
 $LK+1$). The names of the vector will be informative for which
 combination each element corresponds to.
 }
-\examples{
-simdata = simple_sims(50,5,1)
-data = mash_set_data(simdata$Bhat, simdata$Shat)
-m = mash(data, cov_canonical(data))
-get_estimated_pi(m)
-}

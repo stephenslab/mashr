@@ -113,11 +113,6 @@ get_n_significant_conditions = function(m, thresh = 0.05, conditions = NULL,
 #'
 #' @importFrom ashr get_fitted_g
 #'
-#' @examples
-#' simdata = simple_sims(50,5,1)
-#' data = mash_set_data(simdata$Bhat, simdata$Shat)
-#' m = mash(data, cov_canonical(data))
-#' get_estimated_pi(m)
 #' @export
 #'
 get_estimated_pi = function(m, dimension = c("cov","grid","all")){

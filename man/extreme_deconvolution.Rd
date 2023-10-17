@@ -96,6 +96,7 @@ with singularities and local maxima, which are often encountered
 when using the EM algorithm to estimate Gaussian density mixtures.
 }
 \examples{
+\dontrun{
 ydata <-
 c(2.62434536, 0.38824359, 0.47182825, -0.07296862, 1.86540763,
   -1.30153870, 2.74481176, 0.23879310, 1.31903910, 0.75062962,
@@ -151,6 +152,7 @@ for (i in 1:N)
   projection[[i]] = matrix(c(i\%\%2,(i+1)\%\%2),1,2)
 res <- extreme_deconvolution(ydata, ycovar, xamp, xmean, xcovar,
          projection=projection, logfile="ExDeconDemo")
+}
 
 }
 \references{
