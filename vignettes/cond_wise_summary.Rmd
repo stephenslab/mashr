@@ -1,0 +1,31 @@
+# Simulate data and fit mashr model
+
+```{r simdata}
+set.seed(1)
+simdata <- simple_sims(100,5,1)
+dat <- mash_set_data(simdata$Bhat,simdata$Shat)
+U <- cov_canonical(dat)
+m <- mash(dat,U)
+```
+
+# Construct a matrix for pairwise posterior comparison. 
+
+Note that the `constrast_mat` is of user's choice. The following
+example creates a `contrast_mat` for pairwise condition by condition
+comparison. That is, compares condition 1 with 2,3,4,5, condition 2
+with 3,4,5 and so on. This can be easily seen from the contrast_mat.
+
+```{r}
+get_contrast_mat <- function (R) {
+  pairwise_combinations <- combn(1:R, 2)
+  A <- matrix(0, ncol = R, nrow = ncol(pairwise_combinations))
+  for (i in 1:ncol(pairwise_combinations)) {
+    A[i, pairwise_combinations[, i]] <- 1
+  }
+  return(A)
+}
+contrast_mat <- get_contrast_mat(5)
+print(contrast_mat)
+res <- get_posterior_pairwise_contrast(dat,m,contrast_mat = contrast_mat)
+```
+

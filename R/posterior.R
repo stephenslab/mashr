@@ -250,3 +250,32 @@ compute_posterior_weights <- function(pi, lik_mat) {
   norm <- rowSums(d) # normalize probabilities to sum to 1
   return(d/norm)
 }
+
+#' @title Condition-wise posterior summary
+#' 
+#' @description Provide condition-wise summary based on posterior
+#' distributions for each effect
+#' 
+#' @param mash_data a mash data object, e.g. as created by \code{mash_set_data}
+#' 
+#' @param m.c A mash fit, e.g., a return value from \code{\link{mash}}.
+#' 
+#' @param contrast_mat: a matrix applied to mashr fitting result,
+#'   enabling comparisons for different conditions based on posteior
+#'   distributions.
+#' 
+get_posterior_condition_wise_summary <- function (mash_data, m,
+                                                  contrast_mat){
+  # the number of condition
+  R <- ncol(mash_data$Bhat)
+  
+  # get fitted U. 
+  names <- attr(m.c$posterior_weights, "name")
+  indx = as.numeric(names[!is.na(names)])
+  xUlist = mashr:::expand_cov(m.c$fitted_g$Ulist, m.c$fitted_g$grid, m.c$fitted_g$usepointmass)
+  U.new = sapply(indx, function(x) xUlist[x])
+  
+  res <- mashr:::compute_posterior_matrices_common_cov_R(mash_data, A = contrast_mat, Ulist = U.new,
+                                                       posterior_weights = m.c$posterior_weights)
+  return(res)
+}
