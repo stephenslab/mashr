@@ -251,31 +251,48 @@ compute_posterior_weights <- function(pi, lik_mat) {
   return(d/norm)
 }
 
-#' @title Condition-wise posterior summary
+#' @title Condition-wise Posterior Summary
 #' 
 #' @description Provide condition-wise summary based on posterior
-#' distributions for each effect
+#'   distributions for each effect.
 #' 
-#' @param mash_data a mash data object, e.g. as created by \code{mash_set_data}
+#' @param mash_data A mash data object, e.g. as created by \code{mash_set_data}
 #' 
-#' @param m.c A mash fit, e.g., a return value from \code{\link{mash}}.
+#' @param m A mash fit, typically an output from \code{\link{mash}}.
 #' 
-#' @param contrast_mat: a matrix applied to mashr fitting result,
+#' @param contrast_mat A matrix applied to mashr fitting result,
 #'   enabling comparisons for different conditions based on posteior
 #'   distributions.
+#'
+#' @return
+#' See \code{\link{compute_posterior_matrices_common_cov_R}}.
 #' 
-get_posterior_condition_wise_summary <- function (mash_data, m,
-                                                  contrast_mat){
-  # the number of condition
-  R <- ncol(mash_data$Bhat)
-  
-  # get fitted U. 
-  names <- attr(m.c$posterior_weights, "name")
-  indx = as.numeric(names[!is.na(names)])
-  xUlist = mashr:::expand_cov(m.c$fitted_g$Ulist, m.c$fitted_g$grid, m.c$fitted_g$usepointmass)
-  U.new = sapply(indx, function(x) xUlist[x])
-  
-  res <- mashr:::compute_posterior_matrices_common_cov_R(mash_data, A = contrast_mat, Ulist = U.new,
-                                                       posterior_weights = m.c$posterior_weights)
-  return(res)
+#' @export
+#' 
+#' @examples
+#' 
+#' # The following example performs pairwise comparisons in a data set
+#' # with 5 conditions: that is, it compares conditions (column) 1 and
+#' # 2, 1 and 3, 1 and 4, 1 and 5, 2 and 3, etc.
+#' library(Matrix)
+#' set.seed(1)
+#' simdata <- simple_sims(100,5,1)
+#' dat <- mash_set_data(simdata$Bhat,simdata$Shat)
+#' U <- cov_canonical(dat)
+#' m <- mash(dat,U)
+#' x <- combn(5,2)
+#' n <- ncol(x)
+#' contrast_mat <- as.matrix(sparseMatrix(i = rep(1:n,each = 2),
+#'                                        j = as.vector(x),
+#'                                        x = 1,dims = c(n,5)))
+#' res <- get_posterior_condition_wise_summary(dat,m,contrast_mat)
+get_posterior_condition_wise_summary <- function (mash_data, m, contrast_mat) {
+  R      <- ncol(mash_data$Bhat)
+  x      <- names(m$posterior_weights)
+  indx   <- as.numeric(x[which(!is.na(x))])
+  xUlist <- expand_cov(m$fitted_g$Ulist,m$fitted_g$grid,
+                       m$fitted_g$usepointmass)
+  U      <- xUlist[indx]
+  return(compute_posterior_matrices_common_cov_R(mash_data,contrast_mat,U,
+                                                 m$posterior_weights))
 }
