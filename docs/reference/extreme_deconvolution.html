@@ -33,7 +33,7 @@ when using the EM algorithm to estimate Gaussian density mixtures."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.73</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.81</span>
       </span>
     </div>
 
@@ -87,26 +87,26 @@ when using the EM algorithm to estimate Gaussian density mixtures.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extreme_deconvolution</span><span class="op">(</span>
-  <span class="va">ydata</span>,
-  <span class="va">ycovar</span>,
-  <span class="va">xamp</span>,
-  <span class="va">xmean</span>,
-  <span class="va">xcovar</span>,
-  projection <span class="op">=</span> <span class="cn">NULL</span>,
-  weight <span class="op">=</span> <span class="cn">NULL</span>,
-  fixamp <span class="op">=</span> <span class="cn">NULL</span>,
-  fixmean <span class="op">=</span> <span class="cn">NULL</span>,
-  fixcovar <span class="op">=</span> <span class="cn">NULL</span>,
-  tol <span class="op">=</span> <span class="fl">1e-06</span>,
-  maxiter <span class="op">=</span> <span class="fl">1e+09</span>,
-  w <span class="op">=</span> <span class="fl">0</span>,
-  logfile <span class="op">=</span> <span class="cn">NULL</span>,
-  splitnmerge <span class="op">=</span> <span class="fl">0</span>,
-  maxsnm <span class="op">=</span> <span class="cn">FALSE</span>,
-  likeonly <span class="op">=</span> <span class="cn">FALSE</span>,
-  logweight <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extreme_deconvolution</span><span class="op">(</span></span>
+<span>  <span class="va">ydata</span>,</span>
+<span>  <span class="va">ycovar</span>,</span>
+<span>  <span class="va">xamp</span>,</span>
+<span>  <span class="va">xmean</span>,</span>
+<span>  <span class="va">xcovar</span>,</span>
+<span>  projection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fixamp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fixmean <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fixcovar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tol <span class="op">=</span> <span class="fl">1e-06</span>,</span>
+<span>  maxiter <span class="op">=</span> <span class="fl">1e+09</span>,</span>
+<span>  w <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  logfile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  splitnmerge <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  maxsnm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  likeonly <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  logweight <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -220,62 +220,64 @@ Roweis, Submitted to AOAS (2009) [arXiv/0905.2979]</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">ydata</span> <span class="op">&lt;-</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.62434536</span>, <span class="fl">0.38824359</span>, <span class="fl">0.47182825</span>, <span class="op">-</span><span class="fl">0.07296862</span>, <span class="fl">1.86540763</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">1.30153870</span>, <span class="fl">2.74481176</span>, <span class="fl">0.23879310</span>, <span class="fl">1.31903910</span>, <span class="fl">0.75062962</span>,</span>
-<span class="r-in">  <span class="fl">2.46210794</span>, <span class="op">-</span><span class="fl">1.06014071</span>, <span class="fl">0.67758280</span>, <span class="fl">0.61594565</span>, <span class="fl">2.13376944</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.09989127</span>, <span class="fl">0.82757179</span>, <span class="fl">0.12214158</span>, <span class="fl">1.04221375</span>, <span class="fl">1.58281521</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.10061918</span>, <span class="fl">2.14472371</span>, <span class="fl">1.90159072</span>, <span class="fl">1.50249434</span>, <span class="fl">1.90085595</span>,</span>
-<span class="r-in">  <span class="fl">0.31627214</span>, <span class="fl">0.87710977</span>, <span class="fl">0.06423057</span>, <span class="fl">0.73211192</span>, <span class="fl">1.53035547</span>,</span>
-<span class="r-in">  <span class="fl">0.30833925</span>, <span class="fl">0.60324647</span>, <span class="fl">0.31282730</span>, <span class="fl">0.15479436</span>, <span class="fl">0.32875387</span>,</span>
-<span class="r-in">  <span class="fl">0.98733540</span>, <span class="op">-</span><span class="fl">0.11731035</span>, <span class="fl">1.23441570</span>, <span class="fl">2.65980218</span>, <span class="fl">1.74204416</span>,</span>
-<span class="r-in">  <span class="fl">0.80816445</span>, <span class="fl">0.11237104</span>, <span class="fl">0.25284171</span>, <span class="fl">2.69245460</span>, <span class="fl">1.05080775</span>,</span>
-<span class="r-in">  <span class="fl">0.36300435</span>, <span class="fl">1.19091548</span>, <span class="fl">3.10025514</span>, <span class="fl">1.12015895</span>, <span class="fl">1.61720311</span>,</span>
-<span class="r-in">  <span class="fl">1.30017032</span>, <span class="fl">0.64775015</span>, <span class="op">-</span><span class="fl">0.14251820</span>, <span class="fl">0.65065728</span>, <span class="fl">0.79110577</span>,</span>
-<span class="r-in">  <span class="fl">1.58662319</span>, <span class="fl">1.83898341</span>, <span class="fl">1.93110208</span>, <span class="fl">1.28558733</span>, <span class="fl">1.88514116</span>,</span>
-<span class="r-in">  <span class="fl">0.24560206</span>, <span class="fl">2.25286816</span>, <span class="fl">1.51292982</span>, <span class="fl">0.70190717</span>, <span class="fl">1.48851815</span>,</span>
-<span class="r-in">  <span class="fl">0.92442829</span>, <span class="fl">2.13162939</span>, <span class="fl">2.51981682</span>, <span class="fl">3.18557541</span>, <span class="op">-</span><span class="fl">0.39649633</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.44411380</span>, <span class="fl">0.49553414</span>, <span class="fl">1.16003707</span>, <span class="fl">1.87616892</span>, <span class="fl">1.31563495</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">1.02220122</span>, <span class="fl">0.69379599</span>, <span class="fl">1.82797464</span>, <span class="fl">1.23009474</span>, <span class="fl">1.76201118</span>,</span>
-<span class="r-in">  <span class="fl">0.77767186</span>, <span class="fl">0.79924193</span>, <span class="fl">1.18656139</span>, <span class="fl">1.41005165</span>, <span class="fl">1.19829972</span>,</span>
-<span class="r-in">  <span class="fl">1.11900865</span>, <span class="fl">0.32933771</span>, <span class="fl">1.37756379</span>, <span class="fl">1.12182127</span>, <span class="fl">2.12948391</span>,</span>
-<span class="r-in">  <span class="fl">2.19891788</span>, <span class="fl">1.18515642</span>, <span class="fl">0.62471505</span>, <span class="fl">0.36126959</span>, <span class="fl">1.42349435</span>,</span>
-<span class="r-in">  <span class="fl">1.07734007</span>, <span class="fl">0.65614632</span>, <span class="fl">1.04359686</span>, <span class="fl">0.37999916</span>, <span class="fl">1.69803203</span>,</span>
-<span class="r-in">  <span class="fl">0.55287144</span>, <span class="fl">2.22450770</span>, <span class="fl">1.40349164</span>, <span class="fl">1.59357852</span>, <span class="op">-</span><span class="fl">0.09491185</span>,</span>
-<span class="r-in">  <span class="fl">1.16938243</span>, <span class="fl">1.74055645</span>, <span class="fl">0.04629940</span>, <span class="fl">0.73378149</span>, <span class="fl">1.03261455</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.37311732</span>, <span class="fl">1.31515939</span>, <span class="fl">1.84616065</span>, <span class="fl">0.14048406</span>, <span class="fl">1.35054598</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.31228341</span>, <span class="fl">0.96130449</span>, <span class="op">-</span><span class="fl">0.61577236</span>, <span class="fl">2.12141771</span>, <span class="fl">1.40890054</span>,</span>
-<span class="r-in">  <span class="fl">0.97538304</span>, <span class="fl">0.22483838</span>, <span class="fl">2.27375593</span>, <span class="fl">2.96710175</span>, <span class="op">-</span><span class="fl">0.85798186</span>,</span>
-<span class="r-in">  <span class="fl">2.23616403</span>, <span class="fl">2.62765075</span>, <span class="fl">1.33801170</span>, <span class="op">-</span><span class="fl">0.19926803</span>, <span class="fl">1.86334532</span>,</span>
-<span class="r-in">  <span class="fl">0.81907970</span>, <span class="fl">0.39607937</span>, <span class="op">-</span><span class="fl">0.23005814</span>, <span class="fl">1.55053750</span>, <span class="fl">1.79280687</span>,</span>
-<span class="r-in">  <span class="fl">0.37646927</span>, <span class="fl">1.52057634</span>, <span class="op">-</span><span class="fl">0.14434139</span>, <span class="fl">1.80186103</span>, <span class="fl">1.04656730</span>,</span>
-<span class="r-in">  <span class="fl">0.81343023</span>, <span class="fl">0.89825413</span>, <span class="fl">1.86888616</span>, <span class="fl">1.75041164</span>, <span class="fl">1.52946532</span>,</span>
-<span class="r-in">  <span class="fl">1.13770121</span>, <span class="fl">1.07782113</span>, <span class="fl">1.61838026</span>, <span class="fl">1.23249456</span>, <span class="fl">1.68255141</span>,</span>
-<span class="r-in">  <span class="fl">0.68988323</span>, <span class="op">-</span><span class="fl">1.43483776</span>, <span class="fl">2.03882460</span>, <span class="fl">3.18697965</span>, <span class="fl">1.44136444</span>,</span>
-<span class="r-in">  <span class="fl">0.89984477</span>, <span class="fl">0.86355526</span>, <span class="fl">0.88094581</span>, <span class="fl">1.01740941</span>, <span class="op">-</span><span class="fl">0.12201873</span>,</span>
-<span class="r-in">  <span class="fl">0.48290554</span>, <span class="fl">0.00297317</span>, <span class="fl">1.24879916</span>, <span class="fl">0.70335885</span>, <span class="fl">1.49521132</span>,</span>
-<span class="r-in">  <span class="fl">0.82529684</span>, <span class="fl">1.98633519</span>, <span class="fl">1.21353390</span>, <span class="fl">3.19069973</span>, <span class="op">-</span><span class="fl">0.89636092</span>,</span>
-<span class="r-in">  <span class="fl">0.35308331</span>, <span class="fl">1.90148689</span>, <span class="fl">3.52832571</span>, <span class="fl">0.75136522</span>, <span class="fl">1.04366899</span>,</span>
-<span class="r-in">  <span class="fl">0.77368576</span>, <span class="fl">2.33145711</span>, <span class="fl">0.71269214</span>, <span class="fl">1.68006984</span>, <span class="fl">0.68019840</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.27255875</span>, <span class="fl">1.31354772</span>, <span class="fl">1.50318481</span>, <span class="fl">2.29322588</span>, <span class="fl">0.88955297</span>,</span>
-<span class="r-in">  <span class="fl">0.38263794</span>, <span class="fl">1.56276110</span>, <span class="fl">1.24073709</span>, <span class="fl">1.28066508</span>, <span class="fl">0.92688730</span>,</span>
-<span class="r-in">  <span class="fl">2.16033857</span>, <span class="fl">1.36949272</span>, <span class="fl">2.90465871</span>, <span class="fl">2.11105670</span>, <span class="fl">1.65904980</span>,</span>
-<span class="r-in">  <span class="op">-</span><span class="fl">0.62743834</span>, <span class="fl">1.60231928</span>, <span class="fl">1.42028220</span>, <span class="fl">1.81095167</span>, <span class="fl">2.04444209</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ydata</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">ydata</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ydata</span><span class="op">)</span>,<span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">N</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">ydata</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">ycovar</span> <span class="op">&lt;-</span> <span class="va">ydata</span><span class="op">*</span><span class="fl">0</span> <span class="op">+</span> <span class="fl">0.01</span></span>
-<span class="r-in"><span class="va">xamp</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.5</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">xmean</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.86447943</span>, <span class="fl">0.67078879</span>, <span class="fl">0.322681</span>, <span class="fl">0.45087394</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">xcovar</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.03821028</span>, <span class="fl">0.04014796</span>, <span class="fl">0.04108113</span>, <span class="fl">0.03173839</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,</span>
-<span class="r-in">       <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.06219194</span>, <span class="fl">0.09738021</span>, <span class="fl">0.04302473</span>, <span class="fl">0.06778009</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">projection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span></span>
-<span class="r-in">  <span class="va">projection</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">i</span><span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span><span class="fl">2</span>,<span class="op">(</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span><span class="fl">2</span><span class="op">)</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">extreme_deconvolution</span><span class="op">(</span><span class="va">ydata</span>, <span class="va">ycovar</span>, <span class="va">xamp</span>, <span class="va">xmean</span>, <span class="va">xcovar</span>,</span>
-<span class="r-in">         projection<span class="op">=</span><span class="va">projection</span>, logfile<span class="op">=</span><span class="st">"ExDeconDemo"</span><span class="op">)</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">ydata</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.62434536</span>, <span class="fl">0.38824359</span>, <span class="fl">0.47182825</span>, <span class="op">-</span><span class="fl">0.07296862</span>, <span class="fl">1.86540763</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">1.30153870</span>, <span class="fl">2.74481176</span>, <span class="fl">0.23879310</span>, <span class="fl">1.31903910</span>, <span class="fl">0.75062962</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">2.46210794</span>, <span class="op">-</span><span class="fl">1.06014071</span>, <span class="fl">0.67758280</span>, <span class="fl">0.61594565</span>, <span class="fl">2.13376944</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.09989127</span>, <span class="fl">0.82757179</span>, <span class="fl">0.12214158</span>, <span class="fl">1.04221375</span>, <span class="fl">1.58281521</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.10061918</span>, <span class="fl">2.14472371</span>, <span class="fl">1.90159072</span>, <span class="fl">1.50249434</span>, <span class="fl">1.90085595</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.31627214</span>, <span class="fl">0.87710977</span>, <span class="fl">0.06423057</span>, <span class="fl">0.73211192</span>, <span class="fl">1.53035547</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.30833925</span>, <span class="fl">0.60324647</span>, <span class="fl">0.31282730</span>, <span class="fl">0.15479436</span>, <span class="fl">0.32875387</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.98733540</span>, <span class="op">-</span><span class="fl">0.11731035</span>, <span class="fl">1.23441570</span>, <span class="fl">2.65980218</span>, <span class="fl">1.74204416</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.80816445</span>, <span class="fl">0.11237104</span>, <span class="fl">0.25284171</span>, <span class="fl">2.69245460</span>, <span class="fl">1.05080775</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.36300435</span>, <span class="fl">1.19091548</span>, <span class="fl">3.10025514</span>, <span class="fl">1.12015895</span>, <span class="fl">1.61720311</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.30017032</span>, <span class="fl">0.64775015</span>, <span class="op">-</span><span class="fl">0.14251820</span>, <span class="fl">0.65065728</span>, <span class="fl">0.79110577</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.58662319</span>, <span class="fl">1.83898341</span>, <span class="fl">1.93110208</span>, <span class="fl">1.28558733</span>, <span class="fl">1.88514116</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.24560206</span>, <span class="fl">2.25286816</span>, <span class="fl">1.51292982</span>, <span class="fl">0.70190717</span>, <span class="fl">1.48851815</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.92442829</span>, <span class="fl">2.13162939</span>, <span class="fl">2.51981682</span>, <span class="fl">3.18557541</span>, <span class="op">-</span><span class="fl">0.39649633</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.44411380</span>, <span class="fl">0.49553414</span>, <span class="fl">1.16003707</span>, <span class="fl">1.87616892</span>, <span class="fl">1.31563495</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">1.02220122</span>, <span class="fl">0.69379599</span>, <span class="fl">1.82797464</span>, <span class="fl">1.23009474</span>, <span class="fl">1.76201118</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.77767186</span>, <span class="fl">0.79924193</span>, <span class="fl">1.18656139</span>, <span class="fl">1.41005165</span>, <span class="fl">1.19829972</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.11900865</span>, <span class="fl">0.32933771</span>, <span class="fl">1.37756379</span>, <span class="fl">1.12182127</span>, <span class="fl">2.12948391</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">2.19891788</span>, <span class="fl">1.18515642</span>, <span class="fl">0.62471505</span>, <span class="fl">0.36126959</span>, <span class="fl">1.42349435</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.07734007</span>, <span class="fl">0.65614632</span>, <span class="fl">1.04359686</span>, <span class="fl">0.37999916</span>, <span class="fl">1.69803203</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.55287144</span>, <span class="fl">2.22450770</span>, <span class="fl">1.40349164</span>, <span class="fl">1.59357852</span>, <span class="op">-</span><span class="fl">0.09491185</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.16938243</span>, <span class="fl">1.74055645</span>, <span class="fl">0.04629940</span>, <span class="fl">0.73378149</span>, <span class="fl">1.03261455</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.37311732</span>, <span class="fl">1.31515939</span>, <span class="fl">1.84616065</span>, <span class="fl">0.14048406</span>, <span class="fl">1.35054598</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.31228341</span>, <span class="fl">0.96130449</span>, <span class="op">-</span><span class="fl">0.61577236</span>, <span class="fl">2.12141771</span>, <span class="fl">1.40890054</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.97538304</span>, <span class="fl">0.22483838</span>, <span class="fl">2.27375593</span>, <span class="fl">2.96710175</span>, <span class="op">-</span><span class="fl">0.85798186</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">2.23616403</span>, <span class="fl">2.62765075</span>, <span class="fl">1.33801170</span>, <span class="op">-</span><span class="fl">0.19926803</span>, <span class="fl">1.86334532</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.81907970</span>, <span class="fl">0.39607937</span>, <span class="op">-</span><span class="fl">0.23005814</span>, <span class="fl">1.55053750</span>, <span class="fl">1.79280687</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.37646927</span>, <span class="fl">1.52057634</span>, <span class="op">-</span><span class="fl">0.14434139</span>, <span class="fl">1.80186103</span>, <span class="fl">1.04656730</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.81343023</span>, <span class="fl">0.89825413</span>, <span class="fl">1.86888616</span>, <span class="fl">1.75041164</span>, <span class="fl">1.52946532</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">1.13770121</span>, <span class="fl">1.07782113</span>, <span class="fl">1.61838026</span>, <span class="fl">1.23249456</span>, <span class="fl">1.68255141</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.68988323</span>, <span class="op">-</span><span class="fl">1.43483776</span>, <span class="fl">2.03882460</span>, <span class="fl">3.18697965</span>, <span class="fl">1.44136444</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.89984477</span>, <span class="fl">0.86355526</span>, <span class="fl">0.88094581</span>, <span class="fl">1.01740941</span>, <span class="op">-</span><span class="fl">0.12201873</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.48290554</span>, <span class="fl">0.00297317</span>, <span class="fl">1.24879916</span>, <span class="fl">0.70335885</span>, <span class="fl">1.49521132</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.82529684</span>, <span class="fl">1.98633519</span>, <span class="fl">1.21353390</span>, <span class="fl">3.19069973</span>, <span class="op">-</span><span class="fl">0.89636092</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.35308331</span>, <span class="fl">1.90148689</span>, <span class="fl">3.52832571</span>, <span class="fl">0.75136522</span>, <span class="fl">1.04366899</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.77368576</span>, <span class="fl">2.33145711</span>, <span class="fl">0.71269214</span>, <span class="fl">1.68006984</span>, <span class="fl">0.68019840</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.27255875</span>, <span class="fl">1.31354772</span>, <span class="fl">1.50318481</span>, <span class="fl">2.29322588</span>, <span class="fl">0.88955297</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">0.38263794</span>, <span class="fl">1.56276110</span>, <span class="fl">1.24073709</span>, <span class="fl">1.28066508</span>, <span class="fl">0.92688730</span>,</span></span>
+<span class="r-in"><span>  <span class="fl">2.16033857</span>, <span class="fl">1.36949272</span>, <span class="fl">2.90465871</span>, <span class="fl">2.11105670</span>, <span class="fl">1.65904980</span>,</span></span>
+<span class="r-in"><span>  <span class="op">-</span><span class="fl">0.62743834</span>, <span class="fl">1.60231928</span>, <span class="fl">1.42028220</span>, <span class="fl">1.81095167</span>, <span class="fl">2.04444209</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ydata</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">ydata</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ydata</span><span class="op">)</span>,<span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">N</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">ydata</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">ycovar</span> <span class="op">&lt;-</span> <span class="va">ydata</span><span class="op">*</span><span class="fl">0</span> <span class="op">+</span> <span class="fl">0.01</span></span></span>
+<span class="r-in"><span><span class="va">xamp</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xmean</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.86447943</span>, <span class="fl">0.67078879</span>, <span class="fl">0.322681</span>, <span class="fl">0.45087394</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xcovar</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.03821028</span>, <span class="fl">0.04014796</span>, <span class="fl">0.04108113</span>, <span class="fl">0.03173839</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>       <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.06219194</span>, <span class="fl">0.09738021</span>, <span class="fl">0.04302473</span>, <span class="fl">0.06778009</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">projection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">projection</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">i</span><span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span><span class="fl">2</span>,<span class="op">(</span><span class="va">i</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span><span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span><span class="fl">2</span><span class="op">)</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">extreme_deconvolution</span><span class="op">(</span><span class="va">ydata</span>, <span class="va">ycovar</span>, <span class="va">xamp</span>, <span class="va">xmean</span>, <span class="va">xcovar</span>,</span></span>
+<span class="r-in"><span>         projection<span class="op">=</span><span class="va">projection</span>, logfile<span class="op">=</span><span class="st">"ExDeconDemo"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

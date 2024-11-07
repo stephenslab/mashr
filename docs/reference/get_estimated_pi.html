@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mashr</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.73</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.81</span>
       </span>
     </div>
 
@@ -56,7 +56,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_estimated_pi</span><span class="op">(</span><span class="va">m</span>, dimension <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cov"</span>, <span class="st">"grid"</span>, <span class="st">"all"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_estimated_pi</span><span class="op">(</span><span class="va">m</span>, dimension <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cov"</span>, <span class="st">"grid"</span>, <span class="st">"all"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -89,26 +89,6 @@ $LK+1$). The names of the vector will be informative for which
 combination each element corresponds to.</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">simdata</span> <span class="op">=</span> <span class="fu"><a href="simple_sims.html">simple_sims</a></span><span class="op">(</span><span class="fl">50</span>,<span class="fl">5</span>,<span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="mash_set_data.html">mash_set_data</a></span><span class="op">(</span><span class="va">simdata</span><span class="op">$</span><span class="va">Bhat</span>, <span class="va">simdata</span><span class="op">$</span><span class="va">Shat</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">=</span> <span class="fu"><a href="mash.html">mash</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="cov_canonical.html">cov_canonical</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Computing 200 x 141 likelihood matrix.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Likelihood calculations took 0.01 seconds.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Fitting model with 141 mixture components.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Model fitting took 0.15 seconds.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Computing posterior matrices.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Computation allocated took 0.00 seconds.</span>
-<span class="r-in"><span class="fu">get_estimated_pi</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          null      identity   condition_1   condition_2   condition_3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0.59193141    0.04017492    0.03668422    0.00000000    0.00000000 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   condition_4   condition_5 equal_effects  simple_het_1  simple_het_2 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0.00000000    0.03834005    0.04235686    0.16733138    0.08318115 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  simple_het_3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0.00000000 </span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
